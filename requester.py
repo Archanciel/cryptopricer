@@ -12,12 +12,11 @@ class Requester:
     [CRYPTO: btc 5/7 0.0015899 6/7 0.00153] [FIAT: usd chf]
     '''
     def request(self):
-        inp = input('Enter command (h for help)\n')
-        inp = inp.upper()
-        
+        inp = input('Enter command (h for help)\n').upper()
+
         while inp == 'H':
             self._printHelp()
-            inp = input('Enter command (h for help)\n')
+            inp = input('Enter command (h for help)\n').upper()
         
         if inp == 'Q':   
             return {Command.QUIT : ''}
