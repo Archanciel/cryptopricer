@@ -1,6 +1,6 @@
 from command import Command
 
-class Executor:
+class Processor:
     def execute(self, commands):
         if Command.CRYPTO in commands:
             result = 'Command.CRYPTO'

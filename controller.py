@@ -1,7 +1,7 @@
 import sys
 from command import Command
 from requester import Requester
-from executor import Executor
+from processor import Processor
 from printer import Printer
 
 class Controller:
@@ -12,7 +12,7 @@ class Controller:
 
     def run(self):
         req = Requester()
-        ex = Executor()
+        ex = Processor()
         pri = Printer()
         
         while True:
