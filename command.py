@@ -17,6 +17,8 @@ class Command(Enum):
     #REMOVE : [1, 3, 5]
     REMOVE = 5
 
+    ERROR = 6
+
 if __name__ == '__main__':
     for c in Command: # no  working for this version of enum 
         print(c)

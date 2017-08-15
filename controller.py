@@ -23,6 +23,8 @@ class Controller:
             elif Command.CRYPTO in commands:
                 result = ex.execute(commands)
                 pri.print(result)
+            elif Command.ERROR in commands:
+                print("Error in input")
             else:
                 raise ValueError('Invalid command encountered: ' + commands)
             
