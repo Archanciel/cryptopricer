@@ -54,6 +54,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(fiatData, ['usd', 'chf', 'eur'])
 
 
+    def test_parseFiatDataFromInputThreeFiatInListNoFiatSepCharIncludeOtherCommand(self):
+        inputStr = "[btc 5/7 0.0015899 6/7 0.00153] [usd chf] -nosave"
+        fiatData = self.requester._parseFiatDataFromInput(inputStr)
+        self.assertEqual(fiatData, ['chf'])
+
+
     def test_parseFiatDataFromInputNoFiatListIncludeOtherCommand(self):
         inputStr = "[btc 5/7 0.0015899 6/7 0.00153] -nosave"
         fiatData = self.requester._parseFiatDataFromInput(inputStr)
@@ -89,12 +95,17 @@ class TestRequester(unittest.TestCase):
         cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
         self.assertEqual(cryptoData, ['btc', '5/7', '0.0015899', '6/7', '0.00153'])
 
-
     def test_parseCryptoDataFromInputNoOtherCommand(self):
         inputStr = "[btc 5/7 0.0015899 6/7 0.00153] [usd-chf]"
         cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
         self.assertEqual(cryptoData, ['btc', '5/7', '0.0015899', '6/7', '0.00153'])
 
-             
+
+    def test_parseCryptoDataFromInputNoCryptoSymbolNoOtherCommand(self):
+        inputStr = "[5/7 0.0015899 6/7 0.00153] [usd-chf]"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, ['btc', '5/7', '0.0015899', '6/7', '0.00153'])
+
+
 if __name__ == '__main__':
     unittest.main()
