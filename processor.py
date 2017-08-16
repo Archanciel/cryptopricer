@@ -1,7 +1,7 @@
-from command import Command
+from commandenum import CommandEnum
 
 class Processor:
     def execute(self, commands):
-        if Command.CRYPTO in commands:
-            result = 'Command.CRYPTO'
+        if CommandEnum.CRYPTO in commands:
+            result = 'CommandEnum.CRYPTO'
             return result

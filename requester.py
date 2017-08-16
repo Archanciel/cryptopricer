@@ -1,4 +1,4 @@
-from command import Command
+from commandenum import CommandEnum
 import re
 
 class Requester:
@@ -20,18 +20,19 @@ class Requester:
             inp = input('Enter command (h for help)\n').upper()
         
         if inp == 'Q':   
-            return {Command.QUIT : ''}
+            return {CommandEnum.QUIT : ''}
         else:
             parsedInput = self._parseInput(inp)
 
-            if Command.ERROR in parsedInput:
+            if CommandEnum.ERROR in parsedInput:
                 return parsedInput
             else:
-                return {Command.CRYPTO : [parsedInput]}
+                return {CommandEnum.CRYPTO : [parsedInput]}
 
     def _printHelp(self):
         print('Usage:\n')
         print('[btc 5/7 0.0015899 6/7 0.00153] [usd-chf]')
+        print('Beware: IF YOU ENTER MORE THAN ONE FIAT CURRENCY, DO NOT FORGET TO SEPARATE THEM WITH A \'-\' !')
         inp = input('\nm for more or anything else to exit help\n')
         
         if inp.upper() == 'M':
@@ -45,14 +46,16 @@ class Requester:
         cryptoDataList = self._parseCryptoDataFromInput(inputStr)
 
         if cryptoDataList == "":
-            return {Command.ERROR : inputStr}
+            return {CommandEnum.ERROR : inputStr}
         
         cryptoDataDic = {cryptoDataList[0]:cryptoDataList[1:]}
         
         fiatDataList = self._parseFiatDataFromInput(inputStr)
-        fiatDataDic = {Command.FIAT:fiatDataList}
+        fiatDataDic = {CommandEnum.FIAT:fiatDataList}
 
-        cryptoDic = {Command.CRYPTO:cryptoDataList,'FIAT':fiatDataList}
+        cryptoDic = {CommandEnum.CRYPTO:cryptoDataList, 'FIAT':fiatDataList}
+
+        return cryptoDic
 
 
     def _parseFiatDataFromInput(self, inputStr):
@@ -67,8 +70,6 @@ class Requester:
             for elem in grp.groups():
                 if elem != None and len(elem) == 3:
                     fiatDataList.append(elem)
-
-        print(fiatDataList)
 
         return fiatDataList
         
@@ -100,6 +101,4 @@ class Requester:
 
 if __name__ == '__main__':
     r = Requester()
-    r._parseInput('[btc 5/7 0.0015899 6/7 0.00153] [usd-chf-eur] -nosave')
-    r._parseInput('[btc 5/7 0.0015899 6/7 0.00153] [usd] -nosave')
-    r._parseInput('[btc 5/7 0.0015899 6/7 0.00153] [] -nosave')
+    print(r._parseCryptoDataFromInput('[btc 5/7 0.0015899 6/7 0.00153] [usd-chf-eur] -nosave'))

@@ -1,5 +1,5 @@
 import sys
-from command import Command
+from commandenum import CommandEnum
 from requester import Requester
 from processor import Processor
 from printer import Printer
@@ -17,13 +17,13 @@ class Controller:
         
         while True:
             commands = req.request()
-            if Command.QUIT in commands:
+            if CommandEnum.QUIT in commands:
                 input('Quit ?')
                 sys.exit(0)
-            elif Command.CRYPTO in commands:
+            elif CommandEnum.CRYPTO in commands:
                 result = ex.execute(commands)
                 pri.print(result)
-            elif Command.ERROR in commands:
+            elif CommandEnum.ERROR in commands:
                 print("Error in input")
             else:
                 raise ValueError('Invalid command encountered: ' + commands)
