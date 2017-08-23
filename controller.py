@@ -1,8 +1,10 @@
 import sys
-from commandenum import CommandEnum
 from requester import Requester
 from processor import Processor
 from printer import Printer
+from commandcrypto import CommandCrypto
+from commandquit import CommandQuit
+from commanderror import CommandError
 
 class Controller:
     '''
@@ -12,21 +14,35 @@ class Controller:
 
     def run(self):
         req = Requester()
-        ex = Processor()
+        proc = Processor()
         pri = Printer()
-        
+
+        commandCrypto = CommandCrypto(proc)
+        req.commandCrypto = commandCrypto
+
+        commandQuit = CommandQuit(sys)
+        req.commandQuit = commandQuit
+
+        commandError = CommandError(None)
+        req.commandError = commandError
+
         while True:
-            commands = req.request()
-            if CommandEnum.QUIT in commands:
-                input('Quit ?')
-                sys.exit(0)
-            elif CommandEnum.CRYPTO in commands:
-                result = ex.execute(commands)
+            command = req.request()
+            result = command.execute()
+
+            if result != '':
                 pri.print(result)
-            elif CommandEnum.ERROR in commands:
-                print("Error in input")
-            else:
-                raise ValueError('Invalid command encountered: ' + commands)
+
+            # if CommandDataEnum.QUIT in command:
+            #     input('Quit ?')
+            #     sys.exit(0)
+            # elif command == commandCrypto:
+            #     result = proc.execute(command)
+            #     pri.print(result)
+            # elif CommandDataEnum.ERROR in command:
+            #     print("Error in input")
+            # else:
+            #     raise ValueError('Invalid command encountered: ' + command)
             
 if __name__ == '__main__':
     c = Controller()

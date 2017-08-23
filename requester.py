@@ -1,5 +1,7 @@
-from commanddataenum import CommandDataEnum
 import re
+
+ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
+
 
 class Requester:
     '''
@@ -12,22 +14,23 @@ class Requester:
       
     {CRYPTO:[btc, 5/7, 0.0015899, 6/7, 0.00153], FIAT:[usd, chf], NOSAVE:[]}
     '''
+    def __init__(self):
+        self.commandCrypto = None
+        self.commandQuit = None
+        self.commandError = None
+
     def request(self):
-        inp = input('Enter command (h for help, q to quit)\n').upper()
+        inp = input(ENTER_COMMAND_PROMPT)
 
-        while inp == 'H':
+        while inp.upper() == 'H':
             self._printHelp()
-            inp = input('Enter command (h for help)\n').upper()
+            inp = input(ENTER_COMMAND_PROMPT)
         
-        if inp == 'Q':   
-            return {CommandDataEnum.QUIT : ''}
+        if inp.upper() == 'Q':
+            return self.commandQuit
         else:
-            parsedInput = self._parseInput(inp)
+            return self._parseInput(inp)
 
-            if CommandDataEnum.ERROR in parsedInput:
-                return parsedInput
-            else:
-                return {CommandDataEnum.CRYPTO : [parsedInput]}
 
     def _printHelp(self):
         print('Usage:\n')
@@ -45,17 +48,14 @@ class Requester:
         #[CRYPTO:[btc, 5/7, 0.0015899, 6/7, 0.00153], FIAT:[usd, chf], NOSAVE:[]}
         cryptoDataList = self._parseCryptoDataFromInput(inputStr)
 
-        if cryptoDataList == "":
-            return {CommandDataEnum.ERROR : inputStr}
-        
-        cryptoDataDic = {cryptoDataList[0]:cryptoDataList[1:]}
-        
-        fiatDataList = self._parseFiatDataFromInput(inputStr)
-        fiatDataDic = {CommandDataEnum.FIAT:fiatDataList}
+        if cryptoDataList == self.commandError:
+            return self.commandError
 
-        cryptoDic = {CommandDataEnum.CRYPTO:cryptoDataList, CommandDataEnum.FIAT:fiatDataList}
+        fiatDataList = self._parseFiatDataFromInput(upperInputStr)
 
-        return cryptoDic
+        self.commandCrypto.parmData = [cryptoDataList, fiatDataList]
+
+        return self.commandCrypto
 
 
     def _parseFiatDataFromInput(self, inputStr):
@@ -79,20 +79,22 @@ class Requester:
         #[btc, 5/7, 0.0015899, 6/7, 0.00153]
         
         cryptoDataList = []
-        
+        upperInputStr = inputStr.upper()
+
         patternCryptoSymbol = r"\[(\w+) "
         
-        match = re.match(patternCryptoSymbol, inputStr)
+        match = re.match(patternCryptoSymbol, upperInputStr)
 
         if match == None:
-            return ""
+            self.commandError.parmData = [self.commandError.errorMsgNoCryptoSymbol, inputStr]
+            return self.commandError
 
         cryptoSymbol = match.group(1)
 
         cryptoDatePriceList = []
         patternDatePrice = r"(\d+/\d+) ([0-9]+\.[0-9]+)"
 
-        for grp in re.finditer(patternDatePrice, inputStr):
+        for grp in re.finditer(patternDatePrice, upperInputStr):
             for elem in grp.groups():
                 cryptoDatePriceList.append(elem)
 
