@@ -1,4 +1,4 @@
-from commandenum import CommandEnum
+from commanddataenum import CommandDataEnum
 import re
 
 class Requester:
@@ -13,21 +13,21 @@ class Requester:
     {CRYPTO:[btc, 5/7, 0.0015899, 6/7, 0.00153], FIAT:[usd, chf], NOSAVE:[]}
     '''
     def request(self):
-        inp = input('Enter command (h for help)\n').upper()
+        inp = input('Enter command (h for help, q to quit)\n').upper()
 
         while inp == 'H':
             self._printHelp()
             inp = input('Enter command (h for help)\n').upper()
         
         if inp == 'Q':   
-            return {CommandEnum.QUIT : ''}
+            return {CommandDataEnum.QUIT : ''}
         else:
             parsedInput = self._parseInput(inp)
 
-            if CommandEnum.ERROR in parsedInput:
+            if CommandDataEnum.ERROR in parsedInput:
                 return parsedInput
             else:
-                return {CommandEnum.CRYPTO : [parsedInput]}
+                return {CommandDataEnum.CRYPTO : [parsedInput]}
 
     def _printHelp(self):
         print('Usage:\n')
@@ -36,8 +36,8 @@ class Requester:
         inp = input('\nm for more or anything else to exit help\n')
         
         if inp.upper() == 'M':
-            print("\nns - don't save retrieved prices")
-            print("rm [1, 3, 4] - remove line numbers\n")
+            print("\n-ns or -nosave --> don't save retrieved prices")
+            print("-rm [1, 3, 4] --> remove line numbers\n")
 
     def _parseInput(self, inputStr):
         #convert [btc 5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave
@@ -46,14 +46,14 @@ class Requester:
         cryptoDataList = self._parseCryptoDataFromInput(inputStr)
 
         if cryptoDataList == "":
-            return {CommandEnum.ERROR : inputStr}
+            return {CommandDataEnum.ERROR : inputStr}
         
         cryptoDataDic = {cryptoDataList[0]:cryptoDataList[1:]}
         
         fiatDataList = self._parseFiatDataFromInput(inputStr)
-        fiatDataDic = {CommandEnum.FIAT:fiatDataList}
+        fiatDataDic = {CommandDataEnum.FIAT:fiatDataList}
 
-        cryptoDic = {CommandEnum.CRYPTO:cryptoDataList, 'FIAT':fiatDataList}
+        cryptoDic = {CommandDataEnum.CRYPTO:cryptoDataList, CommandDataEnum.FIAT:fiatDataList}
 
         return cryptoDic
 
@@ -88,14 +88,20 @@ class Requester:
             return ""
 
         cryptoSymbol = match.group(1)
-        cryptoDataList.append(cryptoSymbol)
-        
-        patternDatePrice = r"(\d+/\d+) ([0-9\.]+)"
+
+        cryptoDatePriceList = []
+        patternDatePrice = r"(\d+/\d+) ([0-9]+\.[0-9]+)"
 
         for grp in re.finditer(patternDatePrice, inputStr):
             for elem in grp.groups():
-                cryptoDataList.append(elem)
-                
+                cryptoDatePriceList.append(elem)
+
+        if len(cryptoDatePriceList) > 0:
+            cryptoDataList.append(cryptoSymbol)
+            cryptoDataList.extend(cryptoDatePriceList)
+        else:
+            return ''
+
         return cryptoDataList
                 
 

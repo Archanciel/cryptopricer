@@ -95,6 +95,7 @@ class TestRequester(unittest.TestCase):
         cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
         self.assertEqual(cryptoData, ['btc', '5/7', '0.0015899', '6/7', '0.00153'])
 
+
     def test_parseCryptoDataFromInputNoOtherCommand(self):
         inputStr = "[btc 5/7 0.0015899 6/7 0.00153] [usd-chf]"
         cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
@@ -104,7 +105,73 @@ class TestRequester(unittest.TestCase):
     def test_parseCryptoDataFromInputNoCryptoSymbolNoOtherCommand(self):
         inputStr = "[5/7 0.0015899 6/7 0.00153] [usd-chf]"
         cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
-        self.assertEqual(cryptoData, ['btc', '5/7', '0.0015899', '6/7', '0.00153'])
+        self.assertEqual(cryptoData, '')
+
+
+    def test_parseCryptoDataFromInputNoCryptoSymbolOtherCommand(self):
+        inputStr = "[5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, '')
+
+
+    def test_parseCryptoDataFromInputOnePriceOnlyNoOtherCommand(self):
+        inputStr = "[btc 5/7 0.0015899] [usd-chf]"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, ['btc', '5/7', '0.0015899'])
+
+
+    def test_parseCryptoDataFromInputOnePriceOnlyOtherCommand(self):
+        inputStr = "[btc 5/7 0.0015899] [usd-chf] -nosave"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, ['btc', '5/7', '0.0015899'])
+
+
+    def test_parseCryptoDataFromInputOnePriceOnlyNoDateNoOtherCommand(self):
+        inputStr = "[btc 0.0015899] [usd-chf]"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, '')
+
+
+    def test_parseCryptoDataFromInputOnePriceOnlyNoDateOtherCommand(self):
+        inputStr = "[btc 0.0015899] [usd-chf] -nosave"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, '')
+
+
+    def test_parseCryptoDataFromInputOneDateMissingIncludeOtherCommand(self):
+        inputStr = "[btc 0.0015899 6/7 0.00153] [usd-chf] -nosave"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, ['btc', '6/7', '0.00153'])
+
+
+    def test_parseCryptoDataFromInputOneDateMissingNoOtherCommand(self):
+        inputStr = "[btc 0.0015899 6/7 0.00153] [usd-chf]"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, ['btc', '6/7', '0.00153'])
+
+
+    def test_parseCryptoDataFromInputOnePriceMissingIncludeOtherCommand(self):
+        inputStr = "[btc 5/7 6/7 0.00153] [usd-chf] -nosave"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, ['btc', '6/7', '0.00153'])
+
+
+    def test_parseCryptoDataFromInputOnePriceMissingNoOtherCommand(self):
+        inputStr = "[btc 5/7 6/7 0.00153] [usd-chf]"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, ['btc', '6/7', '0.00153'])
+
+
+    def test_parseCryptoDataFromInputOnePriceTwoDigitaDateOnlyOtherCommand(self):
+        inputStr = "[btc 15/12 0.0015899] [usd-chf] -nosave"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, ['btc', '15/12', '0.0015899'])
+
+
+    def test_parseCryptoDataFromInputOnePriceOnlyZeroesInDateOtherCommand(self):
+        inputStr = "[btc 05/07 0.0015899] [usd-chf] -nosave"
+        cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
+        self.assertEqual(cryptoData, ['btc', '05/07', '0.0015899'])
 
 
 if __name__ == '__main__':
