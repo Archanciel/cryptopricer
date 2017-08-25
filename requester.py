@@ -2,6 +2,14 @@ import re
 
 ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
 
+#pattern components constants
+CURRENCY_SYMBOL_GRP_PATTERN = r"([A-Z]+)"
+DD_MM_DATE_GRP_PATTERN = r"(\d+/\d+)"
+HH_MM_TIME_GRP_PATTERN = r"(\d+:\d+)"
+DOUBLE_PRICE_PATTERN = r"([0-9]+\.[0-9]+)"
+DOUBLE_PRICE_PATTERN = r"(\d+\.\d+)"
+EXCHANGE_SYMBOL_GRP_PATTERN = r"([A-Z]+)"
+
 
 class Requester:
     '''
@@ -53,7 +61,7 @@ class Requester:
 
         fiatDataList = self._parseFiatDataFromInput(upperInputStr)
 
-        self.commandCrypto.parmData = [cryptoDataList, fiatDataList]
+        self.commandCrypto.parsedParmData = [cryptoDataList, fiatDataList]
 
         return self.commandCrypto
 
@@ -64,9 +72,15 @@ class Requester:
         #[usd, chf]
         
         fiatDataList = []
-        patternFiat = r"(([a-zA-Z]+)-)|(([a-zA-Z]+)\])|(\[([a-zA-Z]+)\])"
+        patternFiat = r"(" + \
+                      CURRENCY_SYMBOL_GRP_PATTERN + \
+                      r"-)|(" + \
+                      CURRENCY_SYMBOL_GRP_PATTERN + \
+                      r"\])|(\[" + \
+                      CURRENCY_SYMBOL_GRP_PATTERN + \
+                      r"\])"
 
-        for grp in re.finditer(patternFiat, inputStr):
+        for grp in re.finditer(patternFiat, inputStr.upper()):
             for elem in grp.groups():
                 if elem != None and len(elem) == 3:
                     fiatDataList.append(elem)
@@ -81,18 +95,23 @@ class Requester:
         cryptoDataList = []
         upperInputStr = inputStr.upper()
 
-        patternCryptoSymbol = r"\[(\w+) "
+        patternCryptoSymbol = r"\[" + \
+                              CURRENCY_SYMBOL_GRP_PATTERN + \
+                              " "
         
         match = re.match(patternCryptoSymbol, upperInputStr)
 
         if match == None:
-            self.commandError.parmData = [self.commandError.errorMsgNoCryptoSymbol, inputStr]
+            self.commandError.rawParmData = inputStr
+            self.commandError.parsedParmData = [self.commandError.CRYPTO_SYMBOL_MISSING_MSG]
             return self.commandError
 
         cryptoSymbol = match.group(1)
 
         cryptoDatePriceList = []
-        patternDatePrice = r"(\d+/\d+) ([0-9]+\.[0-9]+)"
+        patternDatePrice = DD_MM_DATE_GRP_PATTERN + \
+                           r" " + \
+                           DOUBLE_PRICE_PATTERN
 
         for grp in re.finditer(patternDatePrice, upperInputStr):
             for elem in grp.groups():

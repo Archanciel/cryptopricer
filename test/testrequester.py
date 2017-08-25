@@ -27,7 +27,7 @@ class TestRequester(unittest.TestCase):
     def setUp(self):
         requester = Requester()
         requester.commandCrypto = CommandCrypto(None)
-        requester.commandQuit = CommandQuit(None)
+        requester.commandQuit = CommandQuit(sys)
         self.commandError = CommandError(None)
         requester.commandError = self.commandError
         self.requester = requester
@@ -36,13 +36,13 @@ class TestRequester(unittest.TestCase):
     def test_parseFiatDataFromInputIncludeOtherCommand(self):
         inputStr = "[btc 5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave"
         fiatData = self.requester._parseFiatDataFromInput(inputStr)
-        self.assertEqual(fiatData, ['usd', 'chf'])
+        self.assertEqual(fiatData, ['USD', 'CHF'])
 
 
     def test_parseFiatDataFromInputNoOtherCommand(self):
         inputStr = "[btc 5/7 0.0015899 6/7 0.00153] [usd-chf]"
         fiatData = self.requester._parseFiatDataFromInput(inputStr)
-        self.assertEqual(fiatData, ['usd', 'chf'])
+        self.assertEqual(fiatData, ['USD', 'CHF'])
 
 
     def test_parseFiatDataFromInputEmptyFiatListIncludeOtherCommand(self):
@@ -54,19 +54,19 @@ class TestRequester(unittest.TestCase):
     def test_parseFiatDataFromInputOneFiatInListIncludeOtherCommand(self):
         inputStr = "[btc 5/7 0.0015899 6/7 0.00153] [usd] -nosave"
         fiatData = self.requester._parseFiatDataFromInput(inputStr)
-        self.assertEqual(fiatData, ['usd'])
+        self.assertEqual(fiatData, ['USD'])
 
 
     def test_parseFiatDataFromInputThreeFiatInListIncludeOtherCommand(self):
         inputStr = "[btc 5/7 0.0015899 6/7 0.00153] [usd-chf-eur] -nosave"
         fiatData = self.requester._parseFiatDataFromInput(inputStr)
-        self.assertEqual(fiatData, ['usd', 'chf', 'eur'])
+        self.assertEqual(fiatData, ['USD', 'CHF', 'EUR'])
 
 
     def test_parseFiatDataFromInputThreeFiatInListNoFiatSepCharIncludeOtherCommand(self):
         inputStr = "[btc 5/7 0.0015899 6/7 0.00153] [usd chf] -nosave"
         fiatData = self.requester._parseFiatDataFromInput(inputStr)
-        self.assertEqual(fiatData, ['chf'])
+        self.assertEqual(fiatData, ['CHF'])
 
 
     def test_parseFiatDataFromInputNoFiatListIncludeOtherCommand(self):
@@ -90,13 +90,13 @@ class TestRequester(unittest.TestCase):
     def test_parseFiatDataFromInputIncludeOtherCommandFiatListFirstPos(self):
         inputStr = "[usd-chf] [btc 5/7 0.0015899 6/7 0.00153] -nosave"
         fiatData = self.requester._parseFiatDataFromInput(inputStr)
-        self.assertEqual(fiatData, ['usd', 'chf'])
+        self.assertEqual(fiatData, ['USD', 'CHF'])
 
 
     def test_parseFiatDataFromInputNoOtherCommandFiatListFirstPos(self):
         inputStr = "[usd-chf] [btc 5/7 0.0015899 6/7 0.00153]"
         fiatData = self.requester._parseFiatDataFromInput(inputStr)
-        self.assertEqual(fiatData, ['usd', 'chf'])
+        self.assertEqual(fiatData, ['USD', 'CHF'])
 
 
     def test_parseCryptoDataFromInputIncludeOtherCommand(self):
@@ -115,6 +115,7 @@ class TestRequester(unittest.TestCase):
         inputStr = "[5/7 0.0015899 6/7 0.00153] [usd-chf]"
         cryptoData = self.requester._parseCryptoDataFromInput(inputStr)
         self.assertEqual(cryptoData, self.commandError)
+        self.assertEqual("Error in input [5/7 0.0015899 6/7 0.00153] [usd-chf]: crypto symbol missing !", self.commandError.execute())
 
 
     def test_parseCryptoDataFromInputNoCryptoSymbolOtherCommand(self):
