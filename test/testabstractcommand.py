@@ -11,7 +11,7 @@ class TestAbstractCommand(unittest.TestCase):
 
     def testAbstractCommandInstanciation(self):
         with self.assertRaises(TypeError):
-            c = AbstractCommand(None, '', '')
+            c = AbstractCommand(None, '', parsedParmData='')
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,9 +1,10 @@
 from abstractcommand import AbstractCommand
 
 class CommandError(AbstractCommand):
-    def __init__(self, receiver, parmData = ''):
-        super().__init__(receiver,'CommandError',parmData)
-        self.errorMsgNoCryptoSymbol = 'crypto symbol missing'
+    CRYPTO_SYMBOL_MISSING_MSG = 'crypto symbol missing'
+
+    def __init__(self, receiver=None, name='', rawParmData='', parsedParmData=''):
+        super().__init__(receiver, 'CommandError', rawParmData, parsedParmData)
 
     def execute(self):
-        return "Error in input " + self.parmData[1] + ": " + self.parmData[0] + " !"
+        return "Error in input "  + self.rawParmData + ": " + self.parsedParmData[0] + " !"

@@ -1,5 +1,6 @@
 import unittest
 import os,sys,inspect
+from io import StringIO
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -10,7 +11,14 @@ from commandquit import CommandQuit
 class TestCommandQuit(unittest.TestCase):
 
     def testAbstractCommandInstanciation(self):
-        self.fail("test not implemented")
+        commandQuit = CommandQuit(sys)
+        stdin = sys.stdin
+        sys.stdin = StringIO("y")
+
+        with self.assertRaises(SystemExit):
+            commandQuit.execute()
+
+        sys.stdin = stdin
 
 if __name__ == '__main__':
     unittest.main()

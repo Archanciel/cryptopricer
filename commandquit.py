@@ -1,8 +1,8 @@
 from abstractcommand import AbstractCommand
 
 class CommandQuit(AbstractCommand):
-    def __init__(self, receiver, parmData = ''):
-        super().__init__(receiver,'CommandQuit',parmData)
+    def __init__(self, receiver=None, name='', rawParmData='', parsedParmData=''):
+        super().__init__(receiver, 'CommandQuit', rawParmData, parsedParmData)
 
     def execute(self):
         inp = input('Quit ? y/n ')
