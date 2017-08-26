@@ -1,4 +1,5 @@
 import re
+from patternlooper import PatternLooper
 
 ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
 
@@ -59,7 +60,7 @@ class Requester:
         if cryptoDataList == self.commandError:
             return self.commandError
 
-        fiatDataList = self._parseFiatDataFromInput(upperInputStr)
+        fiatDataList = self._parseFiatDataFromInput(inputStr)
 
         self.commandCrypto.parsedParmData = [cryptoDataList, fiatDataList]
 
