@@ -15,5 +15,12 @@ class TestCommandError(unittest.TestCase):
         commandError.parsedParmData = [commandError.CRYPTO_SYMBOL_MISSING_MSG]
         self.assertEquals("Error in input invalid user input: crypto symbol missing !", commandError.execute())
 
+
+    def testAbstractCommandInstanciation(self):
+        commandError = CommandError(None)
+        commandError.rawParmData = "invalid user input"
+        commandError.parsedParmData = [commandError.USER_COMMAND_MISSING_MSG]
+        self.assertEquals("Error in input invalid user input: user command missing !", commandError.execute())
+
 if __name__ == '__main__':
     unittest.main()
