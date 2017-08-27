@@ -1,5 +1,4 @@
 import re
-from patternlooper import PatternLooper
 
 ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
 
