@@ -2,7 +2,7 @@ import re
 
 ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
 
-#pattern components constants
+#pattern components constants  TO DELETE !!!
 COMMAND_GRP_PATTERN = r"(\w+) \["
 CURRENCY_SYMBOL_GRP_PATTERN = r"([A-Z]+)"
 DD_MM_DATE_GRP_PATTERN = r"(\d+/\d+)"
@@ -94,13 +94,7 @@ class Requester:
         #[usd, chf]
         
         fiatDataList = []
-        patternFiat = r"(" + \
-                      CURRENCY_SYMBOL_GRP_PATTERN + \
-                      r"-)|(" + \
-                      CURRENCY_SYMBOL_GRP_PATTERN + \
-                      r"\])|(\[" + \
-                      CURRENCY_SYMBOL_GRP_PATTERN + \
-                      r"\])"
+        patternFiat = r"((\w+)-)|((\w+)\])|(\[(w+)\])"
 
         for grp in re.finditer(patternFiat, upperInputStrWithoutUserCommand):
             for elem in grp.groups():
@@ -130,9 +124,7 @@ class Requester:
         cryptoSymbol = match.group(1)
 
         cryptoDatePriceList = []
-        patternDatePrice = DD_MM_DATE_GRP_PATTERN + \
-                           r" " + \
-                           DOUBLE_PRICE_PATTERN
+        patternDatePrice = r"(\d+/\d+) (\d+\.\d+)"
 
         for grp in re.finditer(patternDatePrice, upperInputStrWithoutUserCommand):
             for elem in grp.groups():

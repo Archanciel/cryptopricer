@@ -1,6 +1,7 @@
 import re
 
 class EssPatt:
+
     def parseFiat(self, inputStr):
         #convert [usd-chf]
         #into
@@ -23,7 +24,7 @@ class EssPatt:
         
         cryptoDataList = []
              
-        patternDatePrice = r"(\d+/\d+) ([0-9\.]+)"
+        patternDatePrice = r"(\d+/\d+) (\d+\.\d+)"
 
         for grp in re.finditer(patternDatePrice, inputStr):
             for elem in grp.groups():
