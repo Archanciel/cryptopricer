@@ -137,7 +137,76 @@ class Requester:
             return ''
 
         return cryptoDataList
-                
+
+    def _parseFiat(self, inputStr):
+        # convert "[usd-chf]"
+        # into
+        # ['usd', 'chf']
+        # and return the fiat list
+
+        fiatList = []
+        patternFiat = r"((\w+)-)|((\w+)\])|(\[(w+)\])"
+
+        for grp in re.finditer(patternFiat, inputStr):
+            for elem in grp.groups():
+                if elem != None and len(elem) == 3:
+                    fiatList.append(elem)
+
+        return fiatList
+
+    def _parseDatePrice(self, inputStr):
+        # convert "[5/7 0.0015899 6/7 0.00153]"
+        # into
+        # [5/7, 0.0015899, 6/7, 0.00153]
+        # and return the date price pair list
+
+        priceDateList = []
+        patternDatePrice = r"(\d+/\d+) (\d+\.\d+)"
+
+        for grp in re.finditer(patternDatePrice, inputStr):
+            for elem in grp.groups():
+                priceDateList.append(elem)
+
+        return priceDateList
+
+    def _parseOOCommandParms(self, inputStr, upperInputStr):
+        # convert "btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave"
+        # into
+        # cryptoDataList = ['btc', '5/7', '0.0015899', '6/7', '0.00153']
+        # fiatDataList = ['usd', 'chf']
+        # flag = -nosave
+        #
+        # in case the user input violates the awaited pattern, a CommandError object is
+        # returned instead of the cryptoDataList
+        pattern = r"(?:(\w+) (\[.*\]) (\[.*\]))|(-\w+)"
+
+        fiatDataList = []
+        cryptoDataList = []
+        flag = None
+        grpNumber = 0
+
+        for grp in re.finditer(pattern, upperInputStr):
+            grpNumber += 1
+            for elem in grp.groups():
+                if elem is not None:
+                    if '[' in elem:
+                        if ' ' in elem:  # list of date/price pairs
+                            cryptoDataList += self._parseDatePrice(elem)
+                        else:  # list of fiat currencies
+                            fiatDataList = self._parseFiat(elem)
+                    else:  # crypto symbol like btc or flag like -nosave
+                        if '-' in elem:
+                            flag = elem
+                        else:  # crypto symbol at first posieion in input string
+                            cryptoDataList.append(elem)
+
+        if (grpNumber == 0) or (grpNumber == 1 and flag != None):
+            self.commandError.rawParmData = inputStr
+            self.commandError.parsedParmData = [self.commandError.INVALID_COMMAND_DATA_FORMAT]
+            return self.commandError, fiatDataList, flag
+        else:
+            return cryptoDataList, fiatDataList, flag
+
 
 if __name__ == '__main__':
     r = Requester()
