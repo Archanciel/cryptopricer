@@ -10,7 +10,7 @@ from commandquit import CommandQuit
 
 class TestCommandQuit(unittest.TestCase):
 
-    def testAbstractCommandInstanciation(self):
+    def testCommandQuitExecute(self):
         commandQuit = CommandQuit(sys)
         stdin = sys.stdin
         sys.stdin = StringIO("y")
