@@ -157,7 +157,7 @@ class Requester:
     def _parseDatePrice(self, inputStr):
         # convert "[5/7 0.0015899 6/7 0.00153]"
         # into
-        # [5/7, 0.0015899, 6/7, 0.00153]
+        # ['5/7', '0.0015899', '6/7', '0.00153']
         # and return the date price pair list
 
         priceDateList = []
@@ -174,7 +174,7 @@ class Requester:
         # into
         # cryptoDataList = ['btc', '5/7', '0.0015899', '6/7', '0.00153']
         # fiatDataList = ['usd', 'chf']
-        # flag = -nosave
+        # flag = '-nosave'
         #
         # in case the user input violates the awaited pattern, a CommandError object is
         # returned instead of the cryptoDataList
@@ -197,12 +197,12 @@ class Requester:
                     else:  # crypto symbol like btc or flag like -nosave
                         if '-' in elem:
                             flag = elem
-                        else:  # crypto symbol at first posieion in input string
+                        else:  # crypto symbol at first position in input string
                             cryptoDataList.append(elem)
 
         if (grpNumber == 0) or (grpNumber == 1 and flag != None):
             self.commandError.rawParmData = inputStr
-            self.commandError.parsedParmData = [self.commandError.INVALID_COMMAND_DATA_FORMAT]
+            self.commandError.parsedParmData = [self.commandError.FIAT_LIST_MISSING_MSG]
             return self.commandError, fiatDataList, flag
         else:
             return cryptoDataList, fiatDataList, flag

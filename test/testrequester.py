@@ -144,14 +144,14 @@ class TestRequester(unittest.TestCase):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153]"
         cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, self.commandError)
-        self.assertEquals("Error in input btc [5/7 0.0015899 6/7 0.00153]: invalid command parm data format !", self.commandError.execute())
+        self.assertEquals("Error in input btc [5/7 0.0015899 6/7 0.00153]: fiat list missing !", self.commandError.execute())
 
 
     def test_parseOOCommandParmsFiatListMissingWithOtherCommand(self):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153] -nosave"
         cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, self.commandError)
-        self.assertEquals("Error in input btc [5/7 0.0015899 6/7 0.00153] -nosave: invalid command parm data format !", self.commandError.execute())
+        self.assertEquals("Error in input btc [5/7 0.0015899 6/7 0.00153] -nosave: fiat list missing !", self.commandError.execute())
 
 
     def test_parseOOCommandParms(self):
