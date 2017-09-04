@@ -2,14 +2,7 @@ import re
 
 ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
 
-#pattern components constants  TO DELETE !!!
-COMMAND_GRP_PATTERN = r"(\w+) \["
-CURRENCY_SYMBOL_GRP_PATTERN = r"([A-Z]+)"
-DD_MM_DATE_GRP_PATTERN = r"(\d+/\d+)"
-HH_MM_TIME_GRP_PATTERN = r"(\d+:\d+)"
-DOUBLE_PRICE_PATTERN = r"([0-9]+\.[0-9]+)"
-DOUBLE_PRICE_PATTERN = r"(\d+\.\d+)"
-EXCHANGE_SYMBOL_GRP_PATTERN = r"([A-Z]+)"
+USER_COMMAND_GRP_PATTERN = r"(\w+) "
 
 
 class Requester:
@@ -17,11 +10,9 @@ class Requester:
     Read in commands entered by the
     user, typically
     
-    [btc 5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave
+    oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave
 
-    and return a dictionnary of commands
-      
-    {CRYPTO:[btc, 5/7, 0.0015899, 6/7, 0.00153], FIAT:[usd, chf], NOSAVE:[]}
+    and return a command filled with the command parsed parm data
     '''
     def __init__(self):
         self.commandQuit = None
@@ -49,11 +40,20 @@ class Requester:
 
         if userCommand == "OO":
             upperInputStrWithoutUserCommand = upperInputStr[len(userCommand) + 1:]
-            return self._parseCryptoCommandDataInput(inputStr, upperInputStrWithoutUserCommand)
+            cryptoDataList, fiatDataList, flag = self._parseOOCommandParms(inputStr, upperInputStrWithoutUserCommand)
+
+            if cryptoDataList == self.commandError:
+                return self.commandError
+
+            self.commandCrypto.parsedParmData = {self.commandCrypto.CRYPTO_LIST : cryptoDataList, \
+                                                 self.commandCrypto.FIAT_LIST : fiatDataList, \
+                                                 self.commandCrypto.FLAG : flag}
+
+            return self.commandCrypto
 
 
     def _getUserCommand(self, inputStr, upperInputStr):
-        match = re.match(COMMAND_GRP_PATTERN, upperInputStr)
+        match = re.match(USER_COMMAND_GRP_PATTERN, upperInputStr)
 
         if match == None:
             self.commandError.rawParmData = inputStr
@@ -61,6 +61,7 @@ class Requester:
             return self.commandError
 
         return match.group(1)
+
 
     def _printHelp(self):
         print('Usage:\n')
@@ -72,71 +73,6 @@ class Requester:
             print("\n-ns or -nosave --> don't save retrieved prices")
             print("-rm [1, 3, 4] --> remove line numbers\n")
 
-    def _parseCryptoCommandDataInput(self, inputStr, upperInputStrWithoutUserCommand):
-        #convert [btc 5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave
-        #into
-        #[CRYPTO:[btc, 5/7, 0.0015899, 6/7, 0.00153], FIAT:[usd, chf], NOSAVE:[]}
-        cryptoDataList = self._parseCryptoDataFromInput(inputStr, upperInputStrWithoutUserCommand)
-
-        if cryptoDataList == self.commandError:
-            return self.commandError
-
-        fiatDataList = self._parseFiatDataFromInput(upperInputStrWithoutUserCommand)
-
-        self.commandCrypto.parsedParmData = [cryptoDataList, fiatDataList]
-
-        return self.commandCrypto
-
-
-    def _parseFiatDataFromInput(self, upperInputStrWithoutUserCommand):
-        #convert [btc 5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave
-        #into
-        #[usd, chf]
-        
-        fiatDataList = []
-        patternFiat = r"((\w+)-)|((\w+)\])|(\[(w+)\])"
-
-        for grp in re.finditer(patternFiat, upperInputStrWithoutUserCommand):
-            for elem in grp.groups():
-                if elem != None and len(elem) == 3:
-                    fiatDataList.append(elem)
-
-        return fiatDataList
-        
-    def _parseCryptoDataFromInput(self, inputStr, upperInputStrWithoutUserCommand):
-        #convert [btc 5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave
-        #into
-        #[btc, 5/7, 0.0015899, 6/7, 0.00153]
-        
-        cryptoDataList = []
-
-        patternCryptoSymbol = r"\[" + \
-                              CURRENCY_SYMBOL_GRP_PATTERN + \
-                              " "
-        
-        match = re.match(patternCryptoSymbol, upperInputStrWithoutUserCommand)
-
-        if match == None:
-            self.commandError.rawParmData = inputStr
-            self.commandError.parsedParmData = [self.commandError.CRYPTO_SYMBOL_MISSING_MSG]
-            return self.commandError
-
-        cryptoSymbol = match.group(1)
-
-        cryptoDatePriceList = []
-        patternDatePrice = r"(\d+/\d+) (\d+\.\d+)"
-
-        for grp in re.finditer(patternDatePrice, upperInputStrWithoutUserCommand):
-            for elem in grp.groups():
-                cryptoDatePriceList.append(elem)
-
-        if len(cryptoDatePriceList) > 0:
-            cryptoDataList.append(cryptoSymbol)
-            cryptoDataList.extend(cryptoDatePriceList)
-        else:
-            return ''
-
-        return cryptoDataList
 
     def _parseFiat(self, inputStr):
         # convert "[usd-chf]"
@@ -154,6 +90,7 @@ class Requester:
 
         return fiatList
 
+
     def _parseDatePrice(self, inputStr):
         # convert "[5/7 0.0015899 6/7 0.00153]"
         # into
@@ -168,6 +105,7 @@ class Requester:
                 priceDateList.append(elem)
 
         return priceDateList
+
 
     def _parseOOCommandParms(self, inputStr, upperInputStr):
         # convert "btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave"

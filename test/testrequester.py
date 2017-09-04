@@ -1,5 +1,6 @@
 import unittest
 import os,sys,inspect
+from io import StringIO
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -124,22 +125,6 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(datePriceList, ['05/02', '0.0015899'])
 
 
-
-
-
-
-    def test_parseFiatDataFromInputNoFiatListIncludeOtherCommand(self):
-        inputStr = "[btc 5/7 0.0015899 6/7 0.00153] -nosave"
-        fiatData = self.requester._parseFiatDataFromInput(inputStr.upper())
-        self.assertEqual(fiatData, [])
-
-
-    def test_parseFiatDataFromInputEmptyFiatListNoOtherCommand(self):
-        inputStr = "[btc 5/7 0.0015899 6/7 0.00153] []"
-        fiatData = self.requester._parseFiatDataFromInput(inputStr.upper())
-        self.assertEqual(fiatData, [])
-
-
     def test_parseOOCommandParmsFiatListMissingNoOtherCommand(self):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153]"
         cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
@@ -178,15 +163,63 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(flag, None)
 
 
+    def test_getUserCommand(self):
+        inputStr = "oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave"
+        userCommand = self.requester._getUserCommand(inputStr, inputStr.upper())
+        self.assertEqual(userCommand, 'OO')
 
 
+    def testRequestOOCommand(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave")
+        cryptoCommand = self.requester.request()
+
+        self.assertIsInstance(cryptoCommand, CommandCrypto)
+        parsedParmData = cryptoCommand.parsedParmData
+        self.assertEquals(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
+        self.assertEquals(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
+        self.assertEquals(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
 
 
+        sys.stdin = stdin
 
 
+    def testRequestOOCommandNoFlag(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf]")
+        cryptoCommand = self.requester.request()
+
+        self.assertIsInstance(cryptoCommand, CommandCrypto)
+        parsedParmData = cryptoCommand.parsedParmData
+        self.assertEquals(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
+        self.assertEquals(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
+        self.assertEquals(parsedParmData[cryptoCommand.FLAG], None)
+
+        sys.stdin = stdin
 
 
+    def testRequestOOCommandEmptyFiat(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] [] -nosave")
+        cryptoCommand = self.requester.request()
 
+        self.assertIsInstance(cryptoCommand, CommandCrypto)
+        parsedParmData = cryptoCommand.parsedParmData
+        self.assertEquals(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
+        self.assertEquals(parsedParmData[cryptoCommand.FIAT_LIST], [])
+        self.assertEquals(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
+
+        sys.stdin = stdin
+
+
+    def testRequestOOCommandNoFiat(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] -nosave")
+        cryptoCommand = self.requester.request()
+
+        self.assertIsInstance(cryptoCommand, CommandError)
+
+        sys.stdin = stdin
 
 
 if __name__ == '__main__':
