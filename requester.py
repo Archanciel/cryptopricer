@@ -50,6 +50,11 @@ class Requester:
                                                  self.commandCrypto.FLAG : flag}
 
             return self.commandCrypto
+        else:
+            self.commandError.rawParmData = inputStr
+            self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
+
+            return self.commandError
 
 
     def _getUserCommand(self, inputStr, upperInputStr):

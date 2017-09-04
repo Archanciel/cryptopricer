@@ -222,5 +222,15 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
+    def testRequestUserCommandNoCommand(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc [5/7 0.0015899 6/7 0.00153] -nosave")
+        cryptoCommand = self.requester.request()
+
+        self.assertIsInstance(cryptoCommand, CommandError)
+
+        sys.stdin = stdin
+
+
 if __name__ == '__main__':
     unittest.main()
