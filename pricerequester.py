@@ -16,11 +16,14 @@ class PriceRequester:
     def __init__(self, localTimeZone):
         self.localTimeZone = localTimeZone
 
-    def _timestamp2date(self, timestamp):
+    def _UTCTimestamp2LocalizedDate(self, utcTimestamp):
         # function converts a UTC timestamp into Europe/Zurich Gregorian date
-        utcTimeStamp = datetime.fromtimestamp(int(timestamp - 3600)).replace(tzinfo=timezone('UTC'))
+        utcDateTimeObj = datetime.fromtimestamp(int(utcTimestamp - 3600)).replace(tzinfo=timezone('UTC'))
+        print(utcDateTimeObj.timetuple()[8])
 
-        return utcTimeStamp.astimezone(timezone(self.localTimeZone)).strftime(DATE_TIME_FORMAT)
+        localizedDateTimeObj = utcDateTimeObj.astimezone(timezone(self.localTimeZone))
+        print(localizedDateTimeObj.timetuple()[8])
+        return localizedDateTimeObj.strftime(DATE_TIME_FORMAT_TZ)
 
     def getPriceAtLocalDateTime(self, coin, fiat, localDateTimeStr, exchange):
         datetimeObj = datetime.strptime(localDateTimeStr, DATE_TIME_FORMAT)
@@ -45,16 +48,19 @@ class PriceRequester:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
-            dataDic = dic['Data'][0]
-#            print(dataDic)
-            lst = ['time', 'open', 'high', 'low', 'close']
-            for e in enumerate(lst):
-                x = e[0]
-                y = dataDic[e[1]]
-                if (x == 0):
-                    tmp.append(str(self._timestamp2date(y)))
-                else:
-                    tmp.append(y)
+            if dic['Data'] != []:
+                dataDic = dic['Data'][0]
+    #            print(dataDic)
+                lst = ['time', 'open', 'high', 'low', 'close']
+                for e in enumerate(lst):
+                    x = e[0]
+                    y = dataDic[e[1]]
+                    if (x == 0):
+                        tmp.append(str(self._UTCTimestamp2LocalizedDate(y)))
+                    else:
+                        tmp.append(y)
+            else:
+                tmp = ["No minute data available for " + self._UTCTimestamp2LocalizedDate(timeStampUTC)]
 
         return tmp
 
@@ -119,10 +125,18 @@ def play():
     localDateTimeStr = "28-08-17 12:29"
     datetimeObj = datetime.strptime(localDateTimeStr, DATE_TIME_FORMAT)
     datetimeObjUTC = datetimeObj.replace(tzinfo=timezone('UTC'))
-    print('Date in UTC')
+    print('Date in UTC wrong')
     print(datetimeObjUTC.strftime(DATE_TIME_FORMAT_TZ))
     timeStampUTC = time.mktime(datetimeObjUTC.timetuple())
     print(timeStampUTC)
+
+
+    datetimeObjUTC = timezone('UTC').localize(datetimeObj)
+    print('Date in UTC right')
+    print(datetimeObjUTC.strftime(DATE_TIME_FORMAT_TZ))
+    timeStampUTC = time.mktime(datetimeObjUTC.timetuple())
+    print(timeStampUTC)
+
 
     datetimeObjZH = datetimeObjUTC.astimezone(timezone('Europe/Zurich'))
     print('Date in Europe/Zurich')
