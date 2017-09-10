@@ -76,6 +76,10 @@ if __name__ == '__main__':
     year = ''
     hourMin = ''
     localDateTimeStr = ''
+    commandVarDic = {'-c' : 'crypto',
+                 '-f' : 'fiat',
+                 '-t' : 'hourMin',
+                 '-e' : 'exchange'}
     
     while inputStr.upper() != 'Q':
         data = re.match(patternFullData, inputStr)
@@ -84,26 +88,14 @@ if __name__ == '__main__':
             data = re.match(patternPartialData, inputStr)
             if data != None:
                 partialArgList = data.groups()
-                i = 0
-                while i < len(partialArgList):
-                    arg = partialArgList[i]
-                    if arg != None:
-                        val = partialArgList[i + 1]
-                        if val != None:
-                            valLower = val #for exchange !
-                            val = val.upper()
-                            arg = arg.upper()
-                            if '-C' == arg:
-                                crypto = val
-                            elif '-F' == arg:
-                                fiat = val
-                            elif '-D' == arg:
-                                date = val
-                            elif '-T' == arg:
-                                hourMin = val
-                            elif '-E' == arg:
-                                exchange = valLower
-                    i += 2
+                it = iter(partialArgList)
+                
+                for command in it:
+                    value = next(it)
+                    if value != None:
+                        if command != '-e': #all values except exchange name !
+                            value = value.upper()
+                        exec(commandVarDic[command] + " = value")
             else:
                 inputStr = input(prompt)
                 continue
