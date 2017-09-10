@@ -60,13 +60,21 @@ class PriceRequester:
                 tmp = str(dic['Message'])
         return tmp
 
+
+def getValue(group, default):
+    if group == None:
+        return default
+    else:
+        return group
+
+
 if __name__ == '__main__':
     import re
     pr = PriceRequester('Europe/Zurich')
     prompt = "crypto fiat d/m[/y] h:m exch (q/quit):\n"
     inputStr = input(prompt)
     #([0-9]+)-([0-9]+)(?:-([0-9]+)|) matches either 1-9 or 1-9-17
-    patternFullData = r"(\w+) (\w+) ([0-9]+)/([0-9]+)(?:/([0-9]+)|) ([0-9:]+)(?: (\w+)|)"
+    patternFullData = r"(\w+)(?: (\w+)|) ([0-9]+)/([0-9]+)(?:/([0-9]+)|) ([0-9:]+)(?: (\w+)|)"
     patternPartialData = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
     crypto = ''
     fiat = ''
@@ -101,7 +109,7 @@ if __name__ == '__main__':
                 continue
         else: #regular command line entered         
             crypto = data.group(1).upper()
-            fiat = data.group(2).upper()
+            fiat = getValue(data.group(2), 'usd').upper()
             day = data.group(3)
             month = data.group(4)
             year = data.group(5)
@@ -112,11 +120,8 @@ if __name__ == '__main__':
                 year = '17'
             elif len(year) > 2:
                 year = year[-2:]
-            
-            exchange = data.group(7)
-        
-            if exchange == None:
-                exchange = 'CCCAGG'
+
+            exchange = getValue(data.group(7), 'CCCAGG')
                     
         if ':' not in hourMin:
             hourMin = hourMin + ':00'
