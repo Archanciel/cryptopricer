@@ -1,4 +1,5 @@
 import re
+from commandprice import CommandPrice
 
 ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
 
@@ -11,6 +12,8 @@ ro range orders
 va variation percents
 '''
 USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
+PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([0-9]+)/([0-9]+)(?:/([0-9]+)|) ([0-9:]+)(?: (\w+)|)"
+PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
 
 
 class Requester:
@@ -25,8 +28,19 @@ class Requester:
     def __init__(self):
         self.commandQuit = None
         self.commandError = None
+        self.commandPrice = None
         self.commandCrypto = None
         self.commandTrade = None
+
+        '''
+        Sets correspondance between user input command parms and
+        CommmandPrice.parsedParmData dictionary keys
+        '''
+        self.inputParmParmDataDicKeyDic = {'-c': CommandPrice.CRYPTO,
+                                           '-f': CommandPrice.FIAT,
+                                           '-t': CommandPrice.HOUR_MIN,
+                                           '-e': CommandPrice.EXCHANGE}
+
 
     def request(self):
         inputStr = input(ENTER_COMMAND_PROMPT)
@@ -48,10 +62,13 @@ class Requester:
         match = re.match(USER_COMMAND_GRP_PATTERN, upperInputStr)
 
         if match == None:
-            #here, either historical/RT price request or user input error
-            self.commandError.rawParmData = inputStr
-            self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
-            return self.commandError
+            #here, either historical/RT price request which has no command symbol or user input error
+            if self.commandPrice == self._parseAndFillCommandPrice(inputStr):
+                return self.commandPrice
+            else:
+                self.commandError.rawParmData = inputStr
+                self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
+                return self.commandError
 
         userCommand = match.group(1)
 
@@ -73,6 +90,53 @@ class Requester:
 
             return self.commandError
 
+    def _getValue(self, value, default):
+        if value == None:
+            return default
+        else:
+            return value
+
+    def _parseAndFillCommandPrice(self, inputStr):
+        match = re.match(PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+
+        if match == None:
+            match = re.match(PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
+            if match != None:
+                partialArgList = match.groups()
+                it = iter(partialArgList)
+
+                for command in it:
+                    value = next(it)
+                    if value != None:
+                        if command != '-e': #all values except exchange name !
+                            value = value.upper()
+                        self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[command]] = value
+                return self.commandPrice
+            else:
+                return None
+        else: #regular command line entered
+            self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = match.group(1).upper()
+            self.commandPrice.parsedParmData[CommandPrice.FIAT] = self._getValue(match.group(2), 'usd').upper()
+            day = match.group(3)
+            month = match.group(4)
+            year = match.group(5)
+
+            hourMin = match.group(6)
+
+            if year == None:
+                year = '17'
+            elif len(year) > 2:
+                year = year[-2:]
+
+            self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = self._getValue(match.group(7), 'CCCAGG')
+
+        if ':' not in hourMin:
+            hourMin = hourMin + ':00'
+
+        self.commandPrice.parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR] = day + '/' + month + '/' + year + ' ' + hourMin
+
+#        print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' '.join(map(str, pr.getPriceAtLocalDateTimeStr(crypto, fiat, localDateTimeStr, exchange))))
+        return self.commandPrice
 
 
     def _printHelp(self):

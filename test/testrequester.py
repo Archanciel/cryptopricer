@@ -7,6 +7,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
 from requester import Requester
+from commandprice import CommandPrice
 from commandcrypto import CommandCrypto
 from commandquit import CommandQuit
 from commanderror import CommandError
@@ -27,6 +28,8 @@ class TestRequester(unittest.TestCase):
     '''
     def setUp(self):
         requester = Requester()
+        self.commandPrice = CommandPrice(None)
+        requester.commandPrice = self.commandPrice
         requester.commandCrypto = CommandCrypto(None)
         requester.commandQuit = CommandQuit(sys)
         self.commandError = CommandError(None)
@@ -163,7 +166,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(flag, None)
 
 
-    def test_getUserCommand(self):
+    def test_getCommand(self):
         inputStr = "oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave"
         cryptoCommand = self.requester._getCommand(inputStr, inputStr.upper())
 
@@ -220,9 +223,9 @@ class TestRequester(unittest.TestCase):
     def testRequestOOCommandNoFiat(self):
         stdin = sys.stdin
         sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] -nosave")
-        cryptoCommand = self.requester.request()
+        command = self.requester.request()
 
-        self.assertIsInstance(cryptoCommand, CommandError)
+        self.assertIsInstance(command, CommandError)
 
         sys.stdin = stdin
 
@@ -230,11 +233,22 @@ class TestRequester(unittest.TestCase):
     def testRequestUserCommandNoCommand(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc [5/7 0.0015899 6/7 0.00153] -nosave")
-        cryptoCommand = self.requester.request()
+        command = self.requester.request()
 
-        self.assertIsInstance(cryptoCommand, CommandError)
+        self.assertIsInstance(command, CommandError)
 
         sys.stdin = stdin
+
+
+    def test_parseAndFillCommandPrice(self):
+        inputStr = "btc usd 10/9 12:45 Kraken"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEquals(parsedParmData[CommandPrice.CRYPTO], 'BTC')
+        self.assertEquals(parsedParmData[CommandPrice.FIAT], 'USD')
+        self.assertEquals(parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR], '10/9/17 12:45')
+        self.assertEquals(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
 
 
 if __name__ == '__main__':

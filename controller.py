@@ -2,6 +2,7 @@ import sys
 from requester import Requester
 from processor import Processor
 from printer import Printer
+from commandprice import CommandPrice
 from commandcrypto import CommandCrypto
 from commandquit import CommandQuit
 from commanderror import CommandError
@@ -17,7 +18,9 @@ class Controller:
         proc = Processor()
         pri = Printer()
 
+        commandPrice = CommandPrice(proc)
         commandCrypto = CommandCrypto(proc)
+        req.commandPrice = commandPrice
         req.commandCrypto = commandCrypto
 
         commandQuit = CommandQuit(sys)
