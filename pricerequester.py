@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 
 DATE_TIME_FORMAT = "%d/%m/%y %H:%M"
 DATE_TIME_FORMAT_TZ = DATE_TIME_FORMAT + " %Z%z"
+PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([0-9]+)/([0-9]+)(?:/([0-9]+)|) ([0-9:]+)(?: (\w+)|)"
+PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
 
 
 class PriceRequester:
@@ -61,11 +63,11 @@ class PriceRequester:
         return tmp
 
 
-def getValue(group, default):
-    if group == None:
+def getValue(self, value, default):
+    if value == None:
         return default
     else:
-        return group
+        return value
 
 
 if __name__ == '__main__':
@@ -74,8 +76,6 @@ if __name__ == '__main__':
     prompt = "crypto fiat d/m[/y] h:m exch (q/quit):\n"
     inputStr = input(prompt)
     #([0-9]+)-([0-9]+)(?:-([0-9]+)|) matches either 1-9 or 1-9-17
-    patternFullData = r"(\w+)(?: (\w+)|) ([0-9]+)/([0-9]+)(?:/([0-9]+)|) ([0-9:]+)(?: (\w+)|)"
-    patternPartialData = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
     crypto = ''
     fiat = ''
     exchange = ''
@@ -88,16 +88,16 @@ if __name__ == '__main__':
                  '-f' : 'fiat',
                  '-t' : 'hourMin',
                  '-e' : 'exchange'}
-    
+
     while inputStr.upper() != 'Q':
-        data = re.match(patternFullData, inputStr)
-        
-        if data == None:
-            data = re.match(patternPartialData, inputStr)
-            if data != None:
-                partialArgList = data.groups()
+        match = re.match(PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+
+        if match == None:
+            match = re.match(PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
+            if match != None:
+                partialArgList = match.groups()
                 it = iter(partialArgList)
-                
+
                 for command in it:
                     value = next(it)
                     if value != None:
@@ -107,25 +107,25 @@ if __name__ == '__main__':
             else:
                 inputStr = input(prompt)
                 continue
-        else: #regular command line entered         
-            crypto = data.group(1).upper()
-            fiat = getValue(data.group(2), 'usd').upper()
-            day = data.group(3)
-            month = data.group(4)
-            year = data.group(5)
-            
-            hourMin = data.group(6)
-        
+        else: #regular command line entered
+            crypto = match.group(1).upper()
+            fiat = getValue(match.group(2), 'usd').upper()
+            day = match.group(3)
+            month = match.group(4)
+            year = match.group(5)
+
+            hourMin = match.group(6)
+
             if year == None:
                 year = '17'
             elif len(year) > 2:
                 year = year[-2:]
 
-            exchange = getValue(data.group(7), 'CCCAGG')
-                    
+            exchange = getValue(match.group(7), 'CCCAGG')
+
         if ':' not in hourMin:
             hourMin = hourMin + ':00'
-    
+
         localDateTimeStr = day + '/' + month + '/' + year + ' ' + hourMin
         print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' '.join(map(str, pr.getPriceAtLocalDateTimeStr(crypto, fiat, localDateTimeStr, exchange))))
         inputStr = input(prompt)
