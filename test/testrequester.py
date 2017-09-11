@@ -72,7 +72,7 @@ class TestRequester(unittest.TestCase):
 
     def test_getUserCommandCommandMissingOtherCommand(self):
         inputStr = "[btc 05/07 0.0015899] [usd-chf] -nosave"
-        cryptoData = self.requester._getUserCommand(inputStr, inputStr.upper())
+        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
         self.assertEqual(cryptoData, self.commandError)
         self.assertEquals("Error in input [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing !", self.commandError.execute())
 
@@ -165,8 +165,13 @@ class TestRequester(unittest.TestCase):
 
     def test_getUserCommand(self):
         inputStr = "oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave"
-        userCommand = self.requester._getUserCommand(inputStr, inputStr.upper())
-        self.assertEqual(userCommand, 'OO')
+        cryptoCommand = self.requester._getCommand(inputStr, inputStr.upper())
+
+        self.assertIsInstance(cryptoCommand, CommandCrypto)
+        parsedParmData = cryptoCommand.parsedParmData
+        self.assertEquals(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
+        self.assertEquals(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
+        self.assertEquals(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
 
 
     def testRequestOOCommand(self):

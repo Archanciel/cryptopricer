@@ -2,7 +2,15 @@ import re
 
 ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
 
-USER_COMMAND_GRP_PATTERN = r"(\w+) "
+'''
+oo open order
+xo closed order
+lo lowest order or order at lowest price
+ho highest order or ordedr at highest price
+ro range orders
+va variation percents
+'''
+USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
 
 
 class Requester:
@@ -31,12 +39,21 @@ class Requester:
         
         if upperInputStr == 'Q':
             return self.commandQuit
-        else: #here, neither help nor quit demand entered. Need to determine which command
+        else: #here, neither help nor quit command entered. Need to determine which command
               #is entered by the user finding unique pattern match that identify this command
-            userCommand = self._getUserCommand(inputStr, upperInputStr)
+            return self._getCommand(inputStr, upperInputStr)
 
-        if userCommand == self.commandError:
+
+    def _getCommand(self, inputStr, upperInputStr):
+        match = re.match(USER_COMMAND_GRP_PATTERN, upperInputStr)
+
+        if match == None:
+            #here, either historical/RT price request or user input error
+            self.commandError.rawParmData = inputStr
+            self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
             return self.commandError
+
+        userCommand = match.group(1)
 
         if userCommand == "OO":
             upperInputStrWithoutUserCommand = upperInputStr[len(userCommand) + 1:]
@@ -56,16 +73,6 @@ class Requester:
 
             return self.commandError
 
-
-    def _getUserCommand(self, inputStr, upperInputStr):
-        match = re.match(USER_COMMAND_GRP_PATTERN, upperInputStr)
-
-        if match == None:
-            self.commandError.rawParmData = inputStr
-            self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
-            return self.commandError
-
-        return match.group(1)
 
 
     def _printHelp(self):
