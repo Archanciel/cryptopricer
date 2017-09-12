@@ -38,7 +38,8 @@ class Requester:
         '''
         self.inputParmParmDataDicKeyDic = {'-c': CommandPrice.CRYPTO,
                                            '-f': CommandPrice.FIAT,
-                                           '-t': CommandPrice.HOUR_MIN,
+                                           '-d': CommandPrice.DAY_MONTH_YEAR,
+                                           '-t': CommandPrice.HOUR_MINUTE,
                                            '-e': CommandPrice.EXCHANGE}
 
 
@@ -99,6 +100,10 @@ class Requester:
     def _parseAndFillCommandPrice(self, inputStr):
         match = re.match(PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
 
+        day = ''
+        month = ''
+        year = ''
+
         if match == None:
             match = re.match(PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
             if match != None:
@@ -111,29 +116,35 @@ class Requester:
                         if command != '-e': #all values except exchange name !
                             value = value.upper()
                         self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[command]] = value
-                return self.commandPrice
             else:
                 return None
         else: #regular command line entered
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = match.group(1).upper()
             self.commandPrice.parsedParmData[CommandPrice.FIAT] = self._getValue(match.group(2), 'usd').upper()
-            day = match.group(3)
-            month = match.group(4)
-            year = match.group(5)
 
-            hourMin = match.group(6)
+            self.commandPrice.parsedParmData[CommandPrice.DAY] = match.group(3)
+            self.commandPrice.parsedParmData[CommandPrice.MONTH] = match.group(4)
+
+            year = match.group(5)
 
             if year == None:
                 year = '17'
             elif len(year) > 2:
                 year = year[-2:]
 
+            self.commandPrice.parsedParmData[CommandPrice.YEAR] = year
+            self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = match.group(6)
             self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = self._getValue(match.group(7), 'CCCAGG')
 
-        if ':' not in hourMin:
-            hourMin = hourMin + ':00'
+        hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
 
-        self.commandPrice.parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR] = day + '/' + month + '/' + year + ' ' + hourMin
+        if ':' not in hourMinute:
+            hourMinute = hourMinute + ':00'
+            self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = hourMinute
+
+        self.commandPrice.parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR] = self.commandPrice.parsedParmData[CommandPrice.DAY] + '/' + \
+                                                                             self.commandPrice.parsedParmData[CommandPrice.MONTH] + '/' + \
+                                                                             self.commandPrice.parsedParmData[CommandPrice.YEAR] + ' ' + hourMinute
 
 #        print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' '.join(map(str, pr.getPriceAtLocalDateTimeStr(crypto, fiat, localDateTimeStr, exchange))))
         return self.commandPrice

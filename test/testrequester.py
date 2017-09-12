@@ -240,7 +240,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def test_parseAndFillCommandPrice(self):
+    def test_parseAndFillFullCommandPrice(self):
         inputStr = "btc usd 10/9 12:45 Kraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandPrice, self.commandPrice)
@@ -250,6 +250,26 @@ class TestRequester(unittest.TestCase):
         self.assertEquals(parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR], '10/9/17 12:45')
         self.assertEquals(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
 
+
+    def test_parseAndFillPartialCommandPrice(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'BTC'
+        parsedParmData[CommandPrice.FIAT] = 'USD'
+        parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR] = '10/9/17 12:45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+
+        inputStr = "-ceth -fgbp -d11/9 -t22:45 -eKraken"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEquals(parsedParmData[CommandPrice.CRYPTO], 'ETH')
+        self.assertEquals(parsedParmData[CommandPrice.FIAT], 'GBP')
+        self.assertEquals(parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR], '10/9/17 22:45')
+        self.assertEquals(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
 
 if __name__ == '__main__':
     unittest.main()
