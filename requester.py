@@ -1,4 +1,6 @@
 import re
+from datetime import datetime
+from pytz import timezone
 from commandprice import CommandPrice
 
 ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
@@ -103,6 +105,9 @@ class Requester:
         day = ''
         month = ''
         year = ''
+        houe = ''
+        minute = ''
+        hourMinute = ''
 
         if match == None:
             match = re.match(PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
@@ -113,38 +118,58 @@ class Requester:
                 for command in it:
                     value = next(it)
                     if value != None:
-                        if command != '-e': #all values except exchange name !
-                            value = value.upper()
                         self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[command]] = value
+
+                hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
+                dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
+
+                dayMonthYearList = dayMonthYear.split('/')
+                day = dayMonthYearList[0]
+                month = dayMonthYearList[1]
+
+                if len(dayMonthYearList) == 2:  # year not provided. Will be set by PriceRequester
+                                                # which knows in which timezone we are
+                    year = None
+                else:
+                    year = dayMonthYearList[2]
             else:
                 return None
         else: #regular command line entered
-            self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = match.group(1).upper()
-            self.commandPrice.parsedParmData[CommandPrice.FIAT] = self._getValue(match.group(2), 'usd').upper()
+            self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = match.group(1)
+            self.commandPrice.parsedParmData[CommandPrice.FIAT] = self._getValue(match.group(2), 'usd')
 
-            self.commandPrice.parsedParmData[CommandPrice.DAY] = match.group(3)
-            self.commandPrice.parsedParmData[CommandPrice.MONTH] = match.group(4)
-
+            day = match.group(3)
+            month = match.group(4)
             year = match.group(5)
 
-            if year == None:
-                year = '17'
-            elif len(year) > 2:
-                year = year[-2:]
-
+            self.commandPrice.parsedParmData[CommandPrice.DAY] = day
+            self.commandPrice.parsedParmData[CommandPrice.MONTH] = month
             self.commandPrice.parsedParmData[CommandPrice.YEAR] = year
-            self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = match.group(6)
+
+            hourMinute = match.group(6)
+
             self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = self._getValue(match.group(7), 'CCCAGG')
+        '''
+        dayMonthYear is handled differently than hourMinute because Requester does not have the
+        responsibility to know about timezone. That is devoted to PriceRequester which will normalize
+        the user provided date
+        '''
+        hourMinuteList = hourMinute.split(':')
 
-        hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
+        if len(hourMinuteList) == 1:
+            minute = '0'
+        else:
+            hour = hourMinuteList[0]
+            minute = hourMinuteList[1]
 
-        if ':' not in hourMinute:
-            hourMinute = hourMinute + ':00'
-            self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = hourMinute
+        self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
+        self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
+        self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
 
-        self.commandPrice.parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR] = self.commandPrice.parsedParmData[CommandPrice.DAY] + '/' + \
-                                                                             self.commandPrice.parsedParmData[CommandPrice.MONTH] + '/' + \
-                                                                             self.commandPrice.parsedParmData[CommandPrice.YEAR] + ' ' + hourMinute
+        self.commandPrice.parsedParmData[CommandPrice.DAY] = day
+        self.commandPrice.parsedParmData[CommandPrice.MONTH] = month
+        self.commandPrice.parsedParmData[CommandPrice.YEAR] = year
+        self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
 #        print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' '.join(map(str, pr.getPriceAtLocalDateTimeStr(crypto, fiat, localDateTimeStr, exchange))))
         return self.commandPrice

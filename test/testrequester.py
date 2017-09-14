@@ -245,10 +245,16 @@ class TestRequester(unittest.TestCase):
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandPrice, self.commandPrice)
         parsedParmData = commandPrice.parsedParmData
-        self.assertEquals(parsedParmData[CommandPrice.CRYPTO], 'BTC')
-        self.assertEquals(parsedParmData[CommandPrice.FIAT], 'USD')
-        self.assertEquals(parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR], '10/9/17 12:45')
+        self.assertEquals(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEquals(parsedParmData[CommandPrice.FIAT], 'usd')
+        self.assertEquals(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEquals(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEquals(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEquals(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEquals(parsedParmData[CommandPrice.MINUTE], '45')
         self.assertEquals(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEquals(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEquals(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
 
 
     def test_parseAndFillPartialCommandPrice(self):
@@ -257,19 +263,40 @@ class TestRequester(unittest.TestCase):
         parsedParmData = commandPrice.parsedParmData
 
         #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
-        parsedParmData[CommandPrice.CRYPTO] = 'BTC'
-        parsedParmData[CommandPrice.FIAT] = 'USD'
-        parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR] = '10/9/17 12:45'
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.FIAT] = 'usd'
+#        parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR] = '10/9/17 12:45'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = None
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
         parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
-        inputStr = "-ceth -fgbp -d11/9 -t22:45 -eKraken"
+        inputStr = "-ceth -fgbp -d11/8 -t22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandPrice, self.commandPrice)
         parsedParmData = commandPrice.parsedParmData
-        self.assertEquals(parsedParmData[CommandPrice.CRYPTO], 'ETH')
-        self.assertEquals(parsedParmData[CommandPrice.FIAT], 'GBP')
-        self.assertEquals(parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR], '10/9/17 22:45')
+        self.assertEquals(parsedParmData[CommandPrice.CRYPTO], 'eth')
+        self.assertEquals(parsedParmData[CommandPrice.FIAT], 'gbp')
+        self.assertEquals(parsedParmData[CommandPrice.DAY], '11')
+        self.assertEquals(parsedParmData[CommandPrice.MONTH], '8')
+        self.assertEquals(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEquals(parsedParmData[CommandPrice.HOUR], '22')
+        self.assertEquals(parsedParmData[CommandPrice.MINUTE], '46')
         self.assertEquals(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEquals(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEquals(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+
+    def test_parseAndFillPartialCommandPriceOneDigitDateAndTime(self):
+        raise NotImplementedError
+
+    def test_parseAndFillFullCommandPriceOneDigitDateAndTime(self):
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()
