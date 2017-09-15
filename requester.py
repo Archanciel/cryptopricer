@@ -27,13 +27,16 @@ class Requester:
     USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
 
     '''
-    Full price command parms pattern. Crypto symbol, fiat symbol, date, time,and exchange.
-    Must be provided in this order. Second parm, fiat symbol, and last parm, exchange name, 
-    are optional.
+    Full price command parms pattern. Crypto symbol, fiat symbol (optional), date, time (optional)
+    and exchange (optional). Must be provided in this order.
     
     Ex; btc usd 13/9 12:15 Kraken
     '''
-    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+) ([\d:]+)(?: (\w+)|)"
+    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+)(?: ([\d:]+)|)(?: (\w+)|)"
+
+
+    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+)(?: ([\d:]+)|)(?: (\w+)|)"
+#    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|)(?: ([\d/]+)|)(?: ([\d:]+)|)(?: (\w+)|)"
 
     '''
     Grabs one group of kind -cbtc or -t12:54 or -d15/09 followed
