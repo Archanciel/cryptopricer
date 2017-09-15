@@ -240,6 +240,69 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
+    def test_parseGroupsFullDayMonthHHMM(self):
+        inputStr = "btc usd 10/9 12:45 Kraken"
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+
+        self.assertEqual(('btc', 'usd', '10/9', '12:45', 'Kraken'), groupList)
+
+
+    def test_parseGroupsFullDayMonthYearHMM(self):
+        inputStr = "btc usd 10/9/17 1:45 Kraken"
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+
+        self.assertEqual(('btc', 'usd', '10/9/17', '1:45', 'Kraken'), groupList)
+
+
+    def test_parseGroupsFullDH(self):
+        inputStr = "btc usd 1 2 Kraken"
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+
+        self.assertEqual(('btc', 'usd', '1', '2', 'Kraken'), groupList)
+
+
+    def test_parseGroupsFullDayHH(self):
+        inputStr = "btc usd 10 12 Kraken"
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+
+        self.assertEqual(('btc', 'usd', '10', '12', 'Kraken'), groupList)
+
+
+    def test_parseGroupsPartialDayMonthHHMM(self):
+        inputStr = "-ceth -fgbp -d11/8 -t22:46 -eKraken"
+        groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
+
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8', '-t', '22:46', '-e', 'Kraken'), groupList)
+
+
+    def test_parseGroupsPartialDayMonthYearHMM(self):
+        inputStr = "-ceth -fgbp -d11/8/17 -t2:46 -eKraken"
+        groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
+
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8/17', '-t', '2:46', '-e', 'Kraken'), groupList)
+
+
+    def test_parseGroupsPartialDayMonthYearHMM(self):
+        inputStr = "-ceth -fgbp -d11/8/17 -t2:46 -eKraken"
+        groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
+
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8/17', '-t', '2:46', '-e', 'Kraken'), groupList)
+
+
+    def test_parseGroupsPartialDH(self):
+        inputStr = "-ceth -fgbp -d1 -t2 -eKraken"
+        groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
+
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '1', '-t', '2', '-e', 'Kraken'), groupList)
+
+
+    def test_parseGroupsPartialDayHH(self):
+        inputStr = "-ceth -fgbp -d11 -t22 -eKraken"
+        groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
+
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11', '-t', '22', '-e', 'Kraken'), groupList)
+
+
     def test_parseAndFillFullCommandPrice(self):
         inputStr = "btc usd 10/9 12:45 Kraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
@@ -289,60 +352,6 @@ class TestRequester(unittest.TestCase):
         self.assertEquals(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEquals(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEquals(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-
-    def test_parseGroupsFullDayMonthHHMM(self):
-        inputStr = "btc usd 10/9 12:45 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-
-        self.assertEqual(('btc', 'usd', '10/9', '12:45', 'Kraken'), groupList)
-
-    def test_parseGroupsFullDayMonthYearHMM(self):
-        inputStr = "btc usd 10/9/17 1:45 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-
-        self.assertEqual(('btc', 'usd', '10/9/17', '1:45', 'Kraken'), groupList)
-
-    def test_parseGroupsFullDH(self):
-        inputStr = "btc usd 1 2 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-
-        self.assertEqual(('btc', 'usd', '1', '2', 'Kraken'), groupList)
-
-    def test_parseGroupsFullDayHH(self):
-        inputStr = "btc usd 10 12 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-
-        self.assertEqual(('btc', 'usd', '10', '12', 'Kraken'), groupList)
-
-    def test_parseGroupsPartialDayMonthHHMM(self):
-        inputStr = "-ceth -fgbp -d11/8 -t22:46 -eKraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
-
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8', '-t', '22:46', '-e', 'Kraken'), groupList)
-
-    def test_parseGroupsPartialDayMonthYearHMM(self):
-        inputStr = "-ceth -fgbp -d11/8/17 -t2:46 -eKraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
-
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8/17', '-t', '2:46', '-e', 'Kraken'), groupList)
-
-    def test_parseGroupsPartialDayMonthYearHMM(self):
-        inputStr = "-ceth -fgbp -d11/8/17 -t2:46 -eKraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
-
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8/17', '-t', '2:46', '-e', 'Kraken'), groupList)
-
-    def test_parseGroupsPartialDH(self):
-        inputStr = "-ceth -fgbp -d1 -t2 -eKraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
-
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '1', '-t', '2', '-e', 'Kraken'), groupList)
-
-    def test_parseGroupsPartialDayHH(self):
-        inputStr = "-ceth -fgbp -d11 -t22 -eKraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
-
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11', '-t', '22', '-e', 'Kraken'), groupList)
 '''
     def test_parseAndFillPartialCommandPriceOneDigitDateAndTime(self):
         raise NotImplementedError
