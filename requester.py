@@ -26,7 +26,14 @@ class Requester:
     '''
     USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
 
-    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+) ([0-9:]+)(?: (\w+)|)"
+    '''
+    Full price command parms pattern. Crypto symbol, fiat symbol, date, time,and exchange.
+    Must be provided in this order. Second parm, fiat symbol, and last parm, exchange name, 
+    are optional.
+    
+    Ex; btc usd 13/9 12:15 Kraken
+    '''
+    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+) ([\d:]+)(?: (\w+)|)"
 
     '''
     Grabs one group of kind -cbtc or -t12:54 or -d15/09 followed
@@ -37,6 +44,8 @@ class Requester:
     Unlike with pattern 'full', the groups can occur in
     any order, reason for which all groups have the same
     structure
+    
+    Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken
     '''
     PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
 
@@ -136,7 +145,8 @@ class Requester:
 
         if groupList == (): #full pattern not matched --> try match partial pattern
             groupList = self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
-            if groupList != ():
+            if groupList != (): #here, parms are associated to parrm tag (i.e -c or -d). Means they have been
+                                #entered in any order and are all optional
                 it = iter(groupList)
 
                 for command in it:
@@ -146,9 +156,9 @@ class Requester:
 
                 hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
                 dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
-            else:
+            else: #neither full nor parrial pattern matched
                 return None
-        else: #regular command line entered
+        else: #regular command line entered. Here, parms were entered in a fixed order reflected in the pattern.
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0]
             self.commandPrice.parsedParmData[CommandPrice.FIAT] = self._getValue(groupList[1], 'usd')
 
@@ -156,11 +166,7 @@ class Requester:
             hourMinute = groupList[3]
 
             self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = self._getValue(groupList[4], 'CCCAGG')
-        '''
-        dayMonthYear is handled differently than hourMinute because Requester does not have the
-        responsibility to know about timezone. That is devoted to PriceRequester which will normalize
-        the user provided date
-        '''
+
         hourMinuteList = hourMinute.split(':')
 
         if len(hourMinuteList) == 1:
