@@ -106,13 +106,23 @@ class Requester:
 
             return self.commandError
 
+
     def _getValue(self, value, default):
         if value == None:
             return default
         else:
             return value
 
+
     def _parseGroups(self, pattern, inputStr):
+        '''
+        Embeding this trjvial code in a method enable to
+        specifically test the correct functioning of the
+        used patterns
+        :param pattern:     pattern to parse
+        :param inputStr:    string to parse
+        :return:
+        '''
         match = re.match(pattern, inputStr)
 
         if match != None:
@@ -124,15 +134,7 @@ class Requester:
     def _parseAndFillCommandPrice(self, inputStr):
         groupList = self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
 
-        day = ''
-        month = ''
-        year = ''
-        houe = ''
-        minute = ''
-        hourMinute = ''
-        dayMonthYear = ''
-
-        if groupList == ():
+        if groupList == (): #full pattern not matched --> try match partial pattern
             groupList = self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
             if groupList != ():
                 it = iter(groupList)
