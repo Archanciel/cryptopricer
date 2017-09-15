@@ -3,20 +3,6 @@ from datetime import datetime
 from pytz import timezone
 from commandprice import CommandPrice
 
-ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
-
-'''
-oo open order
-xo closed order
-lo lowest order or order at lowest price
-ho highest order or ordedr at highest price
-ro range orders
-va variation percents
-'''
-USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
-PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([0-9]+)/([0-9]+)(?:/([0-9]+)|) ([0-9:]+)(?: (\w+)|)"
-PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
-
 
 class Requester:
     '''
@@ -27,6 +13,33 @@ class Requester:
 
     and return a command filled with the command parsed parm data
     '''
+
+    ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'
+
+    '''
+    oo open order
+    xo closed order
+    lo lowest order or order at lowest price
+    ho highest order or ordedr at highest price
+    ro range orders
+    va variation percents
+    '''
+    USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
+
+    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+) ([0-9:]+)(?: (\w+)|)"
+
+    '''
+    Grabs one group of kind -cbtc or -t12:54 or -d15/09 followed
+    by several OPTIONAL groups sticking to the same format
+    -<command letter> followed by 1 or more \w or \d or / or :
+    characters.
+
+    Unlike with pattern 'full', the groups can occur in
+    any order, reason for which all groups have the same
+    structure
+    '''
+    PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
+
     def __init__(self):
         self.commandQuit = None
         self.commandError = None
@@ -46,12 +59,12 @@ class Requester:
 
 
     def request(self):
-        inputStr = input(ENTER_COMMAND_PROMPT)
+        inputStr = input(Requester.ENTER_COMMAND_PROMPT)
         upperInputStr = inputStr.upper()
 
         while upperInputStr == 'H':
             self._printHelp()
-            inputStr = input(ENTER_COMMAND_PROMPT)
+            inputStr = input(Requester.ENTER_COMMAND_PROMPT)
             upperInputStr = inputStr.upper()
         
         if upperInputStr == 'Q':
@@ -62,7 +75,7 @@ class Requester:
 
 
     def _getCommand(self, inputStr, upperInputStr):
-        match = re.match(USER_COMMAND_GRP_PATTERN, upperInputStr)
+        match = re.match(Requester.USER_COMMAND_GRP_PATTERN, upperInputStr)
 
         if match == None:
             #here, either historical/RT price request which has no command symbol or user input error
@@ -99,8 +112,17 @@ class Requester:
         else:
             return value
 
+    def _parseGroups(self, pattern, inputStr):
+        match = re.match(pattern, inputStr)
+
+        if match != None:
+            return match.groups()
+        else:
+            return ()
+
+
     def _parseAndFillCommandPrice(self, inputStr):
-        match = re.match(PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        groupList = self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
 
         day = ''
         month = ''
@@ -108,12 +130,12 @@ class Requester:
         houe = ''
         minute = ''
         hourMinute = ''
+        dayMonthYear = ''
 
-        if match == None:
-            match = re.match(PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
-            if match != None:
-                partialArgList = match.groups()
-                it = iter(partialArgList)
+        if groupList == ():
+            groupList = self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
+            if groupList != ():
+                it = iter(groupList)
 
                 for command in it:
                     value = next(it)
@@ -122,33 +144,16 @@ class Requester:
 
                 hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
                 dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
-
-                dayMonthYearList = dayMonthYear.split('/')
-                day = dayMonthYearList[0]
-                month = dayMonthYearList[1]
-
-                if len(dayMonthYearList) == 2:  # year not provided. Will be set by PriceRequester
-                                                # which knows in which timezone we are
-                    year = None
-                else:
-                    year = dayMonthYearList[2]
             else:
                 return None
         else: #regular command line entered
-            self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = match.group(1)
-            self.commandPrice.parsedParmData[CommandPrice.FIAT] = self._getValue(match.group(2), 'usd')
+            self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0]
+            self.commandPrice.parsedParmData[CommandPrice.FIAT] = self._getValue(groupList[1], 'usd')
 
-            day = match.group(3)
-            month = match.group(4)
-            year = match.group(5)
+            dayMonthYear = groupList[2]
+            hourMinute = groupList[3]
 
-            self.commandPrice.parsedParmData[CommandPrice.DAY] = day
-            self.commandPrice.parsedParmData[CommandPrice.MONTH] = month
-            self.commandPrice.parsedParmData[CommandPrice.YEAR] = year
-
-            hourMinute = match.group(6)
-
-            self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = self._getValue(match.group(7), 'CCCAGG')
+            self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = self._getValue(groupList[4], 'CCCAGG')
         '''
         dayMonthYear is handled differently than hourMinute because Requester does not have the
         responsibility to know about timezone. That is devoted to PriceRequester which will normalize
@@ -165,6 +170,16 @@ class Requester:
         self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
         self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
         self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
+
+        dayMonthYearList = dayMonthYear.split('/')
+        day = dayMonthYearList[0]
+        month = dayMonthYearList[1]
+
+        if len(dayMonthYearList) == 2:  # year not provided. Will be set by PriceRequester
+            # which knows in which timezone we are
+            year = None
+        else:
+            year = dayMonthYearList[2]
 
         self.commandPrice.parsedParmData[CommandPrice.DAY] = day
         self.commandPrice.parsedParmData[CommandPrice.MONTH] = month
