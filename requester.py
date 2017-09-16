@@ -27,16 +27,17 @@ class Requester:
     USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
 
     '''
-    Full price command parms pattern. Crypto symbol, fiat symbol (optional), date, time (optional)
-    and exchange (optional). Must be provided in this order.
-    
+    Full price command parms pattern. Crypto symbol (mandatory), fiat symbol (optional), date (optional),
+    time (optional) and exchange (optional). Must be provided in this order.
+
     Ex; btc usd 13/9 12:15 Kraken
     '''
-    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+)(?: ([\d:]+)|)(?: (\w+)|)"
+    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (\w+)|)"
+#   PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+)(?: ([\d:]+)|)(?: (\w+)|)"
 
 
-    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+)(?: ([\d:]+)|)(?: (\w+)|)"
-#    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|)(?: ([\d/]+)|)(?: ([\d:]+)|)(?: (\w+)|)"
+#    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+)(?: ([\d:]+)|)(?: (\w+)|)"
+#   PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|)(?: ([\d/]+)|)(?: ([\d:]+)|)(?: (\w+)|)"
 
     '''
     Grabs one group of kind -cbtc or -t12:54 or -d15/09 followed
@@ -170,27 +171,35 @@ class Requester:
 
             self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = self._getValue(groupList[4], 'CCCAGG')
 
-        hourMinuteList = hourMinute.split(':')
-
-        if len(hourMinuteList) == 1:
-            minute = '0'
+        if hourMinute != None:
+            hourMinuteList = hourMinute.split(':')
+            if len(hourMinuteList) == 1:
+                minute = '0'
+            else:
+                hour = hourMinuteList[0]
+                minute = hourMinuteList[1]
         else:
-            hour = hourMinuteList[0]
-            minute = hourMinuteList[1]
+            hour = None
+            minute = None
 
         self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
         self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
         self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
 
-        dayMonthYearList = dayMonthYear.split('/')
-        day = dayMonthYearList[0]
-        month = dayMonthYearList[1]
+        if dayMonthYear != None:
+            dayMonthYearList = dayMonthYear.split('/')
+            day = dayMonthYearList[0]
+            month = dayMonthYearList[1]
 
-        if len(dayMonthYearList) == 2:  # year not provided. Will be set by PriceRequester
-            # which knows in which timezone we are
-            year = None
+            if len(dayMonthYearList) == 2:  # year not provided. Will be set by PriceRequester
+                # which knows in which timezone we are
+                year = None
+            else:
+                year = dayMonthYearList[2]
         else:
-            year = dayMonthYearList[2]
+            day = None
+            month = None
+            year = None
 
         self.commandPrice.parsedParmData[CommandPrice.DAY] = day
         self.commandPrice.parsedParmData[CommandPrice.MONTH] = month

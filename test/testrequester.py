@@ -235,7 +235,9 @@ class TestRequester(unittest.TestCase):
         sys.stdin = StringIO("btc [5/7 0.0015899 6/7 0.00153] -nosave")
         command = self.requester.request()
 
-        self.assertIsInstance(command, CommandError)
+        #now that you changed command price full pattern to render all parms except the first one optional,
+        #this input is interpreted as a CommandPrice
+        self.assertIsInstance(command, CommandPrice)
 
         sys.stdin = stdin
 
@@ -309,19 +311,19 @@ class TestRequester(unittest.TestCase):
     def test_parseGroupsFullNoFiatDMHHMMNoExchange(self):
         inputStr = "btc 1/9 12:05"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-        self.assertEqual(('btc', None, '1/9', '12:05', None), groupList)
+        self.assertEqual(('btc', '1/9', '12:05', None, None), groupList)
 
 
     def test_parseGroupsFullNoFiatDMNoTimeNoExchange(self):
         inputStr = "btc 1/9"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-        self.assertEqual(('btc', None, '1/9', None, None), groupList)
+        self.assertEqual(('btc', '1/9', None, None, None), groupList)
 
 
-    # def test_parseGroupsFullNoFiatNoDateNoTimeNoExchange(self):
-    #     inputStr = "btc"
-    #     groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-    #     self.assertEqual(('btc', None, None, None, None), groupList)
+    def test_parseGroupsFullNoFiatNoDateNoTimeNoExchange(self):
+        inputStr = "btc"
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        self.assertEqual(('btc', None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDayMonthHHMM(self):
