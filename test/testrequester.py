@@ -77,7 +77,7 @@ class TestRequester(unittest.TestCase):
         inputStr = "[btc 05/07 0.0015899] [usd-chf] -nosave"
         cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
         self.assertEqual(cryptoData, self.commandError)
-        self.assertEquals("Error in input [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing !", self.commandError.execute())
+        self.assertEqual("Error in input [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing !", self.commandError.execute())
 
 
     def test_parseDatePriceTwoPairs(self):
@@ -132,14 +132,14 @@ class TestRequester(unittest.TestCase):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153]"
         cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, self.commandError)
-        self.assertEquals("Error in input btc [5/7 0.0015899 6/7 0.00153]: fiat list missing !", self.commandError.execute())
+        self.assertEqual("Error in input btc [5/7 0.0015899 6/7 0.00153]: fiat list missing !", self.commandError.execute())
 
 
     def test_parseOOCommandParmsFiatListMissingWithOtherCommand(self):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153] -nosave"
         cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, self.commandError)
-        self.assertEquals("Error in input btc [5/7 0.0015899 6/7 0.00153] -nosave: fiat list missing !", self.commandError.execute())
+        self.assertEqual("Error in input btc [5/7 0.0015899 6/7 0.00153] -nosave: fiat list missing !", self.commandError.execute())
 
 
     def test_parseOOCommandParms(self):
@@ -172,9 +172,9 @@ class TestRequester(unittest.TestCase):
 
         self.assertIsInstance(cryptoCommand, CommandCrypto)
         parsedParmData = cryptoCommand.parsedParmData
-        self.assertEquals(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEquals(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
-        self.assertEquals(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
+        self.assertEqual(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
+        self.assertEqual(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
+        self.assertEqual(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
 
 
     def testRequestOOCommand(self):
@@ -184,9 +184,9 @@ class TestRequester(unittest.TestCase):
 
         self.assertIsInstance(cryptoCommand, CommandCrypto)
         parsedParmData = cryptoCommand.parsedParmData
-        self.assertEquals(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEquals(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
-        self.assertEquals(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
+        self.assertEqual(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
+        self.assertEqual(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
+        self.assertEqual(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
 
 
         sys.stdin = stdin
@@ -199,9 +199,9 @@ class TestRequester(unittest.TestCase):
 
         self.assertIsInstance(cryptoCommand, CommandCrypto)
         parsedParmData = cryptoCommand.parsedParmData
-        self.assertEquals(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEquals(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
-        self.assertEquals(parsedParmData[cryptoCommand.FLAG], None)
+        self.assertEqual(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
+        self.assertEqual(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
+        self.assertEqual(parsedParmData[cryptoCommand.FLAG], None)
 
         sys.stdin = stdin
 
@@ -213,9 +213,9 @@ class TestRequester(unittest.TestCase):
 
         self.assertIsInstance(cryptoCommand, CommandCrypto)
         parsedParmData = cryptoCommand.parsedParmData
-        self.assertEquals(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEquals(parsedParmData[cryptoCommand.FIAT_LIST], [])
-        self.assertEquals(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
+        self.assertEqual(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
+        self.assertEqual(parsedParmData[cryptoCommand.FIAT_LIST], [])
+        self.assertEqual(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
 
         sys.stdin = stdin
 
@@ -296,10 +296,10 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(('btc', 'usd', '1', '12', 'Kraken'), groupList)
 
 
-    def test_parseGroupsFullDMHH(self):
-        inputStr = "btc usd 1/9 12 Kraken"
+    def test_parseGroupsFullDMH(self):
+        inputStr = "btc usd 1/9 2 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-        self.assertEqual(('btc', 'usd', '1/9', '12', 'Kraken'), groupList)
+        self.assertEqual(('btc', 'usd', '1/9', '2', 'Kraken'), groupList)
 
 
     def test_parseGroupsFullDMHHMMNoExchange(self):
@@ -429,19 +429,87 @@ class TestRequester(unittest.TestCase):
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandPrice, self.commandPrice)
         parsedParmData = commandPrice.parsedParmData
-        self.assertEquals(parsedParmData[CommandPrice.CRYPTO], 'btc')
-        self.assertEquals(parsedParmData[CommandPrice.FIAT], 'usd')
-        self.assertEquals(parsedParmData[CommandPrice.DAY], '10')
-        self.assertEquals(parsedParmData[CommandPrice.MONTH], '9')
-        self.assertEquals(parsedParmData[CommandPrice.YEAR], None)
-        self.assertEquals(parsedParmData[CommandPrice.HOUR], '12')
-        self.assertEquals(parsedParmData[CommandPrice.MINUTE], '45')
-        self.assertEquals(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
-        self.assertEquals(parsedParmData[CommandPrice.HOUR_MINUTE], None)
-        self.assertEquals(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'usd')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
 
 
-    def test_parseAndFillPartialCommandPrice(self):
+    def test_parseAndFillFullCommandPriceNoExchange(self):
+        inputStr = "btc usd 10/9 12:45"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'usd')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+
+    def test_parseAndFillFullCommandPriceNoTimeNoExchange(self):
+        inputStr = "btc usd 10/9"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'usd')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], None)
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+
+    def test_parseAndFillFullCommandPriceNoDateNoTimeNoExchange(self):
+        inputStr = "btc usd"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'usd')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], None)
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], None)
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], None)
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+
+    def test_parseAndFillFullCommandPriceNoFiatNoDateNoTimeNoExchange(self):
+        inputStr = "btc"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY], None)
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], None)
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], None)
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+
+    def test_parseAndFillPartialCommandPriceNoInitYear(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -449,7 +517,6 @@ class TestRequester(unittest.TestCase):
         #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
         parsedParmData[CommandPrice.CRYPTO] = 'btc'
         parsedParmData[CommandPrice.FIAT] = 'usd'
-#        parsedParmData[CommandPrice.LOCAL_DATE_TIME_STR] = '10/9/17 12:45'
         parsedParmData[CommandPrice.DAY] = '10'
         parsedParmData[CommandPrice.MONTH] = '9'
         parsedParmData[CommandPrice.YEAR] = None
@@ -463,24 +530,182 @@ class TestRequester(unittest.TestCase):
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandPrice, self.commandPrice)
         parsedParmData = commandPrice.parsedParmData
-        self.assertEquals(parsedParmData[CommandPrice.CRYPTO], 'eth')
-        self.assertEquals(parsedParmData[CommandPrice.FIAT], 'gbp')
-        self.assertEquals(parsedParmData[CommandPrice.DAY], '11')
-        self.assertEquals(parsedParmData[CommandPrice.MONTH], '8')
-        self.assertEquals(parsedParmData[CommandPrice.YEAR], None)
-        self.assertEquals(parsedParmData[CommandPrice.HOUR], '22')
-        self.assertEquals(parsedParmData[CommandPrice.MINUTE], '46')
-        self.assertEquals(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
-        self.assertEquals(parsedParmData[CommandPrice.HOUR_MINUTE], None)
-        self.assertEquals(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-'''
-    def test_parseAndFillPartialCommandPriceOneDigitDateAndTime(self):
-        raise NotImplementedError
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'gbp')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '22')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
 
 
-    def test_parseAndFillFullCommandPriceOneDigitDateAndTime(self):
-        raise NotImplementedError
-'''
+    def test_parseAndFillPartialCommandPriceNoInitYearWithPartialYear(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.FIAT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = None
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+
+        inputStr = "-ceth -fgbp -d11/8/15 -t22:46 -eKraken"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'gbp')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], '15')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '22')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+
+    def test_parseAndFillPartialCommandPriceNoInitYearNoExchange(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.FIAT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = None
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+
+        inputStr = "-ceth -fgbp -d11/8 -t22:46"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'gbp')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '22')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+
+    def test_parseAndFillPartialCommandPriceNoInitYearNoExchangeNoTime(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.FIAT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = None
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+
+        inputStr = "-ceth -fgbp -d11/8"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'gbp')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+
+    def test_parseAndFillPartialCommandPriceNoInitYearNoExchangeNoMinute(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.FIAT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = None
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+
+        inputStr = "-ceth -fgbp -d11/8 -t5"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'gbp')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '5')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '0')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+
+    def test_parseAndFillPartialCommandPriceWithInitYear(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.FIAT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = '16'
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+
+        inputStr = "-ceth -fgbp -d11/8 -t22:46 -eKraken"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'gbp')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '22')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
 
 if __name__ == '__main__':
     unittest.main()

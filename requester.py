@@ -122,7 +122,7 @@ class Requester:
 
     def _getValue(self, value, default):
         if value == None:
-            return default
+            return value
         else:
             return value
 
@@ -162,7 +162,8 @@ class Requester:
                 dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
             else: #neither full nor parrial pattern matched
                 return None
-        else: #regular command line entered. Here, parms were entered in a fixed order reflected in the pattern.
+        else: #full command line entered. Here, parms were entered in a fixed order reflected in the pattern.
+            self.commandPrice.resetData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0]
             self.commandPrice.parsedParmData[CommandPrice.FIAT] = self._getValue(groupList[1], 'usd')
 
@@ -176,11 +177,15 @@ class Requester:
             if len(hourMinuteList) == 1:
                 minute = '0'
             else:
-                hour = hourMinuteList[0]
                 minute = hourMinuteList[1]
+            hour = hourMinuteList[0] #in both cases, first item in hourMinuteList is hour
         else:
-            hour = None
-            minute = None
+            if CommandPrice.HOUR in self.commandPrice.parsedParmData:
+                hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
+                minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
+            else:
+                hour = None
+                minute = None
 
         self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
         self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
@@ -191,9 +196,12 @@ class Requester:
             day = dayMonthYearList[0]
             month = dayMonthYearList[1]
 
-            if len(dayMonthYearList) == 2:  # year not provided. Will be set by PriceRequester
-                # which knows in which timezone we are
-                year = None
+            if len(dayMonthYearList) == 2:
+                if CommandPrice.YEAR in self.commandPrice.parsedParmData:
+                    year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
+                else:   # year not provided and not obtained from previous full price command input.
+                        # Will be set by PriceRequester which knows in which timezone we are
+                    year = None
             else:
                 year = dayMonthYearList[2]
         else:

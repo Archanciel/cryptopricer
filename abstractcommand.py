@@ -18,6 +18,17 @@ class AbstractCommand(metaclass=ABCMeta):
         self.parsedParmData = parsedParmData
         self.name = name # used as key in a AbstractCommand dictionary
 
+
+    def resetData(self):
+        '''
+        Ensure that internal parsedParmData is purged of previous value since command is reused
+        :return:
+        '''
+        self.rawParmData = ''
+        if len(self.parsedParmData) != 0:
+            self.parsedParmData = self.parsedParmData.fromkeys(self.parsedParmData.keys())
+
+
     @abstractmethod
     def execute(self):
         pass
