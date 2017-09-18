@@ -64,11 +64,11 @@ class Requester:
         Sets correspondance between user input command parms and
         CommmandPrice.parsedParmData dictionary keys
         '''
-        self.inputParmParmDataDicKeyDic = {'-c': CommandPrice.CRYPTO,
-                                           '-f': CommandPrice.FIAT,
-                                           '-d': CommandPrice.DAY_MONTH_YEAR,
-                                           '-t': CommandPrice.HOUR_MINUTE,
-                                           '-e': CommandPrice.EXCHANGE}
+        self.inputParmParmDataDicKeyDic = {'-C': CommandPrice.CRYPTO,
+                                           '-F': CommandPrice.FIAT,
+                                           '-D': CommandPrice.DAY_MONTH_YEAR,
+                                           '-T': CommandPrice.HOUR_MINUTE,
+                                           '-E': CommandPrice.EXCHANGE}
 
 
     def request(self):
@@ -120,13 +120,6 @@ class Requester:
             return self.commandError
 
 
-    def _getValue(self, value, default):
-        if value == None:
-            return value
-        else:
-            return value
-
-
     def _parseGroups(self, pattern, inputStr):
         '''
         Embeding this trjvial code in a method enable to
@@ -156,7 +149,8 @@ class Requester:
                 for command in it:
                     value = next(it)
                     if value != None:
-                        self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[command]] = value
+                        commandUpper = command.upper()
+                        self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = value
 
                 hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
                 dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
@@ -165,12 +159,12 @@ class Requester:
         else: #full command line entered. Here, parms were entered in a fixed order reflected in the pattern.
             self.commandPrice.resetData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0]
-            self.commandPrice.parsedParmData[CommandPrice.FIAT] = self._getValue(groupList[1], 'usd')
+            self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1]
 
             dayMonthYear = groupList[2]
             hourMinute = groupList[3]
 
-            self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = self._getValue(groupList[4], 'CCCAGG')
+            self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = groupList[4]
 
         if hourMinute != None:
             hourMinuteList = hourMinute.split(':')
@@ -205,9 +199,14 @@ class Requester:
             else:
                 year = dayMonthYearList[2]
         else:
-            day = None
-            month = None
-            year = None
+            if CommandPrice.DAY in self.commandPrice.parsedParmData:
+                day = self.commandPrice.parsedParmData[CommandPrice.DAY]
+                month = self.commandPrice.parsedParmData[CommandPrice.MONTH]
+                year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
+            else:
+                day = None
+                month = None
+                year = None
 
         self.commandPrice.parsedParmData[CommandPrice.DAY] = day
         self.commandPrice.parsedParmData[CommandPrice.MONTH] = month
