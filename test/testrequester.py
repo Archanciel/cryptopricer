@@ -249,6 +249,13 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(('btc', 'usd', '10/9', '12:45', 'Kraken'), groupList)
 
 
+    def test_parseGroupsFullInvalidCommand(self):
+        inputStr = "btc usd Kraken 10/9/17 12:45"
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+
+        self.assertEqual(('btc', 'usd', 'Kraken', '10/9/17', '12:45'), groupList)
+
+
     def test_parseGroupsFullDayMonthYearHMM(self):
         inputStr = "btc usd 10/9/17 1:45 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
@@ -420,6 +427,23 @@ class TestRequester(unittest.TestCase):
 
     def test_parseAndFillFullCommandPrice(self):
         inputStr = "btc usd 10/9/17 12:45 Kraken"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'usd')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], '17')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+
+    def test_parseAndFillFullCommandPriceInvalidCommandFormat(self):
+        inputStr = "btc usd Kraken 10/9/17 12:45"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandPrice, self.commandPrice)
         parsedParmData = commandPrice.parsedParmData

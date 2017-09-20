@@ -33,6 +33,14 @@ class Requester:
     Ex; btc usd 13/9 12:15 Kraken
     '''
     PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (\w+)|)"
+
+
+    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (\w+)|)"
+
+
+    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (\w+)|)"
+    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)"
+#    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|)(?: ([\d/]+)|)(?: ([\d:]+)|)(?: (\w+)|)"
 #   PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+)(?: ([\d:]+)|)(?: (\w+)|)"
 
 
@@ -137,6 +145,15 @@ class Requester:
             return ()
 
 
+    def _validateFullCommandPriceParsedGroupsOrder(self, parmList):
+        '''
+
+        :param parmList:
+        :return: true or CommandError
+        '''
+        return True
+
+
     def _parseAndFillCommandPrice(self, inputStr):
         groupList = self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
 
@@ -157,14 +174,19 @@ class Requester:
             else: #neither full nor parrial pattern matched
                 return None
         else: #full command line entered. Here, parms were entered in a fixed order reflected in the pattern.
-            self.commandPrice.resetData()
-            self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0]
-            self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1]
+            orderValidation = self._validateFullCommandPriceParsedGroupsOrder(groupList)
+            if orderValidation == True:
+                self.commandPrice.resetData()
+                self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0]
+                self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1]
 
-            dayMonthYear = groupList[2]
-            hourMinute = groupList[3]
+                dayMonthYear = groupList[2]
+                hourMinute = groupList[3]
 
-            self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = groupList[4]
+                self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = groupList[4]
+            else:
+                #fill command error
+                return self.commandError
 
         if hourMinute != None:
             hourMinuteList = hourMinute.split(':')
