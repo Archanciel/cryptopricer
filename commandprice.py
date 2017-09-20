@@ -16,4 +16,11 @@ class CommandPrice(AbstractCommand):
         super().__init__(receiver, 'CommandPrice', rawParmData, parsedParmData)
 
     def execute(self):
-        self.receiver.processCrypto(self.parsedParmData)
+        self.receiver.getCryptoPrice(self.parsedParmData[self.CRYPTO], \
+        	                            self.parsedParmData[self.FIAT], \
+        	                            self.parsedParmData[self.EXCHANGE], \
+        	                            self.parsedParmData[self.DAY], \
+        	                            self.parsedParmData[self.MONTH], \
+        	                            self.parsedParmData[self.YEAR], \
+        	                            self.parsedParmData[self.HOUR], \
+        	                            self.parsedParmData[self.MINUTE])
