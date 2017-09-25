@@ -27,8 +27,9 @@ class Requester:
     USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
 
     '''
-    Full price command parms pattern. Crypto symbol (mandatory), fiat symbol (optional), date (optional),
-    time (optional) and exchange (optional). Must be provided in this order.
+    Full price command parms pattern. Crypto symbol (mandatory, first position mandatory), fiat symbol (optional, 
+    if provided, must be in second position), date (optional), time (optional) and exchange (optional). Three
+    last parms can be provided in any order after the 2 first parms !
 
     Ex; btc usd 13/9 12:15 Kraken
     '''
@@ -145,13 +146,24 @@ class Requester:
             return ()
 
 
-    def _validateFullCommandPriceParsedGroupsOrder(self, parmList):
+    def _addFullCommandPriceOptionalParmsToCommandParsedParmDataDic(self, optionalParmList, parsedParmDataDic):
         '''
+        Since DAY_MONTH_YEAR, HOUR_MINUTE and EXCHANGE can be provided in any order after CRYPTO
+        and FIAT, this method differentiate them and add then with the right key in the command
+        parsed parm data dictionary.
 
-        :param parmList:
-        :return: true or CommandError
+        Date can be either 0 or dd/mm
+        Hour minute can be either 0 or hh:mm
+        :param optionalParmList:
         '''
-        return True
+        patternCommandDic = {r"[0/]" : CommandPrice.DAY_MONTH_YEAR,
+                             r"[0:]+" : CommandPrice.HOUR_MINUTE,
+                             r"[A-Z]+" : CommandPrice.EXCHANGE}
+
+        for pattern in patternCommandDic.keys():
+            for group in optionalParmList:
+                if group and re.search(pattern, group):
+                    parsedParmDataDic[patternCommandDic[pattern]] = group
 
 
     def _parseAndFillCommandPrice(self, inputStr):
@@ -174,19 +186,12 @@ class Requester:
             else: #neither full nor parrial pattern matched
                 return None
         else: #full command line entered. Here, parms were entered in a fixed order reflected in the pattern.
-            orderValidation = self._validateFullCommandPriceParsedGroupsOrder(groupList)
-            if orderValidation == True:
-                self.commandPrice.resetData()
-                self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0]
-                self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1]
-
-                dayMonthYear = groupList[2]
-                hourMinute = groupList[3]
-
-                self.commandPrice.parsedParmData[CommandPrice.EXCHANGE] = groupList[4]
-            else:
-                #fill command error
-                return self.commandError
+            self.commandPrice.resetData()
+            self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0]
+            self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1]
+            self._addFullCommandPriceOptionalParmsToCommandParsedParmDataDic(groupList[2:], self.commandPrice.parsedParmData)
+            hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
+            dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
 
         if hourMinute != None:
             hourMinuteList = hourMinute.split(':')
@@ -324,4 +329,10 @@ class Requester:
 
 if __name__ == '__main__':
     r = Requester()
-    print(r._parseCryptoDataFromInput('[btc 5/7 0.0015899 6/7 0.00153] [usd-chf-eur] -nosave'))
+    r.commandPrice = CommandPrice()
+    inputStr = "btc usd Kraken 10/9/17 12:45"
+#    groupL = r._parseGroups(r.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+
+#    print(groupL)
+#    print(r._validateFullCommandPriceParsedGroupsOrder(groupL))
+    print(r._parseAndFillCommandPrice(inputStr))
