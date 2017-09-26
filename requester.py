@@ -146,24 +146,34 @@ class Requester:
             return ()
 
 
-    def _addFullCommandPriceOptionalParmsToCommandParsedParmDataDic(self, optionalParmList, parsedParmDataDic):
+    def _buildFullCommandPriceOptionalParmsDic(self, optionalParmList):
         '''
         Since DAY_MONTH_YEAR, HOUR_MINUTE and EXCHANGE can be provided in any order after CRYPTO
-        and FIAT, this method differentiate them and add then with the right key in the command
-        parsed parm data dictionary.
+        and FIAT, this method differentiate them build an optional command price parm data dictionary
+        with the right key. This dictionary will be added to the CommandPrice parmData dictionary.
 
-        Date can be either 0 or dd/mm
-        Hour minute can be either 0 or hh:mm
-        :param optionalParmList:
+        :return optionalParsedParmDataDic
         '''
-        patternCommandDic = {r"[0/]" : CommandPrice.DAY_MONTH_YEAR,
-                             r"[0:]+" : CommandPrice.HOUR_MINUTE,
-                             r"[A-Z]+" : CommandPrice.EXCHANGE}
+
+        '''
+        Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
+                    01/12/16, accepted. 01/12/2015, accepted. 1/10, accepted. 
+        Hour minute can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
+                           01:10, accepted. 00:00, accepted. 0:0, rejected. 
+
+        '''
+        patternCommandDic = {r"\d+/\d+(?:/\d+)*|^0$" : CommandPrice.DAY_MONTH_YEAR,
+                             r"\d+:\d\d|^0$" : CommandPrice.HOUR_MINUTE,
+                             r"[A-Z]\w+" : CommandPrice.EXCHANGE}
+
+        optionalParsedParmDataDic = {}
 
         for pattern in patternCommandDic.keys():
             for group in optionalParmList:
                 if group and re.search(pattern, group):
-                    parsedParmDataDic[patternCommandDic[pattern]] = group
+                    optionalParsedParmDataDic[patternCommandDic[pattern]] = group
+
+        return optionalParsedParmDataDic
 
 
     def _parseAndFillCommandPrice(self, inputStr):
@@ -189,7 +199,8 @@ class Requester:
             self.commandPrice.resetData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0]
             self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1]
-            self._addFullCommandPriceOptionalParmsToCommandParsedParmDataDic(groupList[2:], self.commandPrice.parsedParmData)
+            optionalParsedParmDataDic = self._buildFullCommandPriceOptionalParmsDic(groupList[2:])
+            self.commandPrice.parsedParmData.update(optionalParsedParmDataDic)
             hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
             dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
 
