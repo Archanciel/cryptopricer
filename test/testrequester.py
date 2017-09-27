@@ -326,6 +326,85 @@ class TestRequester(unittest.TestCase):
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
         self.assertEqual(('btc', None, None, None, None), groupList)
 
+    def test_buildFullCommandPriceOptionalParmsDic(self):
+        '''
+        ° 0 is legal for both date and time parms. Zero for either date or/and time means now, real time !
+        ° Date must be 0 or contain a '/'.
+        ° Time must be 0 or be composed of two numerical groups separated by ':', the second group being a 2 digits
+          group. Note 00:00 does not mean now, but midnight !
+        ° Exchange must start with a capital letter
+
+        Ex:
+        Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted.
+                    1/1, accepted. 1/10, accepted. 01/12/16, accepted. 01/12/2015, accepted.
+        Hour minute can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted.
+                           01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected.
+        '''
+        optionalParmList = ['01:10', 'Kraken', '10/9/17']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '10/9/17')
+        self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '01:10')
+        self.assertEqual(optionalParmDic[CommandPrice.EXCHANGE], 'Kraken')
+
+        optionalParmList = ['1', 'kraken', '10/9/2017']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '10/9/2017')
+        self.assertNotIn(CommandPrice.HOUR_MINUTE, optionalParmDic)
+        self.assertNotIn(CommandPrice.EXCHANGE, optionalParmDic)
+
+        optionalParmList = ['1', 'kraken', '1']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertNotIn(CommandPrice.DAY_MONTH_YEAR, optionalParmDic)
+        self.assertNotIn(CommandPrice.HOUR_MINUTE, optionalParmDic)
+        self.assertNotIn(CommandPrice.EXCHANGE, optionalParmDic)
+
+        optionalParmList = ['kraken', '0', '10:12']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '0')
+        self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '10:12')
+        self.assertNotIn(CommandPrice.EXCHANGE, optionalParmDic)
+
+        optionalParmList = ['kraken', '0', '1']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '0')
+        self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '0')
+        self.assertNotIn(CommandPrice.EXCHANGE, optionalParmDic)
+
+        optionalParmList = [ '1', 'kraken', '0']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '0')
+        self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '0')
+        self.assertNotIn(CommandPrice.EXCHANGE, optionalParmDic)
+
+        optionalParmList = ['10', '10:09']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertNotIn(CommandPrice.DAY_MONTH_YEAR, optionalParmDic)
+        self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '10:09')
+
+        optionalParmList = ['01', '1:09']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertNotIn(CommandPrice.DAY_MONTH_YEAR, optionalParmDic)
+        self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '1:09')
+
+        optionalParmList = ['01/1', '00:00']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '01/1')
+        self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '00:00')
+
+        optionalParmList = ['1/1', '00:00']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1/1')
+        self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '00:00')
+
+        optionalParmList = ['1/10', '0:00']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1/10')
+        self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '0:00')
+
+        optionalParmList = ['1/10', '0:0']
+        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1/10')
+        self.assertNotIn(CommandPrice.HOUR_MINUTE, optionalParmDic)
 
     def test_parseGroupsPartialDayMonthHHMM(self):
         inputStr = "-ceth -fgbp -d11/8 -t22:46 -eKraken"

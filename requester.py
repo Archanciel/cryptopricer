@@ -28,34 +28,35 @@ class Requester:
 
     '''
     Full price command parms pattern. Crypto symbol (mandatory, first position mandatory), fiat symbol (optional, 
-    if provided, must be in second position), date (optional), time (optional) and exchange (optional). Three
+    if provided, must be in second position), date (optional), time (optional) and exchange (optional). The three
     last parms can be provided in any order after the 2 first parms !
 
     Ex; btc usd 13/9 12:15 Kraken
+
+    Additional rules for the date and time parms. Those rules are enforced by the
+    _buildFullCommandPriceOptionalParmsDic() method.
+    
+    ° 0 is legal for both date and time parms. Zero for either date or/and time means now, real time !
+    ° Date must be 0 or contain a '/'.
+    ° Time must be 0 or be composed of two numerical groups separated by ':', the second group being a 2 digits
+      group. Note 00:00 does not mean now, but midnight !
+    ° Exchange must start with a capital letter
+
+    Ex:
+    Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
+                1/1, accepted. 1/10, accepted. 01/12/16, accepted. 01/12/2015, accepted. 
+    Hour minute can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
+                       01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected. 
     '''
-    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (\w+)|)"
 
-
-    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (\w+)|)"
-
-
-    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (\w+)|)"
     PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)"
-#    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|)(?: ([\d/]+)|)(?: ([\d:]+)|)(?: (\w+)|)"
-#   PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+)(?: ([\d:]+)|)(?: (\w+)|)"
-
-
-#    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([\d/]+)(?: ([\d:]+)|)(?: (\w+)|)"
-#   PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|)(?: ([\d/]+)|)(?: ([\d:]+)|)(?: (\w+)|)"
 
     '''
-    Grabs one group of kind -cbtc or -t12:54 or -d15/09 followed
-    by several OPTIONAL groups sticking to the same format
-    -<command letter> followed by 1 or more \w or \d or / or :
+    Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 followed
+    by several OPTIONAL groups sticking to the same format -<command letter> followed by 1 or more \w or \d or / or :
     characters.
 
-    Unlike with pattern 'full', the groups can occur in
-    any order, reason for which all groups have the same
+    Unlike with pattern 'full', the groups can all occur in any order, reason for which all groups have the same
     structure
     
     Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken
@@ -156,11 +157,17 @@ class Requester:
         '''
 
         '''
-        Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
-                    01/12/16, accepted. 01/12/2015, accepted. 1/10, accepted. 
-        Hour minute can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
-                           01:10, accepted. 00:00, accepted. 0:0, rejected. 
+        ° 0 is legal for both date and time parms. Zero for either date or/and time means now, real time !
+        ° Date must be 0 or contain a '/'.
+        ° Time must be 0 or be composed of two numerical groups separated by ':', the second group being a 2 digits
+          group. Note 00:00 does not mean now, but midnight !
+        ° Exchange must start with a capital letter
 
+        Ex:
+        Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
+                    1/1, accepted. 1/10, accepted. 01/12/16, accepted. 01/12/2015, accepted. 
+        Hour minute can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
+                           01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected. 
         '''
         patternCommandDic = {r"\d+/\d+(?:/\d+)*|^0$" : CommandPrice.DAY_MONTH_YEAR,
                              r"\d+:\d\d|^0$" : CommandPrice.HOUR_MINUTE,
