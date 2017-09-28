@@ -10,8 +10,6 @@ from bs4 import BeautifulSoup
 
 DATE_TIME_FORMAT = "%d/%m/%y %H:%M"
 DATE_TIME_FORMAT_TZ = DATE_TIME_FORMAT + " %Z%z"
-PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([0-9]+)/([0-9]+)(?:/([0-9]+)|) ([0-9:]+)(?: (\w+)|)"
-PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
 
 
 class PriceRequester:
@@ -63,6 +61,18 @@ class PriceRequester:
         return tmp
 
 
+    def getCryptoPrice(self, \
+    	                  crypto, \
+    	                  fiat, \
+    	                  exchange, \
+    	                  day, \
+    	                  month, \
+    	                  year, \
+    	                  hour, \
+    	                  minute):
+    	  pass
+    	  
+    	  
 def getValue(self, value, default):
     if value == None:
         return default

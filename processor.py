@@ -1,10 +1,9 @@
 from abstractcommand import AbstractCommand
 
 class Processor:
-    def execute(self, command):
-        commandParms = command.parsedParmData
-        return None
-        
+    def __init__(self, priceRequester):
+        self.priceRequester = priceRequester
+            
         
     def getCryptoPrice(self, \
     	                  crypto, \

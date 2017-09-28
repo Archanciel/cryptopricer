@@ -6,6 +6,8 @@ from commandprice import CommandPrice
 from commandcrypto import CommandCrypto
 from commandquit import CommandQuit
 from commanderror import CommandError
+from pricerequester import PriceRequester
+from configurationmanager import ConfigurationManager
 
 class Controller:
     '''
@@ -14,8 +16,10 @@ class Controller:
     '''
 
     def run(self):
+        configMgr = ConfigurationManager()
+        pr = PriceRequester(configMgr)
         req = Requester()
-        proc = Processor()
+        proc = Processor(pr)
         pri = Printer()
 
         commandPrice = CommandPrice(proc)
