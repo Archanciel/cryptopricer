@@ -1,3 +1,4 @@
+from configurationmanager import ConfigurationManager
 from datetime import datetime
 from pytz import timezone
 import time
@@ -13,21 +14,21 @@ DATE_TIME_FORMAT_TZ = DATE_TIME_FORMAT + " %Z%z"
 
 
 class PriceRequester:
-    def __init__(self, localTimeZone):
-        self.localTimeZone = localTimeZone
+    def __init__(self, configManager):
+        self.configManager = configManager
 
     def _UTCTimestamp2LocalizedDate(self, utcTimestamp):
         """Return localized string repr of a UTC timestamp"""
         utcDateTimeObj = datetime.fromtimestamp(int(utcTimestamp - 3600)).replace(tzinfo=timezone('UTC'))
         #print(utcDateTimeObj.timetuple()[8])
 
-        localizedDateTimeObj = utcDateTimeObj.astimezone(timezone(self.localTimeZone))
+        localizedDateTimeObj = utcDateTimeObj.astimezone(timezone(self.configManager.localTimeZone))
         #print(localizedDateTimeObj.timetuple()[8])
         return localizedDateTimeObj.strftime(DATE_TIME_FORMAT_TZ)
 
     def getPriceAtLocalDateTimeStr(self, coin, fiat, localDateTimeStr, exchange):
         datetimeObj = datetime.strptime(localDateTimeStr, DATE_TIME_FORMAT)
-        localDatetimeObj = timezone(self.localTimeZone).localize(datetimeObj)
+        localDatetimeObj = timezone(self.configManager.localTimeZone).localize(datetimeObj)
         datetimeObjUTC = localDatetimeObj.astimezone(timezone('UTC'))
         timeStampUTC = time.mktime(datetimeObjUTC.timetuple())
 
