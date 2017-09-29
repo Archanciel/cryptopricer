@@ -1,3 +1,5 @@
+from configobj import ConfigObj
+
 class ConfigurationManager:
     def __init__(self):
         self._localTimeZone = 'Europe/Zurich'
