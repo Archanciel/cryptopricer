@@ -10,7 +10,12 @@ from configurationmanager import ConfigurationManager
 
 class TestConfigurationManager(unittest.TestCase):
     def setUp(self):
-        self.configMgr = ConfigurationManager()
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptopricer.ini'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptopricer.ini'
+
+        self.configMgr = ConfigurationManager(FILE_PATH)
 
     def testConfigurationManagerInstanciation(self):
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')

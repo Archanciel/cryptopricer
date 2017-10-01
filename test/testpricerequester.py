@@ -11,7 +11,12 @@ from pricerequester import PriceRequester
 
 class TestPriceRequester(unittest.TestCase):
     def setUp(self):
-        configMgr = ConfigurationManager()
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptopricer.ini'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptopricer.ini'
+
+        configMgr = ConfigurationManager(FILE_PATH)
         self.priceRequester = PriceRequester(configMgr)
 
     def testPriceRequesterInstanciation(self):
