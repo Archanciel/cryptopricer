@@ -1,6 +1,6 @@
 import arrow
 
-class DateTimeConverter:
+class DateTimeUtil:
     @staticmethod
     def timestampToLocalDate(timestamp, timezoneStr):
         '''

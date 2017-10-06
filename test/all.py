@@ -7,6 +7,7 @@ from testcommanderror import TestCommandError
 from testcontroller import TestController
 from testconfigurationmanager import TestConfigurationManager
 from testpricerequester import TestPriceRequester
+from testdatetimeutil import TestDateTimeUtil
 
 if __name__ == "__main__":
     loader = TestLoader() 
@@ -16,6 +17,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestCommandError),
                        loader.loadTestsFromTestCase(TestController),
                        loader.loadTestsFromTestCase(TestConfigurationManager),
+                       loader.loadTestsFromTestCase(TestDateTimeUtil),
                        loader.loadTestsFromTestCase(TestPriceRequester)
     ))
     runner = TextTestRunner(verbosity = 2)
