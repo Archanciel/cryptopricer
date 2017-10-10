@@ -2,6 +2,7 @@ from configobj import ConfigObj
 import os
 
 TIME_ZONE = 'timezone'
+DATE_TIME_FORMAT = 'dateTimeFormat'
 
 class ConfigurationManager:
     def __init__(self, filename):
@@ -12,6 +13,7 @@ class ConfigurationManager:
             self._setAndStoreDefaultConf()
 
         self.__localTimeZone = self.config[TIME_ZONE]
+        self.__dateTimeFormat = self.config[DATE_TIME_FORMAT]
 
 
     def _setAndStoreDefaultConf(self):
@@ -22,6 +24,7 @@ class ConfigurationManager:
         :return: nothing
         '''
         self.localTimeZone = 'Europe/Zurich'
+        self.dateTimeFormat = 'DD/MM/YY HH:mm'
 
         self.storeConfig()
 
@@ -34,14 +37,23 @@ class ConfigurationManager:
     def localTimeZone(self, timezoneStr):
         self.__localTimeZone = timezoneStr
         self._updated = True
-     
+
+    @property
+    def dateTimeFormat(self):
+        return self.__dateTimeFormat
+
+    @dateTimeFormat.setter
+    def dateTimeFormat(self, dateTimeFormatStr):
+        self.__dateTimeFormat = dateTimeFormatStr
+        self._updated = True
 
     def storeConfig(self):
         if not self._updated:
             return
             
         self.config[TIME_ZONE] = self.localTimeZone
-        
+        self.config[DATE_TIME_FORMAT] = self.dateTimeFormat
+
         self.config.write()
         
         self._updated = False

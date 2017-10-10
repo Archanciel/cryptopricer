@@ -20,16 +20,19 @@ class TestConfigurationManager(unittest.TestCase):
 
     def testConfigurationManagerInstanciation(self):
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
+        self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
 
 
     def testConfigurationManagerInstanciationNoConfigFile(self):
         os.remove(self.filePath)
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
+        self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
 
 
     def testConfigurationManagerInstanciationEmptyConfigFile(self):
         open(self.filePath, 'w').close()
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
+        self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
 
 
 if __name__ == '__main__':
