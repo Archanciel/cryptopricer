@@ -7,6 +7,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from datetimeutil import DateTimeUtil
+import arrow
 
 DATE_TIME_FORMAT_ARROW = 'YYYY/MM/DD HH:mm:ss'
 DATE_TIME_FORMAT_TZ_ARROW = DATE_TIME_FORMAT_ARROW + ' ZZ'
@@ -106,6 +107,26 @@ class TestDateTimeUtil(unittest.TestCase):
 
         datetimeObjIN = DateTimeUtil.convertToTimeZone(datetimeObjLA, 'Asia/Calcutta')
         self.assertEqual('2017/11/30 22:30:00 +05:30', datetimeObjIN.format(DATE_TIME_FORMAT_TZ_ARROW))
+
+
+    def testIsDateOlderThanSevenDays(self):
+        DAYS_BEFORE = 7
+        dateBefore = arrow.utcnow().shift(days = -DAYS_BEFORE).to('Europe/Zurich')
+        self.assertFalse(DateTimeUtil.isDateOlderThan(dateBefore, DAYS_BEFORE))
+
+
+    def testIsDateOlderThanSevenDaysPlusOneSecond(self):
+        DAYS_BEFORE = 7
+        SECOND_BEFORE = 1
+        dateBefore = arrow.utcnow().shift(days = -DAYS_BEFORE, seconds = -SECOND_BEFORE).to('Europe/Zurich')
+        self.assertTrue(DateTimeUtil.isDateOlderThan(dateBefore, DAYS_BEFORE))
+
+
+    def testIsDateOlderThanSevenDaysMinusOneSecond(self):
+        DAYS_BEFORE = 7
+        SECOND_BEFORE = 1
+        dateBefore = arrow.utcnow().shift(days = -DAYS_BEFORE, seconds = SECOND_BEFORE).to('Europe/Zurich')
+        self.assertFalse(DateTimeUtil.isDateOlderThan(dateBefore, DAYS_BEFORE))
 
 
 if __name__ == '__main__':

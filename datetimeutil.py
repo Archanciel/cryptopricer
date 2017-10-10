@@ -1,6 +1,8 @@
 import arrow
 
 class DateTimeUtil:
+    SECONDS_PER_DAY = 86400
+
     @staticmethod
     def timeStampToArrowLocalDate(timeStamp, timeZoneStr):
         '''
@@ -55,6 +57,19 @@ class DateTimeUtil:
         :return: arrow date time object localized  to passed timeZoneStr
         '''
         return dateTimeArrowObject.to(timeZoneStr)
+
+
+    @staticmethod
+    def isDateOlderThan(dateTimeArrowObject, dayNumber):
+        '''
+        Return true if the passed dateTimeArrowObject converted to the UTC time zone
+        is dayNumber days before UTC now.
+
+        :param dateTimeArrowObject: arrow localized date time object.
+        :param dayNumber: int day number
+        :return: True or False
+        '''
+        return ((arrow.utcnow().timestamp - dateTimeArrowObject.to('UTC').timestamp) / dayNumber) > DateTimeUtil.SECONDS_PER_DAY
 
 
 if __name__ == '__main__':
