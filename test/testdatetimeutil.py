@@ -9,43 +9,69 @@ sys.path.insert(0, parentdir)
 from datetimeutil import DateTimeUtil
 import arrow
 
-DATE_TIME_FORMAT_ARROW = 'YYYY/MM/DD HH:mm:ss'
-DATE_TIME_FORMAT_TZ_ARROW = DATE_TIME_FORMAT_ARROW + ' ZZ'
+US_DATE_TIME_FORMAT_ARROW = 'YYYY/MM/DD HH:mm:ss'
+US_YY_DATE_TIME_FORMAT_ARROW = 'YY/MM/DD HH:mm:ss'
+US_DATE_TIME_FORMAT_TZ_ARROW = US_DATE_TIME_FORMAT_ARROW + ' ZZ'
+US_YY_DATE_TIME_FORMAT_TZ_ARROW = US_YY_DATE_TIME_FORMAT_ARROW + ' ZZ'
+
+FR_DATE_TIME_FORMAT_ARROW = 'DD/MM/YYYY HH:mm:ss'
+FR_YY_DATE_TIME_FORMAT_ARROW = 'DD/MM/YY HH:mm:ss'
+FR_DATE_TIME_FORMAT_TZ_ARROW = FR_DATE_TIME_FORMAT_ARROW + ' ZZ'
+FR_YY_DATE_TIME_FORMAT_TZ_ARROW = FR_YY_DATE_TIME_FORMAT_ARROW + ' ZZ'
 
 class TestDateTimeUtil(unittest.TestCase):
     def setUp(self):
         pass
 
-
-    def testTimestampToSummerLocalDate(self):
+    def testTimestampToSummerLocalDateUS(self):
         timeStamp = 1506787315
-        
-        arrowObjIN = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, 'Asia/Calcutta')
-        self.assertEqual("2017/09/30 21:31:55 +05:30",arrowObjIN.format(DATE_TIME_FORMAT_TZ_ARROW))
-        
-        arrowObjZH = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, 'Europe/Zurich')
-        self.assertEqual("2017/09/30 18:01:55 +02:00",arrowObjZH.format(DATE_TIME_FORMAT_TZ_ARROW))
 
+        arrowObjIN = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, 'Asia/Calcutta')
+        self.assertEqual("17/09/30 21:31:55 +05:30", arrowObjIN.format(US_YY_DATE_TIME_FORMAT_TZ_ARROW))
+
+        arrowObjZH = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, 'Europe/Zurich')
+        self.assertEqual("2017/09/30 18:01:55 +02:00", arrowObjZH.format(US_DATE_TIME_FORMAT_TZ_ARROW))
+
+    def testTimestampToSummerLocalDateFR(self):
+        timeStamp = 1506787315
+
+        arrowObjIN = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, 'Asia/Calcutta')
+        self.assertEqual("30/09/17 21:31:55 +05:30", arrowObjIN.format(FR_YY_DATE_TIME_FORMAT_TZ_ARROW))
+
+        arrowObjZH = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, 'Europe/Zurich')
+        self.assertEqual("30/09/2017 18:01:55 +02:00", arrowObjZH.format(FR_DATE_TIME_FORMAT_TZ_ARROW))
 
     def testTimestampToWinterLocalDate(self):
         timeStamp = 1512057715
         
         arrowObjIN = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, 'Asia/Calcutta')
-        self.assertEqual("2017/11/30 21:31:55 +05:30",arrowObjIN.format(DATE_TIME_FORMAT_TZ_ARROW))
+        self.assertEqual("17/11/30 21:31:55 +05:30", arrowObjIN.format(US_YY_DATE_TIME_FORMAT_TZ_ARROW))
         
         arrowObjZH = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, 'Europe/Zurich')
-        self.assertEqual("2017/11/30 17:01:55 +01:00",arrowObjZH.format(DATE_TIME_FORMAT_TZ_ARROW))
+        self.assertEqual("2017/11/30 17:01:55 +01:00", arrowObjZH.format(US_DATE_TIME_FORMAT_TZ_ARROW))
 
 
-    def testSummerDateTimeStringToTimeStamp(self):
+    def testSummerDateTimeStringToTimeStampUS(self):
         expTimeStamp = 1506787315
 
-        dateStr = '2017/09/30 21:31:55'
-        timeStamp = DateTimeUtil.dateTimeStringToTimeStamp(dateStr, 'Asia/Calcutta', DATE_TIME_FORMAT_ARROW)
+        dateStr = '17/09/30 21:31:55'
+        timeStamp = DateTimeUtil.dateTimeStringToTimeStamp(dateStr, 'Asia/Calcutta', US_YY_DATE_TIME_FORMAT_ARROW)
         self.assertEqual(expTimeStamp, timeStamp)
 
         dateStr = '2017/09/30 18:01:55'
-        timeStamp = DateTimeUtil.dateTimeStringToTimeStamp(dateStr, 'Europe/Zurich', DATE_TIME_FORMAT_ARROW)
+        timeStamp = DateTimeUtil.dateTimeStringToTimeStamp(dateStr, 'Europe/Zurich', US_DATE_TIME_FORMAT_ARROW)
+        self.assertEqual(expTimeStamp, timeStamp)
+
+
+    def testSummerDateTimeStringToTimeStampUS(self):
+        expTimeStamp = 1506787315
+
+        dateStr = '30/09/17 21:31:55'
+        timeStamp = DateTimeUtil.dateTimeStringToTimeStamp(dateStr, 'Asia/Calcutta', FR_YY_DATE_TIME_FORMAT_ARROW)
+        self.assertEqual(expTimeStamp, timeStamp)
+
+        dateStr = '30/09/2017 18:01:55'
+        timeStamp = DateTimeUtil.dateTimeStringToTimeStamp(dateStr, 'Europe/Zurich', FR_DATE_TIME_FORMAT_ARROW)
         self.assertEqual(expTimeStamp, timeStamp)
 
 
@@ -53,11 +79,11 @@ class TestDateTimeUtil(unittest.TestCase):
         expTimeStamp = 1512061315
         
         dateStr = '2017/11/30 22:31:55'
-        timeStamp = DateTimeUtil.dateTimeStringToTimeStamp(dateStr, 'Asia/Calcutta', DATE_TIME_FORMAT_ARROW)
+        timeStamp = DateTimeUtil.dateTimeStringToTimeStamp(dateStr, 'Asia/Calcutta', US_DATE_TIME_FORMAT_ARROW)
         self.assertEqual(expTimeStamp, timeStamp)
 
         dateStr = '2017/11/30 18:01:55'
-        timeStamp = DateTimeUtil.dateTimeStringToTimeStamp(dateStr, 'Europe/Zurich', DATE_TIME_FORMAT_ARROW)
+        timeStamp = DateTimeUtil.dateTimeStringToTimeStamp(dateStr, 'Europe/Zurich', US_DATE_TIME_FORMAT_ARROW)
         self.assertEqual(expTimeStamp, timeStamp)
 
 
@@ -65,11 +91,11 @@ class TestDateTimeUtil(unittest.TestCase):
         expTimeStamp = 1506787315
 
         dateStr = '2017/09/30 21:31:55'
-        arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Asia/Calcutta', DATE_TIME_FORMAT_ARROW)
+        arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Asia/Calcutta', US_DATE_TIME_FORMAT_ARROW)
         self.assertEqual(expTimeStamp, arrowDateObj.timestamp)
 
         dateStr = '2017/09/30 18:01:55'
-        arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Europe/Zurich', DATE_TIME_FORMAT_ARROW)
+        arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Europe/Zurich', US_DATE_TIME_FORMAT_ARROW)
         self.assertEqual(expTimeStamp, arrowDateObj.timestamp)
 
 
@@ -77,36 +103,36 @@ class TestDateTimeUtil(unittest.TestCase):
         expTimeStamp = 1512061315
 
         dateStr = '2017/11/30 22:31:55'
-        arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Asia/Calcutta', DATE_TIME_FORMAT_ARROW)
+        arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Asia/Calcutta', US_DATE_TIME_FORMAT_ARROW)
         self.assertEqual(expTimeStamp, arrowDateObj.timestamp)
 
         dateStr = '2017/11/30 18:01:55'
-        arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Europe/Zurich', DATE_TIME_FORMAT_ARROW)
+        arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Europe/Zurich', US_DATE_TIME_FORMAT_ARROW)
         self.assertEqual(expTimeStamp, arrowDateObj.timestamp)
 
 
     def testConvertToTimeZoneSummer(self):
         locDateStr = '2017/09/30 09:00:00'
-        datetimeObjLA = DateTimeUtil.dateTimeStringToArrowLocalDate(locDateStr, 'US/Pacific', DATE_TIME_FORMAT_ARROW)
-        self.assertEqual('2017/09/30 09:00:00 -07:00', datetimeObjLA.format(DATE_TIME_FORMAT_TZ_ARROW))
+        datetimeObjLA = DateTimeUtil.dateTimeStringToArrowLocalDate(locDateStr, 'US/Pacific', US_DATE_TIME_FORMAT_ARROW)
+        self.assertEqual('2017/09/30 09:00:00 -07:00', datetimeObjLA.format(US_DATE_TIME_FORMAT_TZ_ARROW))
 
         datetimeObjZH = DateTimeUtil.convertToTimeZone(datetimeObjLA, 'Europe/Zurich')
-        self.assertEqual('2017/09/30 18:00:00 +02:00', datetimeObjZH.format(DATE_TIME_FORMAT_TZ_ARROW))
+        self.assertEqual('2017/09/30 18:00:00 +02:00', datetimeObjZH.format(US_DATE_TIME_FORMAT_TZ_ARROW))
 
         datetimeObjIN = DateTimeUtil.convertToTimeZone(datetimeObjLA, 'Asia/Calcutta')
-        self.assertEqual('2017/09/30 21:30:00 +05:30', datetimeObjIN.format(DATE_TIME_FORMAT_TZ_ARROW))
+        self.assertEqual('2017/09/30 21:30:00 +05:30', datetimeObjIN.format(US_DATE_TIME_FORMAT_TZ_ARROW))
 
 
     def testConvertToTimeZoneWinter(self):
         locDateStr = '2017/11/30 09:00:00'
-        datetimeObjLA = DateTimeUtil.dateTimeStringToArrowLocalDate(locDateStr, 'US/Pacific', DATE_TIME_FORMAT_ARROW)
-        self.assertEqual('2017/11/30 09:00:00 -08:00', datetimeObjLA.format(DATE_TIME_FORMAT_TZ_ARROW))
+        datetimeObjLA = DateTimeUtil.dateTimeStringToArrowLocalDate(locDateStr, 'US/Pacific', US_DATE_TIME_FORMAT_ARROW)
+        self.assertEqual('2017/11/30 09:00:00 -08:00', datetimeObjLA.format(US_DATE_TIME_FORMAT_TZ_ARROW))
 
         datetimeObjZH = DateTimeUtil.convertToTimeZone(datetimeObjLA, 'Europe/Zurich')
-        self.assertEqual('2017/11/30 18:00:00 +01:00', datetimeObjZH.format(DATE_TIME_FORMAT_TZ_ARROW))
+        self.assertEqual('2017/11/30 18:00:00 +01:00', datetimeObjZH.format(US_DATE_TIME_FORMAT_TZ_ARROW))
 
         datetimeObjIN = DateTimeUtil.convertToTimeZone(datetimeObjLA, 'Asia/Calcutta')
-        self.assertEqual('2017/11/30 22:30:00 +05:30', datetimeObjIN.format(DATE_TIME_FORMAT_TZ_ARROW))
+        self.assertEqual('2017/11/30 22:30:00 +05:30', datetimeObjIN.format(US_DATE_TIME_FORMAT_TZ_ARROW))
 
 
     def testIsDateOlderThanSevenDays(self):

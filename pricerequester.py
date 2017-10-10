@@ -1,4 +1,5 @@
 from configurationmanager import ConfigurationManager
+from datetimeutil import DateTimeUtil
 from datetime import datetime
 from pytz import timezone
 import time
@@ -26,17 +27,17 @@ class PriceRequester:
         #print(localizedDateTimeObj.timetuple()[8])
         return localizedDateTimeObj.strftime(DATE_TIME_FORMAT_TZ)
 
-    def getPriceAtLocalDateTimeStr(self, coin, fiat, localDateTimeStr, exchange):
-        datetimeObj = datetime.strptime(localDateTimeStr, DATE_TIME_FORMAT)
+    def getPriceAtArrowLocalDateTime(self, coin, fiat, localArrowDateTime, exchange):
+        datetimeObj = datetime.strptime(localArrowDateTime, DATE_TIME_FORMAT)
         localDatetimeObj = timezone(self.configManager.localTimeZone).localize(datetimeObj)
         datetimeObjUTC = localDatetimeObj.astimezone(timezone('UTC'))
         timeStampUTC = time.mktime(datetimeObjUTC.timetuple())
 
-        return self.getPriceAtUTCTimeStamp(coin, fiat, timeStampUTC, exchange)
+        return self._getHistoMinutePriceAtUTCTimeStamp(coin, fiat, localArrowDateTime.timestamp, exchange)
 
-    def getPriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
-        timeStamp = str(int(timeStampUTC + 60))
-        url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStamp, exchange)
+    def getHistoMinutePriceAtArrowLocalDateTime(self, coin, fiat, arrowLocalDateTime, exchange):
+        timeStampUTCStr = str(arrowLocalDateTime.timestamp)
+        url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
         tmp = []
 
         try:
@@ -54,8 +55,8 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
                 dataDic = dic['Data'][0]
-                lst = ['time', 'open', 'high', 'low', 'close']
-                tmp.append(str(self._UTCTimestamp2LocalizedDate(dataDic['time'])))
+                priceArrowLocalDateTime = DateTimeUtil.dateTimeStringToArrowLocalDate(dataDic['time'], self.configManager.localTimeZone)
+                tmp.append(priceArrowLocalDateTime)
                 tmp.append(dataDic['close'])
             else:
                 tmp = str(dic['Message'])
@@ -63,14 +64,14 @@ class PriceRequester:
 
 
     def getCryptoPrice(self, \
-    	                  crypto, \
-    	                  fiat, \
-    	                  exchange, \
-    	                  day, \
-    	                  month, \
-    	                  year, \
-    	                  hour, \
-    	                  minute):
+                       crypto, \
+                       fiat, \
+                       exchange, \
+                       day, \
+                       month, \
+                       year, \
+                       hour, \
+                       minute):
     	  pass
     	  
     	  
@@ -138,5 +139,5 @@ if __name__ == '__main__':
             hourMin = hourMin + ':00'
 
         localDateTimeStr = day + '/' + month + '/' + year + ' ' + hourMin
-        print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' '.join(map(str, pr.getPriceAtLocalDateTimeStr(crypto, fiat, localDateTimeStr, exchange))))
+        print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' '.join(map(str, pr.getPriceAtArrowLocalDateTime(crypto, fiat, localDateTimeStr, exchange))))
         inputStr = input(prompt)
