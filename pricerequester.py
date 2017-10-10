@@ -1,44 +1,25 @@
-from configurationmanager import ConfigurationManager
-from datetimeutil import DateTimeUtil
-from datetime import datetime
-from pytz import timezone
-import time
 import json
+import json
+import sys
 import urllib.request
 from urllib.error import HTTPError, URLError
-import sys
+
 from bs4 import BeautifulSoup
+
+from datetimeutil import DateTimeUtil
+
+
 #from tqdm import tqdm
-
-DATE_TIME_FORMAT = "%d/%m/%y %H:%M"
-DATE_TIME_FORMAT_TZ = DATE_TIME_FORMAT + " %Z%z"
-
 
 class PriceRequester:
     def __init__(self, configManager):
         self.configManager = configManager
 
-    def _UTCTimestamp2LocalizedDate(self, utcTimestamp):
-        """Return localized string repr of a UTC timestamp"""
-        utcDateTimeObj = datetime.fromtimestamp(int(utcTimestamp - 3600)).replace(tzinfo=timezone('UTC'))
-        #print(utcDateTimeObj.timetuple()[8])
-
-        localizedDateTimeObj = utcDateTimeObj.astimezone(timezone(self.configManager.localTimeZone))
-        #print(localizedDateTimeObj.timetuple()[8])
-        return localizedDateTimeObj.strftime(DATE_TIME_FORMAT_TZ)
-
-    def getPriceAtArrowLocalDateTime(self, coin, fiat, localArrowDateTime, exchange):
-        datetimeObj = datetime.strptime(localArrowDateTime, DATE_TIME_FORMAT)
-        localDatetimeObj = timezone(self.configManager.localTimeZone).localize(datetimeObj)
-        datetimeObjUTC = localDatetimeObj.astimezone(timezone('UTC'))
-        timeStampUTC = time.mktime(datetimeObjUTC.timetuple())
-
-        return self._getHistoMinutePriceAtUTCTimeStamp(coin, fiat, localArrowDateTime.timestamp, exchange)
 
     def getHistoMinutePriceAtArrowLocalDateTime(self, coin, fiat, arrowLocalDateTime, exchange):
         timeStampUTCStr = str(arrowLocalDateTime.timestamp)
         url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
-        tmp = []
+        resultList = []
 
         try:
             webURL = urllib.request.urlopen(url)
@@ -55,36 +36,29 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
                 dataDic = dic['Data'][0]
-                priceArrowLocalDateTime = DateTimeUtil.dateTimeStringToArrowLocalDate(dataDic['time'], self.configManager.localTimeZone)
-                tmp.append(priceArrowLocalDateTime)
-                tmp.append(dataDic['close'])
+                priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(dataDic['time'], \
+                                                                                 self.configManager.localTimeZone)
+                resultList.append(priceArrowLocalDateTime.format(self.configManager.dateTimeFormat))
+                resultList.append(dataDic['close'])
             else:
-                tmp = str(dic['Message'])
-        return tmp
-
-
-    def getCryptoPrice(self, \
-                       crypto, \
-                       fiat, \
-                       exchange, \
-                       day, \
-                       month, \
-                       year, \
-                       hour, \
-                       minute):
-    	  pass
-    	  
-    	  
-def getValue(self, value, default):
-    if value == None:
-        return default
-    else:
-        return value
+                resultList = ['ERROR-' + dic['Message']]
+        return resultList
 
 
 if __name__ == '__main__':
     import re
-    pr = PriceRequester('Europe/Zurich')
+    import os
+    from configurationmanager import ConfigurationManager
+
+    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([0-9]+)/([0-9]+)(?:/([0-9]+)|) ([0-9:]+)(?: (\w+)|)"
+    PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
+
+    if os.name == 'posix':
+        FILE_PATH = '/sdcard/cryptopricer.ini'
+    else:
+        FILE_PATH = 'c:\\temp\\cryptopricer.ini'
+
+    pr = PriceRequester(ConfigurationManager(FILE_PATH))
     prompt = "crypto fiat d/m[/y] h:m exch (q/quit):\n"
     inputStr = input(prompt)
     #([0-9]+)-([0-9]+)(?:-([0-9]+)|) matches either 1-9 or 1-9-17
@@ -121,9 +95,13 @@ if __name__ == '__main__':
                 continue
         else: #regular command line entered
             crypto = match.group(1).upper()
-            fiat = getValue(match.group(2), 'usd').upper()
+            fiat = match.group(2).upper()
             day = match.group(3)
+            if len(day) == 1:
+                day = '0' + day
             month = match.group(4)
+            if len(month) == 1:
+                month = '0' + month
             year = match.group(5)
 
             hourMin = match.group(6)
@@ -133,11 +111,19 @@ if __name__ == '__main__':
             elif len(year) > 2:
                 year = year[-2:]
 
-            exchange = getValue(match.group(7), 'CCCAGG')
+            exchange = match.group(7)
 
         if ':' not in hourMin:
             hourMin = hourMin + ':00'
 
         localDateTimeStr = day + '/' + month + '/' + year + ' ' + hourMin
-        print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' '.join(map(str, pr.getPriceAtArrowLocalDateTime(crypto, fiat, localDateTimeStr, exchange))))
+        localTz = pr.configManager.localTimeZone
+        daTmFormat = pr.configManager.dateTimeFormat
+        arrowLocalDateTime = DateTimeUtil.dateTimeStringToArrowLocalDate(localDateTimeStr, localTz, daTmFormat)
+        priceInfoList = pr.getHistoMinutePriceAtArrowLocalDateTime(crypto, fiat, arrowLocalDateTime, exchange)
+
+        if len(priceInfoList) > 1:
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[0] + ' ' + str(priceInfoList[1]))
+        else:
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[0])
         inputStr = input(prompt)
