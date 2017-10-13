@@ -155,5 +155,11 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertFalse(DateTimeUtil.isDateOlderThan(dateBefore, DAYS_BEFORE))
 
 
+    def testLocalNow(self):
+        nowZH = arrow.utcnow().to('Europe/Zurich')
+        datetimeObjZH = DateTimeUtil.localNow('Europe/Zurich')
+        self.assertEqual(nowZH.format(FR_YY_DATE_TIME_FORMAT_TZ_ARROW), datetimeObjZH.format(FR_YY_DATE_TIME_FORMAT_TZ_ARROW))
+        
+
 if __name__ == '__main__':
     unittest.main()

@@ -72,5 +72,15 @@ class DateTimeUtil:
         return ((arrow.utcnow().timestamp - dateTimeArrowObject.to('UTC').timestamp) / dayNumber) > DateTimeUtil.SECONDS_PER_DAY
 
 
+    @staticmethod
+    def localNow(timeZoneStr):
+        '''
+        Return a localised current dateTimeArrowObject
+        :param timeZoneStr: like 'Europe/Zurich' or 'US/Pacific'
+        :return: current arrow localized date time object
+        '''
+        return arrow.now(timeZoneStr)
+
+
 if __name__ == '__main__':
     pass
