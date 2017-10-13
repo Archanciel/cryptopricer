@@ -3,21 +3,23 @@ import json
 import sys
 import urllib.request
 from urllib.error import HTTPError, URLError
-
 from bs4 import BeautifulSoup
-
 from datetimeutil import DateTimeUtil
+
 
 
 #from tqdm import tqdm
 
 class PriceRequester:
-    def __init__(self, configManager):
-        self.configManager = configManager
+    def getHistoricalPriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
+        if DateTimeUtil.isTimeStampOlderThan(timeStampUTC, dayNumber=7):
+            return self._getHistoDayPriceAtUTCTimeStamp(coin, fiat, DateTimeUtil.shiftTimeStampToEndOfDay(timeStampUTC), exchange)
+        else:
+            return self._getHistoMinutePriceAtUTCTimeStamp(coin, fiat, timeStampUTC, exchange)
 
 
-    def getHistoMinutePriceAtArrowLocalDateTime(self, coin, fiat, arrowLocalDateTime, exchange):
-        timeStampUTCStr = str(arrowLocalDateTime.timestamp)
+    def _getHistoMinutePriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
+        timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
         resultList = []
 
@@ -36,10 +38,59 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
                 dataDic = dic['Data'][0]
-                priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(dataDic['time'], \
-                                                                                 self.configManager.localTimeZone)
-                resultList.append(priceArrowLocalDateTime.format(self.configManager.dateTimeFormat))
+                resultList.append(dataDic['time'])
                 resultList.append(dataDic['close'])
+            else:
+                resultList = ['ERROR-' + dic['Message']]
+        return resultList
+
+
+    def _getHistoDayPriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
+        timeStampUTCStr = str(timeStampUTC)
+        url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
+        resultList = []
+
+        try:
+            webURL = urllib.request.urlopen(url)
+        except HTTPError as e:
+            sys.exit('Could not complete request ' + url + '. Reason: ' + str(e.reason))
+        except URLError as e:
+            sys.exit('Could not complete request ' + url + '. Reason: ' + str(e.reason))
+        except: 
+            the_type, the_value, the_traceback = sys.exc_info()
+            sys.exit('Could not complete request ' + url + '. Reason: ' + str(the_type))
+        else:
+            page = webURL.read()
+            soup = BeautifulSoup(page, 'html.parser')
+            dic = json.loads(soup.prettify())
+            if dic['Data'] != []:
+                dataDic = dic['Data'][0]
+                resultList.append(dataDic['time'])
+                resultList.append(dataDic['close'])
+            else:
+                resultList = ['ERROR-' + dic['Message']]
+        return resultList
+
+
+    def getCurrentPrice(self, coin, fiat, exchange):
+        url = "https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&e={}".format(coin, fiat, exchange)
+        resultList = []
+
+        try:
+            webURL = urllib.request.urlopen(url)
+        except HTTPError as e:
+            sys.exit('Could not complete request ' + url + '. Reason: ' + str(e.reason))
+        except URLError as e:
+            sys.exit('Could not complete request ' + url + '. Reason: ' + str(e.reason))
+        except: 
+            the_type, the_value, the_traceback = sys.exc_info()
+            sys.exit('Could not complete request ' + url + '. Reason: ' + str(the_type))
+        else:
+            page = webURL.read()
+            soup = BeautifulSoup(page, 'html.parser')
+            dic = json.loads(soup.prettify())
+            if len(dic) > 0:
+                resultList.append(dic[fiat])
             else:
                 resultList = ['ERROR-' + dic['Message']]
         return resultList
@@ -49,6 +100,7 @@ if __name__ == '__main__':
     import re
     import os
     from configurationmanager import ConfigurationManager
+    from datetimeutil import DateTimeUtil
 
     PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([0-9]+)/([0-9]+)(?:/([0-9]+)|) ([0-9:]+)(?: (\w+)|)"
     PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
@@ -58,7 +110,8 @@ if __name__ == '__main__':
     else:
         FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
-    pr = PriceRequester(ConfigurationManager(FILE_PATH))
+    configMgr = ConfigurationManager(FILE_PATH)
+    pr = PriceRequester()
     prompt = "crypto fiat d/m[/y] h:m exch (q/quit):\n"
     inputStr = input(prompt)
     #([0-9]+)-([0-9]+)(?:-([0-9]+)|) matches either 1-9 or 1-9-17
@@ -117,13 +170,34 @@ if __name__ == '__main__':
             hourMin = hourMin + ':00'
 
         localDateTimeStr = day + '/' + month + '/' + year + ' ' + hourMin
-        localTz = pr.configManager.localTimeZone
-        daTmFormat = pr.configManager.dateTimeFormat
+        localTz = configMgr.localTimeZone
+        daTmFormat = configMgr.dateTimeFormat
         arrowLocalDateTime = DateTimeUtil.dateTimeStringToArrowLocalDate(localDateTimeStr, localTz, daTmFormat)
-        priceInfoList = pr.getHistoMinutePriceAtArrowLocalDateTime(crypto, fiat, arrowLocalDateTime, exchange)
+
+        #histo price
+        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, arrowLocalDateTime.timestamp, exchange)
 
         if len(priceInfoList) > 1:
-            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[0] + ' ' + str(priceInfoList[1]))
+            priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[0], localTz)
+            dateTimeStr = priceArrowLocalDateTime.format(configMgr.dateTimeFormat)
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[1]))
         else:
             print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[0])
+
+        #current orice
+        priceInfoList = pr.getCurrentPrice(crypto, fiat, exchange)
+        priceArrowLocalDateTime = DateTimeUtil.localNow(localTz)
+        dateTimeStr = priceArrowLocalDateTime.format(configMgr.dateTimeFormat)
+        print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[0]))
+
+        #histo day price
+        priceInfoList = pr._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, arrowLocalDateTime.timestamp, exchange)
+
+        if len(priceInfoList) > 1:
+            priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[0], localTz)
+            dateTimeStr = priceArrowLocalDateTime.format(configMgr.dateTimeFormat)
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[1]))
+        else:
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[0])
+
         inputStr = input(prompt)

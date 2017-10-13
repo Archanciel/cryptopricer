@@ -17,7 +17,7 @@ class TestPriceRequester(unittest.TestCase):
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         configMgr = ConfigurationManager(FILE_PATH)
-        self.priceRequester = PriceRequester(configMgr)
+        self.priceRequester = PriceRequester()
 
     def testPriceRequesterInstanciation(self):
         self.assertIsInstance(self.priceRequester, PriceRequester)
