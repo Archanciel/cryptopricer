@@ -73,6 +73,18 @@ class DateTimeUtil:
 
 
     @staticmethod
+    def isTimeStampOlderThan(timeStamp, dayNumber):
+        '''
+        Return true if the passed time stamp is dayNumber days before UTC now.
+
+        :param dateTimeArrowObject: arrow localized date time object.
+        :param dayNumber: int day number
+        :return: True or False
+        '''
+        return ((arrow.utcnow().timestamp - timeStamp) / dayNumber) > DateTimeUtil.SECONDS_PER_DAY
+
+
+    @staticmethod
     def localNow(timeZoneStr):
         '''
         Return a localised current dateTimeArrowObject
@@ -80,6 +92,17 @@ class DateTimeUtil:
         :return: current arrow localized date time object
         '''
         return arrow.now(timeZoneStr)
+
+
+    @staticmethod
+    def shiftTimeStampToEndOfDay(inDayTimeStamp):
+        '''
+        Return the time stamp of midnight of the day including the passed inDayTimeStamp
+        :param inDayTimeStamp:
+        :return: time stamp of the day containing inDayTimeStamp, but at midnight precisely
+        '''
+        endOfDayDateTimeArrowObject = arrow.Arrow.utcfromtimestamp(inDayTimeStamp).replace(hour=24, minute=0, second=0)
+        return endOfDayDateTimeArrowObject.timestamp
 
 
 if __name__ == '__main__':
