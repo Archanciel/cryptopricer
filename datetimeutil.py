@@ -85,6 +85,15 @@ class DateTimeUtil:
 
 
     @staticmethod
+    def utcNowTimeStamp():
+        '''
+        Return the current UTC time stamp
+        :return: current time zone independant (UTC) time stamp
+        '''
+        return arrow.utcnow().timestamp
+
+
+    @staticmethod
     def localNow(timeZoneStr):
         '''
         Return a localised current dateTimeArrowObject
@@ -101,7 +110,7 @@ class DateTimeUtil:
         :param inDayTimeStamp:
         :return: time stamp of the day containing inDayTimeStamp, but at midnight precisely
         '''
-        endOfDayDateTimeArrowObject = arrow.Arrow.utcfromtimestamp(inDayTimeStamp).replace(hour=24, minute=0, second=0)
+        endOfDayDateTimeArrowObject = arrow.Arrow.utcfromtimestamp(inDayTimeStamp).replace(hour=23, minute=59, second=59)
         return endOfDayDateTimeArrowObject.timestamp
 
 

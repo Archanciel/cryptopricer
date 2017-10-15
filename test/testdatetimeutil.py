@@ -181,8 +181,21 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertEqual(nowZH.format(FR_YY_DATE_TIME_FORMAT_TZ_ARROW), datetimeObjZH.format(FR_YY_DATE_TIME_FORMAT_TZ_ARROW))
 
 
+    def testUtcNowTimeStamp(self):
+        nowZHts = arrow.utcnow().to('Europe/Zurich').timestamp
+        utcTimeStamp = DateTimeUtil.utcNowTimeStamp()
+        self.assertEqual(nowZHts, utcTimeStamp)
+
+
     def testShiftTimeStampToEndOfDay(self):
-        raise NotImplementedError
+        timeStamp = 1506787315
+
+        timeStampEndOfDay = DateTimeUtil.shiftTimeStampToEndOfDay(timeStamp)
+        arrowObjUTCEndOfDay = DateTimeUtil.timeStampToArrowLocalDate(timeStampEndOfDay, 'UTC')
+        self.assertEqual("2017/09/30 23:59:59 +00:00", arrowObjUTCEndOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
+
+        arrowObjZHEndOfDay = DateTimeUtil.timeStampToArrowLocalDate(timeStampEndOfDay, 'Europe/Zurich')
+        self.assertEqual("2017/10/01 01:59:59 +02:00", arrowObjZHEndOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
 
 
 if __name__ == '__main__':
