@@ -7,10 +7,12 @@ from bs4 import BeautifulSoup
 from datetimeutil import DateTimeUtil
 
 
-
-#from tqdm import tqdm
-
 class PriceRequester:
+    IDX_TIMESTAMP = 0
+    IDX_ERROR_MSG = 0
+    IDX_CLOSE_PRICE = 1
+    IDX_CURRENT_PRICE = 1    
+    
     def getHistoricalPriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
         if DateTimeUtil.isTimeStampOlderThan(timeStampUTC, dayNumber=7):
             return self._getHistoDayPriceAtUTCTimeStamp(coin, fiat, DateTimeUtil.shiftTimeStampToEndOfDay(timeStampUTC), exchange)
@@ -89,8 +91,10 @@ class PriceRequester:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
-            if len(dic) > 0:
-                resultList.append(dic[fiat])
+            
+            if fiat in dic:
+                resultList.append(DateTimeUtil.utcNowTimeStamp())
+                resultList.append(dic[fiat]) #current price is indexed by fiat symbol in returned dic
             else:
                 resultList = ['ERROR-' + dic['Message']]
         return resultList
@@ -178,26 +182,56 @@ if __name__ == '__main__':
         priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, arrowLocalDateTime.timestamp, exchange)
 
         if len(priceInfoList) > 1:
-            priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[0], localTz)
-            dateTimeStr = priceArrowLocalDateTime.format(configMgr.dateTimeFormat)
-            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[1]))
+            requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], localTz)
+            requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(configMgr.dateTimeFormat)
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + requestedDateTimeStr + ' ' + str(priceInfoList[pr.IDX_CLOSE_PRICE]))
         else:
-            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[0])
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[pr.IDX_ERROR_MSG])
 
         #current orice
         priceInfoList = pr.getCurrentPrice(crypto, fiat, exchange)
-        priceArrowLocalDateTime = DateTimeUtil.localNow(localTz)
-        dateTimeStr = priceArrowLocalDateTime.format(configMgr.dateTimeFormat)
-        print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[0]))
-
-        #histo day price
-        priceInfoList = pr._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, arrowLocalDateTime.timestamp, exchange)
 
         if len(priceInfoList) > 1:
-            priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[0], localTz)
-            dateTimeStr = priceArrowLocalDateTime.format(configMgr.dateTimeFormat)
-            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[1]))
+            requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], localTz)
+            requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(configMgr.dateTimeFormat)
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + requestedDateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
         else:
-            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[0])
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[pr.IDX_ERROR_MSG])
+
+        #histo day price
+        timeStamp = 1506787315
+
+        timeStampEndOfDay = DateTimeUtil.shiftTimeStampToEndOfDay(timeStamp)
+        arrowObjUTCEndOfDay = DateTimeUtil.timeStampToArrowLocalDate(timeStampEndOfDay, 'UTC')
+        #        self.assertEqual("2017/09/30 23:59:59 +00:00", arrowObjUTCEndOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
+
+        arrowObjZHEndOfDay = DateTimeUtil.timeStampToArrowLocalDate(timeStampEndOfDay, 'Europe/Zurich')
+        #        self.assertEqual("2017/10/01 01:59:59 +02:00", arrowObjZHEndOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
+
+        #        arrowObjZHEndOfDay = DateTimeUtil.timeStampToArrowLocalDate(timeStampEndOfDay, 'Europe/Zurich')
+
+        FR_DATE_TIME_FORMAT_ARROW = 'DD/MM/YYYY HH:mm:ss'
+        FR_YY_DATE_TIME_FORMAT_ARROW = 'DD/MM/YY HH:mm:ss'
+        FR_DATE_TIME_FORMAT_TZ_ARROW = FR_DATE_TIME_FORMAT_ARROW + ' ZZ'
+        FR_YY_DATE_TIME_FORMAT_TZ_ARROW = FR_YY_DATE_TIME_FORMAT_ARROW + ' ZZ'
+
+        print('arrowObjZHEndOfDay: ' + arrowObjZHEndOfDay.format(FR_DATE_TIME_FORMAT_TZ_ARROW))
+        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, arrowObjZHEndOfDay.timestamp, exchange)
+
+        if len(priceInfoList) > 1:
+            priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], localTz)
+            dateTimeStr = priceArrowLocalDateTime.format(configMgr.dateTimeFormat)
+            print("arrowObjZHEndOfDay.timestamp: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+        else:
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[pr.IDX_ERROR_MSG])
+
+        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampEndOfDay, exchange)
+
+        if len(priceInfoList) > 1:
+            priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], localTz)
+            dateTimeStr = priceArrowLocalDateTime.format(configMgr.dateTimeFormat)
+            print("timeStampEndOfDay: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+        else:
+            print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[pr.IDX_ERROR_MSG])
 
         inputStr = input(prompt)
