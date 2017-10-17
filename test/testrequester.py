@@ -188,7 +188,6 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
         self.assertEqual(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
 
-
         sys.stdin = stdin
 
 
