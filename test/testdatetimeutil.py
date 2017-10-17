@@ -156,23 +156,23 @@ class TestDateTimeUtil(unittest.TestCase):
 
 
     def testIsTimeStampOlderThanSevenDays(self):
-        DAYS_BEFORE = 7
-        dateBefore = arrow.utcnow().shift(days = -DAYS_BEFORE).to('Europe/Zurich')
-        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, DAYS_BEFORE))
+        DAYS_BEFORE = -7
+        dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE).to('Europe/Zurich')
+        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, abs(DAYS_BEFORE)))
 
 
     def testIsTimeStampOlderThanSevenDaysPlusOneSecond(self):
-        DAYS_BEFORE = 7
-        SECOND_BEFORE = 1
-        dateBefore = arrow.utcnow().shift(days = -DAYS_BEFORE, seconds = -SECOND_BEFORE).to('Europe/Zurich')
-        self.assertTrue(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, DAYS_BEFORE))
+        DAYS_BEFORE = -7
+        SECOND_BEFORE = -1
+        dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE, seconds = SECOND_BEFORE).to('Europe/Zurich')
+        self.assertTrue(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, abs(DAYS_BEFORE)))
 
 
     def testIsTimeStampOlderThanSevenDaysMinusOneSecond(self):
-        DAYS_BEFORE = 7
-        SECOND_BEFORE = 1
-        dateBefore = arrow.utcnow().shift(days = -DAYS_BEFORE, seconds = SECOND_BEFORE).to('Europe/Zurich')
-        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, DAYS_BEFORE))
+        DAYS_BEFORE = -7
+        SECOND_AFTER = 1
+        dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE, seconds = SECOND_AFTER).to('Europe/Zurich')
+        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, abs(DAYS_BEFORE)))
 
 
     def testLocalNow(self):
@@ -188,7 +188,7 @@ class TestDateTimeUtil(unittest.TestCase):
 
 
     def testShiftTimeStampToEndOfDay(self):
-        timeStamp = 1506787315
+        timeStamp = 1506787315 #30/09/2017 16:01:55 +00:00 or 30/09/2017 18:01:55 +02:00
 
         timeStampEndOfDay = DateTimeUtil.shiftTimeStampToEndOfDay(timeStamp)
         arrowObjUTCEndOfDay = DateTimeUtil.timeStampToArrowLocalDate(timeStampEndOfDay, 'UTC')
@@ -196,6 +196,17 @@ class TestDateTimeUtil(unittest.TestCase):
 
         arrowObjZHEndOfDay = DateTimeUtil.timeStampToArrowLocalDate(timeStampEndOfDay, 'Europe/Zurich')
         self.assertEqual("2017/10/01 01:59:59 +02:00", arrowObjZHEndOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
+
+    def testShiftTimeStampToEndOfDay_alt(self):
+        utcArrowDateTimeObj_begOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 00:00:00", 'UTC',
+                                                                                   "YYYY/MM/DD HH:mm:ss")
+        timeStampBegDay = utcArrowDateTimeObj_begOfDay.timestamp
+        utcArrowDateTimeObj_endOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 23:59:59", 'UTC',
+                                                                                   "YYYY/MM/DD HH:mm:ss")
+        timeStampEndDay = utcArrowDateTimeObj_endOfDay.timestamp
+        timeStampShifted = DateTimeUtil.shiftTimeStampToEndOfDay(timeStampBegDay)
+
+        self.assertEqual(timeStampShifted, timeStampEndDay)
 
 
 if __name__ == '__main__':

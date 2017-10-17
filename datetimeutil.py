@@ -115,4 +115,16 @@ class DateTimeUtil:
 
 
 if __name__ == '__main__':
-    pass
+    utcArrowDateTimeObj_endOfPreviousDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/29 23:59:59", 'UTC',
+                                                                      "YYYY/MM/DD HH:mm:ss")
+    print('endOfPreviousDay.timestamp: ' + str(utcArrowDateTimeObj_endOfPreviousDay.timestamp))
+    utcArrowDateTimeObj_begOfCurrentDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 00:00:00", 'UTC',
+                                                                      "YYYY/MM/DD HH:mm:ss")
+    print('begOfCurrentDay.timestamp;  ' + str(utcArrowDateTimeObj_begOfCurrentDay.timestamp))
+
+    utcArrowDateTimeObj_endOfCurrentDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 23:59:59", 'UTC',
+                                                                      "YYYY/MM/DD HH:mm:ss")
+    print('endOfCurrentDay.timestamp:  ' + str(utcArrowDateTimeObj_endOfCurrentDay.timestamp))
+
+    tsEOD = DateTimeUtil.shiftTimeStampToEndOfDay(utcArrowDateTimeObj_begOfCurrentDay.timestamp)
+    print('shifted:                    ' + str(tsEOD))
