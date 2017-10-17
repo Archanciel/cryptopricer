@@ -6,6 +6,9 @@ from urllib.error import HTTPError, URLError
 from bs4 import BeautifulSoup
 from datetimeutil import DateTimeUtil
 
+IDX_HISTODAY_DATA_ENTRY_TO = 1
+IDX_MINUTEDAY_DATA_ENTRY_TO = 1
+
 
 class PriceRequester:
     IDX_TIMESTAMP = 0
@@ -39,7 +42,7 @@ class PriceRequester:
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
-                dataDic = dic['Data'][0]
+                dataDic = dic['Data'][IDX_MINUTEDAY_DATA_ENTRY_TO]
                 resultList.append(dataDic['time'])
                 resultList.append(dataDic['close'])
             else:
@@ -66,7 +69,7 @@ class PriceRequester:
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
-                dataDic = dic['Data'][0]
+                dataDic = dic['Data'][IDX_HISTODAY_DATA_ENTRY_TO]
                 resultList.append(dataDic['time'])
                 resultList.append(dataDic['close'])
             else:
@@ -103,11 +106,19 @@ class PriceRequester:
 if __name__ == '__main__':
     import re
     import os
+    from io import StringIO
     from configurationmanager import ConfigurationManager
     from datetimeutil import DateTimeUtil
 
+    FR_DATE_TIME_FORMAT_ARROW = 'DD/MM/YYYY HH:mm:ss'
+    FR_YY_DATE_TIME_FORMAT_ARROW = 'DD/MM/YY HH:mm:ss'
+    FR_DATE_TIME_FORMAT_TZ_ARROW = FR_DATE_TIME_FORMAT_ARROW + ' ZZ'
+    FR_YY_DATE_TIME_FORMAT_TZ_ARROW = FR_YY_DATE_TIME_FORMAT_ARROW + ' ZZ'
     PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: (\w+)|) ([0-9]+)/([0-9]+)(?:/([0-9]+)|) ([0-9:]+)(?: (\w+)|)"
     PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
+
+    stdin = sys.stdin
+    sys.stdin = StringIO('btc usd 12/10 12:00 BitTrex')
 
     if os.name == 'posix':
         FILE_PATH = '/sdcard/cryptopricer.ini'
@@ -199,39 +210,49 @@ if __name__ == '__main__':
             print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[pr.IDX_ERROR_MSG])
 
         #histo day price
-        timeStamp = 1506787315
+        timeStamp = 1506787315 #30/09/2017 16:01:55 +00:00 or 30/09/2017 18:01:55 +02:00
+        arrowObjTimeStampUTC = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, 'UTC')
+        print('arrowObjTimeStampUTC: ' + arrowObjTimeStampUTC.format(FR_DATE_TIME_FORMAT_TZ_ARROW))
+        arrowObjTimeStampZH = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, 'Europe/Zurich')
+        print('arrowObjTimeStampZH: ' + arrowObjTimeStampZH.format(FR_DATE_TIME_FORMAT_TZ_ARROW))
 
-        timeStampEndOfDay = DateTimeUtil.shiftTimeStampToEndOfDay(timeStamp)
-        arrowObjUTCEndOfDay = DateTimeUtil.timeStampToArrowLocalDate(timeStampEndOfDay, 'UTC')
-        #        self.assertEqual("2017/09/30 23:59:59 +00:00", arrowObjUTCEndOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
-
-        arrowObjZHEndOfDay = DateTimeUtil.timeStampToArrowLocalDate(timeStampEndOfDay, 'Europe/Zurich')
-        #        self.assertEqual("2017/10/01 01:59:59 +02:00", arrowObjZHEndOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
-
-        #        arrowObjZHEndOfDay = DateTimeUtil.timeStampToArrowLocalDate(timeStampEndOfDay, 'Europe/Zurich')
-
-        FR_DATE_TIME_FORMAT_ARROW = 'DD/MM/YYYY HH:mm:ss'
-        FR_YY_DATE_TIME_FORMAT_ARROW = 'DD/MM/YY HH:mm:ss'
-        FR_DATE_TIME_FORMAT_TZ_ARROW = FR_DATE_TIME_FORMAT_ARROW + ' ZZ'
-        FR_YY_DATE_TIME_FORMAT_TZ_ARROW = FR_YY_DATE_TIME_FORMAT_ARROW + ' ZZ'
-
-        print('arrowObjZHEndOfDay: ' + arrowObjZHEndOfDay.format(FR_DATE_TIME_FORMAT_TZ_ARROW))
-        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, arrowObjZHEndOfDay.timestamp, exchange)
+        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, arrowObjTimeStampZH.timestamp, exchange)
 
         if len(priceInfoList) > 1:
             priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], localTz)
-            dateTimeStr = priceArrowLocalDateTime.format(configMgr.dateTimeFormat)
-            print("arrowObjZHEndOfDay.timestamp: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+            dateTimeStr = priceArrowLocalDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+            print("arrowObjTimeStampZH.timestamp: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
         else:
             print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[pr.IDX_ERROR_MSG])
 
-        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampEndOfDay, exchange)
+        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStamp, exchange)
 
         if len(priceInfoList) > 1:
             priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], localTz)
-            dateTimeStr = priceArrowLocalDateTime.format(configMgr.dateTimeFormat)
-            print("timeStampEndOfDay: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+            dateTimeStr = priceArrowLocalDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+            print("timeStamp: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+            priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
+            dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+            print("priceArrowUTCDateTime: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
         else:
             print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[pr.IDX_ERROR_MSG])
+
+        utcArrowDateTimeObj = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 23:59:59",'UTC',"YYYY/MM/DD HH:mm:ss")
+        print('\n\n' + utcArrowDateTimeObj.format(FR_DATE_TIME_FORMAT_TZ_ARROW))
+        priceInfoList = pr._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj.timestamp, exchange)
+        print(utcArrowDateTimeObj.timestamp)
+        print(priceInfoList[pr.IDX_TIMESTAMP])
+        print(1506729600)
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
+        dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+        print("utcArrowDateTimeObj _getHistoDayPrice...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+
+
+        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj.timestamp, exchange)
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
+        dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+        print("utcArrowDateTimeObj getHistorical...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+
+        sys.stdin = stdin
 
         inputStr = input(prompt)
