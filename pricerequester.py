@@ -237,21 +237,35 @@ if __name__ == '__main__':
         else:
             print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[pr.IDX_ERROR_MSG])
 
-        utcArrowDateTimeObj = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 23:59:59",'UTC',"YYYY/MM/DD HH:mm:ss")
-        print('\n\n' + utcArrowDateTimeObj.format(FR_DATE_TIME_FORMAT_TZ_ARROW))
-        priceInfoList = pr._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj.timestamp, exchange)
-        print(utcArrowDateTimeObj.timestamp)
-        print(priceInfoList[pr.IDX_TIMESTAMP])
-        print(1506729600)
+        utcArrowDateTimeObj_endOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 23:59:59", 'UTC', "YYYY/MM/DD HH:mm:ss")
+        print('\n\n' + utcArrowDateTimeObj_endOfDay.format(FR_DATE_TIME_FORMAT_TZ_ARROW))
+        priceInfoList = pr._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj_endOfDay.timestamp, exchange)
+        print('passed eod ts: ' + str(utcArrowDateTimeObj_endOfDay.timestamp))
+        print('returned eod ts: ' + str(priceInfoList[pr.IDX_TIMESTAMP]))
         priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
         dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
         print("utcArrowDateTimeObj _getHistoDayPrice...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
 
-
-        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj.timestamp, exchange)
+        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj_endOfDay.timestamp, exchange)
         priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
         dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
-        print("utcArrowDateTimeObj getHistorical...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+        print("utcArrowDateTimeObj_endOfDay getHistorical...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+
+        utcArrowDateTimeObj_begNextDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/10/01 00:00:00",'UTC',"YYYY/MM/DD HH:mm:ss")
+        print('\n\n' + utcArrowDateTimeObj_begNextDay.format(FR_DATE_TIME_FORMAT_TZ_ARROW))
+        priceInfoList = pr._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj_begNextDay.timestamp, exchange)
+        print('passed beg nxt day ts: ' + str(utcArrowDateTimeObj_begNextDay.timestamp))
+        print('returned beg nxt day ts: ' + str(priceInfoList[pr.IDX_TIMESTAMP]))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
+        dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+        print("utcArrowDateTimeObj_begNextDay _getHistoDayPrice...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+
+        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj_begNextDay.timestamp, exchange)
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
+        dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+        print("utcArrowDateTimeObj_begNextDay getHistorical...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+
+        print('Conclusion: you need to pass beg of next day to histoday and shift back returned ts to end of current day !')
 
         sys.stdin = stdin
 
