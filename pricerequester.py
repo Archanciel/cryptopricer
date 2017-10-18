@@ -18,7 +18,7 @@ class PriceRequester:
     
     def getHistoricalPriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
         if DateTimeUtil.isTimeStampOlderThan(timeStampUTC, dayNumber=7):
-            return self._getHistoDayPriceAtUTCTimeStamp(coin, fiat, DateTimeUtil.shiftTimeStampToEndOfDay(timeStampUTC), exchange)
+            return self._getHistoDayPriceAtUTCTimeStamp(coin, fiat, timeStampUTC, exchange)
         else:
             return self._getHistoMinutePriceAtUTCTimeStamp(coin, fiat, timeStampUTC, exchange)
 
@@ -110,6 +110,7 @@ if __name__ == '__main__':
     from configurationmanager import ConfigurationManager
     from datetimeutil import DateTimeUtil
 
+    FR_DATE_FORMAT_ARROW = 'DD/MM/YYYY'
     FR_DATE_TIME_FORMAT_ARROW = 'DD/MM/YYYY HH:mm:ss'
     FR_YY_DATE_TIME_FORMAT_ARROW = 'DD/MM/YY HH:mm:ss'
     FR_DATE_TIME_FORMAT_TZ_ARROW = FR_DATE_TIME_FORMAT_ARROW + ' ZZ'
@@ -118,7 +119,7 @@ if __name__ == '__main__':
     PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
 
     stdin = sys.stdin
-    sys.stdin = StringIO('btc usd 12/10 12:00 BitTrex')
+    sys.stdin = StringIO('btc usd 12/10 12:00 CCCAGG')
 
     if os.name == 'posix':
         FILE_PATH = '/sdcard/cryptopricer.ini'
@@ -220,7 +221,7 @@ if __name__ == '__main__':
 
         if len(priceInfoList) > 1:
             priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], localTz)
-            dateTimeStr = priceArrowLocalDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+            dateTimeStr = priceArrowLocalDateTime.format(FR_DATE_FORMAT_ARROW)
             print("arrowObjTimeStampZH.timestamp: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
         else:
             print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[pr.IDX_ERROR_MSG])
@@ -229,11 +230,13 @@ if __name__ == '__main__':
 
         if len(priceInfoList) > 1:
             priceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], localTz)
-            dateTimeStr = priceArrowLocalDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+            dateTimeStr = priceArrowLocalDateTime.format(FR_DATE_FORMAT_ARROW)
             print("timeStamp: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
             priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
             dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
-            print("priceArrowUTCDateTime: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+            print("priceArrowUTCDateTime with hour: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
+            dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_FORMAT_ARROW)
+            print("priceArrowUTCDateTime no hour: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
         else:
             print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[pr.IDX_ERROR_MSG])
 
@@ -243,29 +246,13 @@ if __name__ == '__main__':
         print('passed eod ts: ' + str(utcArrowDateTimeObj_endOfDay.timestamp))
         print('returned eod ts: ' + str(priceInfoList[pr.IDX_TIMESTAMP]))
         priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
-        dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+        dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_FORMAT_ARROW)
         print("utcArrowDateTimeObj _getHistoDayPrice...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
 
         priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj_endOfDay.timestamp, exchange)
         priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
-        dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
+        dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_FORMAT_ARROW)
         print("utcArrowDateTimeObj_endOfDay getHistorical...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
-
-        utcArrowDateTimeObj_begNextDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/10/01 00:00:00",'UTC',"YYYY/MM/DD HH:mm:ss")
-        print('\n\n' + utcArrowDateTimeObj_begNextDay.format(FR_DATE_TIME_FORMAT_TZ_ARROW))
-        priceInfoList = pr._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj_begNextDay.timestamp, exchange)
-        print('passed beg nxt day ts: ' + str(utcArrowDateTimeObj_begNextDay.timestamp))
-        print('returned beg nxt day ts: ' + str(priceInfoList[pr.IDX_TIMESTAMP]))
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
-        dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
-        print("utcArrowDateTimeObj_begNextDay _getHistoDayPrice...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
-
-        priceInfoList = pr.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, utcArrowDateTimeObj_begNextDay.timestamp, exchange)
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[pr.IDX_TIMESTAMP], 'UTC')
-        dateTimeStr = priceArrowUTCDateTime.format(FR_DATE_TIME_FORMAT_TZ_ARROW)
-        print("utcArrowDateTimeObj_begNextDay getHistorical...: {}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + dateTimeStr + ' ' + str(priceInfoList[pr.IDX_CURRENT_PRICE]))
-
-        print('Conclusion: you need to pass beg of next day to histoday and shift back returned ts to end of current day !')
 
         sys.stdin = stdin
 
