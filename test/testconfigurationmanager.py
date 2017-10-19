@@ -15,24 +15,43 @@ class TestConfigurationManager(unittest.TestCase):
         else:
             self.filePath = 'c:\\temp\\cryptopricer.ini'
 
-        self.configMgr = ConfigurationManager(self.filePath)
-
 
     def testConfigurationManagerInstanciation(self):
+        self.configMgr = ConfigurationManager(self.filePath)
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
         self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
+        self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
 
 
     def testConfigurationManagerInstanciationNoConfigFile(self):
         os.remove(self.filePath)
+        self.configMgr = ConfigurationManager(self.filePath)
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
         self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
+        self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
 
 
     def testConfigurationManagerInstanciationEmptyConfigFile(self):
         open(self.filePath, 'w').close()
+        self.configMgr = ConfigurationManager(self.filePath)
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
         self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
+        self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
+
+
+    def testConfigurationManagerInstanciationOneMissingKey(self):
+        #removing first line in config file
+        with open(self.filePath, 'r') as configFile:
+            lines = configFile.readlines()
+            lines = lines[1:]
+
+        with open(self.filePath, 'w') as configFile:
+            configFile.write(''.join(lines))
+
+        self.configMgr = ConfigurationManager(self.filePath)
+        self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
+        self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
+        self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
 
 
 if __name__ == '__main__':

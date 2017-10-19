@@ -1,8 +1,14 @@
 from configobj import ConfigObj
 import os
 
-TIME_ZONE = 'timezone'
-DATE_TIME_FORMAT = 'dateTimeFormat'
+CONFIG_KEY_TIME_ZONE = 'timezone'
+DEFAULT_TIME_ZONE = 'Europe/Zurich'
+
+CONFIG_KEY_DATE_TIME_FORMAT = 'dateTimeFormat'
+DEFAULT_DATE_TIME_FORMAT = 'DD/MM/YY HH:mm'
+
+CONFIG_KEY_DATE_ONLY_FORMAT = 'dateOnlyFormat'
+DEFAULT_DATE_ONLY_FORMAT = 'DD/MM/YY'
 
 class ConfigurationManager:
     def __init__(self, filename):
@@ -12,8 +18,25 @@ class ConfigurationManager:
         if len(self.config) == 0:
             self._setAndStoreDefaultConf()
 
-        self.__localTimeZone = self.config[TIME_ZONE]
-        self.__dateTimeFormat = self.config[DATE_TIME_FORMAT]
+        try:
+            self.__localTimeZone = self.config[CONFIG_KEY_TIME_ZONE]
+        except KeyError:
+            self.__localTimeZone = DEFAULT_TIME_ZONE
+            self._updated = True
+
+        try:
+            self.__dateTimeFormat = self.config[CONFIG_KEY_DATE_TIME_FORMAT]
+        except KeyError:
+            self.__dateTimeFormat = DEFAULT_DATE_TIME_FORMAT
+            self._updated = True
+
+        try:
+            self.__dateOnlyFormat = self.config[CONFIG_KEY_DATE_ONLY_FORMAT]
+        except KeyError:
+            self.__dateOnlyFormat = DEFAULT_DATE_ONLY_FORMAT
+            self._updated = True
+
+        self.storeConfig() #will save config file in case one config key raised an exception
 
 
     def _setAndStoreDefaultConf(self):
@@ -23,8 +46,11 @@ class ConfigurationManager:
         or updates the config file.
         :return: nothing
         '''
-        self.localTimeZone = 'Europe/Zurich'
-        self.dateTimeFormat = 'DD/MM/YY HH:mm'
+        self.localTimeZone = DEFAULT_TIME_ZONE
+        self.dateTimeFormat = DEFAULT_DATE_TIME_FORMAT
+        self.dateOnlyFormat = DEFAULT_DATE_ONLY_FORMAT
+
+        self._updated = True
 
         self.storeConfig()
 
@@ -47,12 +73,22 @@ class ConfigurationManager:
         self.__dateTimeFormat = dateTimeFormatStr
         self._updated = True
 
+    @property
+    def dateOnlyFormat(self):
+        return self.__dateOnlyFormat
+
+    @dateOnlyFormat.setter
+    def dateOnlyFormat(self, dateOnlyFormatStr):
+        self.__dateOnlyFormat = dateOnlyFormatStr
+        self._updated = True
+
     def storeConfig(self):
         if not self._updated:
             return
             
-        self.config[TIME_ZONE] = self.localTimeZone
-        self.config[DATE_TIME_FORMAT] = self.dateTimeFormat
+        self.config[CONFIG_KEY_TIME_ZONE] = self.localTimeZone
+        self.config[CONFIG_KEY_DATE_TIME_FORMAT] = self.dateTimeFormat
+        self.config[CONFIG_KEY_DATE_ONLY_FORMAT] = self.dateOnlyFormat
 
         self.config.write()
         
@@ -67,3 +103,5 @@ if __name__ == '__main__':
         
     cm = ConfigurationManager(FILE_PATH)
     print(cm.localTimeZone)
+    print(cm.dateTimeFormat)
+    print(cm.dateOnlyFormat)
