@@ -6,16 +6,24 @@ from urllib.error import HTTPError, URLError
 from bs4 import BeautifulSoup
 from datetimeutil import DateTimeUtil
 
+HISTO_DAY_FLAG_VALUE = True
+CURRENT_OR_HISTO_MINUTE_FLAG_VALUE = False
+
 IDX_HISTODAY_DATA_ENTRY_TO = 1
 IDX_MINUTEDAY_DATA_ENTRY_TO = 1
 
 
 class PriceRequester:
-    IDX_TIMESTAMP = 0
-    IDX_ERROR_MSG = 0
-    IDX_CLOSE_PRICE = 1
-    IDX_CURRENT_PRICE = 1    
-    
+    IDX_IS_DAY_CLOSE_PRICE = 0
+    IDX_TIMESTAMP = 1
+    IDX_ERROR_MSG = 1
+    IDX_CLOSE_PRICE = 2
+    IDX_CURRENT_PRICE = 2
+
+    def __init__(self):
+        self._resultList = []
+
+
     def getHistoricalPriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
         if DateTimeUtil.isTimeStampOlderThan(timeStampUTC, dayNumber=7):
             return self._getHistoDayPriceAtUTCTimeStamp(coin, fiat, timeStampUTC, exchange)
@@ -26,7 +34,8 @@ class PriceRequester:
     def _getHistoMinutePriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
-        resultList = []
+        self._resultList = []
+        self._resultList.append(CURRENT_OR_HISTO_MINUTE_FLAG_VALUE)
 
         try:
             webURL = urllib.request.urlopen(url)
@@ -43,17 +52,18 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
                 dataDic = dic['Data'][IDX_MINUTEDAY_DATA_ENTRY_TO]
-                resultList.append(dataDic['time'])
-                resultList.append(dataDic['close'])
+                self._resultList.append(dataDic['time'])
+                self._resultList.append(dataDic['close'])
             else:
-                resultList = ['ERROR-' + dic['Message']]
-        return resultList
+                self._resultList = ['ERROR-' + dic['Message']]
+        return self._resultList
 
 
     def _getHistoDayPriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
-        resultList = []
+        self._resultList = []
+        self._resultList.append(HISTO_DAY_FLAG_VALUE)
 
         try:
             webURL = urllib.request.urlopen(url)
@@ -70,16 +80,17 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
                 dataDic = dic['Data'][IDX_HISTODAY_DATA_ENTRY_TO]
-                resultList.append(dataDic['time'])
-                resultList.append(dataDic['close'])
+                self._resultList.append(dataDic['time'])
+                self._resultList.append(dataDic['close'])
             else:
-                resultList = ['ERROR-' + dic['Message']]
-        return resultList
+                self._resultList = ['ERROR-' + dic['Message']]
+        return self._resultList
 
 
     def getCurrentPrice(self, coin, fiat, exchange):
         url = "https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&e={}".format(coin, fiat, exchange)
-        resultList = []
+        self._resultList = []
+        self._resultList.append(CURRENT_OR_HISTO_MINUTE_FLAG_VALUE)
 
         try:
             webURL = urllib.request.urlopen(url)
@@ -96,11 +107,11 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             
             if fiat in dic:
-                resultList.append(DateTimeUtil.utcNowTimeStamp())
-                resultList.append(dic[fiat]) #current price is indexed by fiat symbol in returned dic
+                self._resultList.append(DateTimeUtil.utcNowTimeStamp())
+                self._resultList.append(dic[fiat]) #current price is indexed by fiat symbol in returned dic
             else:
-                resultList = ['ERROR-' + dic['Message']]
-        return resultList
+                self._resultList = ['ERROR-' + dic['Message']]
+        return self._resultList
 
 
 if __name__ == '__main__':
