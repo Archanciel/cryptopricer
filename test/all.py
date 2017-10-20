@@ -8,6 +8,8 @@ from testcontroller import TestController
 from testconfigurationmanager import TestConfigurationManager
 from testpricerequester import TestPriceRequester
 from testdatetimeutil import TestDateTimeUtil
+from testcrypcompexchanges import TestCrypCompExchanges
+
 
 if __name__ == "__main__":
     loader = TestLoader() 
@@ -18,7 +20,8 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestController),
                        loader.loadTestsFromTestCase(TestConfigurationManager),
                        loader.loadTestsFromTestCase(TestDateTimeUtil),
-                       loader.loadTestsFromTestCase(TestPriceRequester)
+                       loader.loadTestsFromTestCase(TestPriceRequester),
+                       loader.loadTestsFromTestCase(TestCrypCompExchanges)
     ))
     runner = TextTestRunner(verbosity = 2)
     runner.run(suite)
