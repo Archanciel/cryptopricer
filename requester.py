@@ -212,12 +212,17 @@ class Requester:
             dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
 
         if hourMinute != None:
-            hourMinuteList = hourMinute.split(':')
-            if len(hourMinuteList) == 1:
+            if hourMinute == '0':
+                hour = '0'
                 minute = '0'
+                dayMonthYear = '0'
             else:
-                minute = hourMinuteList[1]
-            hour = hourMinuteList[0] #in both cases, first item in hourMinuteList is hour
+                hourMinuteList = hourMinute.split(':')
+                if len(hourMinuteList) == 1:
+                    minute = '0'
+                else:
+                    minute = hourMinuteList[1]
+                hour = hourMinuteList[0] #in both cases, first item in hourMinuteList is hour
         else:
             if CommandPrice.HOUR in self.commandPrice.parsedParmData:
                 hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
@@ -226,23 +231,26 @@ class Requester:
                 hour = None
                 minute = None
 
-        self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
-        self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
-        self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
-
         if dayMonthYear != None:
-            dayMonthYearList = dayMonthYear.split('/')
-            day = dayMonthYearList[0]
-            month = dayMonthYearList[1]
-
-            if len(dayMonthYearList) == 2:
-                if CommandPrice.YEAR in self.commandPrice.parsedParmData:
-                    year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
-                else:   # year not provided and not obtained from previous full price command input.
-                        # Will be set by PriceRequester which knows in which timezone we are
-                    year = None
+            if dayMonthYear == '0':
+                day = '0'
+                month = '0'
+                year = '0'
+                hour = '0'
+                minute = '0'
             else:
-                year = dayMonthYearList[2]
+                dayMonthYearList = dayMonthYear.split('/')
+                day = dayMonthYearList[0]
+                month = dayMonthYearList[1]
+
+                if len(dayMonthYearList) == 2:
+                    if CommandPrice.YEAR in self.commandPrice.parsedParmData:
+                        year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
+                    else:   # year not provided and not obtained from previous full price command input.
+                            # Will be set by PriceRequester which knows in which timezone we are
+                        year = None
+                else:
+                    year = dayMonthYearList[2]
         else:
             if CommandPrice.DAY in self.commandPrice.parsedParmData:
                 day = self.commandPrice.parsedParmData[CommandPrice.DAY]
@@ -252,6 +260,10 @@ class Requester:
                 day = None
                 month = None
                 year = None
+
+        self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
+        self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
+        self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
 
         self.commandPrice.parsedParmData[CommandPrice.DAY] = day
         self.commandPrice.parsedParmData[CommandPrice.MONTH] = month
