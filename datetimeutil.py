@@ -47,6 +47,40 @@ class DateTimeUtil:
 
 
     @staticmethod
+    def dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute, second, timeZoneStr):
+        '''
+        Given the passed date/time components and a timezone string specification,
+        return an arrow localized date time object.
+
+        :param day:
+        :param month:
+        :param year:
+        :param hour:
+        :param minute:
+        :param timeZoneStr: like 'Europe/Zurich' or 'US/Pacific'
+        :return: arrow localized date time object.
+        '''
+        return arrow.get(year, month, day, hour, minute, second).replace(tzinfo=timeZoneStr)
+
+
+    @staticmethod
+    def dateTimeComponentsToTimeStamp(day, month, year, hour, minute, second, timeZoneStr):
+        '''
+        Given the passed date/time components and a timezone string specification,
+        return a UTC/GMT timezone independent timestamp.
+
+        :param day:
+        :param month:
+        :param year:
+        :param hour:
+        :param minute:
+        :param timeZoneStr: like 'Europe/Zurich' or 'US/Pacific'
+        :return: UTC/GMT timezone independent timestamp.
+        '''
+        return arrow.get(year, month, day, hour, minute, second).replace(tzinfo=timeZoneStr).timestamp
+
+
+    @staticmethod
     def convertToTimeZone(dateTimeArrowObject, timeZoneStr):
         '''
         Return the passed dateTimeArrowObject converted to the passed timeZoneStr.

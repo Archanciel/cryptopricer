@@ -209,5 +209,36 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertEqual(timeStampShifted, timeStampEndDay)
 
 
+    def testDateTimeStringToArrowLocalDate(self):
+        zhArrowDateTimeObj_begOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 02:00:00", 'Europe/Zurich',
+                                                                                  "YYYY/MM/DD HH:mm:ss")
+        self.assertEqual(1506729600, zhArrowDateTimeObj_begOfDay.timestamp)
+        self.assertEqual("2017/09/30 02:00:00 +02:00", zhArrowDateTimeObj_begOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
+
+
+    def testDateTimeStringToTimeStamp(self):
+        absoluteTimeStamp = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 02:00:00", 'Europe/Zurich',
+                                                                   "YYYY/MM/DD HH:mm:ss")
+        self.assertEqual(1506729600, absoluteTimeStamp)
+
+
+    def testDateTimeComponentsToArrowLocalDate(self):
+        zhArrowDateTimeObj_begOfDay = DateTimeUtil.dateTimeComponentsToArrowLocalDate(30, 9, 2017, 2, 0, 0, 'Europe/Zurich')
+        self.assertEqual(1506729600, zhArrowDateTimeObj_begOfDay.timestamp)
+        self.assertEqual("2017/09/30 02:00:00 +02:00", zhArrowDateTimeObj_begOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
+
+
+    def testDateTimeComponentsToTimeStamp(self):
+        absoluteTimeStamp = DateTimeUtil.dateTimeComponentsToTimeStamp(30, 9, 2017, 2, 0, 0, 'Europe/Zurich')
+
+        self.assertEqual(1506729600, absoluteTimeStamp)
+
+
+    def testDateTimeComponentsSecondNonZeroToTimeStamp(self):
+        absoluteTimeStamp = DateTimeUtil.dateTimeComponentsToTimeStamp(30, 9, 2017, 2, 0, 1, 'Europe/Zurich')
+
+        self.assertEqual(1506729601, absoluteTimeStamp)
+
+
 if __name__ == '__main__':
     unittest.main()
