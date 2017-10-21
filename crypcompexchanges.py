@@ -1,6 +1,8 @@
 class CrypCompExchanges:
     def __init__(self):
-        self._dic = {'BTC38': ['BTC38', 'BTC', 'CNY'],
+        self._dic = {'ALL': ['CCCAGG', 'BTC', 'USD'],
+                     'CCCAGG': ['CCCAGG', 'BTC', 'USD'],
+        	            'BTC38': ['BTC38', 'BTC', 'CNY'],
                      'BTER': ['BTER', 'ETH', 'BTC'],
                      'BIT2C': ['Bit2C', 'LTC', 'ILS'],
                      'BITFINEX': ['Bitfinex', 'BTC', 'USD'],
@@ -55,6 +57,14 @@ class CrypCompExchanges:
 
 
     def getExchange(self, exchangeName):
+        '''
+        Avoid price request failure due to incorrect exchange name case. For example,
+        returns 'BitTrex' for 'bitrex' or ' Bittrex' !
+
+        :param exchangeName: exchange name without paying attention to case
+        :return: exchange name with right case
+        :raise KeyException if passed exchangeName not found.
+        '''
         return self._dic[exchangeName.upper()][0]
 
 
