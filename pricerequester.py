@@ -29,8 +29,8 @@ class PriceRequester:
             return self._getHistoDayPriceAtUTCTimeStamp(coin, fiat, timeStampUTC, exchange)
         else:
             return self._getHistoMinutePriceAtUTCTimeStamp(coin, fiat, timeStampUTC, exchange)
-
-
+        
+        
     def _getHistoMinutePriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
@@ -119,7 +119,6 @@ if __name__ == '__main__':
     import os
     from io import StringIO
     from configurationmanager import ConfigurationManager
-    from datetimeutil import DateTimeUtil
 
     FR_DATE_FORMAT_ARROW = 'DD/MM/YYYY'
     FR_DATE_TIME_FORMAT_ARROW = 'DD/MM/YYYY HH:mm:ss'

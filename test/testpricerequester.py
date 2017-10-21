@@ -89,6 +89,24 @@ class TestPriceRequester(unittest.TestCase):
         self.assertEqual(4360.62, priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
 
 
+    def testGetHistoricalPriceAtTimeStampZurichMidOfDayUseTimeStamp(self):
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'CCCAGG'
+        #time stamp is always UTC !
+        timeStampUtc = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 12:59:59", 'Europe/Zurich',
+                                                              "YYYY/MM/DD HH:mm:ss")
+        priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+                                                                            timeStampUtc,
+                                                                            exchange)
+        self.assertEqual(1506729600, priceInfoList[self.priceRequester.IDX_TIMESTAMP])
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[self.priceRequester.IDX_TIMESTAMP],
+                                                                       'UTC')
+        self.assertTrue(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
+        self.assertEqual(4360.62, priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
+
+
     def testGetHistoricalPriceAtUTCTimeStampLessThanSevenDay(self):
         crypto = 'BTC'
         fiat = 'USD'
@@ -113,7 +131,6 @@ class TestPriceRequester(unittest.TestCase):
 
 #still to test
 #  error in get histoday, histominute et current
-#  add logic to avoid wrong typing of exchange names
 
 if __name__ == '__main__':
     unittest.main()
