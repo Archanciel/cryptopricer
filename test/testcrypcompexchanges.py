@@ -18,5 +18,15 @@ class TestCrypCompExchanges(unittest.TestCase):
         self.assertEqual('BitTrex', exch)
 
 
+    def testGetExchangeAll(self):
+        exch = self.crypCompExchanges.getExchange('all')
+        self.assertEqual('CCCAGG', exch)
+
+
+    def testGetExchangeCCCAGG(self):
+        exch = self.crypCompExchanges.getExchange('cccagg')
+        self.assertEqual('CCCAGG', exch)
+
+
 if __name__ == '__main__':
     unittest.main()
