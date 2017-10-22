@@ -36,16 +36,16 @@ class Requester:
     Additional rules for the date and time parms. Those rules are enforced by the
     _buildFullCommandPriceOptionalParmsDic() method.
     
-    ° 0 is legal for both date and time parms. Zero for either date or/and time means now, real time !
+    ° 0 is legal for date and means now, real time !
     ° Date must be 0 or contain a '/'.
-    ° Time must be 0 or be composed of two numerical groups separated by ':', the second group being a 2 digits
-      group. Note 00:00 does not mean now, but midnight !
+    ° Time must be composed of two numerical groups separated by ':', the second group being a 2 digits
+      group. Note 0:00 or 00:00 does not mean now, but midnight !
     ° Exchange must start with a capital letter
 
     Ex:
     Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
                 1/1, accepted. 1/10, accepted. 01/12/16, accepted. 01/12/2015, accepted. 
-    Hour minute can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
+    Hour minute can be 0, rejected. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
                        01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected. 
     '''
 
@@ -59,6 +59,13 @@ class Requester:
     Unlike with pattern 'full', the groups can all occur in any order, reason for which all groups have the same
     structure
     
+    The rules below apply to -d and -t values !
+    
+    Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
+                1/1, accepted. 1/10, accepted. 01/12/16, accepted. 01/12/2015, accepted. 
+    Hour minute can be 0, rejected. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
+                       01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected. 
+
     Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken
     '''
     PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
@@ -159,18 +166,18 @@ class Requester:
         '''
         ° 0 is legal for both date and time parms. Zero for either date or/and time means now, real time !
         ° Date must be 0 or contain a '/'.
-        ° Time must be 0 or be composed of two numerical groups separated by ':', the second group being a 2 digits
+        ° Time must be composed of two numerical groups separated by ':', the second group being a 2 digits
           group. Note 00:00 does not mean now, but midnight !
         ° Exchange must start with a capital letter
 
         Ex:
         Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
                     1/1, accepted. 1/10, accepted. 01/12/16, accepted. 01/12/2015, accepted. 
-        Hour minute can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
+        Hour minute can be 0, rejected. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
                            01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected. 
         '''
         patternCommandDic = {r"\d+/\d+(?:/\d+)*|^0$" : CommandPrice.DAY_MONTH_YEAR,
-                             r"\d+:\d\d|^0$" : CommandPrice.HOUR_MINUTE,
+                             r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
                              r"[A-Z]\w+" : CommandPrice.EXCHANGE}
 
         optionalParsedParmDataDic = {}
@@ -178,7 +185,11 @@ class Requester:
         for pattern in patternCommandDic.keys():
             for group in optionalParmList:
                 if group and re.search(pattern, group):
-                    optionalParsedParmDataDic[patternCommandDic[pattern]] = group
+                    if patternCommandDic[pattern] not in optionalParsedParmDataDic:
+                        #if for example DMY already found in optional full command parms,
+                        #it will not be overwritten ! Ex: 12/09/17 0: both token match DMY
+                        #pattern !
+                        optionalParsedParmDataDic[patternCommandDic[pattern]] = group
 
         return optionalParsedParmDataDic
 
@@ -212,16 +223,16 @@ class Requester:
             dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
 
         if hourMinute != None:
-            if hourMinute == '0':
-                hour = '0'
-                minute = '0'
-                dayMonthYear = '0'
-            else:
-                hourMinuteList = hourMinute.split(':')
-                if len(hourMinuteList) == 1:
-                    minute = '0'
+            hourMinuteList = hourMinute.split(':')
+            if len(hourMinuteList) == 1:
+                if CommandPrice.HOUR in self.commandPrice.parsedParmData:
+                    hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
+                    minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
                 else:
-                    minute = hourMinuteList[1]
+                    hour = None
+                    minute = None
+            else:
+                minute = hourMinuteList[1]
                 hour = hourMinuteList[0] #in both cases, first item in hourMinuteList is hour
         else:
             if CommandPrice.HOUR in self.commandPrice.parsedParmData:
@@ -231,26 +242,37 @@ class Requester:
                 hour = None
                 minute = None
 
+        self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
+        self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
+        self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
+
         if dayMonthYear != None:
             if dayMonthYear == '0':
                 day = '0'
                 month = '0'
                 year = '0'
-                hour = '0'
-                minute = '0'
             else:
                 dayMonthYearList = dayMonthYear.split('/')
-                day = dayMonthYearList[0]
-                month = dayMonthYearList[1]
-
-                if len(dayMonthYearList) == 2:
-                    if CommandPrice.YEAR in self.commandPrice.parsedParmData:
+                if len(dayMonthYearList) < 2: #invalid date format --> try to get previous date components
+                    if CommandPrice.DAY in self.commandPrice.parsedParmData:
+                        day = self.commandPrice.parsedParmData[CommandPrice.DAY]
+                        month = self.commandPrice.parsedParmData[CommandPrice.MONTH]
                         year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
-                    else:   # year not provided and not obtained from previous full price command input.
-                            # Will be set by PriceRequester which knows in which timezone we are
+                    else:
+                        day = None
+                        month = None
                         year = None
                 else:
-                    year = dayMonthYearList[2]
+                    day = dayMonthYearList[0]
+                    month = dayMonthYearList[1]
+                    if len(dayMonthYearList) == 2:
+                        if CommandPrice.YEAR in self.commandPrice.parsedParmData:
+                            year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
+                        else:   # year not provided and not obtained from previous full price command input.
+                                # Will be set by PriceRequester which knows in which timezone we are
+                            year = None
+                    else:
+                        year = dayMonthYearList[2]
         else:
             if CommandPrice.DAY in self.commandPrice.parsedParmData:
                 day = self.commandPrice.parsedParmData[CommandPrice.DAY]
@@ -260,10 +282,6 @@ class Requester:
                 day = None
                 month = None
                 year = None
-
-        self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
-        self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
-        self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
 
         self.commandPrice.parsedParmData[CommandPrice.DAY] = day
         self.commandPrice.parsedParmData[CommandPrice.MONTH] = month
