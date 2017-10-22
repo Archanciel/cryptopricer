@@ -29,9 +29,9 @@ class Processor:
         localTz = self.configManager.localTimeZone
         dateTimeFormat = self.configManager.dateTimeFormat
 
-        if (day + month + year + hour + minute) == 0:
-            # when the user specifies 0 for either the date or the time,
-            # this means current price is asked and all date/time components
+        if (day + month + year) == 0:
+            # when the user specifies 0 for either the date,
+            # this means current price is asked and date components
             # are set to zero !
             priceInfoList = self.priceRequester.getCurrentPrice(crypto, fiat, validExchangeSymbol)
 
@@ -48,7 +48,12 @@ class Processor:
 
             if len(priceInfoList) > 1:
                 requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtc, localTz)
-                requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
+                if priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE]:
+                    #histoday price returned
+                    requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(self.configManager.dateOnlyFormat)
+                else:
+                    requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
+                    
                 return "{}/{} on {}: ".format(crypto, fiat, validExchangeSymbol) + ' ' + requestedDateTimeStr + ' ' + \
                         str(priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
             else:
