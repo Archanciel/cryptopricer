@@ -55,7 +55,7 @@ class PriceRequester:
                 self._resultList.append(dataDic['time'])
                 self._resultList.append(dataDic['close'])
             else:
-                self._resultList = ['ERROR-' + dic['Message']]
+                self._resultList.append('ERROR - ' + dic['Message'])
         return self._resultList
 
 
@@ -83,7 +83,7 @@ class PriceRequester:
                 self._resultList.append(dataDic['time'])
                 self._resultList.append(dataDic['close'])
             else:
-                self._resultList = ['ERROR-' + dic['Message']]
+                self._resultList.append('ERROR - ' + dic['Message'])
         return self._resultList
 
 
@@ -110,7 +110,7 @@ class PriceRequester:
                 self._resultList.append(DateTimeUtil.utcNowTimeStamp())
                 self._resultList.append(dic[fiat]) #current price is indexed by fiat symbol in returned dic
             else:
-                self._resultList = ['ERROR-' + dic['Message']]
+                self._resultList.append('ERROR - ' + dic['Message'])
         return self._resultList
 
 

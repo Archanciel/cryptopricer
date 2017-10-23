@@ -129,8 +129,42 @@ class TestPriceRequester(unittest.TestCase):
         self.assertFalse(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
 
 
-#still to test
-#  error in get histoday, histominute et current
+    def testGetHistoricalPriceAtUTCTimeStampLessThanSevenDayWrongExchange(self):
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'unknown'
+
+        utcArrowDateTimeObj = DateTimeUtil.localNow('UTC')
+        utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-2)
+        priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+                                                                             utcArrowDateTimeObj.timestamp,
+                                                                             exchange)
+        self.assertFalse(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        self.assertEqual("ERROR - e param is not valid the market does not exist for this coin pair", priceInfoList[self.priceRequester.IDX_ERROR_MSG])
+
+    def testGetHistoricalPriceAtUTCTimeStampMidOfDayWrongExchange(self):
+        crypto = 'BTC'
+
+        fiat = 'USD'
+        exchange = 'unknown'
+        utcArrowDateTimeObj_midOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 12:59:59", 'UTC',
+                                                                                   "YYYY/MM/DD HH:mm:ss")
+        priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+                                                                             utcArrowDateTimeObj_midOfDay.timestamp,
+                                                                             exchange)
+        self.assertTrue(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        self.assertEqual("ERROR - e param is not valid the market does not exist for this coin pair", priceInfoList[self.priceRequester.IDX_ERROR_MSG])
+
+
+    def testGetCurrentPriceWrongExchange(self):
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'unknown'
+
+        priceInfoList = self.priceRequester.getCurrentPrice(crypto, fiat, exchange)
+        self.assertFalse(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)", priceInfoList[self.priceRequester.IDX_ERROR_MSG])
+
 
 if __name__ == '__main__':
     unittest.main()
