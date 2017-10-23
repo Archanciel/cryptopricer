@@ -46,8 +46,8 @@ class CommandPrice(AbstractCommand):
         else:
             minute = 0
     
-        result = self.receiver.getCryptoPrice(self.parsedParmData[self.CRYPTO], \
-        	                            self.parsedParmData[self.FIAT], \
+        result = self.receiver.getCryptoPrice(self.parsedParmData[self.CRYPTO].upper(), \
+        	                            self.parsedParmData[self.FIAT].upper(), \
         	                            self.parsedParmData[self.EXCHANGE], \
         	                            day, \
         	                            month, \
