@@ -138,7 +138,7 @@ class TestProcessor(unittest.TestCase):
             else:
                 nowHourStr = '00'
         else:
-            nowHourStr = str(nowMinute)
+            nowHourStr = str(nowHour)
 
         self.assertEqual('BTC/USD on BitTrex:  {}/{}/{} {}:{}'.format(now.day, now.month, now.year - 2000, nowHourStr,
                                                                       nowMinuteStr), result)
