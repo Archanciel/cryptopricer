@@ -24,7 +24,10 @@ class Processor:
         try:
             validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
         except(KeyError):
-            return "ERROR - invalid exchange '{}'".format(exchange)
+            return "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat)
+        except(AttributeError):
+            #occurs if exchange name does not start with an upper case. Parsing it returns None !
+            return "ERROR - exchange name does not respect required format: must start with an upper case".format(exchange, crypto, fiat)
 
         localTz = self.configManager.localTimeZone
         dateTimeFormat = self.configManager.dateTimeFormat
@@ -46,7 +49,7 @@ class Processor:
             timeStampUtc = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, 'Europe/Zurich')
             priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampUtc, validExchangeSymbol)
 
-            if len(priceInfoList) > 1:
+            if len(priceInfoList) > 2:
                 requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtc, localTz)
                 if priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE]:
                     #histoday price returned

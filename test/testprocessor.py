@@ -97,7 +97,7 @@ class TestProcessor(unittest.TestCase):
                                                year, \
                                                hour, \
                                                minute)
-        self.assertEqual("ERROR - invalid exchange 'unknown'", result)
+        self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)", result)
 
 
     def testGetCryptoPriceRealTime(self):    
@@ -163,7 +163,7 @@ class TestProcessor(unittest.TestCase):
                                                year, \
                                                hour, \
                                                minute)
-        self.assertEqual("ERROR - invalid exchange 'unknown'", result)
+        self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)", result)
 
 
 if __name__ == '__main__':
