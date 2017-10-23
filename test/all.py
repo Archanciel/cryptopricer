@@ -10,7 +10,7 @@ from testpricerequester import TestPriceRequester
 from testdatetimeutil import TestDateTimeUtil
 from testcrypcompexchanges import TestCrypCompExchanges
 from testprocessor import TestProcessor
-
+from testcommandprice import TestCommandPrice
 
 if __name__ == "__main__":
     loader = TestLoader() 
@@ -23,7 +23,8 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestDateTimeUtil),
                        loader.loadTestsFromTestCase(TestPriceRequester),
                        loader.loadTestsFromTestCase(TestCrypCompExchanges),
-                       loader.loadTestsFromTestCase(TestProcessor)
+                       loader.loadTestsFromTestCase(TestProcessor),
+                       loader.loadTestsFromTestCase(TestCommandPrice)
     ))
     runner = TextTestRunner(verbosity = 2)
     runner.run(suite)
