@@ -13,15 +13,6 @@ from crypcompexchanges import CrypCompExchanges
 from processor import Processor
 from commandprice import  CommandPrice
 
-''' output for asserts
-HISTORICAL
-BTC/USD on BitTrex:  12/09/17 4122
-ERROR - unknown market does not exist for this coin pair (BTC-USD)
-
-REAL TIME
-BTC/USD on BitTrex:  23/10/17 22:47 5957
-ERROR - unknown market does not exist for this coin pair (BTC-USD)
-'''
 
 class TestCommandPrice(unittest.TestCase):
     def setUp(self):
@@ -37,50 +28,44 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice = CommandPrice(self.processor)
 
 
-    def testGetCryptoPriceHistorical(self):
-        crypto = 'BTC'
-        fiat = 'USD'
-        exchange = 'bittrex'
-        day = 12
-        month = 9
-        year = 2017
-        hour = 10
-        minute = 5
+    def testExecuteHistoricalPrice(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '2017'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
-                                               minute)
-        self.assertEqual('BTC/USD on BitTrex:  12/09/17 4122', result)
+        # without the 2 nxt lines, TestRequester fails when running Unitests for all
+        # unit tests allthough running all.py succeeds !
+        self.commandPrice.parsedParmData[self.commandPrice.DAY_MONTH_YEAR] = None
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR_MINUTE] = None
+
+        result = self.commandPrice.execute()
+
+        self.assertEqual("BTC/USD on BitTrex:  12/09/17 4122", result)
 
 
-    def testGetCryptoPriceHistoricalRecent(self):    
-        #here, requested date is less than 7 days ago
-        now = DateTimeUtil.localNow('Europe/Zurich')
-        recent = now.shift(days = -2)
-        crypto = 'BTC'
-        fiat = 'USD'
-        exchange = 'bittrex'
-        day = recent.day
-        month = recent.month
-        year = recent.year
-        hour = 10
-        minute = 5
+    def testExecuteHistoricalPriceWrongExchange(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'Unknown'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '2017'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
-                                               minute)
-        result = self.removePriceFromResult(result)
-        self.assertEqual('BTC/USD on BitTrex:  {}/{}/{} 10:05'.format(day, month, year - 2000), result)
+        # without the 2 nxt lines, TestRequester fails when running Unitests for all
+        # unit tests allthough running all.py succeeds !
+        self.commandPrice.parsedParmData[self.commandPrice.DAY_MONTH_YEAR] = None
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR_MINUTE] = None
+
+        result = self.commandPrice.execute()
+
+        self.assertEqual("ERROR - Unknown market does not exist for this coin pair (BTC-USD)", result)
 
 
     def removePriceFromResult(self, resultStr):
@@ -92,46 +77,25 @@ class TestCommandPrice(unittest.TestCase):
             return ()
 
 
-    def testGetCryptoPriceHistoricalWrongExchange(self):    
-        crypto = 'BTC'
-        fiat = 'USD'
-        exchange = 'unknown'
-        day = 12
-        month = 9
-        year = 2017
-        hour = 10
-        minute = 5
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
-                                               minute)
-        self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)", result)
+    def testExecuteRealTimePrice(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
+        # without the 2 nxt lines, TestRequester fails when running Unitests for all
+        # unit tests allthough running all.py succeeds !
+        self.commandPrice.parsedParmData[self.commandPrice.DAY_MONTH_YEAR] = None
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR_MINUTE] = None
 
-    def testGetCryptoPriceRealTime(self):    
-        now = DateTimeUtil.localNow('Europe/Zurich')
-        crypto = 'BTC'
-        fiat = 'USD'
-        exchange = 'bittrex'
-        day = 0
-        month = 0
-        year = 0
-        hour = 1
-        minute = 1
-
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
-                                               minute)
+        result = self.commandPrice.execute()
         result = self.removePriceFromResult(result)
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
         nowMinute = now.minute
 
         if nowMinute < 10:
@@ -152,30 +116,27 @@ class TestCommandPrice(unittest.TestCase):
         else:
             nowHourStr = str(nowHour)
 
-        self.assertEqual('BTC/USD on BitTrex:  {}/{}/{} {}:{}'.format(now.day, now.month, now.year - 2000, nowHourStr,
-                                                                      nowMinuteStr), result)
+        self.assertEqual('BTC/USD on BitTrex:  {}/{}/{} {}:{}'.format(now.day, now.month, now.year - 2000, nowHourStr, nowMinuteStr), result)
 
 
-    def testGetCryptoPriceRealTimeWrongExchange(self):    
-        now = DateTimeUtil.localNow('Europe/Zurich')
-        crypto = 'BTC'
-        fiat = 'USD'
-        exchange = 'unknown'
-        day = 0
-        month = 0
-        year = 0
-        hour = 1
-        minute = 1
+    def testExecuteRealTimePriceWrongExchange(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'Unknown'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
-                                               minute)
-        self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)", result)
+        # without the 2 nxt lines, TestRequester fails when running Unitests for all
+        # unit tests allthough running all.py succeeds !
+        self.commandPrice.parsedParmData[self.commandPrice.DAY_MONTH_YEAR] = None
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR_MINUTE] = None
+
+        result = self.commandPrice.execute()
+        
+        self.assertEqual("ERROR - Unknown market does not exist for this coin pair (BTC-USD)", result)
 
 
 if __name__ == '__main__':
