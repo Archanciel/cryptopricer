@@ -197,7 +197,7 @@ class Requester:
     def _parseAndFillCommandPrice(self, inputStr):
         groupList = self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
 
-        if groupList == (): #full pattern not matched --> try match partial pattern
+        if groupList == (): #full command pattern not matched --> try match partial command pattern
             groupList = self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
             if groupList != (): #here, parms are associated to parrm tag (i.e -c or -d). Means they have been
                                 #entered in any order and are all optional
@@ -213,10 +213,12 @@ class Requester:
                 dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
             else: #neither full nor parrial pattern matched
                 return None
-        else: #full command line entered. Here, parms were entered in a fixed order reflected in the pattern.
+        else: #full command line entered. Here, parms were entered in an order reflected in the
+              # pattern: crypto fiat in this mandatory order, then date time exchange which order
+              # can be different.
             self.commandPrice.resetData()
-            self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0]
-            self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1]
+            self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
+            self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1] #mandatory fiat parm, its order is fixed
             optionalParsedParmDataDic = self._buildFullCommandPriceOptionalParmsDic(groupList[2:])
             self.commandPrice.parsedParmData.update(optionalParsedParmDataDic)
             hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
