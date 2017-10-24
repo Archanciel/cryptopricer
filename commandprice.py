@@ -79,8 +79,8 @@ if __name__ == '__main__':
 
     print('HISTORICAL')
 
-    cpr.parsedParmData[cpr.CRYPTO] = 'BTC'
-    cpr.parsedParmData[cpr.FIAT] = 'USD'
+    cpr.parsedParmData[cpr.CRYPTO] = 'btc'
+    cpr.parsedParmData[cpr.FIAT] = 'usd'
     cpr.parsedParmData[cpr.EXCHANGE] = 'bittrex'
     cpr.parsedParmData[cpr.DAY] = '12'
     cpr.parsedParmData[cpr.MONTH] = '9'
