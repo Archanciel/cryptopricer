@@ -71,15 +71,6 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('BTC/USD on BitTrex:  {}/{}/{} 10:05'.format(day, month, year - 2000), result)
 
 
-    def removePriceFromResult(self, resultStr):
-        match = re.match(r"(.*) ([\d\.]*)", resultStr)
-
-        if match != None:
-            return match.group(1)
-        else:
-            return ()
-
-
     def testGetCryptoPriceHistoricalWrongExchange(self):    
         crypto = 'BTC'
         fiat = 'USD'
@@ -98,6 +89,15 @@ class TestProcessor(unittest.TestCase):
                                                hour, \
                                                minute)
         self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)", result)
+
+
+    def removePriceFromResult(self, resultStr):
+        match = re.match(r"(.*) ([\d\.]*)", resultStr)
+
+        if match != None:
+            return match.group(1)
+        else:
+            return ()
 
 
     def testGetCryptoPriceRealTime(self):    
