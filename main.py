@@ -1,6 +1,6 @@
 from controller import Controller
 
-def main():
+def mainTrial():
     import os, sys
     from io import StringIO
 
@@ -28,5 +28,11 @@ def main():
 
     sys.stdin = stdin
 
+
+def main():
+    c = Controller()
+    c.run()
+
+    
 if __name__ == '__main__':
     main()
