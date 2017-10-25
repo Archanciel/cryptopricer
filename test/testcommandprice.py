@@ -55,7 +55,7 @@ class TestCommandPrice(unittest.TestCase):
 
         result = self.commandPrice.execute()
 
-        self.assertEqual("ERROR - Unknown market does not exist for this coin pair (BTC-USD)", result)
+        self.assertEqual("BTC/USD on Unknown: ERROR - Unknown market does not exist for this coin pair (BTC-USD)", result)
 
 
     def removePriceFromResult(self, resultStr):
@@ -101,7 +101,7 @@ class TestCommandPrice(unittest.TestCase):
         else:
             nowHourStr = str(nowHour)
 
-        self.assertEqual('BTC/USD on BitTrex:  {}/{}/{} {}:{}'.format(now.day, now.month, now.year - 2000, nowHourStr, nowMinuteStr), result)
+        self.assertEqual('BTC/USD on BitTrex: {}/{}/{} {}:{}'.format(now.day, now.month, now.year - 2000, nowHourStr, nowMinuteStr), result)
 
 
     def testExecuteRealTimePriceWrongExchange(self):
@@ -116,7 +116,7 @@ class TestCommandPrice(unittest.TestCase):
 
         result = self.commandPrice.execute()
         
-        self.assertEqual("ERROR - Unknown market does not exist for this coin pair (BTC-USD)", result)
+        self.assertEqual("BTC/USD on Unknown: ERROR - Unknown market does not exist for this coin pair (BTC-USD)", result)
 
 
 if __name__ == '__main__':

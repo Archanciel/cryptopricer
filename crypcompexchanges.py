@@ -65,7 +65,10 @@ class CrypCompExchanges:
         :return: exchange name with right case
         :raise KeyException if passed exchangeName not found.
         '''
-        return self._dic[exchangeName.upper()][0]
+        if isinstance(exchangeName, str):
+            return self._dic[exchangeName.upper()][0]
+        else:
+            raise Exception("exchange could not be parsed due to an error in your command")
 
 
     def _getExchangeTestData(self, exchangeName):

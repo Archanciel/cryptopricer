@@ -24,10 +24,10 @@ class Processor:
         try:
             validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
         except(KeyError):
-            return "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat)
-        except(AttributeError):
+            return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat)
+        except Exception as e:
             #occurs if exchange name does not start with an upper case. Parsing it returns None !
-            return "ERROR - exchange name does not respect required format: must start with an upper case".format(exchange, crypto, fiat)
+            return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + "ERROR - {}".format(str(e))
 
         localTz = self.configManager.localTimeZone
         dateTimeFormat = self.configManager.dateTimeFormat
@@ -38,13 +38,13 @@ class Processor:
             # are set to zero !
             priceInfoList = self.priceRequester.getCurrentPrice(crypto, fiat, validExchangeSymbol)
 
-            if len(priceInfoList) > 1:
+            if len(priceInfoList) > 2:
                 timeStamp_ = priceInfoList[self.priceRequester.IDX_TIMESTAMP]
                 requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp_, localTz)
                 requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
-                return "{}/{} on {}: ".format(crypto, fiat, validExchangeSymbol) + ' ' + requestedDateTimeStr + ' ' + str(priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
+                return "{}/{} on {}:".format(crypto, fiat, validExchangeSymbol) + ' ' + requestedDateTimeStr + ' ' + str(priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
             else:
-                return "{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[self.priceRequester.IDX_ERROR_MSG]
+                return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + priceInfoList[self.priceRequester.IDX_ERROR_MSG]
         else:
             timeStampUtc = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, 'Europe/Zurich')
             priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampUtc, validExchangeSymbol)
