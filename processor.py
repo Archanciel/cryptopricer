@@ -57,10 +57,10 @@ class Processor:
                 else:
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
                     
-                return "{}/{} on {}: ".format(crypto, fiat, validExchangeSymbol) + ' ' + requestedDateTimeStr + ' ' + \
+                return "{}/{} on {}:".format(crypto, fiat, validExchangeSymbol) + ' ' + requestedDateTimeStr + ' ' + \
                         str(priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
             else:
-                return "{}/{} on {}: ".format(crypto, fiat, exchange) + ' ' + priceInfoList[self.priceRequester.IDX_ERROR_MSG]
+                return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + priceInfoList[self.priceRequester.IDX_ERROR_MSG]
 
 
 if __name__ == '__main__':

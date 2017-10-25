@@ -43,7 +43,7 @@ class TestProcessor(unittest.TestCase):
                                                year, \
                                                hour, \
                                                minute)
-        self.assertEqual('BTC/USD on BitTrex:  12/09/17 4122', result)
+        self.assertEqual('BTC/USD on BitTrex: 12/09/17 4122', result)
 
 
     def testGetCryptoPriceHistoricalRecent(self):    
@@ -68,7 +68,7 @@ class TestProcessor(unittest.TestCase):
                                                hour, \
                                                minute)
         result = self.removePriceFromResult(result)
-        self.assertEqual('BTC/USD on BitTrex:  {}/{}/{} 10:05'.format(day, month, year - 2000), result)
+        self.assertEqual('BTC/USD on BitTrex: {}/{}/{} 10:05'.format(day, month, year - 2000), result)
 
 
     def testGetCryptoPriceHistoricalWrongExchange(self):    

@@ -93,7 +93,7 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on BitTrex:  23/09/17 3773\n', contentList[1])
+            self.assertEqual('BTC/USD on BitTrex: 23/09/17 3773\n', contentList[1])
 
 
     def testControllerHistoDayPriceInvalidTimeFormat(self):
