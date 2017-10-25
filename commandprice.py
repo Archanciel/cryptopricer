@@ -43,6 +43,10 @@ class CommandPrice(AbstractCommand):
 
 
     def execute(self):
+        cryptoUpper = self.parsedParmData[self.CRYPTO].upper()
+        fiatUpper = self.parsedParmData[self.FIAT].upper()
+        exchange = self.parsedParmData[self.EXCHANGE]
+
         dayStr = self.parsedParmData[self.DAY]
         if dayStr != None:
             day = int(dayStr)
@@ -57,7 +61,14 @@ class CommandPrice(AbstractCommand):
  
         yearStr = self.parsedParmData[self.YEAR]
         if yearStr != None:
-            year = int(yearStr)
+            if len(yearStr) == 2:
+                year = 2000 + int(yearStr)
+            elif len(yearStr) == 4:
+                year = int(yearStr)
+            elif yearStr != '0':
+                return "{}/{} on {}:".format(cryptoUpper, fiatUpper, exchange) + ' ' + "ERROR - {} not conform to accepted year format (YYYY, YY, '' or 0)".format(yearStr)
+            else:
+                year = 0
         else:
             year = 0
             
@@ -72,15 +83,15 @@ class CommandPrice(AbstractCommand):
             minute = int(minuteStr)
         else:
             minute = 0
-    
-        result = self.receiver.getCryptoPrice(self.parsedParmData[self.CRYPTO].upper(), \
-        	                            self.parsedParmData[self.FIAT].upper(), \
-        	                            self.parsedParmData[self.EXCHANGE], \
-        	                            day, \
-        	                            month, \
-        	                            year, \
-        	                            hour, \
-        	                            minute)
+
+        result = self.receiver.getCryptoPrice(cryptoUpper,
+                                              fiatUpper,
+                                              exchange,
+                                              day,
+                                              month,
+                                              year,
+                                              hour,
+                                              minute)
         	                            
         return result
 

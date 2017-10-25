@@ -28,13 +28,28 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice = CommandPrice(self.processor)
 
 
-    def testExecuteHistoricalPrice(self):
+    def testExecuteHistoricalPriceFourDigitYear(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
         self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
         self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '2017'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        result = self.commandPrice.execute()
+
+        self.assertEqual("BTC/USD on BitTrex:  12/09/17 4122", result)
+
+
+    def testExecuteHistoricalPriceTwoDigitYear(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
@@ -115,8 +130,40 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
         result = self.commandPrice.execute()
-        
+
         self.assertEqual("BTC/USD on Unknown: ERROR - Unknown market does not exist for this coin pair (BTC-USD)", result)
+
+
+    def testExecuteRealTimePriceInvalidYearOneDigit(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        result = self.commandPrice.execute()
+
+        self.assertEqual("BTC/USD on bittrex: ERROR - 1 not conform to accepted year format (YYYY, YY, '' or 0)",
+                         result)
+
+
+    def testExecuteRealTimePriceInvalidYearThreeDigit(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '017'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        result = self.commandPrice.execute()
+
+        self.assertEqual("BTC/USD on bittrex: ERROR - 017 not conform to accepted year format (YYYY, YY, '' or 0)",
+                         result)
 
 
 if __name__ == '__main__':
