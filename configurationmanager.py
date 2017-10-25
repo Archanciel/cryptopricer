@@ -1,5 +1,5 @@
-from configobj import ConfigObj
 import os
+from configobj import ConfigObj
 
 CONFIG_KEY_TIME_ZONE = 'timezone'
 DEFAULT_TIME_ZONE = 'Europe/Zurich'

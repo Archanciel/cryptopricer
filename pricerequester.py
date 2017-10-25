@@ -1,9 +1,10 @@
 import json
-import json
 import sys
 import urllib.request
 from urllib.error import HTTPError, URLError
+
 from bs4 import BeautifulSoup
+
 from datetimeutil import DateTimeUtil
 
 HISTO_DAY_FLAG_VALUE = True
