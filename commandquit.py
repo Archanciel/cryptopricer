@@ -1,7 +1,7 @@
 from abstractcommand import AbstractCommand
 
 class CommandQuit(AbstractCommand):
-    def __init__(self, receiver=None, name='', rawParmData='', parsedParmData=''):
+    def __init__(self, receiver=None, rawParmData='', parsedParmData=''):
         super().__init__(receiver, 'CommandQuit', rawParmData, parsedParmData)
 
 
