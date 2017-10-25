@@ -2,6 +2,7 @@ class CrypCompExchanges:
     def __init__(self):
         self._dic = {'ALL': ['CCCAGG', 'BTC', 'USD'],
                      'CCCAGG': ['CCCAGG', 'BTC', 'USD'],
+                     'CCEX': ['Ccex', 'MCAP', 'USD'],
         	         'BTC38': ['BTC38', 'BTC', 'CNY'],
                      'BTER': ['BTER', 'ETH', 'BTC'],
                      'BIT2C': ['Bit2C', 'LTC', 'ILS'],
@@ -90,12 +91,30 @@ if __name__ == '__main__':
 
     keyList = cc._dic.keys()
 
+    print('\n--- HISTO PRICES ---\n')
+    
     for key in keyList:
         exchTestData = cc._getExchangeTestData(key)
         exch = exchTestData[0]
         fiat = exchTestData[2]
         crypto = exchTestData[1]
+  
         res = pp.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, ts, exch)
+
+        if len(res) > 1:
+            print("{} {} {} {}".format(exch, crypto, fiat, res[2]))
+        else:
+            print("{} {}".format(exch, res[0][0:26]))
+
+    print('\n\n--- CURRENT PRICES ---\n')
+
+    for key in keyList:
+        exchTestData = cc._getExchangeTestData(key)
+        exch = exchTestData[0]
+        fiat = exchTestData[2]
+        crypto = exchTestData[1]
+ 
+        res = pp.getCurrentPrice(crypto, fiat, exch)
         if len(res) > 1:
             print("{} {} {} {}".format(exch, crypto, fiat, res[2]))
         else:
