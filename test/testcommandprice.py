@@ -25,7 +25,7 @@ class TestCommandPrice(unittest.TestCase):
         self.priceRequester = PriceRequester()
         self.crypCompExchanges = CrypCompExchanges()
         self.processor = Processor(self.configMgr, self.priceRequester, self.crypCompExchanges)
-        self.commandPrice = CommandPrice(self.processor)
+        self.commandPrice = CommandPrice(self.processor, self.configMgr)
 
 
     def testExecuteHistoricalPriceFourDigitYear(self):
@@ -50,6 +50,21 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
         self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        result = self.commandPrice.execute()
+
+        self.assertEqual("BTC/USD on BitTrex: 12/09/17 4122", result)
+
+
+    def testExecuteHistoricalPriceNoYear(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = None
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 

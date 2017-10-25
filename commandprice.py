@@ -1,4 +1,7 @@
 from abstractcommand import AbstractCommand
+from datetimeutil import DateTimeUtil
+from configurationmanager import ConfigurationManager
+
 
 class CommandPrice(AbstractCommand):
     CRYPTO = "CRYPTO"
@@ -12,8 +15,9 @@ class CommandPrice(AbstractCommand):
     HOUR_MINUTE = "HM"      #temporary store HH:MM user input
     DAY_MONTH_YEAR = "DMY"  #temporary store DD/MM/YY user input
 
-    def __init__(self, receiver=None, name='', rawParmData='', parsedParmData={}):
+    def __init__(self, receiver=None, configManager=None, rawParmData='', parsedParmData={}):
         super().__init__(receiver, 'CommandPrice', rawParmData, parsedParmData)
+        self.configManager = configManager
         self._initialiseParsedParmData()
 
 
@@ -70,7 +74,8 @@ class CommandPrice(AbstractCommand):
             else:
                 year = 0
         else:
-            year = 0
+            localNow = DateTimeUtil.localNow(self.configManager.localTimeZone)
+            year = localNow.year
             
         hourStr = self.parsedParmData[self.HOUR]
         if hourStr != None:

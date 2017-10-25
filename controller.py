@@ -1,14 +1,17 @@
-import sys, os
-from requester import Requester
-from processor import Processor
-from printer import Printer
-from commandprice import CommandPrice
+import os
+import sys
+
 from commandcrypto import CommandCrypto
-from commandquit import CommandQuit
 from commanderror import CommandError
-from pricerequester import PriceRequester
+from commandprice import CommandPrice
+from commandquit import CommandQuit
 from configurationmanager import ConfigurationManager
 from crypcompexchanges import CrypCompExchanges
+from pricerequester import PriceRequester
+from printer import Printer
+from processor import Processor
+from requester import Requester
+
 
 class Controller:
     '''
@@ -29,7 +32,7 @@ class Controller:
         req = Requester()
         pri = Printer()
 
-        commandPrice = CommandPrice(proc)
+        commandPrice = CommandPrice(proc, cm)
         commandCrypto = CommandCrypto(proc)
         req.commandPrice = commandPrice
         req.commandCrypto = commandCrypto
