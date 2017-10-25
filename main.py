@@ -4,20 +4,26 @@ def main():
     import os, sys
     from io import StringIO
 
-    # stdin = sys.stdin
-    # sys.stdin = StringIO('btc usd 0 Bittrex' + \
-    #                      '\nbtc usd 24/10/2017 22:33 Bittrex' + \
-    #                      '\ngbyte btc 24/10/2017 22:33 Bittrex' + \
-    #                      '\ngbyte usd 24/10/2017 22:33 Bittrex' + \
-    #                      '\nbtc usd 0 Bittrex' + \
-    #                      '\ngbyte btc 0 Bittrex' + \
-    #                      '\nbtc usd 12/10/2017 12:00 Unknown' + \
-    #                      '\nbtc usd 12/10/2017 12:00 bittrex\nq\ny') #notice \nq\ny to nicely quit the program
+    stdin = sys.stdin
+    # sys.stdin = StringIO('btc usd 0 Bittrex' +
+    #                      '\n-t22:34' + ERROR: exception !
+    #                      '\n-d23/10/17') ERROR: exception  !
+
+    sys.stdin = StringIO('btc usd 23/10 2.56 Bittrex' + #ERROR: bad error msg !
+                         '\nbtc usd 24/10/2017 22:33 Bittrex' +
+                         '\ngbyte btc 24/10/2017 22:33 Bittrex' +
+                         '\ngbyte usd 24/10/2017 22:33 Bittrex' +
+                         '\n-ceth' +
+                         '\n-d23/10' +
+                         '\n-t12:56' +
+                         '\ngbyte btc 0 Bittrex' +
+                         '\nbtc usd 12/10/2017 12:00 Unknown' +
+                         '\nbtc usd 12/10/2017 12:00 bittrex\nq\ny') #noticenq\ny to nicely quit the program
 
     c = Controller()
     c.run()
 
-    # sys.stdin = stdin
+    sys.stdin = stdin
 
 if __name__ == '__main__':
     main()
