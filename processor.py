@@ -1,25 +1,24 @@
-from abstractcommand import AbstractCommand
 from datetimeutil import DateTimeUtil
 
 
 class Processor:
-    def __init__(self, \
-                 configManager, \
-                 priceRequester, \
+    def __init__(self,
+                 configManager,
+                 priceRequester,
                  crypCompExchanges):
         self.configManager = configManager
         self.priceRequester = priceRequester
         self.crypCompExchanges = crypCompExchanges
 
 
-    def getCryptoPrice(self, \
-                       crypto, \
-                       fiat, \
-                       exchange, \
-                       day, \
-                       month, \
-                       year, \
-                       hour, \
+    def getCryptoPrice(self,
+                       crypto,
+                       fiat,
+                       exchange,
+                       day,
+                       month,
+                       year,
+                       hour,
                        minute):
         try:
             validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
@@ -56,7 +55,7 @@ class Processor:
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(self.configManager.dateOnlyFormat)
                 else:
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
-                    
+
                 return "{}/{} on {}:".format(crypto, fiat, validExchangeSymbol) + ' ' + requestedDateTimeStr + ' ' + \
                         str(priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
             else:
@@ -89,22 +88,22 @@ if __name__ == '__main__':
     minute = 5
 
     print('HISTORICAL')
-    print(proc.getCryptoPrice(crypto, \
-                              fiat, \
-                              exchange, \
-                              day, \
-                              month, \
-                              year, \
-                              hour, \
+    print(proc.getCryptoPrice(crypto,
+                              fiat,
+                              exchange,
+                              day,
+                              month,
+                              year,
+                              hour,
                               minute))
 
-    print(proc.getCryptoPrice(crypto, \
-                              fiat, \
-                              'unknown_exchange', \
-                              day, \
-                              month, \
-                              year, \
-                              hour, \
+    print(proc.getCryptoPrice(crypto,
+                              fiat,
+                              'unknown_exchange',
+                              day,
+                              month,
+                              year,
+                              hour,
                               minute))
 
     day = 0
@@ -114,20 +113,20 @@ if __name__ == '__main__':
     minute = 0
 
     print('\nREAL TIME')
-    print(proc.getCryptoPrice(crypto, \
-                              fiat, \
-                              exchange, \
-                              day, \
-                              month, \
-                              year, \
-                              hour, \
+    print(proc.getCryptoPrice(crypto,
+                              fiat,
+                              exchange,
+                              day,
+                              month,
+                              year,
+                              hour,
                               minute))
 
-    print(proc.getCryptoPrice(crypto, \
-                              fiat, \
-                              'unknown_exchange', \
-                              day, \
-                              month, \
-                              year, \
-                              hour, \
+    print(proc.getCryptoPrice(crypto,
+                              fiat,
+                              'unknown_exchange',
+                              day,
+                              month,
+                              year,
+                              hour,
                               minute))
