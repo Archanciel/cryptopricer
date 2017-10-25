@@ -63,7 +63,9 @@ if __name__ == '__main__':
     from io import StringIO
 
     stdin = sys.stdin
-    sys.stdin = StringIO('btc usd 24/10/2017 22:33 Bittrex' +
+    sys.stdin = StringIO('btc usd 24/10/17 22:33 Bittrex' +
+                         '\nbtc usd 24/10/017 22:33 Bittrex' +
+                         '\nbtc usd 24/10/1 22:33 Bittrex' +
                          '\nbtc usd 23/10 2.56 bittrex' +
                          '\ngbyte btc 24/10/2017 22:33 Bittrex' +
                          '\ngbyte usd 24/10/2017 22:33 Bittrex' +
@@ -72,15 +74,15 @@ if __name__ == '__main__':
                          '\nbtc usd 12/10/2017 12:00 Unknown' +
                          '\nbtc usd 12/10/2017 12:00 bittrex\nq\ny') #noticenq\ny to nicely quit the program
 
-    stdout = sys.stdout
-    if os.name == 'posix':
-        FILE_PATH = '/sdcard/cryptoout.txt'
-    else:
-        FILE_PATH = 'c:\\temp\\cryptoout.txt'
-    sys.stdout = open(FILE_PATH, 'w')
+    # stdout = sys.stdout
+    # if os.name == 'posix':
+    #     FILE_PATH = '/sdcard/cryptoout.txt'
+    # else:
+    #     FILE_PATH = 'c:\\temp\\cryptoout.txt'
+    # sys.stdout = open(FILE_PATH, 'w')
 
     c = Controller()
     c.run()
 
     sys.stdin = stdin
-    sys.stdout = stdout
+    #sys.stdout = stdout
