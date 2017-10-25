@@ -27,6 +27,20 @@ class AbstractCommand(metaclass=ABCMeta):
         self.rawParmData = ''
         if len(self.parsedParmData) != 0:
             self.parsedParmData = self.parsedParmData.fromkeys(self.parsedParmData.keys())
+        else:
+            self._initialiseParsedParmData()
+
+
+    @abstractmethod
+    def _initialiseParsedParmData(self):
+        '''
+        Prefill the parsedParmData dictionary with empty key/value pair.
+        If this is not done, the parsedParmData dictionary will only contain
+        key/value pairs added at the first use of the command. See CommandPrice
+        for a more detailed explanation.
+        :return:
+        '''
+        pass
 
 
     @abstractmethod

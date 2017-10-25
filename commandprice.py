@@ -14,6 +14,33 @@ class CommandPrice(AbstractCommand):
 
     def __init__(self, receiver=None, name='', rawParmData='', parsedParmData={}):
         super().__init__(receiver, 'CommandPrice', rawParmData, parsedParmData)
+        self._initialiseParsedParmData()
+
+
+    def _initialiseParsedParmData(self):
+        '''
+        Prefill the parsedParmData dictionary with empty key/value pair.
+        If this is not done, the parsedParmData dictionary will only contain
+        key/value pairs added at the first use of the command.
+
+        For example, entering 'btc usd 0 Bittrex' will cause the parsedParmData dic
+        to be initialized with only CRYPTO, FIAT, DAY_MONTH_YEAR, DAY, MONTH, YEAR
+        and EXCHANGE entries. HOUR_MINUTE, HOUR and MINUTE will be missing. This
+        will cause subsequent errors in Requester in case the firs usage was
+        'btc usd 0 Bittrex'
+        :return:
+        '''
+        self.parsedParmData[self.CRYPTO] = None
+        self.parsedParmData[self.FIAT] = None
+        self.parsedParmData[self.EXCHANGE] = None
+        self.parsedParmData[self.DAY] = None
+        self.parsedParmData[self.MONTH] = None
+        self.parsedParmData[self.YEAR] = None
+        self.parsedParmData[self.HOUR] = None
+        self.parsedParmData[self.MINUTE] = None
+        self.parsedParmData[self.DAY_MONTH_YEAR] = None
+        self.parsedParmData[self.HOUR_MINUTE] = None
+
 
     def execute(self):
         dayStr = self.parsedParmData[self.DAY]

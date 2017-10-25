@@ -38,11 +38,6 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        # without the 2 nxt lines, TestRequester fails when running Unitests for all
-        # unit tests allthough running all.py succeeds !
-        self.commandPrice.parsedParmData[self.commandPrice.DAY_MONTH_YEAR] = None
-        self.commandPrice.parsedParmData[self.commandPrice.HOUR_MINUTE] = None
-
         result = self.commandPrice.execute()
 
         self.assertEqual("BTC/USD on BitTrex:  12/09/17 4122", result)
@@ -57,11 +52,6 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '2017'
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
-
-        # without the 2 nxt lines, TestRequester fails when running Unitests for all
-        # unit tests allthough running all.py succeeds !
-        self.commandPrice.parsedParmData[self.commandPrice.DAY_MONTH_YEAR] = None
-        self.commandPrice.parsedParmData[self.commandPrice.HOUR_MINUTE] = None
 
         result = self.commandPrice.execute()
 
@@ -86,11 +76,6 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '0'
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
-
-        # without the 2 nxt lines, TestRequester fails when running Unitests for all
-        # unit tests allthough running all.py succeeds !
-        self.commandPrice.parsedParmData[self.commandPrice.DAY_MONTH_YEAR] = None
-        self.commandPrice.parsedParmData[self.commandPrice.HOUR_MINUTE] = None
 
         result = self.commandPrice.execute()
         result = self.removePriceFromResult(result)
@@ -128,11 +113,6 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '0'
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
-
-        # without the 2 nxt lines, TestRequester fails when running Unitests for all
-        # unit tests allthough running all.py succeeds !
-        self.commandPrice.parsedParmData[self.commandPrice.DAY_MONTH_YEAR] = None
-        self.commandPrice.parsedParmData[self.commandPrice.HOUR_MINUTE] = None
 
         result = self.commandPrice.execute()
         

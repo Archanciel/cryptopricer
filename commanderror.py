@@ -8,5 +8,10 @@ class CommandError(AbstractCommand):
     def __init__(self, receiver=None, name='', rawParmData='', parsedParmData=''):
         super().__init__(receiver, 'CommandError', rawParmData, parsedParmData)
 
+
+    def _initialiseParsedParmData(self):
+        pass
+
+
     def execute(self):
         return "Error in input "  + self.rawParmData + ": " + self.parsedParmData[0] + " !"

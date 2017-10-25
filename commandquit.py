@@ -4,6 +4,11 @@ class CommandQuit(AbstractCommand):
     def __init__(self, receiver=None, name='', rawParmData='', parsedParmData=''):
         super().__init__(receiver, 'CommandQuit', rawParmData, parsedParmData)
 
+
+    def _initialiseParsedParmData(self):
+        pass
+
+
     def execute(self):
         inp = input('Quit ? y/n ')
 

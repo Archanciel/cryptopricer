@@ -1481,6 +1481,28 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
+    def testRequestPriceCommandFullDateZeroNoTime(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd 0 Kraken")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandPrice)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'usd')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '0')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '0')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], '0')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], None)
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+        sys.stdin = stdin
+
+
     def testRequestPriceCommandPartialCryptoExchange(self):
         #first, enter full command price
         stdin = sys.stdin
