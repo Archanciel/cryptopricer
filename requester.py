@@ -40,7 +40,7 @@ class Requester:
     ° Date must be 0 or contain a '/'.
     ° Time must be composed of two numerical groups separated by ':', the second group being a 2 digits
       group. Note 0:00 or 00:00 does not mean now, but midnight !
-    ° Exchange must start with a capital letter
+    ° Exchange name must start with a letter
 
     Ex:
     Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
@@ -168,7 +168,7 @@ class Requester:
         ° Date must be 0 or contain a '/'.
         ° Time must be composed of two numerical groups separated by ':', the second group being a 2 digits
           group. Note 00:00 does not mean now, but midnight !
-        ° Exchange must start with a capital letter
+        ° Exchange name must start with a letter
 
         Ex:
         Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
@@ -178,7 +178,7 @@ class Requester:
         '''
         patternCommandDic = {r"\d+/\d+(?:/\d+)*|^0$" : CommandPrice.DAY_MONTH_YEAR,
                              r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
-                             r"[A-Z]\w+" : CommandPrice.EXCHANGE}
+                             r"[A-Za-z]+": CommandPrice.EXCHANGE}
 
         optionalParsedParmDataDic = {}
 

@@ -2,7 +2,7 @@ class CrypCompExchanges:
     def __init__(self):
         self._dic = {'ALL': ['CCCAGG', 'BTC', 'USD'],
                      'CCCAGG': ['CCCAGG', 'BTC', 'USD'],
-        	            'BTC38': ['BTC38', 'BTC', 'CNY'],
+        	         'BTC38': ['BTC38', 'BTC', 'CNY'],
                      'BTER': ['BTER', 'ETH', 'BTC'],
                      'BIT2C': ['Bit2C', 'LTC', 'ILS'],
                      'BITFINEX': ['Bitfinex', 'BTC', 'USD'],
