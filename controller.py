@@ -72,7 +72,15 @@ if __name__ == '__main__':
                          '\nbtc usd 12/10/2017 12:00 Unknown' +
                          '\nbtc usd 12/10/2017 12:00 bittrex\nq\ny') #noticenq\ny to nicely quit the program
 
+    stdout = sys.stdout
+    if os.name == 'posix':
+        FILE_PATH = '/sdcard/cryptoout.txt'
+    else:
+        FILE_PATH = 'c:\\temp\\cryptoout.txt'
+    sys.stdout = open(FILE_PATH, 'w')
+
     c = Controller()
     c.run()
 
     sys.stdin = stdin
+    sys.stdout = stdout
