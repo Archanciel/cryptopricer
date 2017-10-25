@@ -331,7 +331,7 @@ class TestRequester(unittest.TestCase):
         ° Date must be 0 or contain a '/'.
         ° Time must be composed of two numerical groups separated by ':', the second group being a
         ° 2 digits group. Note 00:00 or 0:00 does not mean now, but midnight !
-        ° Exchange name must start with a letter
+        ° Exchange name must start with a letter. May contain digits.
 
         Ex:
         Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted.
