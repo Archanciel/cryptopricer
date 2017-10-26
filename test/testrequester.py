@@ -1186,7 +1186,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
 
 
-    def test_parseAndFillPartialCommandPriceWithInitYearWithPartialInvalDate(self):
+    def test_parseAndFillPartialCommandPriceWithInitYearWithPartialDateDayOnly(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1209,7 +1209,7 @@ class TestRequester(unittest.TestCase):
         parsedParmData = commandPrice.parsedParmData
         self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
         self.assertEqual(parsedParmData[CommandPrice.FIAT], 'gbp')
-        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
         self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
         self.assertEqual(parsedParmData[CommandPrice.YEAR], '17')
         self.assertEqual(parsedParmData[CommandPrice.HOUR], '22')

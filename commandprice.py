@@ -57,11 +57,16 @@ class CommandPrice(AbstractCommand):
         else:
             day = 0
 
+        localNow = DateTimeUtil.localNow(self.configManager.localTimeZone)
+
         monthStr = self.parsedParmData[self.MONTH]
         if monthStr != None:
-            month = int(monthStr)
+            if len(monthStr) <= 2:
+                month = int(monthStr)
+            else:
+                return "{}/{} on {}:".format(cryptoUpper, fiatUpper, exchange) + ' ' + "ERROR - {} not conform to accepted month format (MM, M, or '')".format(monthStr)
         else:
-            month = 0
+            month = localNow.month
  
         yearStr = self.parsedParmData[self.YEAR]
         if yearStr != None:
@@ -74,7 +79,6 @@ class CommandPrice(AbstractCommand):
             else:
                 year = 0
         else:
-            localNow = DateTimeUtil.localNow(self.configManager.localTimeZone)
             year = localNow.year
             
         hourStr = self.parsedParmData[self.HOUR]

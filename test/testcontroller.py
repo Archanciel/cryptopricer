@@ -96,6 +96,62 @@ class TestController(unittest.TestCase):
             self.assertEqual('BTC/USD on BitTrex: 23/09/17 3773\n', contentList[1])
 
 
+    def testControllerHistoDayPriceThenPartialDateDayOnly(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 23/9/2017 2:56 bittrex\n-d25\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('BTC/USD on BitTrex: 25/09/17 3931.12\n', contentList[3])
+
+
+    def testControllerHistoDayPriceThenPartialDateDayOnly_2(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 30/9/2017 all\nbtc usd 30/9/2017 2:00 all\n-d25\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 4172.79\n', contentList[1])
+            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 4360.62\n', contentList[3])
+            self.assertEqual('BTC/USD on CCCAGG: 25/09/17 3932.83\n', contentList[5])
+
+
     def testControllerHistoDayPriceInvalidTimeFormat(self):
         stdin = sys.stdin
         sys.stdin = StringIO('btc usd 23/9/2017 2.56 bittrex\nq\ny')

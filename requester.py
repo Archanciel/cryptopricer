@@ -253,7 +253,27 @@ class Requester:
                 year = '0'
             else:
                 dayMonthYearList = dayMonthYear.split('/')
-                if len(dayMonthYearList) < 2: #invalid date format --> try to get previous date components
+                if len(dayMonthYearList) == 1: #only day specified
+                    day = dayMonthYearList[0]
+                    if CommandPrice.DAY in self.commandPrice.parsedParmData:
+                        month = self.commandPrice.parsedParmData[CommandPrice.MONTH]
+                        year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
+                    else:
+                        month = None
+                        year = None
+                elif len(dayMonthYearList) == 2:
+                    day = dayMonthYearList[0]
+                    month = dayMonthYearList[1]
+                    if CommandPrice.YEAR in self.commandPrice.parsedParmData:
+                        year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
+                    else:   # year not provided and not obtained from previous full price command input.
+                            # Will be set by PriceRequester which knows in which timezone we are
+                        year = None
+                elif len(dayMonthYearList) == 3:
+                    day = dayMonthYearList[0]
+                    month = dayMonthYearList[1]
+                    year = dayMonthYearList[2]
+                else: #invalid date format here !
                     if CommandPrice.DAY in self.commandPrice.parsedParmData:
                         day = self.commandPrice.parsedParmData[CommandPrice.DAY]
                         month = self.commandPrice.parsedParmData[CommandPrice.MONTH]
@@ -261,18 +281,7 @@ class Requester:
                     else:
                         day = None
                         month = None
-                        year = None
-                else:
-                    day = dayMonthYearList[0]
-                    month = dayMonthYearList[1]
-                    if len(dayMonthYearList) == 2:
-                        if CommandPrice.YEAR in self.commandPrice.parsedParmData:
-                            year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
-                        else:   # year not provided and not obtained from previous full price command input.
-                                # Will be set by PriceRequester which knows in which timezone we are
-                            year = None
-                    else:
-                        year = dayMonthYearList[2]
+                        year = None            
         else:
             if CommandPrice.DAY in self.commandPrice.parsedParmData:
                 day = self.commandPrice.parsedParmData[CommandPrice.DAY]
