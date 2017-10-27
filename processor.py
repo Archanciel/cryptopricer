@@ -45,15 +45,17 @@ class Processor:
             else:
                 return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + priceInfoList[self.priceRequester.IDX_ERROR_MSG]
         else:
-            timeStampUtc = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, 'Europe/Zurich')
-            priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampUtc, validExchangeSymbol)
+            timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
+            timeStampUtcNoHHMM = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, 0, 0, 0, 'UTC')
+            priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocal, timeStampUtcNoHHMM, validExchangeSymbol)
 
             if len(priceInfoList) > 2:
-                requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtc, localTz)
                 if priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE]:
                     #histoday price returned
-                    requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(self.configManager.dateOnlyFormat)
+                    requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
+                    requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(self.configManager.dateOnlyFormat)
                 else:
+                    requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 
                 return "{}/{} on {}:".format(crypto, fiat, validExchangeSymbol) + ' ' + requestedDateTimeStr + ' ' + \

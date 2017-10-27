@@ -59,11 +59,14 @@ class TestPriceRequester(unittest.TestCase):
         crypto = 'BTC'
         fiat = 'USD'
         exchange = 'CCCAGG'
-        utcArrowDateTimeObj_endOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 23:59:59", 'UTC',
-                                                                                   "YYYY/MM/DD HH:mm:ss")
+        timeStampLocal = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 23:59:59", 'Europe/Zurich',
+                                                                "YYYY/MM/DD HH:mm:ss")
+        timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
+                                                                    "YYYY/MM/DD HH:mm:ss")
         priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
-                                                                            utcArrowDateTimeObj_endOfDay.timestamp,
-                                                                            exchange)
+                                                                             timeStampLocal,
+                                                                             timeStampUtcNoHHMM,
+                                                                             exchange)
         self.assertEqual(1506729600, priceInfoList[self.priceRequester.IDX_TIMESTAMP])
         priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[self.priceRequester.IDX_TIMESTAMP],
                                                                        'UTC')
@@ -76,11 +79,16 @@ class TestPriceRequester(unittest.TestCase):
         crypto = 'BTC'
         fiat = 'USD'
         exchange = 'CCCAGG'
-        utcArrowDateTimeObj_midOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 12:59:59", 'UTC',
-                                                                                   "YYYY/MM/DD HH:mm:ss")
+
+        timeStampLocal = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 12:59:59", 'Europe/Zurich',
+                                                                "YYYY/MM/DD HH:mm:ss")
+        timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
+                                                                    "YYYY/MM/DD HH:mm:ss")
         priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
-                                                                            utcArrowDateTimeObj_midOfDay.timestamp,
-                                                                            exchange)
+                                                                             timeStampLocal,
+                                                                             timeStampUtcNoHHMM,
+                                                                             exchange)
+
         self.assertEqual(1506729600, priceInfoList[self.priceRequester.IDX_TIMESTAMP])
         priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[self.priceRequester.IDX_TIMESTAMP],
                                                                        'UTC')
@@ -93,12 +101,16 @@ class TestPriceRequester(unittest.TestCase):
         crypto = 'BTC'
         fiat = 'USD'
         exchange = 'CCCAGG'
+
         #time stamp is always UTC !
-        timeStampUtc = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 12:59:59", 'Europe/Zurich',
-                                                              "YYYY/MM/DD HH:mm:ss")
+        timeStampLocalMidDay = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 12:59:59", 'Europe/Zurich',
+                                                                "YYYY/MM/DD HH:mm:ss")
+        timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
+                                                                    "YYYY/MM/DD HH:mm:ss")
         priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
-                                                                            timeStampUtc,
-                                                                            exchange)
+                                                                             timeStampLocalMidDay,
+                                                                             timeStampUtcNoHHMM,
+                                                                             exchange)
         self.assertEqual(1506729600, priceInfoList[self.priceRequester.IDX_TIMESTAMP])
         priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[self.priceRequester.IDX_TIMESTAMP],
                                                                        'UTC')
@@ -111,10 +123,12 @@ class TestPriceRequester(unittest.TestCase):
         crypto = 'BTC'
         fiat = 'USD'
         exchange = 'CCCAGG'
-
         utcArrowDateTimeObj = DateTimeUtil.localNow('UTC')
         utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-2)
+
+        # for histominute price,
         priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+                                                                             utcArrowDateTimeObj.timestamp,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
         self.assertFalse(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
@@ -136,7 +150,10 @@ class TestPriceRequester(unittest.TestCase):
 
         utcArrowDateTimeObj = DateTimeUtil.localNow('UTC')
         utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-2)
+
+        #here, since histominute price is fetched, time stamp UTC no HHMM for histoDay wil not be used !
         priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+                                                                             utcArrowDateTimeObj.timestamp,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
         self.assertFalse(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
@@ -147,10 +164,14 @@ class TestPriceRequester(unittest.TestCase):
 
         fiat = 'USD'
         exchange = 'unknown'
-        utcArrowDateTimeObj_midOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 12:59:59", 'UTC',
-                                                                                   "YYYY/MM/DD HH:mm:ss")
+        #time stamp is always UTC !
+        timeStampLocalMidDay = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 12:59:59", 'Europe/Zurich',
+                                                                "YYYY/MM/DD HH:mm:ss")
+        timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
+                                                                    "YYYY/MM/DD HH:mm:ss")
         priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
-                                                                             utcArrowDateTimeObj_midOfDay.timestamp,
+                                                                             timeStampLocalMidDay,
+                                                                             timeStampUtcNoHHMM,
                                                                              exchange)
         self.assertTrue(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
         self.assertEqual("ERROR - e param is not valid the market does not exist for this coin pair", priceInfoList[self.priceRequester.IDX_ERROR_MSG])

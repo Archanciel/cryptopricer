@@ -147,7 +147,7 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 4172.79\n', contentList[1])
+            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 4360.62\n', contentList[1])
             self.assertEqual('BTC/USD on CCCAGG: 30/09/17 4360.62\n', contentList[3])
             self.assertEqual('BTC/USD on CCCAGG: 25/09/17 3932.83\n', contentList[5])
 
