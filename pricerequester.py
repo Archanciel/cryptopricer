@@ -6,6 +6,7 @@ from urllib.error import HTTPError, URLError
 from bs4 import BeautifulSoup
 
 from datetimeutil import DateTimeUtil
+from priceresult import PriceResult
 
 HISTO_DAY_FLAG_VALUE = True
 CURRENT_OR_HISTO_MINUTE_FLAG_VALUE = False
