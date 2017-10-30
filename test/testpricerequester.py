@@ -27,15 +27,15 @@ class TestPriceRequester(unittest.TestCase):
         exchange = 'CCCAGG'
         utcArrowDateTimeObj_endOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 23:59:59", 'UTC',
                                                                                    "YYYY/MM/DD HH:mm:ss")
-        priceInfoList = self.priceRequester._getHistoDayPriceAtUTCTimeStamp(crypto, fiat,
+        priceResult = self.priceRequester._getHistoDayPriceAtUTCTimeStamp(crypto, fiat,
                                                                             utcArrowDateTimeObj_endOfDay.timestamp,
                                                                             exchange)
-        self.assertEqual(1506729600, priceInfoList[self.priceRequester.IDX_TIMESTAMP])
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[self.priceRequester.IDX_TIMESTAMP],
+        self.assertEqual(1506729600, priceResult.getValue(priceResult.RESULT_kEY_PRICE_TIME_STAMP))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceResult.getValue(priceResult.RESULT_kEY_PRICE_TIME_STAMP),
                                                                        'UTC')
-        self.assertTrue(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
         self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
-        self.assertEqual(4360.62, priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
+        self.assertEqual(4360.62, priceResult.getValue(priceResult.RESULT_kEY_PRICE))
 
 
     def test_getHistoDayPriceAtUTCTimeStampMidOfDay(self):
@@ -44,15 +44,15 @@ class TestPriceRequester(unittest.TestCase):
         exchange = 'CCCAGG'
         utcArrowDateTimeObj_midOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 12:59:59", 'UTC',
                                                                                    "YYYY/MM/DD HH:mm:ss")
-        priceInfoList = self.priceRequester._getHistoDayPriceAtUTCTimeStamp(crypto, fiat,
+        priceResult = self.priceRequester._getHistoDayPriceAtUTCTimeStamp(crypto, fiat,
                                                                             utcArrowDateTimeObj_midOfDay.timestamp,
                                                                             exchange)
-        self.assertEqual(1506729600, priceInfoList[self.priceRequester.IDX_TIMESTAMP])
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[self.priceRequester.IDX_TIMESTAMP],
+        self.assertEqual(1506729600, priceResult.getValue(priceResult.RESULT_kEY_PRICE_TIME_STAMP))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceResult.getValue(priceResult.RESULT_kEY_PRICE_TIME_STAMP),
                                                                        'UTC')
-        self.assertTrue(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
         self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
-        self.assertEqual(4360.62, priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
+        self.assertEqual(4360.62, priceResult.getValue(priceResult.RESULT_kEY_PRICE))
 
 
     def testGetHistoricalPriceAtUTCTimeStampEndOfDay(self):
@@ -63,16 +63,16 @@ class TestPriceRequester(unittest.TestCase):
                                                                 "YYYY/MM/DD HH:mm:ss")
         timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
                                                                     "YYYY/MM/DD HH:mm:ss")
-        priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+        priceResult = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
                                                                              timeStampLocal,
                                                                              timeStampUtcNoHHMM,
                                                                              exchange)
-        self.assertEqual(1506729600, priceInfoList[self.priceRequester.IDX_TIMESTAMP])
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[self.priceRequester.IDX_TIMESTAMP],
+        self.assertEqual(1506729600, priceResult.getValue(priceResult.RESULT_kEY_PRICE_TIME_STAMP))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceResult.getValue(priceResult.RESULT_kEY_PRICE_TIME_STAMP),
                                                                        'UTC')
-        self.assertTrue(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
         self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
-        self.assertEqual(4360.62, priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
+        self.assertEqual(4360.62, priceResult.getValue(priceResult.RESULT_kEY_PRICE))
 
 
     def testGetHistoricalPriceAtUTCTimeStampMidOfDay(self):
@@ -84,17 +84,17 @@ class TestPriceRequester(unittest.TestCase):
                                                                 "YYYY/MM/DD HH:mm:ss")
         timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
                                                                     "YYYY/MM/DD HH:mm:ss")
-        priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+        priceResult = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
                                                                              timeStampLocal,
                                                                              timeStampUtcNoHHMM,
                                                                              exchange)
 
-        self.assertEqual(1506729600, priceInfoList[self.priceRequester.IDX_TIMESTAMP])
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[self.priceRequester.IDX_TIMESTAMP],
+        self.assertEqual(1506729600, priceResult.getValue(priceResult.RESULT_kEY_PRICE_TIME_STAMP))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceResult.getValue(priceResult.RESULT_kEY_PRICE_TIME_STAMP),
                                                                        'UTC')
-        self.assertTrue(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
         self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
-        self.assertEqual(4360.62, priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
+        self.assertEqual(4360.62, priceResult.getValue(priceResult.RESULT_kEY_PRICE))
 
 
     def testGetHistoricalPriceAtTimeStampZurichMidOfDayUseTimeStamp(self):
@@ -107,16 +107,16 @@ class TestPriceRequester(unittest.TestCase):
                                                                 "YYYY/MM/DD HH:mm:ss")
         timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
                                                                     "YYYY/MM/DD HH:mm:ss")
-        priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+        priceResult = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
                                                                              timeStampLocalMidDay,
                                                                              timeStampUtcNoHHMM,
                                                                              exchange)
-        self.assertEqual(1506729600, priceInfoList[self.priceRequester.IDX_TIMESTAMP])
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceInfoList[self.priceRequester.IDX_TIMESTAMP],
+        self.assertEqual(1506729600, priceResult.getValue(priceResult.RESULT_kEY_PRICE_TIME_STAMP))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(priceResult.getValue(priceResult.RESULT_kEY_PRICE_TIME_STAMP),
                                                                        'UTC')
-        self.assertTrue(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
         self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
-        self.assertEqual(4360.62, priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
+        self.assertEqual(4360.62, priceResult.getValue(priceResult.RESULT_kEY_PRICE))
 
 
     def testGetHistoricalPriceAtUTCTimeStampLessThanSevenDay(self):
@@ -127,11 +127,11 @@ class TestPriceRequester(unittest.TestCase):
         utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-2)
 
         # for histominute price,
-        priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+        priceResult = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
-        self.assertFalse(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
 
 
     def testGetCurrentPrice(self):
@@ -139,8 +139,8 @@ class TestPriceRequester(unittest.TestCase):
         fiat = 'USD'
         exchange = 'CCCAGG'
 
-        priceInfoList = self.priceRequester.getCurrentPrice(crypto, fiat, exchange)
-        self.assertFalse(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
+        priceResult = self.priceRequester.getCurrentPrice(crypto, fiat, exchange)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
 
 
     def testGetHistoricalPriceAtUTCTimeStampLessThanSevenDayWrongExchange(self):
@@ -152,12 +152,12 @@ class TestPriceRequester(unittest.TestCase):
         utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-2)
 
         #here, since histominute price is fetched, time stamp UTC no HHMM for histoDay wil not be used !
-        priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+        priceResult = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
-        self.assertFalse(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
-        self.assertEqual("ERROR - e param is not valid the market does not exist for this coin pair", priceInfoList[self.priceRequester.IDX_ERROR_MSG])
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_kEY_ERROR_MSG), "ERROR - e param is not valid the market does not exist for this coin pair")
 
     def testGetHistoricalPriceAtUTCTimeStampMidOfDayWrongExchange(self):
         crypto = 'BTC'
@@ -169,12 +169,12 @@ class TestPriceRequester(unittest.TestCase):
                                                                 "YYYY/MM/DD HH:mm:ss")
         timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
                                                                     "YYYY/MM/DD HH:mm:ss")
-        priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+        priceResult = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
                                                                              timeStampLocalMidDay,
                                                                              timeStampUtcNoHHMM,
                                                                              exchange)
-        self.assertTrue(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
-        self.assertEqual("ERROR - e param is not valid the market does not exist for this coin pair", priceInfoList[self.priceRequester.IDX_ERROR_MSG])
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_kEY_ERROR_MSG), "ERROR - e param is not valid the market does not exist for this coin pair")
 
 
     def testGetCurrentPriceWrongExchange(self):
@@ -182,9 +182,9 @@ class TestPriceRequester(unittest.TestCase):
         fiat = 'USD'
         exchange = 'unknown'
 
-        priceInfoList = self.priceRequester.getCurrentPrice(crypto, fiat, exchange)
-        self.assertFalse(priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE])
-        self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)", priceInfoList[self.priceRequester.IDX_ERROR_MSG])
+        priceResult = self.priceRequester.getCurrentPrice(crypto, fiat, exchange)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_kEY_ERROR_MSG), "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
 
 
 if __name__ == '__main__':

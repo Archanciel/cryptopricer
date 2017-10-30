@@ -8,24 +8,10 @@ from bs4 import BeautifulSoup
 from datetimeutil import DateTimeUtil
 from priceresult import PriceResult
 
-HISTO_DAY_FLAG_VALUE = True
-CURRENT_OR_HISTO_MINUTE_FLAG_VALUE = False
-
-IDX_HISTODAY_DATA_ENTRY_TO = 1
-IDX_MINUTEDAY_DATA_ENTRY_TO = 1
+IDX_DATA_ENTRY_TO = 1
 
 
 class PriceRequester:
-    IDX_IS_DAY_CLOSE_PRICE = 0
-    IDX_TIMESTAMP = 1
-    IDX_ERROR_MSG = 1
-    IDX_CLOSE_PRICE = 2
-    IDX_CURRENT_PRICE = 2
-
-    def __init__(self):
-        self._resultList = []
-
-
     def getHistoricalPriceAtUTCTimeStamp(self, coin, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange):
         '''
         Why do we pass two different time stamp to the method ?
@@ -58,8 +44,8 @@ class PriceRequester:
     def _getHistoMinutePriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
-        self._resultList = []
-        self._resultList.append(CURRENT_OR_HISTO_MINUTE_FLAG_VALUE)
+        priceResult = PriceResult()
+        priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
 
         try:
             webURL = urllib.request.urlopen(url)
@@ -75,19 +61,19 @@ class PriceRequester:
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
-                dataDic = dic['Data'][IDX_MINUTEDAY_DATA_ENTRY_TO]
-                self._resultList.append(dataDic['time'])
-                self._resultList.append(dataDic['close'])
+                dataDic = dic['Data'][IDX_DATA_ENTRY_TO]
+                priceResult.setValue(PriceResult.RESULT_kEY_PRICE_TIME_STAMP, dataDic['time'])
+                priceResult.setValue(PriceResult.RESULT_kEY_PRICE, dataDic['close'])
             else:
-                self._resultList.append('ERROR - ' + dic['Message'])
-        return self._resultList
+                priceResult.setValue(PriceResult.RESULT_kEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+        return priceResult
 
 
     def _getHistoDayPriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
-        self._resultList = []
-        self._resultList.append(HISTO_DAY_FLAG_VALUE)
+        priceResult = PriceResult()
+        priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_HISTO_DAY)
 
         try:
             webURL = urllib.request.urlopen(url)
@@ -103,18 +89,18 @@ class PriceRequester:
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
-                dataDic = dic['Data'][IDX_HISTODAY_DATA_ENTRY_TO]
-                self._resultList.append(dataDic['time'])
-                self._resultList.append(dataDic['close'])
+                dataDic = dic['Data'][IDX_DATA_ENTRY_TO]
+                priceResult.setValue(PriceResult.RESULT_kEY_PRICE_TIME_STAMP, dataDic['time'])
+                priceResult.setValue(PriceResult.RESULT_kEY_PRICE, dataDic['close'])
             else:
-                self._resultList.append('ERROR - ' + dic['Message'])
-        return self._resultList
+                priceResult.setValue(PriceResult.RESULT_kEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+        return priceResult
 
 
     def getCurrentPrice(self, coin, fiat, exchange):
         url = "https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&e={}".format(coin, fiat, exchange)
-        self._resultList = []
-        self._resultList.append(CURRENT_OR_HISTO_MINUTE_FLAG_VALUE)
+        priceResult = PriceResult()
+        priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
 
         try:
             webURL = urllib.request.urlopen(url)
@@ -131,11 +117,11 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             
             if fiat in dic:
-                self._resultList.append(DateTimeUtil.utcNowTimeStamp())
-                self._resultList.append(dic[fiat]) #current price is indexed by fiat symbol in returned dic
+                priceResult.setValue(PriceResult.RESULT_kEY_PRICE_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
+                priceResult.setValue(PriceResult.RESULT_kEY_PRICE, dic[fiat]) #current price is indexed by fiat symbol in returned dic
             else:
-                self._resultList.append('ERROR - ' + dic['Message'])
-        return self._resultList
+                priceResult.setValue(PriceResult.RESULT_kEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+        return priceResult
 
 
 if __name__ == '__main__':
