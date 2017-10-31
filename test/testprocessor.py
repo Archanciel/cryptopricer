@@ -35,13 +35,13 @@ class TestProcessor(unittest.TestCase):
         hour = 10
         minute = 5
 
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
+        result = self.processor.getCryptoPrice(crypto,
+                                               fiat,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
                                                minute)
         self.assertEqual('BTC/USD on BitTrex: 12/09/17 4122', result)
 
@@ -59,13 +59,13 @@ class TestProcessor(unittest.TestCase):
         hour = 10
         minute = 5
 
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
+        result = self.processor.getCryptoPrice(crypto,
+                                               fiat,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
                                                minute)
         result = self.removePriceFromResult(result)
         self.assertEqual('BTC/USD on BitTrex: {}/{}/{} 10:05'.format(day, month, year - 2000), result)
@@ -80,13 +80,13 @@ class TestProcessor(unittest.TestCase):
         year = 2017
         hour = 10
         minute = 5
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
+        result = self.processor.getCryptoPrice(crypto,
+                                               fiat,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
                                                minute)
         self.assertEqual("BTC/USD on unknown: ERROR - unknown market does not exist for this coin pair (BTC-USD)", result)
 
@@ -111,13 +111,13 @@ class TestProcessor(unittest.TestCase):
         hour = 1
         minute = 1
 
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
+        result = self.processor.getCryptoPrice(crypto,
+                                               fiat,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
                                                minute)
         result = self.removePriceFromResult(result)
         nowMinute = now.minute
@@ -155,13 +155,13 @@ class TestProcessor(unittest.TestCase):
         hour = 1
         minute = 1
 
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
+        result = self.processor.getCryptoPrice(crypto,
+                                               fiat,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
                                                minute)
         self.assertEqual("BTC/USD on unknown: ERROR - unknown market does not exist for this coin pair (BTC-USD)", result)
 
@@ -177,13 +177,13 @@ class TestProcessor(unittest.TestCase):
         hour = 1
         minute = 1
 
-        result = self.processor.getCryptoPrice(crypto, \
-                                               fiat, \
-                                               exchange, \
-                                               day, \
-                                               month, \
-                                               year, \
-                                               hour, \
+        result = self.processor.getCryptoPrice(crypto,
+                                               fiat,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
                                                minute)
         self.assertEqual("BTC/USD on BTC38: ERROR - BTC38 market does not exist for this coin pair (BTC-USD)", result)
 
