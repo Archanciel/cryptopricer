@@ -12,7 +12,7 @@ IDX_DATA_ENTRY_TO = 1
 
 
 class PriceRequester:
-    def getHistoricalPriceAtUTCTimeStamp(self, coin, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange):
+    def getHistoricalPriceAtUTCTimeStamp(self, crypto, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange):
         '''
         Why do we pass two different time stamp to the method ?
         
@@ -35,16 +35,21 @@ class PriceRequester:
         historical prices, the close price for a given date is
         the same whatever the location of the user is !
         '''
+        priceResult = PriceResult()
+
+        priceResult.setValue(PriceResult.RESULT_KEY_CRYPTO, crypto)
+        priceResult.setValue(PriceResult.RESULT_KEY_FIAT, fiat)
+        priceResult.setValue(PriceResult.RESULT_KEY_EXCHANGE, exchange)
+
         if DateTimeUtil.isTimeStampOlderThan(timeStampLocalForHistoMinute, dayNumber=7):
-            return self._getHistoDayPriceAtUTCTimeStamp(coin, fiat, timeStampUTCNoHHMMForHistoDay, exchange)
+            return self._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, timeStampUTCNoHHMMForHistoDay, exchange, priceResult)
         else:
-            return self._getHistoMinutePriceAtUTCTimeStamp(coin, fiat, timeStampLocalForHistoMinute, exchange)
+            return self._getHistoMinutePriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, exchange, priceResult)
         
         
-    def _getHistoMinutePriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
+    def _getHistoMinutePriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange, priceResult):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
-        priceResult = PriceResult()
         priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
 
         try:
@@ -62,17 +67,16 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
                 dataDic = dic['Data'][IDX_DATA_ENTRY_TO]
-                priceResult.setValue(PriceResult.RESULT_kEY_PRICE_TIME_STAMP, dataDic['time'])
-                priceResult.setValue(PriceResult.RESULT_kEY_PRICE, dataDic['close'])
+                priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
+                priceResult.setValue(PriceResult.RESULT_KEY_PRICE, dataDic['close'])
             else:
-                priceResult.setValue(PriceResult.RESULT_kEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
         return priceResult
 
 
-    def _getHistoDayPriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange):
+    def _getHistoDayPriceAtUTCTimeStamp(self, crypto, fiat, timeStampUTC, exchange, priceResult):
         timeStampUTCStr = str(timeStampUTC)
-        url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
-        priceResult = PriceResult()
+        url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, fiat, timeStampUTCStr, exchange)
         priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_HISTO_DAY)
 
         try:
@@ -90,16 +94,20 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
                 dataDic = dic['Data'][IDX_DATA_ENTRY_TO]
-                priceResult.setValue(PriceResult.RESULT_kEY_PRICE_TIME_STAMP, dataDic['time'])
-                priceResult.setValue(PriceResult.RESULT_kEY_PRICE, dataDic['close'])
+                priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
+                priceResult.setValue(PriceResult.RESULT_KEY_PRICE, dataDic['close'])
             else:
-                priceResult.setValue(PriceResult.RESULT_kEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
         return priceResult
 
 
-    def getCurrentPrice(self, coin, fiat, exchange):
-        url = "https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&e={}".format(coin, fiat, exchange)
+    def getCurrentPrice(self, crypto, fiat, exchange):
+        url = "https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&e={}".format(crypto, fiat, exchange)
         priceResult = PriceResult()
+
+        priceResult.setValue(PriceResult.RESULT_KEY_CRYPTO, crypto)
+        priceResult.setValue(PriceResult.RESULT_KEY_FIAT, fiat)
+        priceResult.setValue(PriceResult.RESULT_KEY_EXCHANGE, exchange)
         priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
 
         try:
@@ -117,10 +125,10 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             
             if fiat in dic:
-                priceResult.setValue(PriceResult.RESULT_kEY_PRICE_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
-                priceResult.setValue(PriceResult.RESULT_kEY_PRICE, dic[fiat]) #current price is indexed by fiat symbol in returned dic
+                priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
+                priceResult.setValue(PriceResult.RESULT_KEY_PRICE, dic[fiat]) #current price is indexed by fiat symbol in returned dic
             else:
-                priceResult.setValue(PriceResult.RESULT_kEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
         return priceResult
 
 
