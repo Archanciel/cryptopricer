@@ -16,6 +16,14 @@ class PriceResult:
 
     def __init__(self):
         self._resultDataDic = {}
+        self._resultDataDic[self.RESULT_KEY_CRYPTO] = None
+        self._resultDataDic[self.RESULT_KEY_FIAT] = None
+        self._resultDataDic[self.RESULT_KEY_EXCHANGE] = None
+        self._resultDataDic[self.RESULT_KEY_PRICE_TIME_STAMP] = None
+        self._resultDataDic[self.RESULT_KEY_PRICE_DATE_TIME_STRING] = None
+        self._resultDataDic[self.RESULT_KEY_PRICE] = None
+        self._resultDataDic[self.RESULT_KEY_PRICE_TYPE] = None
+        self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None
 
 
     def setValue(self, key, value):

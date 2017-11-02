@@ -40,7 +40,7 @@ class TestCommandPrice(unittest.TestCase):
 
         result = self.commandPrice.execute()
 
-        self.assertEqual("BTC/USD on BitTrex: 12/09/17 4122", result)
+        self.assertEqual("BTC/USD on BitTrex: 12/09/17 00:00 4122", result)
 
 
     def testExecuteHistoricalPriceTwoDigitYear(self):
@@ -55,7 +55,7 @@ class TestCommandPrice(unittest.TestCase):
 
         result = self.commandPrice.execute()
 
-        self.assertEqual("BTC/USD on BitTrex: 12/09/17 4122", result)
+        self.assertEqual("BTC/USD on BitTrex: 12/09/17 00:00 4122", result)
 
 
     def testExecuteHistoricalPriceNoYear(self):
@@ -70,7 +70,7 @@ class TestCommandPrice(unittest.TestCase):
 
         result = self.commandPrice.execute()
 
-        self.assertEqual("BTC/USD on BitTrex: 12/09/17 4122", result)
+        self.assertEqual("BTC/USD on BitTrex: 12/09/17 00:00 4122", result)
 
 
     def testExecuteHistoricalPriceWrongExchange(self):
@@ -131,7 +131,7 @@ class TestCommandPrice(unittest.TestCase):
         else:
             nowHourStr = str(nowHour)
 
-        self.assertEqual('BTC/USD on BitTrex: {}/{}/{} {}:{}'.format(now.day, now.month, now.year - 2000, nowHourStr, nowMinuteStr), result)
+        self.assertEqual('BTC/USD on BitTrex: 0{}/{}/{} {}:{}'.format(now.day, now.month, now.year - 2000, nowHourStr, nowMinuteStr), result)
 
 
     def testExecuteRealTimePriceWrongExchange(self):

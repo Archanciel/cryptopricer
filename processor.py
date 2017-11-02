@@ -1,4 +1,5 @@
 from datetimeutil import DateTimeUtil
+from priceresult import PriceResult
 
 
 class Processor:
@@ -35,33 +36,38 @@ class Processor:
             # when the user specifies 0 for either the date,
             # this means current price is asked and date components
             # are set to zero !
-            priceInfoList = self.priceRequester.getCurrentPrice(crypto, fiat, validExchangeSymbol)
+            priceResult = self.priceRequester.getCurrentPrice(crypto, fiat, validExchangeSymbol)
 
-            if len(priceInfoList) > 2:
-                timeStamp_ = priceInfoList[self.priceRequester.IDX_TIMESTAMP]
-                requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp_, localTz)
+            if priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG) == None:
+                timeStamp = priceResult.getValue(PriceResult.RESULT_KEY_PRICE_TIME_STAMP)
+                requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, localTz)
                 requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
-                return "{}/{} on {}:".format(crypto, fiat, validExchangeSymbol) + ' ' + requestedDateTimeStr + ' ' + str(priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
+                priceResult.setValue(PriceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
+                return "{}/{} on {}:".format(priceResult.getValue(PriceResult.RESULT_KEY_CRYPTO), priceResult.getValue(PriceResult.RESULT_KEY_FIAT), priceResult.getValue(PriceResult.RESULT_KEY_EXCHANGE)) + ' ' + priceResult.getValue(PriceResult.RESULT_KEY_PRICE_DATE_TIME_STRING) + ' ' + str(priceResult.getValue(PriceResult.RESULT_KEY_PRICE))
             else:
-                return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + priceInfoList[self.priceRequester.IDX_ERROR_MSG]
+                return "{}/{} on {}:".format(priceResult.getValue(PriceResult.RESULT_KEY_CRYPTO), priceResult.getValue(PriceResult.RESULT_KEY_FIAT), priceResult.getValue(PriceResult.RESULT_KEY_EXCHANGE)) + ' ' + priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG)
         else:
             timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
             timeStampUtcNoHHMM = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, 0, 0, 0, 'UTC')
-            priceInfoList = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocal, timeStampUtcNoHHMM, validExchangeSymbol)
+            priceResult = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocal, timeStampUtcNoHHMM, validExchangeSymbol)
 
-            if len(priceInfoList) > 2:
-                if priceInfoList[self.priceRequester.IDX_IS_DAY_CLOSE_PRICE]:
+            if priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG) == None:
+                if priceResult.getValue(PriceResult.RESULT_KEY_PRICE_TYPE) == PriceResult.PRICE_TYPE_HISTO_DAY:
                     #histoday price returned
                     requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
-                    requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(self.configManager.dateOnlyFormat)
+                    requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(self.configManager.dateTimeFormat)
                 else:
                     requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 
-                return "{}/{} on {}:".format(crypto, fiat, validExchangeSymbol) + ' ' + requestedDateTimeStr + ' ' + \
-                        str(priceInfoList[self.priceRequester.IDX_CURRENT_PRICE])
+                priceResult.setValue(PriceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
+
+                return "{}/{} on {}:".format(priceResult.getValue(PriceResult.RESULT_KEY_CRYPTO), priceResult.getValue(PriceResult.RESULT_KEY_FIAT), priceResult.getValue(PriceResult.RESULT_KEY_EXCHANGE)) + ' ' + priceResult.getValue(PriceResult.RESULT_KEY_PRICE_DATE_TIME_STRING) + ' ' + str(priceResult.getValue(PriceResult.RESULT_KEY_PRICE))
+                # return "{}/{} on {}:".format(priceResult.getValue(PriceResult.RESULT_KEY_CRYPTO], priceResult.getValue(PriceResult.RESULT_KEY_FIAT], priceResult.getValue(PriceResult.RESULT_KEY_EXCHANGE]) + ' ' + requestedDateTimeStr + ' ' + \
+                #         str(priceResult.getValue(self.priceRequester.IDX_CURRENT_PRICE])
             else:
-                return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + priceInfoList[self.priceRequester.IDX_ERROR_MSG]
+                return "{}/{} on {}:".format(priceResult.getValue(PriceResult.RESULT_KEY_CRYPTO), priceResult.getValue(PriceResult.RESULT_KEY_FIAT), priceResult.getValue(PriceResult.RESULT_KEY_EXCHANGE) + ' ' + priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
+#                return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + priceResult.getValue(self.priceRequester.IDX_ERROR_MSG]
 
 
 if __name__ == '__main__':

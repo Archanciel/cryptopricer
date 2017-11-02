@@ -93,7 +93,7 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on BitTrex: 23/09/17 3773\n', contentList[1])
+            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00 3773\n', contentList[1])
 
 
     def testControllerHistoDayPriceThenPartialDateDayOnly(self):
@@ -120,7 +120,7 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on BitTrex: 25/09/17 3931.12\n', contentList[3])
+            self.assertEqual('BTC/USD on BitTrex: 25/09/17 00:00 3931.12\n', contentList[3])
 
 
     def testControllerHistoDayPriceThenPartialDateDayOnly_2(self):
@@ -147,9 +147,9 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 4360.62\n', contentList[1])
-            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 4360.62\n', contentList[3])
-            self.assertEqual('BTC/USD on CCCAGG: 25/09/17 3932.83\n', contentList[5])
+            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00 4360.62\n', contentList[1])
+            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00 4360.62\n', contentList[3])
+            self.assertEqual('BTC/USD on CCCAGG: 25/09/17 00:00 3932.83\n', contentList[5])
 
 
     def testControllerHistoDayPriceInvalidTimeFormat(self):
