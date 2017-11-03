@@ -8,6 +8,7 @@ sys.path.insert(0,parentdir)
 
 from currencypairtester import CurrencyPairTester
 
+
 class TestCurrencyPairTester(unittest.TestCase):
     def setUp(self):
         if os.name == 'posix':
