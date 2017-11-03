@@ -122,7 +122,7 @@ if __name__ == '__main__':
     cryp = CrypCompExchanges()
     proc = Processor(cm, pr, cryp)
     
-    cpr = CommandPrice(proc)
+    cpr = CommandPrice(proc, cm)
 
     print('HISTORICAL')
 
