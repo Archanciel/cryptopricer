@@ -43,7 +43,14 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute)
-#        self.assertEqual('BTC/USD on BitTrex: 12/09/17 00:00 4122', priceResult)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO), crypto)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE), 4122)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
 
 
     def testGetCryptoPriceHistoricalRecent(self):    
@@ -67,8 +74,15 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute)
-        priceResult = self.removePriceFromResult(priceResult)
+#        priceResult = self.removePriceFromResult(priceResult)
 #        self.assertEqual('BTC/USD on BitTrex: {}/{}/{} 10:05'.format(day, month, year - 2000), priceResult)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO), crypto)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} 10:05'.format(day, month, year - 2000))
+#        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
 
 
     def testGetCryptoPriceHistoricalWrongExchange(self):    
@@ -88,15 +102,14 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute)
-        self.assertEqual("BTC/USD on unknown: ERROR - unknown market does not exist for this coin pair (BTC-USD)",
-                         priceResult)
-        '''
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
-        self.assertEqual(crypto, priceResult.getValue(priceResult.RESULT_KEY_CRYPTO))
-        self.assertEqual(fiat, priceResult.getValue(priceResult.RESULT_KEY_FIAT))
-        self.assertEqual(exchange, priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE))
-        '''
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO), None)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_FIAT), None)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), None)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), None)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE), None)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), None)
 
 
     def removePriceFromResult(self, resultStr):
