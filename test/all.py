@@ -12,6 +12,7 @@ from testcrypcompexchanges import TestCrypCompExchanges
 from testprocessor import TestProcessor
 from testcommandprice import TestCommandPrice
 from testpriceresult import TestPriceResult
+from testcurrencypairtester import TestCurrencyPairTester
 
 if __name__ == "__main__":
     loader = TestLoader() 
@@ -26,7 +27,8 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestCrypCompExchanges),
                        loader.loadTestsFromTestCase(TestProcessor),
                        loader.loadTestsFromTestCase(TestCommandPrice),
-                       loader.loadTestsFromTestCase(TestPriceResult)
+                       loader.loadTestsFromTestCase(TestPriceResult),
+                       loader.loadTestsFromTestCase(TestCurrencyPairTester)
     ))
     runner = TextTestRunner(verbosity = 2)
     runner.run(suite)
