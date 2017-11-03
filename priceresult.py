@@ -34,5 +34,9 @@ class PriceResult:
         return self._resultDataDic[key]
 
 
+    def isEmpty(self, key):
+        return self._resultDataDic[key] == None
+
+
 if __name__ == '__main__':
     pass

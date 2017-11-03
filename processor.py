@@ -38,7 +38,7 @@ class Processor:
             # are set to zero !
             priceResult = self.priceRequester.getCurrentPrice(crypto, fiat, validExchangeSymbol)
 
-            if priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG) == None:
+            if priceResult.isEmpty(PriceResult.RESULT_KEY_ERROR_MSG):
                 timeStamp = priceResult.getValue(PriceResult.RESULT_KEY_PRICE_TIME_STAMP)
                 requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, localTz)
                 requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
@@ -51,7 +51,7 @@ class Processor:
             timeStampUtcNoHHMM = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, 0, 0, 0, 'UTC')
             priceResult = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocal, timeStampUtcNoHHMM, validExchangeSymbol)
 
-            if priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG) == None:
+            if priceResult.isEmpty(PriceResult.RESULT_KEY_ERROR_MSG):
                 if priceResult.getValue(PriceResult.RESULT_KEY_PRICE_TYPE) == PriceResult.PRICE_TYPE_HISTO_DAY:
                     #histoday price returned
                     requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
