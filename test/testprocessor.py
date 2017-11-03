@@ -148,7 +148,14 @@ class TestProcessor(unittest.TestCase):
         else:
             nowHourStr = str(nowHour)
 
-        self.assertEqual('BTC/USD on BitTrex: 0{}/{}/{} {}:{}'.format(now.day, now.month, now.year - 2000, nowHourStr,
+        nowDay = now.day
+
+        if nowDay < 10:
+            nowDayStr = '0' + str(nowDay)
+        else:
+            nowDayStr = str(nowDay)
+
+        self.assertEqual('BTC/USD on BitTrex: {}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
                                                                       nowMinuteStr), priceResult)
 
 
