@@ -93,7 +93,8 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00 3773\n', contentList[1])
+            self.assertEqual('CRYPTO: BTC FIAT: USD EXCHANGE: BitTrex PRICE_TIMESTAMP: 1506124800 PRICE_DATE_TIME_STR: 23/09/17 00:00 PRICE: 3773 PRICE_TYPE: HISTO_DAY ERROR_MSG: None \n', contentList[1])
+#            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00 3773\n', contentList[1])
 
 
     def testControllerHistoDayPriceThenPartialDateDayOnly(self):
@@ -120,7 +121,8 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on BitTrex: 25/09/17 00:00 3931.12\n', contentList[3])
+            self.assertEqual('CRYPTO: BTC FIAT: USD EXCHANGE: BitTrex PRICE_TIMESTAMP: 1506297600 PRICE_DATE_TIME_STR: 25/09/17 00:00 PRICE: 3931.12 PRICE_TYPE: HISTO_DAY ERROR_MSG: None \n', contentList[3])
+#            self.assertEqual('BTC/USD on BitTrex: 25/09/17 00:00 3931.12\n', contentList[3])
 
 
     def testControllerHistoDayPriceThenPartialDateDayOnly_2(self):
@@ -147,10 +149,13 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00 4360.62\n', contentList[1])
-            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00 4360.62\n', contentList[3])
-            self.assertEqual('BTC/USD on CCCAGG: 25/09/17 00:00 3932.83\n', contentList[5])
+            self.assertEqual('CRYPTO: BTC FIAT: USD EXCHANGE: CCCAGG PRICE_TIMESTAMP: 1506729600 PRICE_DATE_TIME_STR: 30/09/17 00:00 PRICE: 4360.62 PRICE_TYPE: HISTO_DAY ERROR_MSG: None \n', contentList[1])
+            self.assertEqual('CRYPTO: BTC FIAT: USD EXCHANGE: CCCAGG PRICE_TIMESTAMP: 1506729600 PRICE_DATE_TIME_STR: 30/09/17 00:00 PRICE: 4360.62 PRICE_TYPE: HISTO_DAY ERROR_MSG: None \n', contentList[3])
+            self.assertEqual('CRYPTO: BTC FIAT: USD EXCHANGE: CCCAGG PRICE_TIMESTAMP: 1506297600 PRICE_DATE_TIME_STR: 25/09/17 00:00 PRICE: 3932.83 PRICE_TYPE: HISTO_DAY ERROR_MSG: None \n', contentList[5])
 
+            # self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00 4360.62\n', contentList[1])
+            # self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00 4360.62\n', contentList[3])
+            # self.assertEqual('BTC/USD on CCCAGG: 25/09/17 00:00 3932.83\n', contentList[5])
 
     def testControllerHistoDayPriceInvalidTimeFormat(self):
         stdin = sys.stdin
@@ -176,7 +181,8 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on None: ERROR - exchange could not be parsed due to an error in your command\n', contentList[1])
+            self.assertEqual('CRYPTO: None FIAT: None EXCHANGE: None PRICE_TIMESTAMP: None PRICE_DATE_TIME_STR: None PRICE: None PRICE_TYPE: None ERROR_MSG: ERROR - exchange could not be parsed due to an error in your command \n', contentList[1])
+#            self.assertEqual('BTC/USD on None: ERROR - exchange could not be parsed due to an error in your command\n', contentList[1])
 
 if __name__ == '__main__':
     unittest.main()
