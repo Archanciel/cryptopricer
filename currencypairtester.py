@@ -24,6 +24,9 @@ class CurrencyPairTester:
         add the triplet to the internal dic and
         to the file on disk.
         '''
+        if self.isListed(crypto, fiat, exchange):
+            return #do not add same entry twice !
+            
         cryptoU = crypto.upper()
         fiatU = fiat.upper()
         exchangeU = exchange.upper()
