@@ -1,5 +1,7 @@
 import os
 
+from priceresult import PriceResult
+
 class Printer:
     def __init__(self):
         if os.name == 'posix':
@@ -9,8 +11,35 @@ class Printer:
             pass
            
     
-    def print(self, result):
-        print(result)
+    def print(self, priceResult):
+        '''
+        print the result to the console and 
+        paste it to the clipboard
+        '''
+        errorMsg = priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG)
+
+        if errorMsg == None:
+            price = priceResult.getValue(priceResult. RESULT_KEY_PRICE)
+            self.toClipboard(str(price))
+            dateTimeStr = priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING)
+            priceType = priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE)
+            
+            if  priceType == priceResult.PRICE_TYPE_HISTO_DAY:
+                dateTimeStr += 'C' #adding close symbol
+            elif priceType == priceResult.PRICE_TYPE_HISTO_MINUTE:
+                dateTimeStr += 'M' #adding histo MINUTE symbol
+            else:
+                dateTimeStr += 'R' #adding RT symbol
+            
+            outputStr = '{}/{} on {}: {} {}'.format(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO),
+        	                                           priceResult.getValue(priceResult.RESULT_KEY_FIAT),
+        	                                           priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE),
+        	                                           dateTimeStr,
+        	                                           price)
+        else:
+        	   outputStr = '{}'.format(errorMsg)
+                                        	                                  	
+        print(outputStr)
         
         
     def toClipboard(self, value):

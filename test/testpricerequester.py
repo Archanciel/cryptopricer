@@ -147,7 +147,7 @@ class TestPriceRequester(unittest.TestCase):
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_MINUTE)
         self.assertEqual(crypto, priceResult.getValue(priceResult.RESULT_KEY_CRYPTO))
         self.assertEqual(fiat, priceResult.getValue(priceResult.RESULT_KEY_FIAT))
         self.assertEqual(exchange, priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE))
@@ -159,7 +159,7 @@ class TestPriceRequester(unittest.TestCase):
         exchange = 'CCCAGG'
 
         priceResult = self.priceRequester.getCurrentPrice(crypto, fiat, exchange)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_RT)
         self.assertEqual(crypto, priceResult.getValue(priceResult.RESULT_KEY_CRYPTO))
         self.assertEqual(fiat, priceResult.getValue(priceResult.RESULT_KEY_FIAT))
         self.assertEqual(exchange, priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE))
@@ -178,7 +178,7 @@ class TestPriceRequester(unittest.TestCase):
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_MINUTE)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), "ERROR - e param is not valid the market does not exist for this coin pair")
         self.assertEqual(crypto, priceResult.getValue(priceResult.RESULT_KEY_CRYPTO))
         self.assertEqual(fiat, priceResult.getValue(priceResult.RESULT_KEY_FIAT))
@@ -213,7 +213,7 @@ class TestPriceRequester(unittest.TestCase):
         exchange = 'unknown'
 
         priceResult = self.priceRequester.getCurrentPrice(crypto, fiat, exchange)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_RT)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(crypto, priceResult.getValue(priceResult.RESULT_KEY_CRYPTO))
         self.assertEqual(fiat, priceResult.getValue(priceResult.RESULT_KEY_FIAT))

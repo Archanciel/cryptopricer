@@ -50,7 +50,7 @@ class PriceRequester:
     def _getHistoMinutePriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange, priceResult):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
-        priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
+        priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_HISTO_MINUTE)
 
         try:
             webURL = urllib.request.urlopen(url)
@@ -108,7 +108,7 @@ class PriceRequester:
         priceResult.setValue(PriceResult.RESULT_KEY_CRYPTO, crypto)
         priceResult.setValue(PriceResult.RESULT_KEY_FIAT, fiat)
         priceResult.setValue(PriceResult.RESULT_KEY_EXCHANGE, exchange)
-        priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_CURRENT_OR_HISTO_MINUTE)
+        priceResult.setValue(PriceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_RT)
 
         try:
             webURL = urllib.request.urlopen(url)
