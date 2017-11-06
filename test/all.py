@@ -13,6 +13,7 @@ from testprocessor import TestProcessor
 from testcommandprice import TestCommandPrice
 from testpriceresult import TestPriceResult
 from testcurrencypairtester import TestCurrencyPairTester
+from testprinter import TestPrinter
 
 if __name__ == "__main__":
     loader = TestLoader() 
@@ -28,7 +29,8 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestProcessor),
                        loader.loadTestsFromTestCase(TestCommandPrice),
                        loader.loadTestsFromTestCase(TestPriceResult),
-                       loader.loadTestsFromTestCase(TestCurrencyPairTester)
+                       loader.loadTestsFromTestCase(TestCurrencyPairTester),
+                       loader.loadTestsFromTestCase(TestPrinter)
     ))
     runner = TextTestRunner(verbosity = 2)
     runner.run(suite)
