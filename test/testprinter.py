@@ -15,6 +15,7 @@ class TestPrinter(unittest.TestCase):
     def setUp(self):
         self.printer = Printer()
 
+
     def testPrintCryptoPriceHistorical(self):
         crypto = 'BTC'
         fiat = 'USD'
@@ -79,7 +80,7 @@ class TestPrinter(unittest.TestCase):
         sys.stdout = stdout
         self.assertEqual('BTC/USD on BitTrex: {}M 4122.09\n'.format(dateTimeString), capturedStdout.getvalue())
 
-'''
+
     def testGetCryptoPriceHistoricalWrongExchange(self):    
         crypto = 'BTC'
         fiat = 'USD'
@@ -89,31 +90,22 @@ class TestPrinter(unittest.TestCase):
         year = 2017
         hour = 10
         minute = 5
-        priceResult = self.processor.getCryptoPrice(crypto,
-                                               fiat,
-                                               exchange,
-                                               day,
-                                               month,
-                                               year,
-                                               hour,
-                                               minute)
+
+        priceResult = PriceResult()
+
         priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
-        priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, None)
-        priceResult.setValue(priceResult.RESULT_KEY_FIAT, None)
-        priceResult.setValue(priceResult.RESULT_KEY_EXCHANGE, None)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TYPE, None)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE, None)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, None)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP, None)
+        priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)
+        priceResult.setValue(priceResult.RESULT_KEY_FIAT, fiat)
+        priceResult.setValue(priceResult.RESULT_KEY_EXCHANGE, 'BitTrex')
+        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_HISTO_MINUTE)
 
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
 
-    def removePriceFromResult(self, resultStr):
-        match = re.match(r"(.*) ([\d\.]*)", resultStr)
-
-        if match != None:
-            return match.group(1)
-        else:
-            return ()
+        self.printer.print(priceResult)
+        sys.stdout = stdout
+        self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
 
 
     def testGetCryptoPriceRealTime(self):    
@@ -127,14 +119,8 @@ class TestPrinter(unittest.TestCase):
         hour = 1
         minute = 1
 
-        priceResult = self.processor.getCryptoPrice(crypto,
-                                               fiat,
-                                               exchange,
-                                               day,
-                                               month,
-                                               year,
-                                               hour,
-                                               minute)
+        priceResult = PriceResult()
+
         nowMinute = now.minute
 
         if nowMinute < 10:
@@ -162,14 +148,22 @@ class TestPrinter(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        #rt price not provided here !
         priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, None)
         priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)
         priceResult.setValue(priceResult.RESULT_KEY_FIAT, fiat)
         priceResult.setValue(priceResult.RESULT_KEY_EXCHANGE, 'BitTrex')
         priceResult.setValue(priceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_RT)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr))
-#        self.assertEqual('BTC/USD on BitTrex: {}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
-#                                                                      nowMinuteStr), priceResult)
+        dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
+        priceResult.setValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
+
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
+
+        self.printer.print(priceResult)
+        sys.stdout = stdout
+        self.assertEqual('BTC/USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
 
 
     def testGetCryptoPriceRealTimeWrongExchange(self):    
@@ -183,14 +177,8 @@ class TestPrinter(unittest.TestCase):
         hour = 1
         minute = 1
 
-        priceResult = self.processor.getCryptoPrice(crypto,
-                                               fiat,
-                                               exchange,
-                                               day,
-                                               month,
-                                               year,
-                                               hour,
-                                               minute)
+        priceResult = PriceResult()
+        
         priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, None)
         priceResult.setValue(priceResult.RESULT_KEY_FIAT, None)
@@ -199,7 +187,14 @@ class TestPrinter(unittest.TestCase):
         priceResult.setValue(priceResult.RESULT_KEY_PRICE, None)
         priceResult.setValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, None)
         priceResult.setValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP, None)
-#        self.assertEqual("BTC/USD on unknown: ERROR - unknown market does not exist for this coin pair (BTC-USD)", priceResult)
+
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
+
+        self.printer.print(priceResult)
+        sys.stdout = stdout
+        self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
 
 
     def testGetCryptoPriceRealTimeExchangeNotSupportPair(self):
@@ -213,14 +208,7 @@ class TestPrinter(unittest.TestCase):
         hour = 1
         minute = 1
 
-        priceResult = self.processor.getCryptoPrice(crypto,
-                                               fiat,
-                                               exchange,
-                                               day,
-                                               month,
-                                               year,
-                                               hour,
-                                               minute)
+        priceResult = PriceResult()
 
         priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, "ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
         priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)
@@ -230,8 +218,58 @@ class TestPrinter(unittest.TestCase):
         priceResult.setValue(priceResult.RESULT_KEY_PRICE, None)
         priceResult.setValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, None)
         priceResult.setValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP, None)
-#        self.assertEqual("BTC/USD on BTC38: ERROR - BTC38 market does not exist for this coin pair (BTC-USD)", priceResult)
 
-'''
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
+
+        self.printer.print(priceResult)
+        sys.stdout = stdout
+        self.assertEqual("ERROR - BTC38 market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
+
+
+    def testFormatFloatToStrRoundedFloat(self):
+        y = round(5.59, 1)
+        self.assertEqual('5.6', self.printer.formatFloatToStr(y))
+
+    
+    def testFormatFloatToStrEmptystr(self):
+        y = ''
+        self.assertEqual('', self.printer.formatFloatToStr(y))
+
+
+    def testFormatFloatToStrNone(self):
+        y = None
+        self.assertEqual('', self.printer.formatFloatToStr(y))
+
+    
+    def testFormatFloatToStrNineDigits(self):
+        y = 	0.999999999
+        self.assertEqual('1', self.printer.formatFloatToStr(y))
+
+    
+    def testFormatFloatToStrFourDigits(self):
+        y = 0.9084   
+        self.assertEqual('0.9084', self.printer.formatFloatToStr(y))
+
+    
+    def testFormatFloatToStrinteger(self):
+        y = 40 
+        self.assertEqual('40', self.printer.formatFloatToStr(y))
+
+
+    def testFormatFloatToStrNormal(self):
+        y = 2000.085  
+        self.assertEqual('2000.085', self.printer.formatFloatToStr(y)) 
+
+
+    def testToFromClipboard(self):
+        y = 2000.085
+        self.printer.toClipboard(y)
+        self.assertEqual(str(y), self.printer.fromClipboard())
+
+
 if __name__ == '__main__':
     unittest.main()
+
+

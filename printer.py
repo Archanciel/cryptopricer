@@ -3,14 +3,16 @@ import os
 from priceresult import PriceResult
 
 class Printer:
+    FLOAT_FORMAT = '%.8f'
+    
     def __init__(self):
         if os.name == 'posix':
             import android
             self._clipboard = android.Android()
         else:
-            pass
-           
-    
+            import clipboard
+            self._clipboard = clipboard
+
     def print(self, priceResult):
         '''
         print the result to the console and 
@@ -20,7 +22,8 @@ class Printer:
 
         if errorMsg == None:
             price = priceResult.getValue(priceResult. RESULT_KEY_PRICE)
-            self.toClipboard(str(price))
+            formattedPriceStr = self.formatFloatToStr(price)
+            self.toClipboard(formattedPriceStr)
             dateTimeStr = priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING)
             priceType = priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE)
             
@@ -35,31 +38,57 @@ class Printer:
         	                                           priceResult.getValue(priceResult.RESULT_KEY_FIAT),
         	                                           priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE),
         	                                           dateTimeStr,
-        	                                           price)
+        	                                           formattedPriceStr)    
         else:
         	   outputStr = '{}'.format(errorMsg)
                                         	                                  	
         print(outputStr)
         
         
-    def toClipboard(self, value):
+    def toClipboard(self, numericVal):
         if os.name == 'posix':
-            self._clipboard.setClipboard(str(value))
+            self._clipboard.setClipboard(str(numericVal))
         else:
-            pass
+            self._clipboard.copy(str(numericVal))
 
 
     def fromClipboard(self):
         if os.name == 'posix':
             return self._clipboard.getClipboard().result
         else:
-            pass
+            return self._clipboard.paste()
 
 
+    def formatFloatToStr(self, floatNb):
+        try:
+            floatNbFormatted = self.FLOAT_FORMAT % floatNb
+        except TypeError:
+            return ''
+            
+        floatNbFormattedStripZero = floatNbFormatted.rstrip('0')
+        return floatNbFormattedStripZero.rstrip('.')
+        
 if __name__ == '__main__':
     pr = Printer()
+    y = round(5.59, 1)
+    y = 0.999999999
+    y = 0.9084
+    y = 40
+    yFormatted = '%.8f' % y
+    print()
+    print('No formatting:                 ' + str(y))
+    print('With formatting:               ' + yFormatted)
+    print('With formatting no trailing 0: ' + pr.formatFloatToStr(y))
+    print()
 
     a = 12.56
-    pr.toClipboard(a)
-    print('Clip: ' + pr.fromClipboard())
+    if os.name == 'posix':
+        pr.toClipboard(a)
+        print('Clip Android: ' + pr.fromClipboard())
+
+    if os.name != 'posix':
+        import clipboard
+        clipboard.copy(str(2351.78))
+        print('Clip Windows: ' + clipboard.paste())
+
 
