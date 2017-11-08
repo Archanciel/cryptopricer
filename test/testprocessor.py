@@ -5,7 +5,6 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-import re
 from processor import Processor
 from configurationmanager import ConfigurationManager
 from pricerequester import PriceRequester
@@ -74,8 +73,6 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute)
-#        priceResult = self.removePriceFromResult(priceResult)
-#        self.assertEqual('BTC/USD on BitTrex: {}/{}/{} 10:05'.format(day, month, year - 2000), priceResult)
         recentDay = recent.day
 
         if recentDay < 10:
@@ -118,17 +115,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), None)
 
 
-    def removePriceFromResult(self, resultStr):
-        match = re.match(r"(.*) ([\d\.]*)", resultStr)
-
-        if match != None:
-            return match.group(1)
-        else:
-            return ()
-
-
     def testGetCryptoPriceRealTime(self):    
-        now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
         fiat = 'USD'
         exchange = 'bittrex'
@@ -146,6 +133,7 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute)
+        now = DateTimeUtil.localNow('Europe/Zurich')
         nowMinute = now.minute
 
         if nowMinute < 10:
@@ -179,8 +167,6 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_RT)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr))
-#        self.assertEqual('BTC/USD on BitTrex: {}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
-#                                                                      nowMinuteStr), priceResult)
 
 
     def testGetCryptoPriceRealTimeWrongExchange(self):    
@@ -210,7 +196,6 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE), None)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), None)
-#        self.assertEqual("BTC/USD on unknown: ERROR - unknown market does not exist for this coin pair (BTC-USD)", priceResult)
 
 
     def testGetCryptoPriceRealTimeExchangeNotSupportPair(self):
@@ -241,7 +226,6 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE), None)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), None)
-#        self.assertEqual("BTC/USD on BTC38: ERROR - BTC38 market does not exist for this coin pair (BTC-USD)", priceResult)
 
 
 if __name__ == '__main__':
