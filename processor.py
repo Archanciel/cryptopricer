@@ -27,18 +27,16 @@ class Processor:
             priceResult = PriceResult()
             priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat))
             return priceResult
-#            return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat)
         except Exception as e:
             #occurs if exchange name does not start with an upper case. Parsing it returns None !
             priceResult = PriceResult()
             priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {}".format(str(e)))
             return priceResult
-#            return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + "ERROR - {}".format(str(e))
 
         localTz = self.configManager.localTimeZone
         dateTimeFormat = self.configManager.dateTimeFormat
 
-        if (day + month + year) == 0:
+        if (day + month + year + hour + minute) == 0:
             # when the user specifies 0 for either the date,
             # this means current price is asked and date components
             # are set to zero !
@@ -50,9 +48,8 @@ class Processor:
                 requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, localTz)
                 requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
                 priceResult.setValue(PriceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
-#                return "{}/{} on {}:".format(priceResult.getValue(PriceResult.RESULT_KEY_CRYPTO), priceResult.getValue(PriceResult.RESULT_KEY_FIAT), priceResult.getValue(PriceResult.RESULT_KEY_EXCHANGE)) + ' ' + priceResult.getValue(PriceResult.RESULT_KEY_PRICE_DATE_TIME_STRING) + ' ' + str(priceResult.getValue(PriceResult.RESULT_KEY_PRICE))
-#            else:
-#                return "{}/{} on {}:".format(priceResult.getValue(PriceResult.RESULT_KEY_CRYPTO), priceResult.getValue(PriceResult.RESULT_KEY_FIAT), priceResult.getValue(PriceResult.RESULT_KEY_EXCHANGE)) + ' ' + priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG)
+        elif (day + month + year) == 0:
+            raise AssertionError("If hour and minute != 0, day, month and year can not be 0 !")
         else:
             #getting historical price, either histo day or histo minute
             timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
@@ -71,12 +68,6 @@ class Processor:
 
                 priceResult.setValue(PriceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
 
-#                return "{}/{} on {}:".format(priceResult.getValue(PriceResult.RESULT_KEY_CRYPTO), priceResult.getValue(PriceResult.RESULT_KEY_FIAT), priceResult.getValue(PriceResult.RESULT_KEY_EXCHANGE)) + ' ' + priceResult.getValue(PriceResult.RESULT_KEY_PRICE_DATE_TIME_STRING) + ' ' + str(priceResult.getValue(PriceResult.RESULT_KEY_PRICE))
-                # return "{}/{} on {}:".format(priceResult.getValue(PriceResult.RESULT_KEY_CRYPTO], priceResult.getValue(PriceResult.RESULT_KEY_FIAT], priceResult.getValue(PriceResult.RESULT_KEY_EXCHANGE]) + ' ' + requestedDateTimeStr + ' ' + \
-                #         str(priceResult.getValue(self.priceRequester.IDX_CURRENT_PRICE])
-#            else:
-#                return "{}/{} on {}:".format(priceResult.getValue(PriceResult.RESULT_KEY_CRYPTO), priceResult.getValue(PriceResult.RESULT_KEY_FIAT), priceResult.getValue(PriceResult.RESULT_KEY_EXCHANGE) + ' ' + priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
-#                return "{}/{} on {}:".format(crypto, fiat, exchange) + ' ' + priceResult.getValue(self.priceRequester.IDX_ERROR_MSG]
         return priceResult
 
 

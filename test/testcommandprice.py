@@ -49,8 +49,6 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
 
-#        self.assertEqual("BTC/USD on BitTrex: 12/09/17 00:00 4122", priceResult)
-
 
     def testExecuteHistoricalPriceTwoDigitYear(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -72,8 +70,6 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE), 4122)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
-
-#        self.assertEqual("BTC/USD on BitTrex: 12/09/17 00:00 4122", priceResult)
 
 
     def testExecuteHistoricalPriceNoYear(self):
@@ -97,8 +93,6 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
 
-#        self.assertEqual("BTC/USD on BitTrex: 12/09/17 00:00 4122", priceResult)
-
 
     def testExecuteHistoricalPriceWrongExchange(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -121,8 +115,6 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), None)
 
-#        self.assertEqual("BTC/USD on Unknown: ERROR - Unknown market does not exist for this coin pair (BTC-USD)", priceResult)
-
 
     def removePriceFromResult(self, resultStr):
         match = re.match(r"(.*) ([\d\.]*)", resultStr)
@@ -140,11 +132,10 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '0'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '0'
         self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '0'
-        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
-        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '0'
 
         priceResult = self.commandPrice.execute()
-#        priceResult = self.removePriceFromResult(priceResult)
 
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowMinute = now.minute
@@ -180,7 +171,6 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_RT)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr))
-#        self.assertEqual('BTC/USD on BitTrex: {}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), priceResult)
 
 
     def testExecuteRealTimePriceWrongExchange(self):
@@ -205,7 +195,6 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE), None)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), None)
-#        self.assertEqual("BTC/USD on Unknown: ERROR - Unknown market does not exist for this coin pair (BTC-USD)", priceResult)
 
 
     def testExecuteRealTimePriceInvalidYearOneDigit(self):

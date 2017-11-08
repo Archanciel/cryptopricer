@@ -52,6 +52,7 @@ class CommandPrice(AbstractCommand):
         exchange = self.parsedParmData[self.EXCHANGE]
 
         dayStr = self.parsedParmData[self.DAY]
+
         if dayStr != None:
             day = int(dayStr)
         else:
@@ -60,6 +61,7 @@ class CommandPrice(AbstractCommand):
         localNow = DateTimeUtil.localNow(self.configManager.localTimeZone)
 
         monthStr = self.parsedParmData[self.MONTH]
+
         if monthStr != None:
             if len(monthStr) <= 2:
                 month = int(monthStr)
@@ -69,6 +71,7 @@ class CommandPrice(AbstractCommand):
             month = localNow.month
  
         yearStr = self.parsedParmData[self.YEAR]
+
         if yearStr != None:
             if len(yearStr) == 2:
                 year = 2000 + int(yearStr)
@@ -82,16 +85,25 @@ class CommandPrice(AbstractCommand):
             year = localNow.year
             
         hourStr = self.parsedParmData[self.HOUR]
+
         if hourStr != None:
             hour = int(hourStr)
         else:
             hour = 0
 
         minuteStr = self.parsedParmData[self.MINUTE]
+
         if minuteStr != None:
             minute = int(minuteStr)
         else:
             minute = 0
+
+        if day + month + year == 0 and hour != 0 and minute != 0:
+            #is the case if user first asked RT price and then set time like for example
+            # btc usd 0 all, then -t12:45
+            day = localNow.day
+            month = localNow.month
+            year = localNow.year
 
         result = self.receiver.getCryptoPrice(cryptoUpper,
                                               fiatUpper,
