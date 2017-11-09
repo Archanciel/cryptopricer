@@ -98,12 +98,12 @@ class CommandPrice(AbstractCommand):
         else:
             minute = 0
 
-        if day + month + year == 0 and hour != 0 and minute != 0:
-            #is the case if user first asked RT price and then set time like for example
-            # btc usd 0 all, then -t12:45
-            day = localNow.day
-            month = localNow.month
-            year = localNow.year
+        if day + month + year == 0:
+            # asking for RT price here. Current date is stored in parsed parm data for possible
+            # use in next request
+            self.parsedParmData[self.DAY] = str(localNow.day)
+            self.parsedParmData[self.MONTH] = str(localNow.month)
+            self.parsedParmData[self.YEAR] = str(localNow.year)
 
         result = self.receiver.getCryptoPrice(cryptoUpper,
                                               fiatUpper,
