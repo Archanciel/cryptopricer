@@ -41,10 +41,29 @@ class Requester:
     ° Exchange name must start with a letter. May contain digits.
 
     Ex:
-    Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
-                1/1, accepted. 1/10, accepted. 01/12/16, accepted. 01/12/2015, accepted. 
-    Hour minute can be 0, rejected. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
-                       01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected. 
+    Date can be: 0, accepted. 
+                 1, rejected. 
+                 10, rejected. 
+                 01, rejected. 
+                 0/0, accepted. 
+                 01/0, accepted. 
+                 01/1, accepted. 
+                 01/10, accepted. 
+                 1/1, accepted. 
+                 1/10, accepted. 
+                 01/12/16, accepted. 
+                 01/12/2015, accepted. 
+    Hour minute can be: 0, rejected. 
+                        1, rejected. 
+                        10, rejected. 
+                        01, rejected. 
+                        01:1, rejected. 
+                        01:01, accepted. 
+                        01:10, accepted. 
+                        1:10, accepted. 
+                        00:00, accepted. 
+                        0:00, accepted. 
+                        0:0, rejected. 
     '''
 
     PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)"
@@ -59,11 +78,31 @@ class Requester:
     
     The rules below apply to -d and -t values !
     
-    Date can be 0, accepted. 1, rejected. 10, rejected. 01, rejected. 01/1, accepted. 01/10, accepted. 
-                1/1, accepted. 1/10, accepted. 01/12/16, accepted. 01/12/2015, accepted. 
-    Hour minute can be 0, rejected. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
-                       01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected. 
-
+    Date can be: 0, accepted. 
+                 1, rejected. 
+                 10, rejected. 
+                 01, rejected. 
+                 01/0, accepted. 
+                 01/1, accepted. 
+                 01/10, accepted. 
+                 0/0, accepted. 
+                 1/0, accepted. 
+                 1/1, accepted. 
+                 1/10, accepted. 
+                 01/12/16, accepted. 
+                 01/12/2015, accepted. 
+    Hour minute can be: 0, rejected. 
+                        1, rejected. 
+                        10, rejected. 
+                        01, rejected. 
+                        01:1, rejected. 
+                        01:01, accepted. 
+                        01:10, accepted. 
+                        1:10, accepted. 
+                        00:00, accepted. 
+                        0:00, accepted. 
+                        0:0, rejected. 
+                        
     Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken
     '''
     PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
