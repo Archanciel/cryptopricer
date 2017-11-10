@@ -1,7 +1,6 @@
 from abstractcommand import AbstractCommand
 from datetimeutil import DateTimeUtil
-from configurationmanager import ConfigurationManager
-
+from priceresult import PriceResult
 
 class CommandPrice(AbstractCommand):
     CRYPTO = "CRYPTO"
@@ -66,7 +65,9 @@ class CommandPrice(AbstractCommand):
             if len(monthStr) <= 2:
                 month = int(monthStr)
             else:
-                return "{}/{} on {}:".format(cryptoUpper, fiatUpper, exchange) + ' ' + "ERROR - {} not conform to accepted month format (MM, M, or '')".format(monthStr)
+                priceResult = PriceResult()
+                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} not conform to accepted month format (MM, M, or '')".format(monthStr))
+                return priceResult
         else:
             month = localNow.month
  
@@ -78,7 +79,9 @@ class CommandPrice(AbstractCommand):
             elif len(yearStr) == 4:
                 year = int(yearStr)
             elif yearStr != '0':
-                return "{}/{} on {}:".format(cryptoUpper, fiatUpper, exchange) + ' ' + "ERROR - {} not conform to accepted year format (YYYY, YY, '' or 0)".format(yearStr)
+                priceResult = PriceResult()
+                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} not conform to accepted year format (YYYY, YY, '' or 0)".format(yearStr))
+                return priceResult
             else:
                 year = 0
         else:

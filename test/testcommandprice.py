@@ -209,8 +209,8 @@ class TestCommandPrice(unittest.TestCase):
 
         priceResult = self.commandPrice.execute()
 
-        self.assertEqual("BTC/USD on bittrex: ERROR - 1 not conform to accepted year format (YYYY, YY, '' or 0)",
-                         priceResult)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+                         "ERROR - 1 not conform to accepted year format (YYYY, YY, '' or 0)")
 
 
     def testExecuteRealTimePriceInvalidYearThreeDigit(self):
@@ -225,8 +225,24 @@ class TestCommandPrice(unittest.TestCase):
 
         priceResult = self.commandPrice.execute()
 
-        self.assertEqual("BTC/USD on bittrex: ERROR - 017 not conform to accepted year format (YYYY, YY, '' or 0)",
-                         priceResult)
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+                         "ERROR - 017 not conform to accepted year format (YYYY, YY, '' or 0)")
+
+
+    def testExecuteRealTimePriceInvalidYearThreeDigit(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '21'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '112'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        priceResult = self.commandPrice.execute()
+
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+                         "ERROR - 112 not conform to accepted month format (MM, M, or '')")
 
 
 if __name__ == '__main__':
