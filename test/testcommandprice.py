@@ -210,7 +210,7 @@ class TestCommandPrice(unittest.TestCase):
         priceResult = self.commandPrice.execute()
 
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
-                         "ERROR - 1 not conform to accepted year format (YYYY, YY, '' or 0)")
+                         "ERROR - 1 not conform to accepted year format (YYYY, YY or '')")
 
 
     def testExecuteRealTimePriceInvalidYearThreeDigit(self):
@@ -226,7 +226,7 @@ class TestCommandPrice(unittest.TestCase):
         priceResult = self.commandPrice.execute()
 
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
-                         "ERROR - 017 not conform to accepted year format (YYYY, YY, '' or 0)")
+                         "ERROR - 017 not conform to accepted year format (YYYY, YY or '')")
 
 
     def testExecuteRealTimePriceInvalidYearThreeDigit(self):

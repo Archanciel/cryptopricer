@@ -78,9 +78,12 @@ class CommandPrice(AbstractCommand):
                 year = 2000 + int(yearStr)
             elif len(yearStr) == 4:
                 year = int(yearStr)
-            elif yearStr != '0':
+            elif yearStr != '' and (day == 0 and month == 0 and yearStr != '0'): # only when user enters -d0 for RT price,
+                                                                                 # yearStr is '0' since 0 is put into day,
+                                                                                 # month and year. Otherwise, yearStr is
+                                                                                 # illegal and must generate an error msg !
                 priceResult = PriceResult()
-                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} not conform to accepted year format (YYYY, YY, '' or 0)".format(yearStr))
+                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} not conform to accepted year format (YYYY, YY or '')".format(yearStr))
                 return priceResult
             else:
                 year = 0
