@@ -180,6 +180,47 @@ class TestController(unittest.TestCase):
             self.assertEqual('ERROR - exchange could not be parsed due to an error in your command\n', contentList[1])
 
 
+    def testControllerOnlyDayProvided(self):
+        # error msg not optimal in this case !!
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 1 2:56 bittrex\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
+        nowYear = now.year
+
+        nowYearStr = str(nowYear)
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual("ERROR - 0/{}/{} is not a valid date".format(nowMonthStr, nowYearStr), contentList[1][:-1]) #removing \n from contentList entry !
+
+
     def testControllerBugSpecifyTimeAfterAskedRT345(self):
         stdin = sys.stdin
         sys.stdin = StringIO('btc usd 0 all\n-t03:45\nq\ny')

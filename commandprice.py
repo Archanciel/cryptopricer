@@ -78,15 +78,19 @@ class CommandPrice(AbstractCommand):
                 year = 2000 + int(yearStr)
             elif len(yearStr) == 4:
                 year = int(yearStr)
-            elif yearStr != '' and (day == 0 and month == 0 and yearStr != '0'): # only when user enters -d0 for RT price,
-                                                                                 # yearStr is '0' since 0 is put into day,
-                                                                                 # month and year. Otherwise, yearStr is
-                                                                                 # illegal and must generate an error msg !
+            elif dayStr != '0' and monthStr != '0' and yearStr == '0': # only when user enters -d0 for RT price,
+                                                                       # yearStr is '0' since 0 is put into day,
+                                                                       # month and year. Otherwise, yearStr is
+                                                                       # illegal and must generate an error msg !
                 priceResult = PriceResult()
                 priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} not conform to accepted year format (YYYY, YY or '')".format(yearStr))
                 return priceResult
-            else:
+            elif yearStr == '0':    # user entered -d0 !
                 year = 0
+            else:
+                priceResult = PriceResult()
+                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} not conform to accepted year format (YYYY, YY or '')".format(yearStr))
+                return priceResult
         else:
             year = localNow.year
             
@@ -108,6 +112,10 @@ class CommandPrice(AbstractCommand):
             # asking for RT price here. Current date is stored in parsed parm data for possible
             # use in next request
             self._storeDateTimeDataForNextPartialRequest(localNow)
+        elif day == 0 or month == 0 or year == 0:
+            priceResult = PriceResult()
+            priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {}/{}/{} is not a valid date".format(day, month, year))
+            return priceResult
 
         result = self.receiver.getCryptoPrice(cryptoUpper,
                                               fiatUpper,
