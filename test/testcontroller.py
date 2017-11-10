@@ -292,7 +292,64 @@ class TestController(unittest.TestCase):
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 07:00M'.format(nowDayStr, now.month, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
 
 
-    def testControllerBugSpecifyTimeAfterAskedRT2910(self):
+    def testControllerBugSpecifyTimeAfterAskedRT700ThenReaskRT(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 0 all\n-t7:00\n-d0\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowMinute = now.minute
+
+        if nowMinute < 10:
+            if nowMinute > 0:
+                nowMinuteStr = '0' + str(nowMinute)
+            else:
+                nowMinuteStr = '00'
+        else:
+            nowMinuteStr = str(nowMinute)
+
+        nowHour = now.hour
+
+        if nowHour < 10:
+            if nowHour > 0:
+                nowHourStr = '0' + str(nowHour)
+            else:
+                nowHourStr = '00'
+        else:
+            nowHourStr = str(nowHour)
+
+        nowDay = now.day
+
+        if nowDay < 10:
+            nowDayStr = '0' + str(nowDay)
+        else:
+            nowDayStr = str(nowDay)
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 07:00M'.format(nowDayStr, now.month, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+
+
+    def testControllerBugSpecifyDateAfterAskedRT2910(self):
         stdin = sys.stdin
         sys.stdin = StringIO('btc usd 0 all\n-d29/10\nq\ny')
 
@@ -355,6 +412,174 @@ class TestController(unittest.TestCase):
             return match.group(1)
         else:
             return ()
+
+
+    def testControllerBugChangeCryptoAfterAskedRT(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 0 all\n-ceth\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowMinute = now.minute
+
+        if nowMinute < 10:
+            if nowMinute > 0:
+                nowMinuteStr = '0' + str(nowMinute)
+            else:
+                nowMinuteStr = '00'
+        else:
+            nowMinuteStr = str(nowMinute)
+
+        nowHour = now.hour
+
+        if nowHour < 10:
+            if nowHour > 0:
+                nowHourStr = '0' + str(nowHour)
+            else:
+                nowHourStr = '00'
+        else:
+            nowHourStr = str(nowHour)
+
+        nowDay = now.day
+
+        if nowDay < 10:
+            nowDayStr = '0' + str(nowDay)
+        else:
+            nowDayStr = str(nowDay)
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}M'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1]))
+
+    def testControllerBugChangeCryptoAfterAskedRTThenAskRTAgain(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 0 all\n-ceth\n-d0\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowMinute = now.minute
+
+        if nowMinute < 10:
+            if nowMinute > 0:
+                nowMinuteStr = '0' + str(nowMinute)
+            else:
+                nowMinuteStr = '00'
+        else:
+            nowMinuteStr = str(nowMinute)
+
+        nowHour = now.hour
+
+        if nowHour < 10:
+            if nowHour > 0:
+                nowHourStr = '0' + str(nowHour)
+            else:
+                nowHourStr = '00'
+        else:
+            nowHourStr = str(nowHour)
+
+        nowDay = now.day
+
+        if nowDay < 10:
+            nowDayStr = '0' + str(nowDay)
+        else:
+            nowDayStr = str(nowDay)
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}M'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1]))
+
+
+    def testControllerBugAskRTTwice(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 0 all\n-d0\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowMinute = now.minute
+
+        if nowMinute < 10:
+            if nowMinute > 0:
+                nowMinuteStr = '0' + str(nowMinute)
+            else:
+                nowMinuteStr = '00'
+        else:
+            nowMinuteStr = str(nowMinute)
+
+        nowHour = now.hour
+
+        if nowHour < 10:
+            if nowHour > 0:
+                nowHourStr = '0' + str(nowHour)
+            else:
+                nowHourStr = '00'
+        else:
+            nowHourStr = str(nowHour)
+
+        nowDay = now.day
+
+        if nowDay < 10:
+            nowDayStr = '0' + str(nowDay)
+        else:
+            nowDayStr = str(nowDay)
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
 
 
 if __name__ == '__main__':

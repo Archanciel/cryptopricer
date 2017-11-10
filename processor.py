@@ -36,7 +36,7 @@ class Processor:
         localTz = self.configManager.localTimeZone
         dateTimeFormat = self.configManager.dateTimeFormat
 
-        if (day + month + year + hour + minute) == 0:
+        if (day + month + year) == 0:
             # when the user specifies 0 for either the date,
             # this means current price is asked and date components
             # are set to zero !

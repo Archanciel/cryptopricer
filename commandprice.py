@@ -101,9 +101,7 @@ class CommandPrice(AbstractCommand):
         if day + month + year == 0:
             # asking for RT price here. Current date is stored in parsed parm data for possible
             # use in next request
-            self.parsedParmData[self.DAY] = str(localNow.day)
-            self.parsedParmData[self.MONTH] = str(localNow.month)
-            self.parsedParmData[self.YEAR] = str(localNow.year)
+            self._storeDateTimeDataForNextPartialRequest(localNow)
 
         result = self.receiver.getCryptoPrice(cryptoUpper,
                                               fiatUpper,
@@ -115,6 +113,14 @@ class CommandPrice(AbstractCommand):
                                               minute)
         	                            
         return result
+
+
+    def _storeDateTimeDataForNextPartialRequest(self, localNow):
+        self.parsedParmData[self.DAY] = str(localNow.day)
+        self.parsedParmData[self.MONTH] = str(localNow.month)
+        self.parsedParmData[self.YEAR] = str(localNow.year)
+        self.parsedParmData[self.HOUR] = str(localNow.hour)
+        self.parsedParmData[self.MINUTE] = str(localNow.minute)
 
 
 if __name__ == '__main__':
@@ -157,6 +163,8 @@ if __name__ == '__main__':
     cpr.parsedParmData[cpr.DAY] = '0'
     cpr.parsedParmData[cpr.MONTH] = '0'
     cpr.parsedParmData[cpr.YEAR] = '0'
+    cpr.parsedParmData[cpr.HOUR] = '0'
+    cpr.parsedParmData[cpr.MINUTE] = '0'
 
     print(cpr.execute())
 
