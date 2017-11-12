@@ -78,7 +78,7 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
-        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = None
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '2017'
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
@@ -121,11 +121,7 @@ class TestCommandPrice(unittest.TestCase):
 
         nowYearStr = str(nowYear)
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_FIAT), 'USD')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), 'BitTrex')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING)[:-6], '01/{}/{}'.format(nowMonthStr,nowYearStr))
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), "ERROR - date not valid")
 
 
     def testExecuteHistoricalPriceWrongExchange(self):
@@ -244,7 +240,7 @@ class TestCommandPrice(unittest.TestCase):
         priceResult = self.commandPrice.execute()
 
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
-                         "ERROR - 1 not conform to accepted year format (YYYY, YY or '')")
+                         "ERROR - date not valid")
 
 
     def testExecuteHistoDayPriceInvalidYearIsZero(self):
@@ -260,15 +256,15 @@ class TestCommandPrice(unittest.TestCase):
         priceResult = self.commandPrice.execute()
 
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
-                         "ERROR - 0 not conform to accepted year format (YYYY, YY or '')")
+                         "ERROR - date not valid")
 
 
     def testExecuteRealTimePriceInvalidYearThreeDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
         self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
-        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '0'
-        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '0'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
         self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '017'
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
@@ -279,7 +275,7 @@ class TestCommandPrice(unittest.TestCase):
                          "ERROR - 017 not conform to accepted year format (YYYY, YY or '')")
 
 
-    def testExecuteRealTimePriceInvalidYearThreeDigit(self):
+    def testExecuteRealTimePriceInvalidMonthThreeDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
         self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
@@ -292,7 +288,55 @@ class TestCommandPrice(unittest.TestCase):
         priceResult = self.commandPrice.execute()
 
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
-                         "ERROR - 112 not conform to accepted month format (MM, M, or '')")
+                         "ERROR - 112 not conform to accepted month format (MM or M)")
+
+
+    def testExecuteRealTimePriceInvalidDayThreeDigit(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '211'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '11'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        priceResult = self.commandPrice.execute()
+
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+                         "ERROR - day is out of range for month")
+
+
+    def testExecuteRealTimePriceInvalidDayValue(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '32'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '11'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        priceResult = self.commandPrice.execute()
+
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+                         "ERROR - day is out of range for month")
+
+
+    def testExecuteRealTimePriceInvalidMonthValue(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '31'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '13'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        priceResult = self.commandPrice.execute()
+
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+                         "ERROR - month must be in 1..12")
 
 
 if __name__ == '__main__':

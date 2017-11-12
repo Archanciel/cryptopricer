@@ -53,6 +53,7 @@ class Requester:
                  1/10, accepted. 
                  01/12/16, accepted. 
                  01/12/2015, accepted. 
+                 01/12/0, accepted. 
     Hour minute can be: 0, rejected. 
                         1, rejected. 
                         10, rejected. 
@@ -91,6 +92,7 @@ class Requester:
                  1/10, accepted. 
                  01/12/16, accepted. 
                  01/12/2015, accepted. 
+                 01/12/0, accepted. 
     Hour minute can be: 0, rejected. 
                         1, rejected. 
                         10, rejected. 

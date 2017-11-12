@@ -183,7 +183,7 @@ class TestController(unittest.TestCase):
     def testControllerOnlyDayProvided(self):
         # error msg not optimal in this case !!
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 1 2:56 bittrex\nq\ny')
+        sys.stdin = StringIO('btc usd 1 2:57 bittrex\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -218,13 +218,13 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual("ERROR - 0/{}/{} is not a valid date".format(nowMonthStr, nowYearStr), contentList[1][:-1]) #removing \n from contentList entry !
+            self.assertEqual("ERROR - date not valid".format(nowMonthStr, nowYearStr), contentList[1][:-1]) #removing \n from contentList entry !
 
 
     def testControllerDateContainZeroYear(self):
         # error msg not optimal in this case !!
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 1/10/0 2:56 bittrex\nq\ny')
+        sys.stdin = StringIO('btc usd 1/10/0 2:58 bittrex\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -259,7 +259,48 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual("ERROR - 0 not conform to accepted year format (YYYY, YY or '')", contentList[1][:-1]) #removing \n from contentList entry !
+            self.assertEqual("ERROR - date not valid", contentList[1][:-1]) #removing \n from contentList entry !
+
+
+    def testControllerRegressionOnDDMMDate(self):
+        # error msg not optimal in this case !!
+        stdin = sys.stdin
+        sys.stdin = StringIO('neo btc 11/10 bitfinex\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
+        nowYear = now.year
+
+        nowYearStr = str(nowYear)
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('NEO/BTC on Bitfinex: 11/10/17 00:00C 0.006228\n', contentList[1])
 
 
     def testControllerBugSpecifyTimeAfterAskedRT345(self):
@@ -719,6 +760,116 @@ class TestController(unittest.TestCase):
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+
+
+    def testControllerInvalidYearThenValidDDMM(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 20/9/201 all\n-d30/9\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual("ERROR - 201 not conform to accepted year format (YYYY, YY or '')\n", contentList[1])
+            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00C 4360.62\n', contentList[3])
+
+
+    def testControllerInvalidMonthThenValidDDMM(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 20/999 all\n-d30/9\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual("ERROR - 999 not conform to accepted month format (MM or M)\n", contentList[1])
+            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00C 4360.62\n', contentList[3])
+
+
+    def testControllerInvalidMonthValue(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 20/13 all\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual("ERROR - month must be in 1..12\n", contentList[1])
+
+
+    def testControllerInvalidDayValue(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 32/1 all\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual("ERROR - day is out of range for month\n", contentList[1])
 
 
 if __name__ == '__main__':
