@@ -21,17 +21,17 @@ class Processor:
                        year,
                        hour,
                        minute):
-        try:
-            validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
-        except(KeyError):
+        if exchange == None:
             priceResult = PriceResult()
-            priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat))
+            priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your command")
             return priceResult
-        except Exception as e:
-            #occurs if exchange name does not start with an upper case. Parsing it returns None !
-            priceResult = PriceResult()
-            priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {}".format(str(e)))
-            return priceResult
+        else:
+            try:
+                validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
+            except(KeyError):
+                priceResult = PriceResult()
+                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat))
+                return priceResult
 
         localTz = self.configManager.localTimeZone
         dateTimeFormat = self.configManager.dateTimeFormat

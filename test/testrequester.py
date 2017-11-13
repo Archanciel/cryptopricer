@@ -11,6 +11,7 @@ from commandprice import CommandPrice
 from commandcrypto import CommandCrypto
 from commandquit import CommandQuit
 from commanderror import CommandError
+from priceresult import PriceResult
 
 
 class TestRequester(unittest.TestCase):
@@ -77,7 +78,8 @@ class TestRequester(unittest.TestCase):
         inputStr = "[btc 05/07 0.0015899] [usd-chf] -nosave"
         cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
         self.assertEqual(cryptoData, self.commandError)
-        self.assertEqual("Error in input [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing !", self.commandError.execute())
+        priceResult = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseDatePriceTwoPairs(self):
@@ -132,14 +134,16 @@ class TestRequester(unittest.TestCase):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153]"
         cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, self.commandError)
-        self.assertEqual("Error in input btc [5/7 0.0015899 6/7 0.00153]: fiat list missing !", self.commandError.execute())
+        priceResult = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command btc [5/7 0.0015899 6/7 0.00153]: fiat list missing", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseOOCommandParmsFiatListMissingWithOtherCommand(self):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153] -nosave"
         cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, self.commandError)
-        self.assertEqual("Error in input btc [5/7 0.0015899 6/7 0.00153] -nosave: fiat list missing !", self.commandError.execute())
+        priceResult = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command btc [5/7 0.0015899 6/7 0.00153] -nosave: fiat list missing", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseOOCommandParms(self):

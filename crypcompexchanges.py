@@ -3,7 +3,7 @@ class CrypCompExchanges:
         self._dic = {'ALL': ['CCCAGG', 'BTC', 'USD'],
                      'CCCAGG': ['CCCAGG', 'BTC', 'USD'],
                      'CCEX': ['Ccex', 'MCAP', 'USD'],
-        	         'BTC38': ['BTC38', 'BTC', 'CNY'],
+                     'BTC38': ['BTC38', 'BTC', 'CNY'],
                      'BTER': ['BTER', 'ETH', 'BTC'],
                      'BIT2C': ['Bit2C', 'LTC', 'ILS'],
                      'BITFINEX': ['Bitfinex', 'BTC', 'USD'],
@@ -66,10 +66,7 @@ class CrypCompExchanges:
         :return: exchange name with right case
         :raise KeyException if passed exchangeName not found.
         '''
-        if isinstance(exchangeName, str):
-            return self._dic[exchangeName.upper()][0]
-        else:
-            raise Exception("exchange could not be parsed due to an error in your command")
+        return self._dic[exchangeName.upper()][0]
 
 
     def _getExchangeTestData(self, exchangeName):
@@ -83,6 +80,7 @@ class CrypCompExchanges:
 
 if __name__ == '__main__':
     from pricerequester import PriceRequester
+    from priceresult import PriceResult
 
     cc = CrypCompExchanges()
     pp = PriceRequester()
@@ -99,12 +97,12 @@ if __name__ == '__main__':
         fiat = exchTestData[2]
         crypto = exchTestData[1]
   
-        res = pp.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, ts, exch)
+        priceResult = pp.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, ts, ts, exch)
 
-        if len(res) > 1:
-            print("{} {} {} {}".format(exch, crypto, fiat, res[2]))
+        if priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG) == None:
+            print("{} {} {} {}".format(exch, crypto, fiat, priceResult.getValue(PriceResult.RESULT_KEY_PRICE)))
         else:
-            print("{} {}".format(exch, res[0][0:26]))
+            print("{} {}".format(exch, priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG)[0:26]))
 
     print('\n\n--- CURRENT PRICES ---\n')
 
@@ -114,9 +112,10 @@ if __name__ == '__main__':
         fiat = exchTestData[2]
         crypto = exchTestData[1]
  
-        res = pp.getCurrentPrice(crypto, fiat, exch)
-        if len(res) > 1:
-            print("{} {} {} {}".format(exch, crypto, fiat, res[2]))
+        priceResult = pp.getCurrentPrice(crypto, fiat, exch)
+
+        if priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG) == None:
+            print("{} {} {} {}".format(exch, crypto, fiat, priceResult.getValue(PriceResult.RESULT_KEY_PRICE)))
         else:
-            print("{} {}".format(exch, res[0][0:26]))
+            print("{} {}".format(exch, priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG)[0:26]))
 

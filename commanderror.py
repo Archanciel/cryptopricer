@@ -1,4 +1,5 @@
 from abstractcommand import AbstractCommand
+from priceresult import PriceResult
 
 class CommandError(AbstractCommand):
     USER_COMMAND_MISSING_MSG = 'user command missing'
@@ -14,4 +15,12 @@ class CommandError(AbstractCommand):
 
 
     def execute(self):
-        return "Error in input "  + self.rawParmData + ": " + self.parsedParmData[0] + " !"
+        priceResult = PriceResult()
+        errorDetails = self.parsedParmData[0]
+        
+        if errorDetails != '':
+            errorDetails = ': ' + errorDetails
+            
+        priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - invalid command "  + self.rawParmData + errorDetails)
+        
+        return priceResult

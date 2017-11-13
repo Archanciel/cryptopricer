@@ -50,17 +50,6 @@ class Controller:
             if result != '':
                 pri.print(result)
 
-            # if CommandDataEnum.QUIT in command:
-            #     input('Quit ?')
-            #     sys.exit(0)
-            # elif command == commandCrypto:
-            #     result = proc.execute(command)
-            #     pri.print(result)
-            # elif CommandDataEnum.ERROR in command:
-            #     print("Error in input")
-            # else:
-            #     raise ValueError('Invalid command encountered: ' + command)
-            
 if __name__ == '__main__':
     import os
     from io import StringIO

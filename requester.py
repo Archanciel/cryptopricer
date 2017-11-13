@@ -152,7 +152,8 @@ class Requester:
                 return self.commandPrice
             else:
                 self.commandError.rawParmData = inputStr
-                self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
+#                self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
+                self.commandError.parsedParmData = ['']
                 return self.commandError
 
         userCommand = match.group(1)
