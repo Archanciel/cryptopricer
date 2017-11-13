@@ -99,9 +99,9 @@ class TestController(unittest.TestCase):
             self.assertEqual('BTC/USD on CCCAGG: 25/09/17 00:00C 3932.83\n', contentList[5])
 
 
-    def testControllerHistoDayPriceThenEmptyTimePartialParm(self):
+    def testControllerHistoDayPriceThenEmptyPartialParms(self):
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 30/9/2017 all\n-t\nq\ny')
+        sys.stdin = StringIO('btc usd 30/9/2017 all\n-t\n-d\n-e\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -125,6 +125,8 @@ class TestController(unittest.TestCase):
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00C 4360.62\n', contentList[1])
             self.assertEqual('ERROR - invalid command -t\n', contentList[3])
+            self.assertEqual('ERROR - invalid command -d\n', contentList[5])
+            self.assertEqual('ERROR - invalid command -e\n', contentList[7])
 
 
     def testControllerHistoDayPriceInvalidTimeFormat(self):
