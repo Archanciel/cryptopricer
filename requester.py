@@ -151,9 +151,15 @@ class Requester:
             if self.commandPrice == self._parseAndFillCommandPrice(inputStr):
                 return self.commandPrice
             else:
+                # here, either invalid historical/RT price request which has no command symbol (for ex -t alone)
+                # or other request with missing command symbol (for ex [btc 05/07 0.0015899] [usd-chf] -nosave)
                 self.commandError.rawParmData = inputStr
-#                self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
-                self.commandError.parsedParmData = ['']
+                if '[' in inputStr:
+                    # command symbol missing
+                    self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
+                else:
+                    # invakid partial command parm
+                    self.commandError.parsedParmData = ['']
                 return self.commandError
 
         userCommand = match.group(1)
