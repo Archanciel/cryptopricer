@@ -101,7 +101,7 @@ class TestController(unittest.TestCase):
 
     def testControllerHistoDayPriceThenEmptyPartialParms(self):
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 30/9/2017 all\n-t\n-d\n-e\nq\ny')
+        sys.stdin = StringIO('btc usd 30/9/2017 all\n-t\n-d\n-e\n-c\n-f\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -127,6 +127,8 @@ class TestController(unittest.TestCase):
             self.assertEqual('ERROR - invalid command -t\n', contentList[3])
             self.assertEqual('ERROR - invalid command -d\n', contentList[5])
             self.assertEqual('ERROR - invalid command -e\n', contentList[7])
+            self.assertEqual('ERROR - invalid command -c\n', contentList[9])
+            self.assertEqual('ERROR - invalid command -f\n', contentList[11])
 
 
     def testControllerHistoDayPriceInvalidTimeFormat(self):

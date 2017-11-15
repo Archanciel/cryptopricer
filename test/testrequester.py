@@ -82,6 +82,54 @@ class TestRequester(unittest.TestCase):
         self.assertEqual("ERROR - invalid command [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
 
 
+    def test_getCommandInvalidC(self):
+        inputStr = "-c"
+        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        self.assertEqual(cryptoData, self.commandError)
+        priceResult = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command -c", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
+
+
+    def test_getCommandInvalidF(self):
+        inputStr = "-f"
+        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        self.assertEqual(cryptoData, self.commandError)
+        priceResult = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command -f", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
+
+
+    def test_getCommandInvalidD(self):
+        inputStr = "-d"
+        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        self.assertEqual(cryptoData, self.commandError)
+        priceResult = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command -d", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
+
+
+    def test_getCommandInvalidT(self):
+        inputStr = "-t"
+        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        self.assertEqual(cryptoData, self.commandError)
+        priceResult = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command -t", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
+
+
+    def test_getCommandInvalidE(self):
+        inputStr = "-e"
+        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        self.assertEqual(cryptoData, self.commandError)
+        priceResult = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command -e", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
+
+
+    def test_getCommandInvalidC(self):
+        inputStr = "-c"
+        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        self.assertEqual(cryptoData, self.commandError)
+        priceResult = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command -c", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
+
+
     def test_parseDatePriceTwoPairs(self):
         inputStr = "[5/7 0.0015899 6/7 0.00153]"
         datePriceList = self.requester._parseDatePrice(inputStr.upper())
