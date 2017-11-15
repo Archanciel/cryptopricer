@@ -129,18 +129,18 @@ class CommandPrice(AbstractCommand):
         
         priceResult = True
         
-        if (yearStr == '0' and \
-            monthStr == '0' and \
-            dayStr == '0'):
+        if (yearStr == '0' and
+                    monthStr == '0' and
+                    dayStr == '0'):
             # RT price asked
             return priceResult
         else:
-            if (yearStr == '0' or \
-               	#yearStr is None when only day/month specified -> valid !
-                monthStr == '0' or \
-                monthStr == None or \
-                dayStr == '0' or \
-                dayStr == None):
+            if (yearStr == '0' or
+                #yearStr is None when only day/month specified -> valid !
+                monthStr == '0' or
+                        monthStr == None or
+                        dayStr == '0' or
+                        dayStr == None):
                 # only when user enters -d0 for RT price,
                 # is yearStr equal to '0' since 0 is put 
                 # by Requesèer into day, month and year !                                                                       
@@ -165,8 +165,15 @@ class CommandPrice(AbstractCommand):
             # like day == 123 or day == 32 or month == 31
             if yearStr == None:
                 yearStr = str(localNow.year)
+                
+            if hourStr == None:
+                hourStr = str(localNow.hour)
+                
+            if minuteStr == None:
+                minuteStr = str(localNow.minute)
+                
             try:
-                DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr), 0, 0, 0, self.configManager.localTimeZone)
+                DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr), int(hourStr), int(minuteStr), 0, self.configManager.localTimeZone)
             except ValueError as e:
                 priceResult = PriceResult()
                 priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - " + str(e))

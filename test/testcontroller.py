@@ -850,5 +850,59 @@ class TestController(unittest.TestCase):
             self.assertEqual("ERROR - day is out of range for month\n", contentList[1])
 
 
+    def testControllerInvalidHourValue(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 1/1 25:00 all\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual("ERROR - hour must be in 0..23\n", contentList[1])
+
+
+    def testControllerInvalidMinuteValue(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 1/1 2:65 all\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual("ERROR - minute must be in 0..59\n", contentList[1])
+
+
 if __name__ == '__main__':
     unittest.main()

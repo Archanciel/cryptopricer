@@ -315,7 +315,7 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '11'
         self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
-        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = None
 
         priceResult = self.commandPrice.execute()
 
@@ -330,13 +330,45 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '31'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '13'
         self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
-        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = None
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
         priceResult = self.commandPrice.execute()
 
         self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
                          "ERROR - month must be in 1..12")
+
+
+    def testExecuteRealTimePriceInvalidHourValue(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '31'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '12'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '25'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        priceResult = self.commandPrice.execute()
+
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+                         "ERROR - hour must be in 0..23")
+
+
+    def testExecuteRealTimePriceInvalidMinuteValue(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '31'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '12'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '65'
+
+        priceResult = self.commandPrice.execute()
+
+        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+                         "ERROR - minute must be in 0..59")
 
 
 if __name__ == '__main__':
