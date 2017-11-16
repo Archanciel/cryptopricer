@@ -433,7 +433,14 @@ class Requester:
 
 
 if __name__ == '__main__':
+    from test.testrequester import TestRequester
+    
+    testR = TestRequester()
+    testR.runTest()
+    
+    '''
     r = Requester()
+    
     r.commandPrice = CommandPrice()
     inputStr = "btc usd Kraken 10/9/17 12:45"
 #    groupL = r._parseGroups(r.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
@@ -441,3 +448,4 @@ if __name__ == '__main__':
 #    print(groupL)
 #    print(r._validateFullCommandPriceParsedGroupsOrder(groupL))
     print(r._parseAndFillCommandPrice(inputStr))
+    '''
