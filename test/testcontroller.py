@@ -904,5 +904,89 @@ class TestController(unittest.TestCase):
             self.assertEqual("ERROR - minute must be in 0..59\n", contentList[1])
 
 
+    def testControllerInvalidCommandOnlyCryptoProvided(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual("ERROR - fiat missing or invalid\n", contentList[1])
+
+
+    def testControllerInvalidCommandMissingFiatProvided(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc 1/1 2:00 all\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual("ERROR - fiat missing or invalid\n", contentList[1])
+
+
+    def testControllerHistoDayPriceDiffOptParmsOrder(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 23/9/2017 2:56 bittrex\nbtc usd 2:56 23/9/17 bittrex\nbtc usd 2:56 bittrex 23/9/2017\nbtc usd bittrex 2:56 23/9/17\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[1])
+            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[3])
+            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[5])
+            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[7])
+
+
 if __name__ == '__main__':
     unittest.main()
