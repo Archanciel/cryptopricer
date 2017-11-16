@@ -345,7 +345,6 @@ class Requester:
         self.commandPrice.parsedParmData[CommandPrice.YEAR] = year
         self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
-#        print("{}/{} on {}: ".format(crypto, fiat, exchange) + ' '.join(map(str, pr.getPriceAtLocalDateTimeStr(crypto, fiat, localDateTimeStr, exchange))))
         return self.commandPrice
 
 

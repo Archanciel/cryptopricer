@@ -46,13 +46,18 @@ class CommandPrice(AbstractCommand):
 
 
     def execute(self):
+        resultPriceOrBoolean = self._validateMandatoryData()
+
+        if resultPriceOrBoolean != True:
+            return resultPriceOrBoolean
+
         localNow = DateTimeUtil.localNow(self.configManager.localTimeZone)
 
         resultPriceOrBoolean = self._validateDateTimeData(localNow)
-        
+
         if resultPriceOrBoolean != True:
             return resultPriceOrBoolean
-            
+
         cryptoUpper = self.parsedParmData[self.CRYPTO].upper()
         fiatUpper = self.parsedParmData[self.FIAT].upper()
         exchange = self.parsedParmData[self.EXCHANGE]
@@ -114,78 +119,101 @@ class CommandPrice(AbstractCommand):
         return result
 
 
+    def _validateMandatoryData(self):
+        priceResult = True
+
+        fiat = self.parsedParmData[self.FIAT]
+
+        if fiat == None or any(char.isdigit() for char in fiat):
+            priceResult = PriceResult()
+            priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - fiat missing or invalid")
+
+        # debug code useful on phone !
+        #        dateTimeList = [dayStr, monthStr, yearStr, hourStr, minuteStr]
+        #        with open('/sdcard/compri.txt', 'a') as f:
+        #            f.write(str(dateTimeList) + '\n')
+                
+        return priceResult
+
+
     def _validateDateTimeData(self, localNow):
         '''
         ['1', '10', '0', '2', '58'] #btc usd 1/10/0 2:58
         [None, None, None, '2', '57'] # btc usd 1 2:57
         ['11', '10', None, None, None] # neo btc 11/10
         '''
-        
+
+        priceResult = True
+
         dayStr = self.parsedParmData[self.DAY]
         monthStr = self.parsedParmData[self.MONTH]
         yearStr = self.parsedParmData[self.YEAR]
         hourStr = self.parsedParmData[self.HOUR]
         minuteStr = self.parsedParmData[self.MINUTE]
-        
-        priceResult = True
-        
+
         if (yearStr == '0' and
-                    monthStr == '0' and
-                    dayStr == '0'):
+            monthStr == '0' and
+            dayStr == '0'):
             # RT price asked
             return priceResult
         else:
+            # here, the three date components are not all equal to 0 !
             if (yearStr == '0' or
-                #yearStr is None when only day/month specified -> valid !
+                # yearStr is None when only day/month specified -> valid !
                 monthStr == '0' or
-                        monthStr == None or
-                        dayStr == '0' or
-                        dayStr == None):
+                monthStr == None or
+                dayStr == '0' or
+                dayStr == None):
                 # only when user enters -d0 for RT price,
-                # is yearStr equal to '0' since 0 is put 
-                # by Requesèer into day, month and year !                                                                       
+                # is yearStr equal to '0' since 0 is put
+                # by Requesèer into day, month and year !
                 priceResult = PriceResult()
                 priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - date not valid")
                 return priceResult
             elif len(monthStr) > 2:
                 priceResult = PriceResult()
-                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} not conform to accepted month format (MM or M)".format(monthStr))
+                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG,
+                                     "ERROR - {} not conform to accepted month format (MM or M)".format(monthStr))
                 return priceResult
             elif yearStr != None:
                 yearStrLen = len(yearStr)
                 if yearStrLen != 2 and yearStrLen != 4:
                     priceResult = PriceResult()
-                    priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} not conform to accepted year format (YYYY, YY or '')".format(yearStr))
-                    
+                    priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG,
+                                         "ERROR - {} not conform to accepted year format (YYYY, YY or '')".format(
+                                             yearStr))
+
                     # avoiding that invalid year will pollute next price requests
                     self.parsedParmData[self.YEAR] = None
                     return priceResult
-                    
+
             # validating full date. Catch inval day or inval month,
             # like day == 123 or day == 32 or month == 31
             if yearStr == None:
                 yearStr = str(localNow.year)
-                
+
             if hourStr == None:
                 hourStr = str(localNow.hour)
-                
+
             if minuteStr == None:
                 minuteStr = str(localNow.minute)
-                
+
             try:
-                DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr), int(hourStr), int(minuteStr), 0, self.configManager.localTimeZone)
+                DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr),
+                                                                int(hourStr), int(minuteStr), 0,
+                                                                self.configManager.localTimeZone)
             except ValueError as e:
                 priceResult = PriceResult()
                 priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - " + str(e))
 
-# debug code useful on phone !
-#        dateTimeList = [dayStr, monthStr, yearStr, hourStr, minuteStr]
-#        with open('/sdcard/compri.txt', 'a') as f:
-#            f.write(str(dateTimeList) + '\n')
-                
+        # debug code useful on phone !
+        #        dateTimeList = [dayStr, monthStr, yearStr, hourStr, minuteStr]
+        #        with open('/sdcard/compri.txt', 'a') as f:
+        #            f.write(str(dateTimeList) + '\n')
+
         return priceResult
-        
-        
+
+
     def _storeDateTimeDataForNextPartialRequest(self, localNow):
         self.parsedParmData[self.DAY] = str(localNow.day)
         self.parsedParmData[self.MONTH] = str(localNow.month)
