@@ -988,5 +988,34 @@ class TestController(unittest.TestCase):
             self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[7])
 
 
+    def testControllerHistoDayPriceIncompleteCommandScenario(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc 23/9 2:56 bittrex\n-fusd 2:56\n-d23/9\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('ERROR - fiat missing or invalid\n', contentList[1])
+            self.assertEqual('ERROR - date not valid\n', contentList[3])
+            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[5])
+
+
 if __name__ == '__main__':
     unittest.main()
