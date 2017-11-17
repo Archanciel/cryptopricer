@@ -148,8 +148,9 @@ class Requester:
 
         if match == None:
             #here, either historical/RT price request which has no command symbol or user input error
-            if self.commandPrice == self._parseAndFillCommandPrice(inputStr):
-                return self.commandPrice
+            command = self._parseAndFillCommandPrice(inputStr)
+            if command == self.commandPrice or command == self.commandError:
+                return command
             else:
                 # here, either invalid historical/RT price request which has no command symbol (for ex -t alone)
                 # or other request with missing command symbol (for ex [btc 05/07 0.0015899] [usd-chf] -nosave)
@@ -247,14 +248,21 @@ class Requester:
             groupList = self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
             if groupList != (): #here, parms are associated to parrm tag (i.e -c or -d). Means they have been
                                 #entered in any order and are all optional
+                keys = self.inputParmParmDataDicKeyDic.keys()
                 it = iter(groupList)
 
                 for command in it:
                     value = next(it)
                     if value != None:
                         commandUpper = command.upper()
-                        self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = value
-
+                        if commandUpper in keys:
+                            self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = value
+                        else:
+                            self.commandError.rawParmData = inputStr
+                            # unknown partial command symbol
+                            self.commandError.parsedParmData = [self.commandError.COMMAND_NOT_SUPPORTED_MSG.format(command)]
+                            return self.commandError
+                            
                 hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
                 dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
             else: #neither full nor parrial pattern matched
@@ -435,7 +443,7 @@ if __name__ == '__main__':
     from test.testrequester import TestRequester
     
     testR = TestRequester()
-    testR.runTest()
+    testR.runTests()
     
     '''
     r = Requester()

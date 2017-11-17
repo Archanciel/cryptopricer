@@ -1502,6 +1502,31 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
 
 
+    def test_parseAndFillPartialCommandPriceWrongCommand(self):
+        commandError = self.requester.commandPrice
+
+        parsedParmData = commandError.parsedParmData
+
+        #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.FIAT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = '16'
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+
+        inputStr = "-ceth -fgbp -d11/8 -h22:46 -eKraken"
+        commandError = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandError, self.commandError)
+        parsedParmData = commandError.parsedParmData
+        self.assertEqual(parsedParmData[0], '-h not supported')
+        self.assertEqual(commandError.rawParmData, '-ceth -fgbp -d11/8 -h22:46 -eKraken')
+
+
     def testRequestPriceCommandFull(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken")
@@ -1838,6 +1863,10 @@ class TestRequester(unittest.TestCase):
 
         sys.stdin = stdin
 
+
+    def runTests(self):
+        unittest.main()
+        
 
 if __name__ == '__main__':
     unittest.main()
