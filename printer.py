@@ -1,6 +1,8 @@
 import os
 
 from resultdata import ResultData
+from kivy.core.clipboard import Clipboard
+
 
 class Printer:
     FLOAT_FORMAT = '%.8f'
@@ -11,7 +13,7 @@ class Printer:
             self._clipboard = android.Android()
         else:
             import clipboard
-            self._clipboard = clipboard
+            self._clipboard = Clipboard
 
     def print(self, priceResult):
         '''
@@ -46,17 +48,17 @@ class Printer:
         
         
     def toClipboard(self, numericVal):
-        if os.name == 'posix':
-            self._clipboard.setClipboard(str(numericVal))
-        else:
-            self._clipboard.copy(str(numericVal))
+        # if os.name == 'posix':
+        #     self._clipboard.setClipboard(str(numericVal))
+        # else:
+        self._clipboard.copy(str(numericVal))
 
 
     def fromClipboard(self):
-        if os.name == 'posix':
-            return self._clipboard.getClipboard().result
-        else:
-            return self._clipboard.paste()
+        # if os.name == 'posix':
+        #     return self._clipboard.getClipboard().result
+        # else:
+        return self._clipboard.paste()
 
 
     def formatFloatToStr(self, floatNb):
