@@ -6,11 +6,11 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
-from priceresult import PriceResult
+from resultdata import ResultData
 
 class TestPriceResult(unittest.TestCase):
     def setUp(self):
-        self.priceResult = PriceResult()
+        self.priceResult = ResultData()
 
 
     def testInit(self):

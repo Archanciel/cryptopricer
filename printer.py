@@ -1,6 +1,6 @@
 import os
 
-from priceresult import PriceResult
+from resultdata import ResultData
 
 class Printer:
     FLOAT_FORMAT = '%.8f'

@@ -1,6 +1,6 @@
 from abstractcommand import AbstractCommand
 from datetimeutil import DateTimeUtil
-from priceresult import PriceResult
+from resultdata import ResultData
 
 class CommandPrice(AbstractCommand):
     CRYPTO = "CRYPTO"
@@ -125,8 +125,8 @@ class CommandPrice(AbstractCommand):
         fiat = self.parsedParmData[self.FIAT]
 
         if fiat == None or any(char.isdigit() for char in fiat):
-            priceResult = PriceResult()
-            priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - fiat missing or invalid")
+            priceResult = ResultData()
+            priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - fiat missing or invalid")
 
         # debug code useful on phone !
         #        dateTimeList = [dayStr, monthStr, yearStr, hourStr, minuteStr]
@@ -167,19 +167,19 @@ class CommandPrice(AbstractCommand):
                 # only when user enters -d0 for RT price,
                 # is yearStr equal to '0' since 0 is put
                 # by Requesèer into day, month and year !
-                priceResult = PriceResult()
-                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - date not valid")
+                priceResult = ResultData()
+                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - date not valid")
                 return priceResult
             elif len(monthStr) > 2:
-                priceResult = PriceResult()
-                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG,
+                priceResult = ResultData()
+                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG,
                                      "ERROR - {} not conform to accepted month format (MM or M)".format(monthStr))
                 return priceResult
             elif yearStr != None:
                 yearStrLen = len(yearStr)
                 if yearStrLen != 2 and yearStrLen != 4:
-                    priceResult = PriceResult()
-                    priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG,
+                    priceResult = ResultData()
+                    priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG,
                                          "ERROR - {} not conform to accepted year format (YYYY, YY or '')".format(
                                              yearStr))
 
@@ -203,8 +203,8 @@ class CommandPrice(AbstractCommand):
                                                                 int(hourStr), int(minuteStr), 0,
                                                                 self.configManager.localTimeZone)
             except ValueError as e:
-                priceResult = PriceResult()
-                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - " + str(e))
+                priceResult = ResultData()
+                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - " + str(e))
 
         # debug code useful on phone !
         #        dateTimeList = [dayStr, monthStr, yearStr, hourStr, minuteStr]

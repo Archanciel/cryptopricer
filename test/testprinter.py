@@ -8,7 +8,7 @@ sys.path.insert(0, parentdir)
 
 import re
 from printer import Printer
-from priceresult import PriceResult
+from resultdata import ResultData
 from datetimeutil import DateTimeUtil
 
 class TestPrinter(unittest.TestCase):
@@ -21,7 +21,7 @@ class TestPrinter(unittest.TestCase):
         fiat = 'USD'
         exchange = 'bittrex'
 
-        priceResult = PriceResult()
+        priceResult = ResultData()
         priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, None)
         priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)
         priceResult.setValue(priceResult.RESULT_KEY_FIAT, fiat)
@@ -53,7 +53,7 @@ class TestPrinter(unittest.TestCase):
         hour = 10
         minute = 5
 
-        priceResult = PriceResult()
+        priceResult = ResultData()
 
         recentDay = recent.day
 
@@ -91,7 +91,7 @@ class TestPrinter(unittest.TestCase):
         hour = 10
         minute = 5
 
-        priceResult = PriceResult()
+        priceResult = ResultData()
 
         priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)
@@ -119,7 +119,7 @@ class TestPrinter(unittest.TestCase):
         hour = 1
         minute = 1
 
-        priceResult = PriceResult()
+        priceResult = ResultData()
 
         nowMinute = now.minute
 
@@ -177,7 +177,7 @@ class TestPrinter(unittest.TestCase):
         hour = 1
         minute = 1
 
-        priceResult = PriceResult()
+        priceResult = ResultData()
         
         priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, None)
@@ -208,7 +208,7 @@ class TestPrinter(unittest.TestCase):
         hour = 1
         minute = 1
 
-        priceResult = PriceResult()
+        priceResult = ResultData()
 
         priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, "ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
         priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)

@@ -1,5 +1,5 @@
 from abstractcommand import AbstractCommand
-from priceresult import PriceResult
+from resultdata import ResultData
 
 class CommandError(AbstractCommand):
     USER_COMMAND_MISSING_MSG = 'user command missing'
@@ -16,12 +16,12 @@ class CommandError(AbstractCommand):
 
 
     def execute(self):
-        priceResult = PriceResult()
+        priceResult = ResultData()
         errorDetails = self.parsedParmData[0]
         
         if errorDetails != '':
             errorDetails = ': ' + errorDetails
             
-        priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - invalid command "  + self.rawParmData + errorDetails)
+        priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid command " + self.rawParmData + errorDetails)
         
         return priceResult

@@ -7,7 +7,7 @@ sys.path.insert(0, parentdir)
 
 from configurationmanager import ConfigurationManager
 from pricerequester import PriceRequester
-from priceresult import PriceResult
+from resultdata import ResultData
 from datetimeutil import DateTimeUtil
 
 
@@ -28,7 +28,7 @@ class TestPriceRequester(unittest.TestCase):
         exchange = 'CCCAGG'
         utcArrowDateTimeObj_endOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 23:59:59", 'UTC',
                                                                                    "YYYY/MM/DD HH:mm:ss")
-        priceResult = PriceResult()
+        priceResult = ResultData()
         priceResult = self.priceRequester._getHistoDayPriceAtUTCTimeStamp(crypto,
                                                                           fiat,
                                                                           utcArrowDateTimeObj_endOfDay.timestamp,
@@ -48,7 +48,7 @@ class TestPriceRequester(unittest.TestCase):
         exchange = 'CCCAGG'
         utcArrowDateTimeObj_midOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 12:59:59", 'UTC',
                                                                                    "YYYY/MM/DD HH:mm:ss")
-        priceResult = PriceResult()
+        priceResult = ResultData()
         priceResult = self.priceRequester._getHistoDayPriceAtUTCTimeStamp(crypto,
                                                                           fiat,
                                                                           utcArrowDateTimeObj_midOfDay.timestamp,

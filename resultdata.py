@@ -1,6 +1,6 @@
 
 
-class PriceResult:
+class ResultData:
     RESULT_KEY_CRYPTO = 'CRYPTO'
     RESULT_KEY_FIAT = 'FIAT'
     RESULT_KEY_EXCHANGE = 'EXCHANGE'

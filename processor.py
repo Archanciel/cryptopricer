@@ -1,5 +1,5 @@
 from datetimeutil import DateTimeUtil
-from priceresult import PriceResult
+from resultdata import ResultData
 
 
 class Processor:
@@ -22,15 +22,15 @@ class Processor:
                        hour,
                        minute):
         if exchange == None:
-            priceResult = PriceResult()
-            priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your command")
+            priceResult = ResultData()
+            priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your command")
             return priceResult
         else:
             try:
                 validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
             except(KeyError):
-                priceResult = PriceResult()
-                priceResult.setValue(PriceResult.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat))
+                priceResult = ResultData()
+                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat))
                 return priceResult
 
         localTz = self.configManager.localTimeZone
@@ -42,21 +42,21 @@ class Processor:
             # are set to zero !
             priceResult = self.priceRequester.getCurrentPrice(crypto, fiat, validExchangeSymbol)
 
-            if priceResult.isEmpty(PriceResult.RESULT_KEY_ERROR_MSG):
+            if priceResult.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 #adding date time info if no error returned
-                timeStamp = priceResult.getValue(PriceResult.RESULT_KEY_PRICE_TIME_STAMP)
+                timeStamp = priceResult.getValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP)
                 requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, localTz)
                 requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
-                priceResult.setValue(PriceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
+                priceResult.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
         else:
             #getting historical price, either histo day or histo minute
             timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
             timeStampUtcNoHHMM = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, 0, 0, 0, 'UTC')
             priceResult = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocal, timeStampUtcNoHHMM, validExchangeSymbol)
 
-            if priceResult.isEmpty(PriceResult.RESULT_KEY_ERROR_MSG):
+            if priceResult.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 #adding date time info if no error returned
-                if priceResult.getValue(PriceResult.RESULT_KEY_PRICE_TYPE) == PriceResult.PRICE_TYPE_HISTO_DAY:
+                if priceResult.getValue(ResultData.RESULT_KEY_PRICE_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
                     #histoday price returned
                     requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
                     requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(self.configManager.dateTimeFormat)
@@ -64,7 +64,7 @@ class Processor:
                     requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 
-                priceResult.setValue(PriceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
+                priceResult.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
 
         return priceResult
 

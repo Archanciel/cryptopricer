@@ -6,7 +6,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
 from commanderror import CommandError
-from priceresult import PriceResult
+from resultdata import ResultData
 
 class TestCommandError(unittest.TestCase):
 
@@ -17,7 +17,7 @@ class TestCommandError(unittest.TestCase):
 
 
         priceResult = commandError.execute()
-        self.assertEqual("ERROR - invalid command -c: crypto symbol missing", priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid command -c: crypto symbol missing", priceResult.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 if __name__ == '__main__':

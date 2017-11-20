@@ -80,7 +80,7 @@ class CrypCompExchanges:
 
 if __name__ == '__main__':
     from pricerequester import PriceRequester
-    from priceresult import PriceResult
+    from resultdata import ResultData
 
     cc = CrypCompExchanges()
     pp = PriceRequester()
@@ -99,10 +99,10 @@ if __name__ == '__main__':
   
         priceResult = pp.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, ts, ts, exch)
 
-        if priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG) == None:
-            print("{} {} {} {}".format(exch, crypto, fiat, priceResult.getValue(PriceResult.RESULT_KEY_PRICE)))
+        if priceResult.getValue(ResultData.RESULT_KEY_ERROR_MSG) == None:
+            print("{} {} {} {}".format(exch, crypto, fiat, priceResult.getValue(ResultData.RESULT_KEY_PRICE)))
         else:
-            print("{} {}".format(exch, priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG)[0:26]))
+            print("{} {}".format(exch, priceResult.getValue(ResultData.RESULT_KEY_ERROR_MSG)[0:26]))
 
     print('\n\n--- CURRENT PRICES ---\n')
 
@@ -114,8 +114,8 @@ if __name__ == '__main__':
  
         priceResult = pp.getCurrentPrice(crypto, fiat, exch)
 
-        if priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG) == None:
-            print("{} {} {} {}".format(exch, crypto, fiat, priceResult.getValue(PriceResult.RESULT_KEY_PRICE)))
+        if priceResult.getValue(ResultData.RESULT_KEY_ERROR_MSG) == None:
+            print("{} {} {} {}".format(exch, crypto, fiat, priceResult.getValue(ResultData.RESULT_KEY_PRICE)))
         else:
-            print("{} {}".format(exch, priceResult.getValue(PriceResult.RESULT_KEY_ERROR_MSG)[0:26]))
+            print("{} {}".format(exch, priceResult.getValue(ResultData.RESULT_KEY_ERROR_MSG)[0:26]))
 
