@@ -21,21 +21,21 @@ class TestPrinter(unittest.TestCase):
         fiat = 'USD'
         exchange = 'bittrex'
 
-        priceResult = ResultData()
-        priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, None)
-        priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)
-        priceResult.setValue(priceResult.RESULT_KEY_FIAT, fiat)
-        priceResult.setValue(priceResult.RESULT_KEY_EXCHANGE, 'BitTrex')
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_HISTO_DAY)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE, 4122)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
+        resultData = ResultData()
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(priceResult)
+        self.printer.print(resultData)
         sys.stdout = stdout
         self.assertEqual('BTC/USD on BitTrex: 12/09/17 00:00C 4122\n', capturedStdout.getvalue())
 
@@ -53,7 +53,7 @@ class TestPrinter(unittest.TestCase):
         hour = 10
         minute = 5
 
-        priceResult = ResultData()
+        resultData = ResultData()
 
         recentDay = recent.day
 
@@ -62,21 +62,21 @@ class TestPrinter(unittest.TestCase):
         else:
             recentDayStr = str(recentDay)
 
-        priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, None)
-        priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)
-        priceResult.setValue(priceResult.RESULT_KEY_FIAT, fiat)
-        priceResult.setValue(priceResult.RESULT_KEY_EXCHANGE, 'BitTrex')
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_HISTO_MINUTE)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE, 4122.09)
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 4122.09)
 
         dateTimeString = '{}/{}/{} 10:05'.format(recentDayStr, month, year - 2000)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(priceResult)
+        self.printer.print(resultData)
         sys.stdout = stdout
         self.assertEqual('BTC/USD on BitTrex: {}M 4122.09\n'.format(dateTimeString), capturedStdout.getvalue())
 
@@ -91,19 +91,19 @@ class TestPrinter(unittest.TestCase):
         hour = 10
         minute = 5
 
-        priceResult = ResultData()
+        resultData = ResultData()
 
-        priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
-        priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)
-        priceResult.setValue(priceResult.RESULT_KEY_FIAT, fiat)
-        priceResult.setValue(priceResult.RESULT_KEY_EXCHANGE, 'BitTrex')
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(priceResult)
+        self.printer.print(resultData)
         sys.stdout = stdout
         self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
 
@@ -119,7 +119,7 @@ class TestPrinter(unittest.TestCase):
         hour = 1
         minute = 1
 
-        priceResult = ResultData()
+        resultData = ResultData()
 
         nowMinute = now.minute
 
@@ -149,19 +149,19 @@ class TestPrinter(unittest.TestCase):
             nowDayStr = str(nowDay)
 
         #rt price not provided here !
-        priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, None)
-        priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)
-        priceResult.setValue(priceResult.RESULT_KEY_FIAT, fiat)
-        priceResult.setValue(priceResult.RESULT_KEY_EXCHANGE, 'BitTrex')
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_RT)
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(priceResult)
+        self.printer.print(resultData)
         sys.stdout = stdout
         self.assertEqual('BTC/USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
 
@@ -177,22 +177,22 @@ class TestPrinter(unittest.TestCase):
         hour = 1
         minute = 1
 
-        priceResult = ResultData()
+        resultData = ResultData()
         
-        priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
-        priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, None)
-        priceResult.setValue(priceResult.RESULT_KEY_FIAT, None)
-        priceResult.setValue(priceResult.RESULT_KEY_EXCHANGE, None)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TYPE, None)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE, None)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, None)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP, None)
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, None)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, None)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, None)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(priceResult)
+        self.printer.print(resultData)
         sys.stdout = stdout
         self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
 
@@ -208,22 +208,22 @@ class TestPrinter(unittest.TestCase):
         hour = 1
         minute = 1
 
-        priceResult = ResultData()
+        resultData = ResultData()
 
-        priceResult.setValue(priceResult.RESULT_KEY_ERROR_MSG, "ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
-        priceResult.setValue(priceResult.RESULT_KEY_CRYPTO, crypto)
-        priceResult.setValue(priceResult.RESULT_KEY_FIAT, fiat)
-        priceResult.setValue(priceResult.RESULT_KEY_EXCHANGE, exchange)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_RT)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE, None)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING, None)
-        priceResult.setValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP, None)
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, None)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(priceResult)
+        self.printer.print(resultData)
         sys.stdout = stdout
         self.assertEqual("ERROR - BTC38 market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
 

@@ -22,16 +22,16 @@ class Processor:
                        hour,
                        minute):
         if exchange == None:
-            priceResult = ResultData()
-            priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your command")
-            return priceResult
+            resultData = ResultData()
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your command")
+            return resultData
         else:
             try:
                 validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
             except(KeyError):
-                priceResult = ResultData()
-                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat))
-                return priceResult
+                resultData = ResultData()
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat))
+                return resultData
 
         localTz = self.configManager.localTimeZone
         dateTimeFormat = self.configManager.dateTimeFormat
@@ -40,23 +40,23 @@ class Processor:
             # when the user specifies 0 for either the date,
             # this means current price is asked and date components
             # are set to zero !
-            priceResult = self.priceRequester.getCurrentPrice(crypto, fiat, validExchangeSymbol)
+            resultData = self.priceRequester.getCurrentPrice(crypto, fiat, validExchangeSymbol)
 
-            if priceResult.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
+            if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 #adding date time info if no error returned
-                timeStamp = priceResult.getValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP)
+                timeStamp = resultData.getValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP)
                 requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, localTz)
                 requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
-                priceResult.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
+                resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
         else:
             #getting historical price, either histo day or histo minute
             timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
             timeStampUtcNoHHMM = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, 0, 0, 0, 'UTC')
-            priceResult = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocal, timeStampUtcNoHHMM, validExchangeSymbol)
+            resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocal, timeStampUtcNoHHMM, validExchangeSymbol)
 
-            if priceResult.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
+            if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 #adding date time info if no error returned
-                if priceResult.getValue(ResultData.RESULT_KEY_PRICE_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
+                if resultData.getValue(ResultData.RESULT_KEY_PRICE_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
                     #histoday price returned
                     requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
                     requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(self.configManager.dateTimeFormat)
@@ -64,9 +64,9 @@ class Processor:
                     requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 
-                priceResult.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
+                resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
 
-        return priceResult
+        return resultData
 
 
 if __name__ == '__main__':

@@ -15,30 +15,30 @@ class Printer:
             import clipboard
             self._clipboard = Clipboard
 
-    def print(self, priceResult):
+    def print(self, resultData):
         '''
         print the result to the console and 
         paste it to the clipboard
         '''
-        errorMsg = priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG)
+        errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
 
         if errorMsg == None:
-            price = priceResult.getValue(priceResult. RESULT_KEY_PRICE)
+            price = resultData.getValue(resultData. RESULT_KEY_PRICE)
             formattedPriceStr = self.formatFloatToStr(price)
             self.toClipboard(formattedPriceStr)
-            dateTimeStr = priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING)
-            priceType = priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE)
+            dateTimeStr = resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING)
+            priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
             
-            if  priceType == priceResult.PRICE_TYPE_HISTO_DAY:
+            if  priceType == resultData.PRICE_TYPE_HISTO_DAY:
                 dateTimeStr += 'C' #adding close symbol
-            elif priceType == priceResult.PRICE_TYPE_HISTO_MINUTE:
+            elif priceType == resultData.PRICE_TYPE_HISTO_MINUTE:
                 dateTimeStr += 'M' #adding histo MINUTE symbol
             else:
                 dateTimeStr += 'R' #adding RT symbol
             
-            outputStr = '{}/{} on {}: {} {}'.format(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO),
-        	                                           priceResult.getValue(priceResult.RESULT_KEY_FIAT),
-        	                                           priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE),
+            outputStr = '{}/{} on {}: {} {}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+        	                                           resultData.getValue(resultData.RESULT_KEY_FIAT),
+        	                                           resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
         	                                           dateTimeStr,
         	                                           formattedPriceStr)    
         else:

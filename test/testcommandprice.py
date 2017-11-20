@@ -38,16 +38,16 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_FIAT), 'USD')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), 'BitTrex')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE), 4122)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
 
 
     def testExecuteHistoricalPriceTwoDigitYear(self):
@@ -60,16 +60,16 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_FIAT), 'USD')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), 'BitTrex')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE), 4122)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
 
 
     def testExecuteHistoricalPriceNoYear(self):
@@ -82,18 +82,18 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYear = now.year - 2000
         nowYearStr = str(nowYear)
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_FIAT), 'USD')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), 'BitTrex')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_HISTO_DAY)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/{} 00:00'.format(nowYearStr))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/{} 00:00'.format(nowYearStr))
 
 
     def testExecuteHistoricalPriceNoMonth(self):
@@ -106,7 +106,7 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
         now = DateTimeUtil.localNow('Europe/Zurich')
 
@@ -121,7 +121,7 @@ class TestCommandPrice(unittest.TestCase):
 
         nowYearStr = str(nowYear)
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), "ERROR - date not valid")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - date not valid")
 
 
     def testExecuteHistoricalPriceWrongExchange(self):
@@ -134,16 +134,16 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), "ERROR - Unknown market does not exist for this coin pair (BTC-USD)")
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_FIAT), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - Unknown market does not exist for this coin pair (BTC-USD)")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), None)
 
 
     def removePriceFromResult(self, resultStr):
@@ -165,7 +165,7 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '0'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '0'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowMinute = now.minute
@@ -195,12 +195,12 @@ class TestCommandPrice(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_FIAT), 'USD')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), 'BitTrex')
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), priceResult.PRICE_TYPE_RT)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr))
 
 
     def testExecuteRealTimePriceWrongExchange(self):
@@ -213,18 +213,18 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - Unknown market does not exist for this coin pair (BTC-USD)")
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_CRYPTO), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_FIAT), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_EXCHANGE), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TYPE), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_PRICE_TIME_STAMP), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), None)
 
 
     def testExecuteRealTimePriceInvalidYearOneDigit(self):
@@ -237,9 +237,9 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - date not valid")
 
 
@@ -253,9 +253,9 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - date not valid")
 
 
@@ -269,9 +269,9 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - 017 not conform to accepted year format (YYYY, YY or '')")
 
 
@@ -285,9 +285,9 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - 112 not conform to accepted month format (MM or M)")
 
 
@@ -301,9 +301,9 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - day is out of range for month")
 
 
@@ -317,9 +317,9 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = None
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - day is out of range for month")
 
 
@@ -333,9 +333,9 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = None
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - month must be in 1..12")
 
 
@@ -349,9 +349,9 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '25'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - hour must be in 0..23")
 
 
@@ -365,9 +365,9 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '65'
 
-        priceResult = self.commandPrice.execute()
+        resultData = self.commandPrice.execute()
 
-        self.assertEqual(priceResult.getValue(priceResult.RESULT_KEY_ERROR_MSG),
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - minute must be in 0..59")
 
 

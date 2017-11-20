@@ -97,12 +97,12 @@ if __name__ == '__main__':
         fiat = exchTestData[2]
         crypto = exchTestData[1]
   
-        priceResult = pp.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, ts, ts, exch)
+        resultData = pp.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, ts, ts, exch)
 
-        if priceResult.getValue(ResultData.RESULT_KEY_ERROR_MSG) == None:
-            print("{} {} {} {}".format(exch, crypto, fiat, priceResult.getValue(ResultData.RESULT_KEY_PRICE)))
+        if resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG) == None:
+            print("{} {} {} {}".format(exch, crypto, fiat, resultData.getValue(ResultData.RESULT_KEY_PRICE)))
         else:
-            print("{} {}".format(exch, priceResult.getValue(ResultData.RESULT_KEY_ERROR_MSG)[0:26]))
+            print("{} {}".format(exch, resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG)[0:26]))
 
     print('\n\n--- CURRENT PRICES ---\n')
 
@@ -112,10 +112,10 @@ if __name__ == '__main__':
         fiat = exchTestData[2]
         crypto = exchTestData[1]
  
-        priceResult = pp.getCurrentPrice(crypto, fiat, exch)
+        resultData = pp.getCurrentPrice(crypto, fiat, exch)
 
-        if priceResult.getValue(ResultData.RESULT_KEY_ERROR_MSG) == None:
-            print("{} {} {} {}".format(exch, crypto, fiat, priceResult.getValue(ResultData.RESULT_KEY_PRICE)))
+        if resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG) == None:
+            print("{} {} {} {}".format(exch, crypto, fiat, resultData.getValue(ResultData.RESULT_KEY_PRICE)))
         else:
-            print("{} {}".format(exch, priceResult.getValue(ResultData.RESULT_KEY_ERROR_MSG)[0:26]))
+            print("{} {}".format(exch, resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG)[0:26]))
 

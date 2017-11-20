@@ -120,20 +120,20 @@ class CommandPrice(AbstractCommand):
 
 
     def _validateMandatoryData(self):
-        priceResult = True
+        resultData = True
 
         fiat = self.parsedParmData[self.FIAT]
 
         if fiat == None or any(char.isdigit() for char in fiat):
-            priceResult = ResultData()
-            priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - fiat missing or invalid")
+            resultData = ResultData()
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - fiat missing or invalid")
 
         # debug code useful on phone !
         #        dateTimeList = [dayStr, monthStr, yearStr, hourStr, minuteStr]
         #        with open('/sdcard/compri.txt', 'a') as f:
         #            f.write(str(dateTimeList) + '\n')
                 
-        return priceResult
+        return resultData
 
 
     def _validateDateTimeData(self, localNow):
@@ -143,7 +143,7 @@ class CommandPrice(AbstractCommand):
         ['11', '10', None, None, None] # neo btc 11/10
         '''
 
-        priceResult = True
+        resultData = True
 
         dayStr = self.parsedParmData[self.DAY]
         monthStr = self.parsedParmData[self.MONTH]
@@ -155,7 +155,7 @@ class CommandPrice(AbstractCommand):
             monthStr == '0' and
             dayStr == '0'):
             # RT price asked
-            return priceResult
+            return resultData
         else:
             # here, the three date components are not all equal to 0 !
             if (yearStr == '0' or
@@ -167,25 +167,25 @@ class CommandPrice(AbstractCommand):
                 # only when user enters -d0 for RT price,
                 # is yearStr equal to '0' since 0 is put
                 # by Requesèer into day, month and year !
-                priceResult = ResultData()
-                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - date not valid")
-                return priceResult
+                resultData = ResultData()
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - date not valid")
+                return resultData
             elif len(monthStr) > 2:
-                priceResult = ResultData()
-                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG,
+                resultData = ResultData()
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
                                      "ERROR - {} not conform to accepted month format (MM or M)".format(monthStr))
-                return priceResult
+                return resultData
             elif yearStr != None:
                 yearStrLen = len(yearStr)
                 if yearStrLen != 2 and yearStrLen != 4:
-                    priceResult = ResultData()
-                    priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG,
+                    resultData = ResultData()
+                    resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
                                          "ERROR - {} not conform to accepted year format (YYYY, YY or '')".format(
                                              yearStr))
 
                     # avoiding that invalid year will pollute next price requests
                     self.parsedParmData[self.YEAR] = None
-                    return priceResult
+                    return resultData
 
             # validating full date. Catch inval day or inval month,
             # like day == 123 or day == 32 or month == 31
@@ -203,15 +203,15 @@ class CommandPrice(AbstractCommand):
                                                                 int(hourStr), int(minuteStr), 0,
                                                                 self.configManager.localTimeZone)
             except ValueError as e:
-                priceResult = ResultData()
-                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - " + str(e))
+                resultData = ResultData()
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - " + str(e))
 
         # debug code useful on phone !
         #        dateTimeList = [dayStr, monthStr, yearStr, hourStr, minuteStr]
         #        with open('/sdcard/compri.txt', 'a') as f:
         #            f.write(str(dateTimeList) + '\n')
 
-        return priceResult
+        return resultData
 
 
     def _storeDateTimeDataForNextPartialRequest(self, localNow):

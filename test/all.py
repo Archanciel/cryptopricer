@@ -11,7 +11,7 @@ from testdatetimeutil import TestDateTimeUtil
 from testcrypcompexchanges import TestCrypCompExchanges
 from testprocessor import TestProcessor
 from testcommandprice import TestCommandPrice
-from testpriceresult import TestPriceResult
+from testresultdata import TestResultData
 from testcurrencypairtester import TestCurrencyPairTester
 from testprinter import TestPrinter
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestCrypCompExchanges),
                        loader.loadTestsFromTestCase(TestProcessor),
                        loader.loadTestsFromTestCase(TestCommandPrice),
-                       loader.loadTestsFromTestCase(TestPriceResult),
+                       loader.loadTestsFromTestCase(TestResultData),
                        loader.loadTestsFromTestCase(TestCurrencyPairTester),
                        loader.loadTestsFromTestCase(TestPrinter)
     ))

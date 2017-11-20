@@ -16,8 +16,8 @@ class TestCommandError(unittest.TestCase):
         commandError.parsedParmData = [commandError.CRYPTO_SYMBOL_MISSING_MSG]
 
 
-        priceResult = commandError.execute()
-        self.assertEqual("ERROR - invalid command -c: crypto symbol missing", priceResult.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        resultData = commandError.execute()
+        self.assertEqual("ERROR - invalid command -c: crypto symbol missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 if __name__ == '__main__':

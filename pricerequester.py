@@ -35,101 +35,101 @@ class PriceRequester:
         historical prices, the close price for a given date is
         the same whatever the location of the user is !
         '''
-        priceResult = ResultData()
+        resultData = ResultData()
 
-        priceResult.setValue(ResultData.RESULT_KEY_CRYPTO, crypto)
-        priceResult.setValue(ResultData.RESULT_KEY_FIAT, fiat)
-        priceResult.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
+        resultData.setValue(ResultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(ResultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
 
         if DateTimeUtil.isTimeStampOlderThan(timeStampLocalForHistoMinute, dayNumber=7):
-            return self._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, timeStampUTCNoHHMMForHistoDay, exchange, priceResult)
+            return self._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, timeStampUTCNoHHMMForHistoDay, exchange, resultData)
         else:
-            return self._getHistoMinutePriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, exchange, priceResult)
+            return self._getHistoMinutePriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, exchange, resultData)
         
         
-    def _getHistoMinutePriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange, priceResult):
+    def _getHistoMinutePriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange, resultData):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
-        priceResult.setValue(ResultData.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
 
         try:
             webURL = urllib.request.urlopen(url)
         except HTTPError as e:
-            sys.exit('Could not complete request ' + url + '. Reason: ' + str(e.reason))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except URLError as e:
-            sys.exit('Could not complete request ' + url + '. Reason: ' + str(e.reason))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except: 
             the_type, the_value, the_traceback = sys.exc_info()
-            sys.exit('Could not complete request ' + url + '. Reason: ' + str(the_type))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(the_type))
         else:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
                 dataDic = dic['Data'][IDX_DATA_ENTRY_TO]
-                priceResult.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
-                priceResult.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
+                resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
+                resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
             else:
-                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
-        return priceResult
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+        return resultData
 
 
-    def _getHistoDayPriceAtUTCTimeStamp(self, crypto, fiat, timeStampUTC, exchange, priceResult):
+    def _getHistoDayPriceAtUTCTimeStamp(self, crypto, fiat, timeStampUTC, exchange, resultData):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, fiat, timeStampUTCStr, exchange)
-        priceResult.setValue(ResultData.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
 
         try:
             webURL = urllib.request.urlopen(url)
         except HTTPError as e:
-            sys.exit('Could not complete request ' + url + '. Reason: ' + str(e.reason))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except URLError as e:
-            sys.exit('Could not complete request ' + url + '. Reason: ' + str(e.reason))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except: 
             the_type, the_value, the_traceback = sys.exc_info()
-            sys.exit('Could not complete request ' + url + '. Reason: ' + str(the_type))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(the_type))
         else:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
             if dic['Data'] != []:
                 dataDic = dic['Data'][IDX_DATA_ENTRY_TO]
-                priceResult.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
-                priceResult.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
+                resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
+                resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
             else:
-                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
-        return priceResult
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+        return resultData
 
 
     def getCurrentPrice(self, crypto, fiat, exchange):
         url = "https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&e={}".format(crypto, fiat, exchange)
-        priceResult = ResultData()
+        resultData = ResultData()
 
-        priceResult.setValue(ResultData.RESULT_KEY_CRYPTO, crypto)
-        priceResult.setValue(ResultData.RESULT_KEY_FIAT, fiat)
-        priceResult.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
-        priceResult.setValue(ResultData.RESULT_KEY_PRICE_TYPE, priceResult.PRICE_TYPE_RT)
+        resultData.setValue(ResultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(ResultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
+        resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
 
         try:
             webURL = urllib.request.urlopen(url)
         except HTTPError as e:
-            sys.exit('Could not complete request ' + url + '. Reason: ' + str(e.reason))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except URLError as e:
-            sys.exit('Could not complete request ' + url + '. Reason: ' + str(e.reason))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except: 
             the_type, the_value, the_traceback = sys.exc_info()
-            sys.exit('Could not complete request ' + url + '. Reason: ' + str(the_type))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(the_type))
         else:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
             
             if fiat in dic:
-                priceResult.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
-                priceResult.setValue(ResultData.RESULT_KEY_PRICE, dic[fiat]) #current price is indexed by fiat symbol in returned dic
+                resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
+                resultData.setValue(ResultData.RESULT_KEY_PRICE, dic[fiat]) #current price is indexed by fiat symbol in returned dic
             else:
-                priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
-        return priceResult
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+        return resultData
 
 
 if __name__ == '__main__':

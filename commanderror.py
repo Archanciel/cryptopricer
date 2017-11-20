@@ -16,12 +16,12 @@ class CommandError(AbstractCommand):
 
 
     def execute(self):
-        priceResult = ResultData()
+        resultData = ResultData()
         errorDetails = self.parsedParmData[0]
         
         if errorDetails != '':
             errorDetails = ': ' + errorDetails
             
-        priceResult.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid command " + self.rawParmData + errorDetails)
+        resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid command " + self.rawParmData + errorDetails)
         
-        return priceResult
+        return resultData
