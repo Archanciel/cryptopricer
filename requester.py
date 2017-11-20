@@ -357,9 +357,19 @@ class Requester:
 
 
     def _printHelp(self):
+        print('\nCryptoPricer 1.0\n')
         print('Usage:\n')
-        print('[btc 5/7 0.0015899 6/7 0.00153] [usd-chf]')
-        print('Beware: IF YOU ENTER MORE THAN ONE FIAT CURRENCY, DO NOT FORGET TO SEPARATE THEM WITH A \'-\' !')
+        print('btc usd 21/11/17 9:08 bittrex  or')
+        print('btc usd 21/11 bittrex          or')
+        print('btc usd 0 bittrex (real time)  or')
+        print('\nany of those options, alone or combined:\n')
+        print('   -cbtc')
+        print('   -fusd')
+        print('   -d21/11')
+        print('   -t9:08')
+        print('   -ebittrex')
+#        print('[btc 5/7 0.0015899 6/7 0.00153] [usd-chf]')
+#        print('Beware: IF YOU ENTER MORE THAN ONE FIAT CURRENCY, DO NOT FORGET TO SEPARATE THEM WITH A \'-\' !')
         inp = input('\nm for more or anything else to exit help\n')
         
         if inp.upper() == 'M':
