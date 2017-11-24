@@ -8,12 +8,13 @@ class Printer:
     FLOAT_FORMAT = '%.8f'
     
     def __init__(self):
-        if os.name == 'posix':
-            import android
-            self._clipboard = android.Android()
-        else:
-            import clipboard
-            self._clipboard = Clipboard
+        self._clipboard = Clipboard
+#        if os.name == 'posix':
+#            import android
+#            self._clipboard = android.Android()
+#        else:
+#            import clipboard
+#            self._clipboard = Clipboard
 
     def print(self, resultData):
         '''
@@ -84,13 +85,13 @@ if __name__ == '__main__':
     print()
 
     a = 12.56
-    if os.name == 'posix':
-        pr.toClipboard(a)
-        print('Clip Android: ' + pr.fromClipboard())
+#    if os.name == 'posix':
+    pr.toClipboard(a)
+    print('Clip Android: ' + pr.fromClipboard())
 
-    if os.name != 'posix':
-        import clipboard
-        clipboard.copy(str(2351.78))
-        print('Clip Windows: ' + clipboard.paste())
+#    if os.name != 'posix':
+#        import clipboard
+#        clipboard.copy(str(2351.78))
+#        print('Clip Windows: ' + clipboard.paste())
 
 
