@@ -7,13 +7,13 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 import re
-from printer import Printer
+from guiprinter import GuiPrinter
 from resultdata import ResultData
 from datetimeutil import DateTimeUtil
 
-class TestPrinter(unittest.TestCase):
+class TestGuiPrinter(unittest.TestCase):
     def setUp(self):
-        self.printer = Printer()
+        self.printer = GuiPrinter()
 
 
     def testPrintCryptoPriceHistorical(self):
@@ -35,7 +35,7 @@ class TestPrinter(unittest.TestCase):
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(resultData)
+        self.printer.printData(resultData)
         sys.stdout = stdout
         self.assertEqual('BTC/USD on BitTrex: 12/09/17 00:00C 4122\n', capturedStdout.getvalue())
 
@@ -76,7 +76,7 @@ class TestPrinter(unittest.TestCase):
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(resultData)
+        self.printer.printData(resultData)
         sys.stdout = stdout
         self.assertEqual('BTC/USD on BitTrex: {}M 4122.09\n'.format(dateTimeString), capturedStdout.getvalue())
 
@@ -103,7 +103,7 @@ class TestPrinter(unittest.TestCase):
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(resultData)
+        self.printer.printData(resultData)
         sys.stdout = stdout
         self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
 
@@ -161,7 +161,7 @@ class TestPrinter(unittest.TestCase):
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(resultData)
+        self.printer.printData(resultData)
         sys.stdout = stdout
         self.assertEqual('BTC/USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
 
@@ -192,7 +192,7 @@ class TestPrinter(unittest.TestCase):
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(resultData)
+        self.printer.printData(resultData)
         sys.stdout = stdout
         self.assertEqual("ERROR - unknown market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
 
@@ -223,7 +223,7 @@ class TestPrinter(unittest.TestCase):
         capturedStdout = StringIO()
         sys.stdout = capturedStdout
 
-        self.printer.print(resultData)
+        self.printer.printData(resultData)
         sys.stdout = stdout
         self.assertEqual("ERROR - BTC38 market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
 
@@ -271,5 +271,3 @@ class TestPrinter(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-

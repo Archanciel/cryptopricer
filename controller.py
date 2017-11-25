@@ -8,7 +8,6 @@ from commandquit import CommandQuit
 from configurationmanager import ConfigurationManager
 from crypcompexchanges import CrypCompExchanges
 from pricerequester import PriceRequester
-from printer import Printer
 from processor import Processor
 from requester import Requester
 
@@ -18,6 +17,10 @@ class Controller:
     Instanciate the app component and
     control the rep loop
     '''
+    
+    def __init__(self, printer):
+        self.printer = printer
+        
 
     def run(self):
         if os.name == 'posix':
@@ -30,7 +33,6 @@ class Controller:
         cryp = CrypCompExchanges()
         proc = Processor(cm, pr, cryp)
         req = Requester()
-        pri = Printer()
 
         commandPrice = CommandPrice(proc, cm)
         commandCrypto = CommandCrypto(proc)
@@ -48,11 +50,13 @@ class Controller:
             result = command.execute()
 
             if result != '':
-                pri.print(result)
+                self.printer.printData(result)
 
 if __name__ == '__main__':
     import os
     from io import StringIO
+
+    from printer import Printer
 
     stdin = sys.stdin
     sys.stdin = StringIO('btc usd 24/10/17 22:33 Bittrex' +
@@ -73,7 +77,7 @@ if __name__ == '__main__':
     #     FILE_PATH = 'c:\\temp\\cryptoout.txt'
     # sys.stdout = open(FILE_PATH, 'w')
 
-    c = Controller()
+    c = Controller(Printer())
     c.run()
 
     sys.stdin = stdin

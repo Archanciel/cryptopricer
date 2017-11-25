@@ -2,9 +2,10 @@ from unittest import TestLoader, TextTestRunner, TestSuite
 
 from testrequester import TestRequester
 from testabstractcommand import TestAbstractCommand
+from testabstractprinter import TestAbstractPrinter
 from testcommandquit import TestCommandQuit
 from testcommanderror import TestCommandError
-from testcontroller import TestController
+from testcontrollergui import TestControllerGui
 from testconfigurationmanager import TestConfigurationManager
 from testpricerequester import TestPriceRequester
 from testdatetimeutil import TestDateTimeUtil
@@ -13,15 +14,17 @@ from testprocessor import TestProcessor
 from testcommandprice import TestCommandPrice
 from testresultdata import TestResultData
 from testcurrencypairtester import TestCurrencyPairTester
-from testprinter import TestPrinter
+from testguiprinter import TestGuiPrinter
+
 
 if __name__ == "__main__":
     loader = TestLoader() 
     suite = TestSuite((loader.loadTestsFromTestCase(TestRequester),
                        loader.loadTestsFromTestCase(TestAbstractCommand),
+                       loader.loadTestsFromTestCase(TestAbstractPrinter),
                        loader.loadTestsFromTestCase(TestCommandQuit),
                        loader.loadTestsFromTestCase(TestCommandError),
-                       loader.loadTestsFromTestCase(TestController),
+                       loader.loadTestsFromTestCase(TestControllerGui),
                        loader.loadTestsFromTestCase(TestConfigurationManager),
                        loader.loadTestsFromTestCase(TestDateTimeUtil),
                        loader.loadTestsFromTestCase(TestPriceRequester),
@@ -30,7 +33,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestCommandPrice),
                        loader.loadTestsFromTestCase(TestResultData),
                        loader.loadTestsFromTestCase(TestCurrencyPairTester),
-                       loader.loadTestsFromTestCase(TestPrinter)
+                       loader.loadTestsFromTestCase(TestGuiPrinter)
     ))
     runner = TextTestRunner(verbosity = 2)
     runner.run(suite)
