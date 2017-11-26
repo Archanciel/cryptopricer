@@ -1,4 +1,11 @@
-from unittest import TestLoader, TextTestRunner, TestSuite 
+'''
+This test suite runs on Pydroid 3, but not on QPython 3 since it has a dependency on
+Kivy ressources which are not supported by QPython 3. It has no dependency on the sl4a
+library, supported by QPython 3, but not by Pydroid 3. It can be executed in Pycharm on
+pc !
+'''
+
+from unittest import TestLoader, TextTestRunner, TestSuite
 
 from testrequester import TestRequester
 from testabstractcommand import TestAbstractCommand

@@ -1,4 +1,10 @@
-from unittest import TestLoader, TextTestRunner, TestSuite 
+'''
+This test suite (named allcl for Command Line) runs on QPython 3, but not on Pydroid 3
+since it has a dependency on the sl4a library which are not supported by Pydroid 3.
+It has no dependency on Kivy ressources, supported by Pydroid 3, but not by QPython 3.
+It can be executed in Pycharm on pc !
+'''
+from unittest import TestLoader, TextTestRunner, TestSuite
 
 from testrequester import TestRequester
 from testabstractcommand import TestAbstractCommand
