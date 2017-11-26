@@ -1,0 +1,53 @@
+    # ---------- cryptopricerguy.kv  ----------
+
+# Reference cryptopricerguy.py
+#: import main cryptopricerguy
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+#: import ListItemButton kivy.uix.listview.ListItemButton
+
+CryptoPricerGUY:
+
+<CryptoPricerGUY>:
+    orientation: "vertical"
+    commandTextInput: command
+    commandList: commandListView
+    ro_log_text_input: ro_log
+    padding: 10
+    spacing: 10
+
+    BoxLayout:
+        size_hint_y: None
+        height: "30dp"
+
+        TextInput:
+            id: command
+
+    BoxLayout:
+        size_hint_y: None
+        height: "30dp"
+        Button:
+            text: "Submit"
+            size_hint_x: 15
+            on_press: root.submitCommand()
+        Button:
+            text: "Delete"
+            size_hint_x: 15
+            on_press: root.deleteCommand()
+        Button:
+            text: "Replace"
+            size_hint_x: 15
+            on_press: root.replaceCommand()
+
+    # Define starting data and point to the ListItemButton
+    # in the Python code
+    ListView:
+        id: commandListView
+        size_hint_y: 0.5
+        adapter: ListAdapter(data=["mcap usd 0 ccex", "btc usd 0 bitfinex", "btc usd 3/11 bitstamp", "-d0", "-t03:45"], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.commandSelected})
+
+    TextInput:
+        id: ro_log
+        size_hint_y: 1
+        readonly: True
+        background_color: 0,0,0,0
+        foreground_color: 1,1,1,1
