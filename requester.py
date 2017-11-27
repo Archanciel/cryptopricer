@@ -364,7 +364,7 @@ class Requester:
 
 
     def _printHelp(self):
-        print('\nCryptoPricer 1.0\n')
+        print('\nCryptoPricer 2.0\n')
         print('Usage:\n')
         print('btc usd 21/11/17 9:08 bittrex  or')
         print('btc usd 21/11 bittrex          or')
