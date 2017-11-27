@@ -11,7 +11,10 @@ from kivy.properties import ObjectProperty
 from kivy.uix.listview import ListItemButton
 from kivy.clock import Clock
 
- 
+from controller import Controller
+from guioutputformaterr import GuiOutputFormater
+
+
 class CommandListButton(ListItemButton):
     pass
 
@@ -24,6 +27,7 @@ class CryptoPricerGUY(BoxLayout):
     commandList = ObjectProperty()
     resultOutputROTextInput = ObjectProperty()
     showCommandList = False
+    controller = Controller(GuiOutputFormater())
 
   
     def toggleCommandList(self):
@@ -39,16 +43,21 @@ class CryptoPricerGUY(BoxLayout):
 
                 
     def submitCommand(self):
+        '''
+        Submit the command, output the result and add the command to the
+        command list
+        :return:
+        '''
         # Get the student name from the TextInputs
         commandStr = self.commandTextInput.text
 
         if commandStr != '':
-            # Add the student to the ListView
-            if commandStr in self.commandList.adapter.data:
-                self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\nsubmitted ' + commandStr
-            else:
+            outputResultStr = self.controller.getPrintableResultForInput(commandStr)
+            self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\n' + outputResultStr
+
+            # Add the command to the ListView if not already in
+            if not commandStr in self.commandList.adapter.data:
                 self.commandList.adapter.data.extend([commandStr])
-                self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\nsubmitted and added ' + commandStr
 
             # Reset the ListView
             self.commandList._trigger_reset_populate()
