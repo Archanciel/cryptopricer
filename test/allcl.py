@@ -8,7 +8,7 @@ from unittest import TestLoader, TextTestRunner, TestSuite
 
 from testrequester import TestRequester
 from testabstractcommand import TestAbstractCommand
-from testabstractprinter import TestAbstractPrinter
+from testabstractoutputformater import TestAbstractOutputFormater
 from testcommandquit import TestCommandQuit
 from testcommanderror import TestCommandError
 from testcontroller import TestController
@@ -20,14 +20,14 @@ from testprocessor import TestProcessor
 from testcommandprice import TestCommandPrice
 from testresultdata import TestResultData
 from testcurrencypairtester import TestCurrencyPairTester
-from testconsoleprinter import TestConsolePrinter
+from testconsoleoutputformater import TestConsoleOutputFormater
 
 
 if __name__ == "__main__":
     loader = TestLoader() 
     suite = TestSuite((loader.loadTestsFromTestCase(TestRequester),
                        loader.loadTestsFromTestCase(TestAbstractCommand),
-                       loader.loadTestsFromTestCase(TestAbstractPrinter),
+                       loader.loadTestsFromTestCase(TestAbstractOutputFormater),
                        loader.loadTestsFromTestCase(TestCommandQuit),
                        loader.loadTestsFromTestCase(TestCommandError),
                        loader.loadTestsFromTestCase(TestController),
@@ -39,7 +39,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestCommandPrice),
                        loader.loadTestsFromTestCase(TestResultData),
                        loader.loadTestsFromTestCase(TestCurrencyPairTester),
-                       loader.loadTestsFromTestCase(TestConsolePrinter)
+                       loader.loadTestsFromTestCase(TestConsoleOutputFormater)
     ))
     runner = TextTestRunner(verbosity = 2)
     runner.run(suite)

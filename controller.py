@@ -55,14 +55,23 @@ class Controller:
             result = command.execute()
 
             if result != '':
-                self.printer.printDataToConsole(result)
+                strToPrint = self.printer.getPrintableData(result)
+                print(strToPrint)
+
+
+    def getPrintableResultForInput(self, inputStr):
+        command = self.requester.getCommand(inputStr)
+        result = command.execute()
+
+        if result != '':
+            return self.printer.getPrintableData(result)
 
 
 if __name__ == '__main__':
     import os
     from io import StringIO
 
-    from consoleprinter import ConsolePrinter
+    from consoleoutputformater import ConsoleOutputFormater
 
     stdin = sys.stdin
     sys.stdin = StringIO('btc usd 24/10/17 22:33 Bittrex' +
@@ -83,7 +92,7 @@ if __name__ == '__main__':
     #     FILE_PATH = 'c:\\temp\\cryptoout.txt'
     # sys.stdout = open(FILE_PATH, 'w')
 
-    c = Controller(ConsolePrinter())
+    c = Controller(ConsoleOutputFormater())
     c.run()
 
     sys.stdin = stdin

@@ -1,8 +1,8 @@
 from controller import Controller
-from guiprinter import GuiPrinter
+from guioutputformaterr import GuiOutputFormater
 
 def main():
-    c = Controller(GuiPrinter())
+    c = Controller(GuiOutputFormater())
     c.run()
 
     

@@ -5,13 +5,13 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
-from abstractprinter import AbstractPrinter
+from abstractoutputformater import AbstractOutputFormater
 
-class TestAbstractPrinter(unittest.TestCase):
+class TestAbstractOutputFormater(unittest.TestCase):
 
     def testAbstractPrinterInstanciation(self):
         with self.assertRaises(TypeError):
-            c = AbstractPrinter()
+            c = AbstractOutputFormater()
 
 if __name__ == '__main__':
     unittest.main()

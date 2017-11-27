@@ -1,8 +1,8 @@
 from controller import Controller
-from consoleprinter import ConsolePrinter
+from consoleoutputformater import ConsoleOutputFormater
 
 def main():
-    c = Controller(ConsolePrinter())
+    c = Controller(ConsoleOutputFormater())
     c.run()
 
     

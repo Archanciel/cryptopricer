@@ -7,13 +7,13 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 import re
-from consoleprinter import ConsolePrinter
+from consoleoutputformater import ConsoleOutputFormater
 from resultdata import ResultData
 from datetimeutil import DateTimeUtil
 
-class TestConsolePrinter(unittest.TestCase):
+class TestConsoleOutputFormater(unittest.TestCase):
     def setUp(self):
-        self.printer = ConsolePrinter()
+        self.printer = ConsoleOutputFormater()
 
 
     def testPrintCryptoPriceHistorical(self):

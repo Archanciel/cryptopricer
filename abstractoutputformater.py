@@ -1,26 +1,31 @@
-import os
+from abc import ABCMeta
+from abc import abstractmethod
 
-from resultdata import ResultData
-from abstractprinter import AbstractPrinter
-from kivy.core.clipboard import Clipboard
+class AbstractOutputFormater(metaclass=ABCMeta):
+    '''
+    '''
 
-
-class GuiPrinter(AbstractPrinter):
-    FLOAT_FORMAT = '%.8f'
-    
-    
-    def __init__(self):
-        self._clipboard = Clipboard
+    def __init__(self, receiver=None, name='', rawParmData='', parsedParmData={}):
+        pass
 
 
-    def printDataToConsole(self, resultData):
+    @abstractmethod
+    def printDataToConsole(self):
         '''
-        print the result to the console and 
-        paste it to the clipboard
+        Output formated data in the console
+        :return: nothing
         '''
-        outputStr = self.getPrintableData(resultData)
-                                        	                                  	
-        print(outputStr)
+        pass
+
+
+    @abstractmethod
+    def toClipboard(self, numericVal):
+        pass
+
+
+    @abstractmethod
+    def fromClipboard(self):
+        pass
 
 
     def getPrintableData(self, resultData):
@@ -48,36 +53,12 @@ class GuiPrinter(AbstractPrinter):
             outputStr = '{}'.format(errorMsg)
         return outputStr
 
-    def toClipboard(self, numericVal):
-        self._clipboard.copy(str(numericVal))
-
-
-    def fromClipboard(self):
-        return self._clipboard.paste()
-
 
     def formatFloatToStr(self, floatNb):
         try:
             floatNbFormatted = self.FLOAT_FORMAT % floatNb
         except TypeError:
             return ''
-            
+
         floatNbFormattedStripZero = floatNbFormatted.rstrip('0')
         return floatNbFormattedStripZero.rstrip('.')
-        
-if __name__ == '__main__':
-    pr = GuiPrinter()
-    y = round(5.59, 1)
-    y = 0.999999999
-    y = 0.9084
-    y = 40
-    yFormatted = '%.8f' % y
-    print()
-    print('No formatting:                 ' + str(y))
-    print('With formatting:               ' + yFormatted)
-    print('With formatting no trailing 0: ' + pr.formatFloatToStr(y))
-    print()
-
-    a = 12.56
-    pr.toClipboard(a)
-    print('Clipboard: ' + pr.fromClipboard())
