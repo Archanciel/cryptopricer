@@ -11,7 +11,7 @@ CryptoPricerGUY:
     orientation: "vertical"
     commandTextInput: command
     commandList: commandListView
-    ro_log_text_input: ro_log
+    resultOutputROTextInput: ro_log
     padding: 10
     spacing: 10
 
@@ -21,14 +21,20 @@ CryptoPricerGUY:
 
         TextInput:
             id: command
+            background_color: 0,0,0,0
+            foreground_color: 1,1,1,1
+            focus: True
+            #ENTER triggers root.submitCommand()
+            multiline: False
+            on_text_validate: root.submitCommand()
 
     BoxLayout:
         size_hint_y: None
         height: "30dp"
-        Button:
-            text: "Submit"
+        ToggleButton:
+            text: "History"
             size_hint_x: 15
-            on_press: root.submitCommand()
+            on_press: root.toggleCommandList()
         Button:
             text: "Delete"
             size_hint_x: 15
@@ -42,8 +48,10 @@ CryptoPricerGUY:
     # in the Python code
     ListView:
         id: commandListView
-        size_hint_y: 0.5
-        adapter: ListAdapter(data=["mcap usd 0 ccex", "btc usd 0 bitfinex", "btc usd 3/11 bitstamp", "-d0", "-t03:45"], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.commandSelected})
+       # size_hint_y: 0.5
+        adapter: ListAdapter(data=[], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.commandSelected})
+        height: '0dp'
+        size_hint_y: None
 
     TextInput:
         id: ro_log

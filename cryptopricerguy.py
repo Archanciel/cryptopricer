@@ -9,7 +9,8 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.uix.listview import ListItemButton
- 
+from kivy.clock import Clock
+
  
 class CommandListButton(ListItemButton):
     pass
@@ -21,30 +22,55 @@ class CryptoPricerGUY(BoxLayout):
     # fields
     commandTextInput = ObjectProperty()
     commandList = ObjectProperty()
-    ro_log_text_input = ObjectProperty()
- 
+    resultOutputROTextInput = ObjectProperty()
+    showCommandList = False
+
+  
+    def toggleCommandList(self):
+        if self.showCommandList:
+            self.commandList.size_hint_y = None
+            self.commandList.height = '0dp'
+            self.showCommandList = False
+        else:
+            self.commandList.size_hint_y = 0.5
+            self.showCommandList = True
+        
+        self.refocusOnCommandTextInput()
+
+                
     def submitCommand(self):
- 
         # Get the student name from the TextInputs
         commandStr = self.commandTextInput.text
- 
-        # Add the student to the ListView
-        if commandStr in self.commandList.adapter.data:
-            self.ro_log_text_input.text = self.ro_log_text_input.text + '\nsubmitted ' + commandStr
-        else:
-            self.commandList.adapter.data.extend([commandStr])
-            self.ro_log_text_input.text = self.ro_log_text_input.text + '\nsubmitted and added ' + commandStr
 
-        # Reset the ListView
-        self.commandList._trigger_reset_populate()
+        if commandStr != '':
+            # Add the student to the ListView
+            if commandStr in self.commandList.adapter.data:
+                self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\nsubmitted ' + commandStr
+            else:
+                self.commandList.adapter.data.extend([commandStr])
+                self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\nsubmitted and added ' + commandStr
 
-        self.clearName()
+            # Reset the ListView
+            self.commandList._trigger_reset_populate()
+
+            self.commandTextInput.text = ''
+
+        self.refocusOnCommandTextInput()
+
         
-    def clearName(self):
-        self.commandTextInput.text = ''
+    def refocusOnCommandTextInput(self):
+        #defining a delay of 0.1 sec ensure the
+        #refocus works in all situations. Leaving
+        #it empty (== next frame) does not work
+        #when pressing a button !
+        Clock.schedule_once(self._refocusTextInput, 0.1)       
 
+
+    def _refocusTextInput(self, *args):
+        self.commandTextInput.focus = True
+
+                                      
     def deleteCommand(self, *args):
- 
         # If a list item is selected
         if self.commandList.adapter.selection:
  
@@ -56,11 +82,13 @@ class CryptoPricerGUY(BoxLayout):
  
             # Reset the ListView
             self.commandList._trigger_reset_populate()
-            self.ro_log_text_input.text = self.ro_log_text_input.text + '\ndeleted ' + selection
-            self.clearName()
- 
+            self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\ndeleted ' + selection
+            self.commandTextInput.text = ''
+            
+        self.refocusOnCommandTextInput()
+
+  
     def replaceCommand(self, *args):
- 
         # If a list item is selected
         if self.commandList.adapter.selection:
  
@@ -78,14 +106,17 @@ class CryptoPricerGUY(BoxLayout):
  
             # Reset the ListView
             self.commandList._trigger_reset_populate()
-            self.ro_log_text_input.text = self.ro_log_text_input.text + '\n' + selection + ' replaced by ' + commandStr + '\nsubmitted ' + commandStr
-            self.clearName()
+            self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\n' + selection + ' replaced by ' + commandStr + '\nsubmitted ' + commandStr
+            self.commandTextInput.text = ''
+            
+        self.refocusOnCommandTextInput()
 
 
     def commandSelected(self, instance):
         commandStr = str(instance.text)
 
         self.commandTextInput.text = commandStr
+        self.refocusOnCommandTextInput()
 
 
 class CryptoPricerGUYApp(App):
