@@ -9,12 +9,12 @@ sys.path.insert(0,parentdir)
 import re
 from controller import Controller
 from datetimeutil import DateTimeUtil
-from guiprinter import GuiPrinter
+from guioutputformaterr import GuiOutputFormater
 
 
 class TestControllerGui(unittest.TestCase):
     def setUp(self):
-        self.controller = Controller(GuiPrinter())
+        self.controller = Controller(GuiOutputFormater())
 
 
     def testControllerHistoDayPrice(self):

@@ -7,13 +7,13 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 import re
-from guiprinter import GuiPrinter
+from guioutputformaterr import GuiOutputFormater
 from resultdata import ResultData
 from datetimeutil import DateTimeUtil
 
-class TestGuiPrinter(unittest.TestCase):
+class TestGuiOutputFormater(unittest.TestCase):
     def setUp(self):
-        self.printer = GuiPrinter()
+        self.printer = GuiOutputFormater()
 
 
     def testPrintCryptoPriceHistorical(self):
