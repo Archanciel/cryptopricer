@@ -140,10 +140,17 @@ class Requester:
             return self.commandQuit
         else: #here, neither help nor quit command entered. Need to determine which command
               #is entered by the user finding unique pattern match that identify this command
-            return self._getCommand(inputStr, upperInputStr)
+            return self.getCommand(inputStr)
 
 
-    def _getCommand(self, inputStr, upperInputStr):
+    def getCommand(self, inputStr):
+        '''
+        Parses the paased input string and return a Command concrete instance
+        filled with the command specific data. May return a CommandError.
+        :param inputStr: input string to parse
+        :return: Command concrete instance
+        '''
+        upperInputStr = inputStr.upper()
         match = re.match(Requester.USER_COMMAND_GRP_PATTERN, upperInputStr)
 
         if match == None:

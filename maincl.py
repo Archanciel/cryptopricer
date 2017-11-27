@@ -1,8 +1,8 @@
 from controller import Controller
-from commandlineprinter import CommandLinePrinter
+from consoleprinter import ConsolePrinter
 
 def main():
-    c = Controller(CommandLinePrinter())
+    c = Controller(ConsolePrinter())
     c.run()
 
     

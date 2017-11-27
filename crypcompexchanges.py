@@ -1,4 +1,8 @@
 class CrypCompExchanges:
+    '''
+    This class translates case insensitive exchange names to the case sensitive
+    Cryptocompare data provider exchange name.
+    '''
     def __init__(self):
         self._dic = {'ALL': ['CCCAGG', 'BTC', 'USD'],
                      'CCCAGG': ['CCCAGG', 'BTC', 'USD'],

@@ -76,55 +76,55 @@ class TestRequester(unittest.TestCase):
 
     def test_getUserCommandCommandMissingOtherCommand(self):
         inputStr = "[btc 05/07 0.0015899] [usd-chf] -nosave"
-        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual("ERROR - invalid command [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
-    def test_getCommandInvalidC(self):
+    def testGetCommandInvalidC(self):
         inputStr = "-c"
-        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual("ERROR - invalid command -c", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
-    def test_getCommandInvalidF(self):
+    def testGetCommandInvalidF(self):
         inputStr = "-f"
-        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual("ERROR - invalid command -f", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
-    def test_getCommandInvalidD(self):
+    def testGetCommandInvalidD(self):
         inputStr = "-d"
-        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual("ERROR - invalid command -d", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
-    def test_getCommandInvalidT(self):
+    def testGetCommandInvalidT(self):
         inputStr = "-t"
-        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual("ERROR - invalid command -t", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
-    def test_getCommandInvalidE(self):
+    def testGetCommandInvalidE(self):
         inputStr = "-e"
-        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual("ERROR - invalid command -e", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
-    def test_getCommandInvalidC(self):
+    def testGetCommandInvalidC(self):
         inputStr = "-c"
-        cryptoData = self.requester._getCommand(inputStr, inputStr.upper())
+        cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual("ERROR - invalid command -c", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
@@ -218,9 +218,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(flag, None)
 
 
-    def test_getCommand(self):
+    def testGetCommand(self):
         inputStr = "oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave"
-        cryptoCommand = self.requester._getCommand(inputStr, inputStr.upper())
+        cryptoCommand = self.requester.getCommand(inputStr)
 
         self.assertIsInstance(cryptoCommand, CommandCrypto)
         parsedParmData = cryptoCommand.parsedParmData

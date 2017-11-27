@@ -10,6 +10,18 @@ class AbstractPrinter(metaclass=ABCMeta):
 
 
     @abstractmethod
-    def printData(self):
-         pass
+    def printDataToConsole(self):
+        '''
+        Output formated data in the console
+        :return: nothing
+        '''
+        pass
 
+
+    @abstractmethod
+    def getPrintableData(self):
+        '''
+        Return formated data ready to be output
+        :return: nothing
+        '''
+        pass

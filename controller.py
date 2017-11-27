@@ -19,44 +19,50 @@ class Controller:
     '''
     
     def __init__(self, printer):
-        self.printer = printer
-        
-
-    def run(self):
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptopricer.ini'
         else:
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
-        cm = ConfigurationManager(FILE_PATH)
-        pr = PriceRequester()
-        cryp = CrypCompExchanges()
-        proc = Processor(cm, pr, cryp)
-        req = Requester()
+        self.configMgr = ConfigurationManager(FILE_PATH)
+        self.priceRequester = PriceRequester()
+        self.crypCompTranslator = CrypCompExchanges()
+        self.processor = Processor(self.configMgr, self.priceRequester, self.crypCompTranslator)
+        self.requester = Requester()
 
-        commandPrice = CommandPrice(proc, cm)
-        commandCrypto = CommandCrypto(proc)
-        req.commandPrice = commandPrice
-        req.commandCrypto = commandCrypto
+        self.commandPrice = CommandPrice(self.processor, self.configMgr)
+        self.commandCrypto = CommandCrypto(self.processor)
+        self.requester.commandPrice = self.commandPrice
+        self.requester.commandCrypto = self.commandCrypto
 
-        commandQuit = CommandQuit(sys)
-        req.commandQuit = commandQuit
+        self.commandQuit = CommandQuit(sys)
+        self.requester.commandQuit = self.commandQuit
 
-        commandError = CommandError(None)
-        req.commandError = commandError
+        self.commandError = CommandError(None)
+        self.requester.commandError = self.commandError
 
+        self.printer = printer
+        
+
+    def run(self):
+        '''
+        Used essentially by the command line version of CryptoPricer.
+
+        :return: nothing
+        '''
         while True:
-            command = req.request()
+            command = self.requester.request()
             result = command.execute()
 
             if result != '':
-                self.printer.printData(result)
+                self.printer.printDataToConsole(result)
+
 
 if __name__ == '__main__':
     import os
     from io import StringIO
 
-    from printer import Printer
+    from consoleprinter import ConsolePrinter
 
     stdin = sys.stdin
     sys.stdin = StringIO('btc usd 24/10/17 22:33 Bittrex' +
@@ -77,7 +83,7 @@ if __name__ == '__main__':
     #     FILE_PATH = 'c:\\temp\\cryptoout.txt'
     # sys.stdout = open(FILE_PATH, 'w')
 
-    c = Controller(Printer())
+    c = Controller(ConsolePrinter())
     c.run()
 
     sys.stdin = stdin
