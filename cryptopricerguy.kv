@@ -4,6 +4,7 @@
 #: import main cryptopricerguy
 #: import ListAdapter kivy.adapters.listadapter.ListAdapter
 #: import ListItemButton kivy.uix.listview.ListItemButton
+#: import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 CryptoPricerGUY:
 
@@ -48,14 +49,19 @@ CryptoPricerGUY:
     # in the Python code
     ListView:
         id: commandListView
-       # size_hint_y: 0.5
+        effect_cls: ScrollEffect #no effect !
         adapter: ListAdapter(data=[], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.commandSelected})
         height: '0dp'
         size_hint_y: None
 
-    TextInput:
-        id: ro_log
-        size_hint_y: 1
-        readonly: True
-        background_color: 0,0,0,0
-        foreground_color: 1,1,1,1
+    ScrollView:
+        id: scrlv
+        size_hint: (1, 1)
+        effect_cls: ScrollEffect #avoid overscrolling
+        TextInput:
+            id: ro_log
+            size_hint: (1, None)
+            height: max(self.minimum_height, scrlv.height) #required to enable scrolling when list starts to grow
+            readonly: True
+            background_color: 0,0,0,0
+            foreground_color: 1,1,1,1
