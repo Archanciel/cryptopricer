@@ -1,5 +1,6 @@
 import json
 import sys
+import ssl
 import urllib.request
 from urllib.error import HTTPError, URLError
 
@@ -12,6 +13,12 @@ IDX_DATA_ENTRY_TO = 1
 
 
 class PriceRequester:
+    def __init__(self):
+        self.ctx = ssl.create_default_context()
+        self.ctx.check_hostname = False
+        self.ctx.verify_mode = ssl.CERT_NONE
+
+      
     def getHistoricalPriceAtUTCTimeStamp(self, crypto, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange):
         '''
         Why do we pass two different time stamp to the method ?
@@ -53,7 +60,7 @@ class PriceRequester:
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
 
         try:
-            webURL = urllib.request.urlopen(url)
+            webURL = urllib.request.urlopen(url, context=self.ctx)
         except HTTPError as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except URLError as e:
@@ -80,7 +87,7 @@ class PriceRequester:
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
 
         try:
-            webURL = urllib.request.urlopen(url)
+            webURL = urllib.request.urlopen(url, context=self.ctx)
         except HTTPError as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except URLError as e:
@@ -111,7 +118,7 @@ class PriceRequester:
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
 
         try:
-            webURL = urllib.request.urlopen(url)
+            webURL = urllib.request.urlopen(url, context=self.ctx)
         except HTTPError as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except URLError as e:
