@@ -53,8 +53,8 @@ class CryptoPricerGUY(BoxLayout):
 
         if commandStr != '':
             outputResultStr = self.controller.getPrintableResultForInput(commandStr)
-            self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\n' + outputResultStr
-
+            self.outputResult(outputResultStr)
+            
             # Add the command to the ListView if not already in
             if not commandStr in self.commandList.adapter.data:
                 self.commandList.adapter.data.extend([commandStr])
@@ -66,7 +66,14 @@ class CryptoPricerGUY(BoxLayout):
 
         self.refocusOnCommandTextInput()
 
-        
+
+    def outputResult(self, resultStr):
+        if len(self.resultOutputROTextInput.text) == 0:
+            self.resultOutputROTextInput.text = resultStr
+        else:
+            self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\n' + resultStr
+
+                              
     def refocusOnCommandTextInput(self):
         #defining a delay of 0.1 sec ensure the
         #refocus works in all situations. Leaving
