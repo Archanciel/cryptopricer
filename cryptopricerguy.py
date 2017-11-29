@@ -23,9 +23,9 @@ class CryptoPricerGUY(BoxLayout):
  
     # Connects the value in the TextInput widget to these
     # fields
-    commandTextInput = ObjectProperty()
+    commandInput = ObjectProperty()
     commandList = ObjectProperty()
-    resultOutputROTextInput = ObjectProperty()
+    resultOutput = ObjectProperty()
     showCommandList = False
     controller = Controller(GuiOutputFormater())
 
@@ -34,12 +34,14 @@ class CryptoPricerGUY(BoxLayout):
         if self.showCommandList:
             self.commandList.size_hint_y = None
             self.commandList.height = '0dp'
+            self.disableHistoryItemControls()
             self.showCommandList = False
         else:
-            self.commandList.size_hint_y = 0.5
+            self.commandList.height = '100dp'
+            #self.commandList.size_hint_y = 0.5
             self.showCommandList = True
         
-        self.refocusOnCommandTextInput()
+        self.refocusOncommandInput()
 
                 
     def submitCommand(self):
@@ -49,7 +51,7 @@ class CryptoPricerGUY(BoxLayout):
         :return:
         '''
         # Get the student name from the TextInputs
-        commandStr = self.commandTextInput.text
+        commandStr = self.commandInput.text
 
         if commandStr != '':
             outputResultStr = self.controller.getPrintableResultForInput(commandStr)
@@ -61,20 +63,32 @@ class CryptoPricerGUY(BoxLayout):
 
             # Reset the ListView
             self.commandList._trigger_reset_populate()
+            
+            self.enableCommandListControls()
+            self.commandInput.text = ''
 
-            self.commandTextInput.text = ''
-
-        self.refocusOnCommandTextInput()
+        self.refocusOncommandInput()
 
 
+    def enableCommandListControls(self):
+        self.toggleHistoControl.disabled = False
+        self.replayAllControl.disabled = False
+
+
+    def disableCommandListControls(self):
+        self.toggleHistoControl.state = 'normal'
+        self.toggleHistoControl.disabled = True
+        self.replayAllControl.disabled = True
+
+     
     def outputResult(self, resultStr):
-        if len(self.resultOutputROTextInput.text) == 0:
-            self.resultOutputROTextInput.text = resultStr
+        if len(self.resultOutput.text) == 0:
+            self.resultOutput.text = resultStr
         else:
-            self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\n' + resultStr
+            self.resultOutput.text = self.resultOutput.text + '\n' + resultStr
 
                               
-    def refocusOnCommandTextInput(self):
+    def refocusOncommandInput(self):
         #defining a delay of 0.1 sec ensure the
         #refocus works in all situations. Leaving
         #it empty (== next frame) does not work
@@ -83,7 +97,7 @@ class CryptoPricerGUY(BoxLayout):
 
 
     def _refocusTextInput(self, *args):
-        self.commandTextInput.focus = True
+        self.commandInput.focus = True
 
                                       
     def deleteCommand(self, *args):
@@ -98,10 +112,14 @@ class CryptoPricerGUY(BoxLayout):
  
             # Reset the ListView
             self.commandList._trigger_reset_populate()
-            self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\ndeleted ' + selection
-            self.commandTextInput.text = ''
+            self.commandInput.text = ''
+            self.disableHistoryItemControls()
             
-        self.refocusOnCommandTextInput()
+        if len(self.commandList.adapter.data) == 0:
+            #command list is empty
+            self.disableCommandListControls()
+                        
+        self.refocusOncommandInput()
 
   
     def replaceCommand(self, *args):
@@ -115,26 +133,51 @@ class CryptoPricerGUY(BoxLayout):
             self.commandList.adapter.data.remove(selection)
  
             # Get the student name from the TextInputs
-            commandStr = self.commandTextInput.text
+            commandStr = self.commandInput.text
  
             # Add the updated data to the list
             self.commandList.adapter.data.extend([commandStr])
  
             # Reset the ListView
             self.commandList._trigger_reset_populate()
-            self.resultOutputROTextInput.text = self.resultOutputROTextInput.text + '\n' + selection + ' replaced by ' + commandStr + '\nsubmitted ' + commandStr
-            self.commandTextInput.text = ''
+            self.commandInput.text = ''
+            self.disableHistoryItemControls()
             
-        self.refocusOnCommandTextInput()
+        self.refocusOncommandInput()
 
 
-    def commandSelected(self, instance):
+    def historyItemSelected(self, instance):
         commandStr = str(instance.text)
+        
+        #counter-intuitive, but test must be
+        #that way !
+        if instance.is_selected:
+            self.disableHistoryItemControls()
+        else:
+            self.enableHistoryItemControls()
 
-        self.commandTextInput.text = commandStr
-        self.refocusOnCommandTextInput()
+        self.commandInput.text = commandStr
+        self.refocusOncommandInput()
 
 
+    def enableHistoryItemControls(self):
+        self.deleteControl.disabled = False
+        self.replaceControl.disabled = False
+
+
+    def disableHistoryItemControls(self):
+        self.deleteControl.disabled = True
+        self.replaceControl.disabled = True
+
+
+    def replayAllCommands(self):
+       self.outputResult('')
+       
+       for command in self.commandList.adapter.data:
+            outputResultStr = self.controller.getPrintableResultForInput(command)
+            self.outputResult(outputResultStr)
+                                             
+                            
 class CryptoPricerGUYApp(App):
     def build(self):
         return CryptoPricerGUY()
