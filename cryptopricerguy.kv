@@ -6,6 +6,7 @@
 #: import ListItemButton kivy.uix.listview.ListItemButton
 #: import ScrollEffect kivy.effects.scroll.ScrollEffect
 
+
 CryptoPricerGUY:
 
 <CryptoPricerGUY>:
@@ -17,6 +18,8 @@ CryptoPricerGUY:
     deleteControl: deleteBtn
     replaceControl: replaceBtn
     replayAllControl: replayAllBtn
+    #loadCommands: loadCommands
+    #saveCommands: saveCommands
     padding: 10
     spacing: 10
     canvas.before:
@@ -25,6 +28,23 @@ CryptoPricerGUY:
         Rectangle:
             pos: self.pos
             size: self.size
+          
+    BoxLayout:
+        size_hint_y: None
+        ActionBar:
+            pos_hint: {'top':1}
+            ActionView:
+                use_separator: True
+                ActionPrevious:
+                    title: 'prev'
+                    with_previous: False
+                ActionOverflow:
+                    ActionButton:
+                        text: 'Load hist'
+                        on_press: root.loadCommands()
+                    ActionButton:
+                        text: 'Save hist'
+                        on_press: root.saveCommands()
             
     BoxLayout:
         size_hint_y: None
