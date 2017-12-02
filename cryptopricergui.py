@@ -9,7 +9,6 @@ from kivy.uix.label import Label
 from controller import Controller
 from guioutputformater import GuiOutputFormater
 
-
 class CommandListButton(ListItemButton):
     pass
 
