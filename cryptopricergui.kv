@@ -1,13 +1,13 @@
-# ---------- cryptopricerguy.kv  ----------
+# ---------- cryptopricergui.kv  ----------
 
-# Reference cryptopricerguy.py
-#: import main cryptopricerguy
+# Reference cryptopricergui.py
+#: import main cryptopricergui
 #: import ListAdapter kivy.adapters.listadapter.ListAdapter
 #: import ListItemButton kivy.uix.listview.ListItemButton
 #: import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 
-CryptoPricerGUY:
+CryptoPricerGUI:
 
 <CustomDropDown>
     Button:
@@ -21,7 +21,7 @@ CryptoPricerGUY:
         height: '28dp'
         on_release: root.select('item2')
 
-<CryptoPricerGUY>:
+<CryptoPricerGUI>:
     orientation: "vertical"
     commandInput: command
     commandList: commandListView

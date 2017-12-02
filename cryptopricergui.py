@@ -3,7 +3,7 @@
 # In this part of my Kivy tutorial I'll show how to use
 # the ListView, ListAdapter and how to create a toolbar
  
-# ---------- cryptopricerguy.py  ----------
+# ---------- cryptopricergui.py  ----------
  
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -22,7 +22,7 @@ class CommandListButton(ListItemButton):
 class CustomDropDown(DropDown):
     pass
     
-class CryptoPricerGUY(BoxLayout):
+class CryptoPricerGUI(BoxLayout):
  
     commandInput = ObjectProperty()
     commandList = ObjectProperty()
@@ -198,12 +198,12 @@ class CryptoPricerGUY(BoxLayout):
         pass
                              
                                            
-class CryptoPricerGUYApp(App):
+class CryptoPricerGUIApp(App):
     def build(self):
-        return CryptoPricerGUY()
+        return CryptoPricerGUI()
  
 
 if __name__== '__main__':
-    dbApp = CryptoPricerGUYApp()
+    dbApp = CryptoPricerGUIApp()
  
     dbApp.run()
