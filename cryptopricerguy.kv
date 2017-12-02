@@ -1,4 +1,4 @@
-    # ---------- cryptopricerguy.kv  ----------
+# ---------- cryptopricerguy.kv  ----------
 
 # Reference cryptopricerguy.py
 #: import main cryptopricerguy
@@ -9,6 +9,18 @@
 
 CryptoPricerGUY:
 
+<CustomDropDown>
+    Button:
+        text: 'My first Item'
+        size_hint_y: None
+        height: '28dp'
+        on_release: root.select('item1')
+    Button:
+        text: 'My second Item'
+        size_hint_y: None
+        height: '28dp'
+        on_release: root.select('item2')
+
 <CryptoPricerGUY>:
     orientation: "vertical"
     commandInput: command
@@ -18,8 +30,6 @@ CryptoPricerGUY:
     deleteControl: deleteBtn
     replaceControl: replaceBtn
     replayAllControl: replayAllBtn
-    #loadCommands: loadCommands
-    #saveCommands: saveCommands
     padding: 10
     spacing: 10
     canvas.before:
@@ -28,24 +38,7 @@ CryptoPricerGUY:
         Rectangle:
             pos: self.pos
             size: self.size
-          
-    BoxLayout:
-        size_hint_y: None
-        ActionBar:
-            pos_hint: {'top':1}
-            ActionView:
-                use_separator: True
-                ActionPrevious:
-                    title: 'prev'
-                    with_previous: False
-                ActionOverflow:
-                    ActionButton:
-                        text: 'Load hist'
-                        on_press: root.loadCommands()
-                    ActionButton:
-                        text: 'Save hist'
-                        on_press: root.saveCommands()
-            
+                      
     BoxLayout:
         size_hint_y: None
         height: "28dp"
@@ -61,8 +54,8 @@ CryptoPricerGUY:
             background_color: 0,0,0,0
             foreground_color: 1,1,1,1
             focus: True
-            #ENTER triggers root.submitCommand()
             multiline: False
+            #ENTER triggers root.submitCommand()
             on_text_validate: root.submitCommand()
 
     BoxLayout:
@@ -92,6 +85,13 @@ CryptoPricerGUY:
             size_hint_x: 15
             disabled: True
             on_press: root.replayAllCommands()
+
+        Button:
+            id: menuBtn
+            text: "..."
+            size_hint_x: 5
+            on_press: root.openMenu(self)
+
 
     # Define starting data and point to the ListItemButton
     # in the Python code

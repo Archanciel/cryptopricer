@@ -10,6 +10,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.uix.listview import ListItemButton
 from kivy.clock import Clock
+from kivy.uix.dropdown import DropDown
 
 from controller import Controller
 from guioutputformaterr import GuiOutputFormater
@@ -18,11 +19,11 @@ from guioutputformaterr import GuiOutputFormater
 class CommandListButton(ListItemButton):
     pass
 
-
+class CustomDropDown(DropDown):
+    pass
+    
 class CryptoPricerGUY(BoxLayout):
  
-    # Connects the value in the TextInput widget to these
-    # fields
     commandInput = ObjectProperty()
     commandList = ObjectProperty()
     resultOutput = ObjectProperty()
@@ -79,6 +80,8 @@ class CryptoPricerGUY(BoxLayout):
         self.toggleHistoControl.state = 'normal'
         self.toggleHistoControl.disabled = True
         self.replayAllControl.disabled = True
+        self.commandList.height = '0dp'
+
 
      
     def outputResult(self, resultStr):
@@ -179,7 +182,22 @@ class CryptoPricerGUY(BoxLayout):
 
         self.refocusOncommandInput()
                                               
-                            
+
+    def openMenu(self, widget):
+        dropD = CustomDropDown()
+        dropD.open(widget)
+
+                
+    def on_pause(self):
+        # Here you can save data if needed
+        return True
+
+
+    def on_resume(self):
+        # Here you can check if any data needs replacing (usually nothing)
+        pass
+                             
+                                           
 class CryptoPricerGUYApp(App):
     def build(self):
         return CryptoPricerGUY()
