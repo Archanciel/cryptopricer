@@ -171,18 +171,21 @@ class CryptoPricerGUY(BoxLayout):
 
 
     def replayAllCommands(self):
-       self.outputResult('')
+        self.outputResult('')
        
-       for command in self.commandList.adapter.data:
-            outputResultStr = self.controller.getPrintableResultForInput(command)
-            self.outputResult(outputResultStr)
-                                             
+        for command in self.commandList.adapter.data:
+             outputResultStr = self.controller.getPrintableResultForInput(command)
+             self.outputResult(outputResultStr)
+
+        self.refocusOncommandInput()
+                                              
                             
 class CryptoPricerGUYApp(App):
     def build(self):
         return CryptoPricerGUY()
  
+
+if __name__== '__main__':
+    dbApp = CryptoPricerGUYApp()
  
-dbApp = CryptoPricerGUYApp()
- 
-dbApp.run()
+    dbApp.run()
