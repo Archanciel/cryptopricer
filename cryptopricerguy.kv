@@ -19,10 +19,22 @@ CryptoPricerGUY:
     replayAllControl: replayAllBtn
     padding: 10
     spacing: 10
-
+    canvas.before:
+        Color:
+            rgb: [0.22,0.22,0.22]
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            
     BoxLayout:
         size_hint_y: None
-        height: "30dp"
+        height: "28dp"
+        canvas.before:
+            Color:
+                rgb: [0,0,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
         TextInput:
             id: command
@@ -35,7 +47,7 @@ CryptoPricerGUY:
 
     BoxLayout:
         size_hint_y: None
-        height: "30dp"
+        height: "28dp"
         ToggleButton:
             id: toggleHistoryBtn
             text: "History"
@@ -69,10 +81,22 @@ CryptoPricerGUY:
         adapter: ListAdapter(data=[], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected})
         height: '0dp'
         size_hint_y: None
+        canvas.before:
+            Color:
+                rgb: [0,0,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
     ScrollView:
         id: scrlv
         size_hint: (1, 1)
+        canvas.before:
+            Color:
+                rgb: [0,0,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
         effect_cls: ScrollEffect #avoid overscrolling
         TextInput:
             id: readOnlyLog
