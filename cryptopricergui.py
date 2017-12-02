@@ -1,27 +1,34 @@
-# ---------- KIVY TUTORIAL PT 4  ----------
- 
-# In this part of my Kivy tutorial I'll show how to use
-# the ListView, ListAdapter and how to create a toolbar
- 
-# ---------- cryptopricergui.py  ----------
- 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.uix.listview import ListItemButton
 from kivy.clock import Clock
 from kivy.uix.dropdown import DropDown
-
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from controller import Controller
-from guioutputformaterr import GuiOutputFormater
+from guioutputformater import GuiOutputFormater
 
 
 class CommandListButton(ListItemButton):
     pass
 
 class CustomDropDown(DropDown):
-    pass
-    
+    owner = None
+
+
+    def load(self):
+        self.owner.loadHistory()
+        
+
+    def save(self):
+        self.owner.saveHistory()
+
+
+    def help(self):
+        self.owner.displayHelp()
+
+
 class CryptoPricerGUI(BoxLayout):
  
     commandInput = ObjectProperty()
@@ -29,6 +36,11 @@ class CryptoPricerGUI(BoxLayout):
     resultOutput = ObjectProperty()
     showCommandList = False
     controller = Controller(GuiOutputFormater())
+    
+    def __init__(self, **kwargs):
+        super(CryptoPricerGUI, self).__init__(**kwargs)
+        self.dropDMenu = CustomDropDown()
+        self.dropDMenu.owner = self
 
   
     def toggleCommandList(self):
@@ -183,10 +195,24 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOncommandInput()
                                               
 
-    def openMenu(self, widget):
-        dropD = CustomDropDown()
-        dropD.open(widget)
+    def openDropDMenu(self, widget):
+        self.dropDMenu.open(widget)
 
+
+    def loadHistory(self):
+        popup = Popup(title='Popup', content=Label(text='Loading history'), size_hint=(None, None), size=(400, 400))
+        popup.open()
+       
+                
+    def saveHistory(self):
+        popup = Popup(title='Popup', content=Label(text='Saving history'), size_hint=(None, None), size=(400, 400))
+        popup.open()
+
+              
+    def displayHelp(self):
+        popup = Popup(title='Popup', content=Label(text='Help !'), size_hint=(None, None), size=(400, 400))
+        popup.open()
+       
                 
     def on_pause(self):
         # Here you can save data if needed

@@ -11,15 +11,20 @@ CryptoPricerGUI:
 
 <CustomDropDown>
     Button:
-        text: 'My first Item'
+        text: 'Load'
         size_hint_y: None
         height: '28dp'
-        on_release: root.select('item1')
+        on_release: root.load()
     Button:
-        text: 'My second Item'
+        text: 'Save'
         size_hint_y: None
         height: '28dp'
-        on_release: root.select('item2')
+        on_release: root.save()
+    Button:
+        text: 'Help'
+        size_hint_y: None
+        height: '28dp'
+        on_release: root.help()
 
 <CryptoPricerGUI>:
     orientation: "vertical"
@@ -85,12 +90,11 @@ CryptoPricerGUI:
             size_hint_x: 15
             disabled: True
             on_press: root.replayAllCommands()
-
         Button:
             id: menuBtn
             text: "..."
-            size_hint_x: 5
-            on_press: root.openMenu(self)
+            size_hint_x: 8
+            on_release: root.openDropDMenu(self)
 
 
     # Define starting data and point to the ListItemButton

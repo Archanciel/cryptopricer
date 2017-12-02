@@ -7,7 +7,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 import re
-from guioutputformaterr import GuiOutputFormater
+from guioutputformater import GuiOutputFormater
 from resultdata import ResultData
 from datetimeutil import DateTimeUtil
 

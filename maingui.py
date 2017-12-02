@@ -1,5 +1,5 @@
 from controller import Controller
-from guioutputformaterr import GuiOutputFormater
+from guioutputformater import GuiOutputFormater
 
 def main():
     c = Controller(GuiOutputFormater())

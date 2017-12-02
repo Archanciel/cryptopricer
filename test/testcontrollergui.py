@@ -9,7 +9,7 @@ sys.path.insert(0,parentdir)
 import re
 from controller import Controller
 from datetimeutil import DateTimeUtil
-from guioutputformaterr import GuiOutputFormater
+from guioutputformater import GuiOutputFormater
 
 
 class TestControllerGui(unittest.TestCase):
