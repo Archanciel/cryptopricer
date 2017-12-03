@@ -9,23 +9,6 @@
 
 CryptoPricerGUI:
 
-<CustomDropDown>
-    Button:
-        text: 'Load'
-        size_hint_y: None
-        height: '28dp'
-        on_release: root.load()
-    Button:
-        text: 'Save'
-        size_hint_y: None
-        height: '28dp'
-        on_release: root.save()
-    Button:
-        text: 'Help'
-        size_hint_y: None
-        height: '28dp'
-        on_release: root.help()
-
 <CryptoPricerGUI>:
     orientation: "vertical"
     commandInput: command
@@ -129,3 +112,74 @@ CryptoPricerGUI:
             readonly: True
             background_color: 0,0,0,0
             foreground_color: 1,1,1,1
+
+<LoadDialog>:
+    text_path_load: text_path_load
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            dirselect: True
+            on_selection: text_path_load.text = self.selection and self.selection[0] or ''
+            #on_selection: text_path_load.text = filechooser.path
+          
+        TextInput:
+            id: text_path_load
+            size_hint_y: 0.06
+            multiline: False
+            readonly: True
+
+        BoxLayout:
+            size_hint_y: 0.06
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
+
+<CustomDropDown>
+    Button:
+        text: 'Load'
+        size_hint_y: None
+        height: '28dp'
+        on_release: root.showLoad()
+    Button:
+        text: 'Save'
+        size_hint_y: None
+        height: '28dp'
+        on_release: root.showSave()
+    Button:
+        text: 'Help'
+        size_hint_y: None
+        height: '28dp'
+        on_release: root.help()
+
+<SaveDialog>:
+    textInput: textInput
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            dirselect: True
+            on_selection: textInput.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: textInput
+            size_hint_y: 0.06
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: 0.06
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, textInput.text)

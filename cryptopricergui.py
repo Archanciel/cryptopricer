@@ -6,22 +6,40 @@ from kivy.clock import Clock
 from kivy.uix.dropdown import DropDown
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.uix.floatlayout import FloatLayout
+
 from controller import Controller
 from guioutputformater import GuiOutputFormater
 
+import os
+
+
+class LoadDialog(FloatLayout):
+    textPathLoad = ObjectProperty(None)
+    load = ObjectProperty(None)
+    cancel = ObjectProperty(None)
+
+
+class SaveDialog(FloatLayout):
+    textInput = ObjectProperty(None)
+    save = ObjectProperty(None)
+    cancel = ObjectProperty(None)
+
+
 class CommandListButton(ListItemButton):
     pass
+    
 
 class CustomDropDown(DropDown):
     owner = None
 
 
-    def load(self):
-        self.owner.loadHistory()
+    def showLoad(self):
+        self.owner.openLoadHistoryFileChooser()
         
 
-    def save(self):
-        self.owner.saveHistory()
+    def showSave(self):
+        self.owner.openSaveHistoryFileChooser()
 
 
     def help(self):
@@ -198,21 +216,47 @@ class CryptoPricerGUI(BoxLayout):
         self.dropDMenu.open(widget)
 
 
-    def loadHistory(self):
-        popup = Popup(title='Popup', content=Label(text='Loading history'), size_hint=(None, None), size=(400, 400))
-        popup.open()
-       
-                
-    def saveHistory(self):
-        popup = Popup(title='Popup', content=Label(text='Saving history'), size_hint=(None, None), size=(400, 400))
-        popup.open()
-
-              
     def displayHelp(self):
         popup = Popup(title='Popup', content=Label(text='Help !'), size_hint=(None, None), size=(400, 400))
         popup.open()
-       
+
                 
+# --- file chooser code ---  
+  
+    def dismissPopup(self):
+        self._popup.dismiss()
+
+
+    def openLoadHistoryFileChooser(self):
+        content = LoadDialog(load=self.load, cancel=self.dismissPopup)
+        self._popup = Popup(title="Load file", content=content,
+                            size_hint=(0.9, 0.9))
+        self._popup.open()
+
+
+    def openSaveHistoryFileChooser(self):
+        content = SaveDialog(save=self.save, cancel=self.dismissPopup)
+        self._popup = Popup(title="Save file", content=content,
+                            size_hint=(0.9, 0.9))
+        self._popup.open()
+
+
+    def load(self, path, filename):
+        with open(os.path.join(path, filename[0])) as stream:
+            self.textInput.text = stream.read()
+
+        self.dismissPopup()
+
+
+    def save(self, path, filename):
+        with open(os.path.join(path, filename), 'w') as stream:
+            stream.write(self.textInput.text)
+
+        self.dismissPopup()
+                                
+# --- end file chooser code ---  
+
+
     def on_pause(self):
         # Here you can save data if needed
         return True
