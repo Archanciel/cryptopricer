@@ -14,10 +14,10 @@ CryptoPricerGUI:
     commandInput: command
     commandList: commandListView
     resultOutput: readOnlyLog
-    toggleHistoControl: toggleHistoryBtn
-    deleteControl: deleteBtn
-    replaceControl: replaceBtn
-    replayAllControl: replayAllBtn
+    toggleHistoButton: toggleHistoryBtn
+    deleteButton: deleteBtn
+    replaceButton: replaceBtn
+    replayAllButton: replayAllBtn
     padding: 10
     spacing: 10
     canvas.before:
@@ -114,15 +114,18 @@ CryptoPricerGUI:
             foreground_color: 1,1,1,1
 
 <CustomDropDown>
+    saveButton: save_btn
     Button:
         text: 'Load'
         size_hint_y: None
         height: '28dp'
         on_release: root.showLoad()
     Button:
+        id: save_btn
         text: 'Save'
         size_hint_y: None
         height: '28dp'
+        disabled: True
         on_release: root.showSave()
     Button:
         text: 'Help'
@@ -142,14 +145,17 @@ CryptoPricerGUI:
             on_selection: text_path_load.text = self.selection and self.selection[0] or ''
             #on_selection: text_path_load.text = filechooser.path
 
-        TextInput:
-            id: text_path_load
-            size_hint_y: 0.06
-            multiline: False
-            readonly: True
+        BoxLayout:
+            size_hint_y: None
+            height: '28dp'
+            TextInput:
+                id: text_path_load
+                multiline: False
+                readonly: True
 
         BoxLayout:
-            size_hint_y: 0.06
+            size_hint_y: None
+            height: '28dp'
             Button:
                 text: "Cancel"
                 on_release: root.cancel()
@@ -170,13 +176,16 @@ CryptoPricerGUI:
             dirselect: True
             on_selection: text_input.text = self.selection and self.selection[0] or ''
 
-        TextInput:
-            id: text_input
-            size_hint_y: 0.06
-            multiline: False
+        BoxLayout:
+            size_hint_y: None
+            height: '28dp'
+            TextInput:
+                id: text_input
+                multiline: False
 
         BoxLayout:
-            size_hint_y: 0.06
+            size_hint_y: None
+            height: '28dp'
             Button:
                 text: "Cancel"
                 on_release: root.cancel()

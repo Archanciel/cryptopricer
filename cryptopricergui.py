@@ -27,17 +27,13 @@ class SaveDialog(FloatLayout):
     fileChooser = ObjectProperty(None)
 
 
-class ProgressDialog(FloatLayout):
-    cancel = ObjectProperty(None)
-    pass
-
-
 class CommandListButton(ListItemButton):
     pass
     
 
 class CustomDropDown(DropDown):
     owner = None
+    saveButton = ObjectProperty(None)
 
 
     def showLoad(self):
@@ -62,8 +58,8 @@ class CryptoPricerGUI(BoxLayout):
     
     def __init__(self, **kwargs):
         super(CryptoPricerGUI, self).__init__(**kwargs)
-        self._dropDownMenu = CustomDropDown()
-        self._dropDownMenu.owner = self
+        self.dropDownMenu = CustomDropDown()
+        self.dropDownMenu.owner = self
 
         if os.name == 'posix':
             self.dataPath = '/sdcard'
@@ -72,19 +68,22 @@ class CryptoPricerGUI(BoxLayout):
 
 
     def toggleCommandList(self):
+        '''
+        called by 'History' toggle button to toggle the display of the history
+        command list.
+        '''
         if self.showCommandList:
             self.commandList.size_hint_y = None
             self.commandList.height = '0dp'
-            self.disableHistoryItemControls()
+            self.disableCommandListItemButtons()
             self.showCommandList = False
         else:
             self.commandList.height = '100dp'
-            #self.commandList.size_hint_y = 0.5
             self.showCommandList = True
-        
+
         self.refocusOncommandInput()
 
-                
+
     def submitCommand(self):
         '''
         Submit the command, output the result and add the command to the
@@ -105,25 +104,31 @@ class CryptoPricerGUI(BoxLayout):
             # Reset the ListView
             self.commandList._trigger_reset_populate()
             
-            self.enableCommandListControls()
+            self.manageStateOfCommandListButtons()
             self.commandInput.text = ''
 
         self.refocusOncommandInput()
 
 
-    def enableCommandListControls(self):
-        self.toggleHistoControl.disabled = False
-        self.replayAllControl.disabled = False
+    def manageStateOfCommandListButtons(self):
+        '''
+        Enable or disable history command list related controls according to
+        the status of the list: filled with items or empty.
+        :return: 
+        '''
+        if len(self.commandList.adapter.data) == 0:
+            #command list is empty
+            self.toggleHistoButton.state = 'normal'
+            self.toggleHistoButton.disabled = True
+            self.replayAllButton.disabled = True
+            self.commandList.height = '0dp'
+            self.dropDownMenu.saveButton.disabled = True
+        else:
+            self.toggleHistoButton.disabled = False
+            self.replayAllButton.disabled = False
+            self.dropDownMenu.saveButton.disabled = False
 
 
-    def disableCommandListControls(self):
-        self.toggleHistoControl.state = 'normal'
-        self.toggleHistoControl.disabled = True
-        self.replayAllControl.disabled = True
-        self.commandList.height = '0dp'
-
-
-     
     def outputResult(self, resultStr):
         if len(self.resultOutput.text) == 0:
             self.resultOutput.text = resultStr
@@ -138,10 +143,10 @@ class CryptoPricerGUI(BoxLayout):
         #refocus works in all situations. Leaving
         #it empty (== next frame) does not work
         #when pressing a button !
-        Clock.schedule_once(self._refocusTextInput, 0.1)       
+        Clock.schedule_once(self.refocusTextInput, 0.1)       
 
 
-    def _refocusTextInput(self, *args):
+    def refocusTextInput(self, *args):
         self.commandInput.focus = True
 
                                       
@@ -158,11 +163,9 @@ class CryptoPricerGUI(BoxLayout):
             # Reset the ListView
             self.commandList._trigger_reset_populate()
             self.commandInput.text = ''
-            self.disableHistoryItemControls()
+            self.disableCommandListItemButtons()
             
-        if len(self.commandList.adapter.data) == 0:
-            #command list is empty
-            self.disableCommandListControls()
+        self.manageStateOfCommandListButtons()
                         
         self.refocusOncommandInput()
 
@@ -186,7 +189,7 @@ class CryptoPricerGUI(BoxLayout):
             # Reset the ListView
             self.commandList._trigger_reset_populate()
             self.commandInput.text = ''
-            self.disableHistoryItemControls()
+            self.disableCommandListItemButtons()
             
         self.refocusOncommandInput()
 
@@ -194,25 +197,27 @@ class CryptoPricerGUI(BoxLayout):
     def historyItemSelected(self, instance):
         commandStr = str(instance.text)
         
-        #counter-intuitive, but test must be
-        #that way !
+        #counter-intuitive, but test must be defined that way !
         if instance.is_selected:
-            self.disableHistoryItemControls()
+            #disabling the 2 history command list item related buttons 
+            self.disableCommandListItemButtons()
         else:
-            self.enableHistoryItemControls()
+            self.enableCommandListItemButtons()
 
         self.commandInput.text = commandStr
         self.refocusOncommandInput()
 
-
-    def enableHistoryItemControls(self):
-        self.deleteControl.disabled = False
-        self.replaceControl.disabled = False
+        self.dropDownMenu.saveButton.disabled = False
 
 
-    def disableHistoryItemControls(self):
-        self.deleteControl.disabled = True
-        self.replaceControl.disabled = True
+    def enableCommandListItemButtons(self):
+        self.deleteButton.disabled = False
+        self.replaceButton.disabled = False
+
+
+    def disableCommandListItemButtons(self):
+        self.deleteButton.disabled = True
+        self.replaceButton.disabled = True
 
 
     def replayAllCommands(self):
@@ -226,11 +231,11 @@ class CryptoPricerGUI(BoxLayout):
                                               
 
     def openDropDownMenu(self, widget):
-        self._dropDownMenu.open(widget)
+        self.dropDownMenu.open(widget)
 
 
     def displayHelp(self):
-        self._dropDownMenu.dismiss()
+        self.dropDownMenu.dismiss()
         popup = Popup(title='CryptoPricer', content=Label(text='Help !'), size_hint=(None, None), size=(400, 400))
         popup.open()
 
@@ -245,25 +250,25 @@ class CryptoPricerGUI(BoxLayout):
         Act as a call back function for the cancel button of the load and save dialog
         :return: nothing
         '''
-        self._popup.dismiss()
+        self.popup.dismiss()
 
 
     def openLoadHistoryFileChooser(self):
         fileChooserDialog = LoadDialog(load=self.load, cancel=self.dismissPopup)
         fileChooserDialog.fileChooser.rootpath = self.dataPath
-        self._popup = Popup(title="Load file", content=fileChooserDialog,
-                            size_hint=(0.9, 0.9))
-        self._popup.open()
-        self._dropDownMenu.dismiss()
+        self.popup = Popup(title="Load file", content=fileChooserDialog,
+                            size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
+        self.popup.open()
+        self.dropDownMenu.dismiss()
 
 
     def openSaveHistoryFileChooser(self):
         fileChooserDialog = SaveDialog(save=self.save, cancel=self.dismissPopup)
         fileChooserDialog.fileChooser.rootpath = self.dataPath
-        self._popup = Popup(title="Save file", content=fileChooserDialog,
-                            size_hint=(0.9, 0.9))
-        self._popup.open()
-        self._dropDownMenu.dismiss()
+        self.popup = Popup(title="Save file", content=fileChooserDialog,
+                            size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
+        self.popup.open()
+        self.dropDownMenu.dismiss()
 
 
     def load(self, path, filename):
@@ -280,8 +285,9 @@ class CryptoPricerGUI(BoxLayout):
 
         # Reset the ListView
         self.commandList._trigger_reset_populate()
-        self.enableCommandListControls()
+        self.manageStateOfCommandListButtons()
         self.refocusOncommandInput()
+
 
     def save(self, path, filename):
         with open(os.path.join(path, filename), 'w') as stream:
