@@ -77,7 +77,7 @@ CryptoPricerGUI:
             id: menuBtn
             text: "..."
             size_hint_x: 8
-            on_release: root.openDropDMenu(self)
+            on_release: root.openDropDownMenu(self)
 
 
     # Define starting data and point to the ListItemButton
@@ -113,34 +113,6 @@ CryptoPricerGUI:
             background_color: 0,0,0,0
             foreground_color: 1,1,1,1
 
-<LoadDialog>:
-    text_path_load: text_path_load
-    BoxLayout:
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        FileChooserListView:
-            id: filechooser
-            dirselect: True
-            on_selection: text_path_load.text = self.selection and self.selection[0] or ''
-            #on_selection: text_path_load.text = filechooser.path
-          
-        TextInput:
-            id: text_path_load
-            size_hint_y: 0.06
-            multiline: False
-            readonly: True
-
-        BoxLayout:
-            size_hint_y: 0.06
-            Button:
-                text: "Cancel"
-                on_release: root.cancel()
-
-            Button:
-                text: "Load"
-                on_release: root.load(filechooser.path, filechooser.selection)
-
 <CustomDropDown>
     Button:
         text: 'Load'
@@ -158,8 +130,8 @@ CryptoPricerGUI:
         height: '28dp'
         on_release: root.help()
 
-<SaveDialog>:
-    textInput: textInput
+<LoadDialog>:
+    fileChooser: filechooser
     BoxLayout:
         size: root.size
         pos: root.pos
@@ -167,10 +139,39 @@ CryptoPricerGUI:
         FileChooserListView:
             id: filechooser
             dirselect: True
-            on_selection: textInput.text = self.selection and self.selection[0] or ''
+            on_selection: text_path_load.text = self.selection and self.selection[0] or ''
+            #on_selection: text_path_load.text = filechooser.path
 
         TextInput:
-            id: textInput
+            id: text_path_load
+            size_hint_y: 0.06
+            multiline: False
+            readonly: True
+
+        BoxLayout:
+            size_hint_y: 0.06
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
+
+
+<SaveDialog>:
+    fileChooser: filechooser
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            dirselect: True
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: text_input
             size_hint_y: 0.06
             multiline: False
 
@@ -182,4 +183,4 @@ CryptoPricerGUI:
 
             Button:
                 text: "Save"
-                on_release: root.save(filechooser.path, textInput.text)
+                on_release: root.save(filechooser.path, text_input.text)
