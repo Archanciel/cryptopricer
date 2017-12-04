@@ -7,6 +7,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
+from kivy.adapters.listadapter import ListAdapter
 
 from controller import Controller
 from guioutputformater import GuiOutputFormater
@@ -15,15 +16,20 @@ import os
 
 
 class LoadDialog(FloatLayout):
-    textPathLoad = ObjectProperty(None)
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
+    fileChooser = ObjectProperty(None)
 
 
 class SaveDialog(FloatLayout):
-    textInput = ObjectProperty(None)
     save = ObjectProperty(None)
     cancel = ObjectProperty(None)
+    fileChooser = ObjectProperty(None)
+
+
+class ProgressDialog(FloatLayout):
+    cancel = ObjectProperty(None)
+    pass
 
 
 class CommandListButton(ListItemButton):
@@ -56,10 +62,15 @@ class CryptoPricerGUI(BoxLayout):
     
     def __init__(self, **kwargs):
         super(CryptoPricerGUI, self).__init__(**kwargs)
-        self.dropDMenu = CustomDropDown()
-        self.dropDMenu.owner = self
+        self._dropDownMenu = CustomDropDown()
+        self._dropDownMenu.owner = self
 
-  
+        if os.name == 'posix':
+            self.dataPath = '/sdcard'
+        else:
+            self.dataPath = "D:\\Users\\Jean-Pierre\\Documents"
+
+
     def toggleCommandList(self):
         if self.showCommandList:
             self.commandList.size_hint_y = None
@@ -118,8 +129,10 @@ class CryptoPricerGUI(BoxLayout):
             self.resultOutput.text = resultStr
         else:
             self.resultOutput.text = self.resultOutput.text + '\n' + resultStr
+            # self.resultOutput.cursor = (10000, 10000)
+            # self.resultOutput.insert_text('\n' + resultStr)
 
-                              
+
     def refocusOncommandInput(self):
         #defining a delay of 0.1 sec ensure the
         #refocus works in all situations. Leaving
@@ -204,7 +217,7 @@ class CryptoPricerGUI(BoxLayout):
 
     def replayAllCommands(self):
         self.outputResult('')
-       
+
         for command in self.commandList.adapter.data:
              outputResultStr = self.controller.getPrintableResultForInput(command)
              self.outputResult(outputResultStr)
@@ -212,48 +225,73 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOncommandInput()
                                               
 
-    def openDropDMenu(self, widget):
-        self.dropDMenu.open(widget)
+    def openDropDownMenu(self, widget):
+        self._dropDownMenu.open(widget)
 
 
     def displayHelp(self):
-        popup = Popup(title='Popup', content=Label(text='Help !'), size_hint=(None, None), size=(400, 400))
+        self._dropDownMenu.dismiss()
+        popup = Popup(title='CryptoPricer', content=Label(text='Help !'), size_hint=(None, None), size=(400, 400))
         popup.open()
 
-                
-# --- file chooser code ---  
+
+    # --- file chooser code ---
+    def getStartPath(self):
+        return "D:\\Users\\Jean-Pierre"
+
   
     def dismissPopup(self):
+        '''
+        Act as a call back function for the cancel button of the load and save dialog
+        :return: nothing
+        '''
         self._popup.dismiss()
 
 
     def openLoadHistoryFileChooser(self):
-        content = LoadDialog(load=self.load, cancel=self.dismissPopup)
-        self._popup = Popup(title="Load file", content=content,
+        fileChooserDialog = LoadDialog(load=self.load, cancel=self.dismissPopup)
+        fileChooserDialog.fileChooser.rootpath = self.dataPath
+        self._popup = Popup(title="Load file", content=fileChooserDialog,
                             size_hint=(0.9, 0.9))
         self._popup.open()
+        self._dropDownMenu.dismiss()
 
 
     def openSaveHistoryFileChooser(self):
-        content = SaveDialog(save=self.save, cancel=self.dismissPopup)
-        self._popup = Popup(title="Save file", content=content,
+        fileChooserDialog = SaveDialog(save=self.save, cancel=self.dismissPopup)
+        fileChooserDialog.fileChooser.rootpath = self.dataPath
+        self._popup = Popup(title="Save file", content=fileChooserDialog,
                             size_hint=(0.9, 0.9))
         self._popup.open()
+        self._dropDownMenu.dismiss()
 
 
     def load(self, path, filename):
+        #emptying the list
+        self.commandList.adapter.data[:] = []
+
         with open(os.path.join(path, filename[0])) as stream:
-            self.textInput.text = stream.read()
+            lines = stream.readlines()
+
+        lines = list(map(lambda line : line.strip('\n'), lines))
+        self.commandList.adapter.data.extend(lines)
 
         self.dismissPopup()
 
+        # Reset the ListView
+        self.commandList._trigger_reset_populate()
+        self.enableCommandListControls()
+        self.refocusOncommandInput()
 
     def save(self, path, filename):
         with open(os.path.join(path, filename), 'w') as stream:
-            stream.write(self.textInput.text)
+            for line in self.commandList.adapter.data:
+                line = line + '\n'
+                stream.write(line)
 
         self.dismissPopup()
-                                
+        self.refocusOncommandInput()
+
 # --- end file chooser code ---  
 
 
