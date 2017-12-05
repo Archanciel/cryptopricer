@@ -21,6 +21,11 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
         self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
+        
+        if os.name == 'posix':
+            self.assertEqual(self.configMgr.dataPath, '/sdcard')
+        else:
+            self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
 
     def testConfigurationManagerInstanciationNoConfigFile(self):
@@ -29,6 +34,11 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
         self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
+        
+        if os.name == 'posix':
+            self.assertEqual(self.configMgr.dataPath, '/sdcard')
+        else:
+            self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
 
     def testConfigurationManagerInstanciationEmptyConfigFile(self):
@@ -37,6 +47,11 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
         self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
+        
+        if os.name == 'posix':
+            self.assertEqual(self.configMgr.dataPath, '/sdcard')
+        else:
+            self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
 
     def testConfigurationManagerInstanciationOneMissingKey(self):
@@ -52,6 +67,11 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
         self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
+        
+        if os.name == 'posix':
+            self.assertEqual(self.configMgr.dataPath, '/sdcard')
+        else:
+            self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
 
 if __name__ == '__main__':

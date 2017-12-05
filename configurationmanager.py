@@ -10,6 +10,10 @@ DEFAULT_DATE_TIME_FORMAT = 'DD/MM/YY HH:mm'
 CONFIG_KEY_DATE_ONLY_FORMAT = 'dateOnlyFormat'
 DEFAULT_DATE_ONLY_FORMAT = 'DD/MM/YY'
 
+CONFIG_KEY_DATA_PATH = 'dataPath'
+DEFAULT_DATA_PATH_ANDROID = '/sdcard'
+DEFAULT_DATA_PATH_WINDOWS = 'c:\\temp'
+
 class ConfigurationManager:
     def __init__(self, filename):
         self.config = ConfigObj(filename)
@@ -36,6 +40,16 @@ class ConfigurationManager:
             self.__dateOnlyFormat = DEFAULT_DATE_ONLY_FORMAT
             self._updated = True
 
+        try:
+            self.__dataPath = self.config[CONFIG_KEY_DATA_PATH]
+        except KeyError:
+            if os.name == 'posix':
+                self.__dataPath = DEFAULT_DATA_PATH_ANDROID
+            else:
+                self.__dataPath = DEFAULT_DATA_PATH_WINDOWS
+                
+            self._updated = True
+
         self.storeConfig() #will save config file in case one config key raised an exception
 
 
@@ -49,6 +63,11 @@ class ConfigurationManager:
         self.localTimeZone = DEFAULT_TIME_ZONE
         self.dateTimeFormat = DEFAULT_DATE_TIME_FORMAT
         self.dateOnlyFormat = DEFAULT_DATE_ONLY_FORMAT
+
+        if os.name == 'posix':
+            self.dataPath = DEFAULT_DATA_PATH_ANDROID
+        else:
+            self.dataPath = DEFAULT_DATA_PATH_WINDOWS
 
         self._updated = True
 
@@ -82,6 +101,15 @@ class ConfigurationManager:
         self.__dateOnlyFormat = dateOnlyFormatStr
         self._updated = True
 
+    @property
+    def dataPath(self):
+        return self.__dataPath
+
+    @dataPath.setter
+    def dataPath(self, dataPathStr):
+        self.__dataPath = dataPathStr
+        self._updated = True
+
     def storeConfig(self):
         if not self._updated:
             return
@@ -89,6 +117,7 @@ class ConfigurationManager:
         self.config[CONFIG_KEY_TIME_ZONE] = self.localTimeZone
         self.config[CONFIG_KEY_DATE_TIME_FORMAT] = self.dateTimeFormat
         self.config[CONFIG_KEY_DATE_ONLY_FORMAT] = self.dateOnlyFormat
+        self.config[CONFIG_KEY_DATA_PATH] = self.dataPath
 
         self.config.write()
         
@@ -105,3 +134,4 @@ if __name__ == '__main__':
     print(cm.localTimeZone)
     print(cm.dateTimeFormat)
     print(cm.dateOnlyFormat)
+    print(cm.dataPath)

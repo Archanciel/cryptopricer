@@ -11,7 +11,7 @@ from kivy.adapters.listadapter import ListAdapter
 
 from controller import Controller
 from guioutputformater import GuiOutputFormater
-
+from configurationmanager import ConfigurationManager
 import os
 
 
@@ -62,10 +62,12 @@ class CryptoPricerGUI(BoxLayout):
         self.dropDownMenu.owner = self
 
         if os.name == 'posix':
-            self.dataPath = '/sdcard'
+            configPath = '/sdcard/cryptopricer.ini'
         else:
-            self.dataPath = "D:\\Users\\Jean-Pierre\\Documents"
+            configPath = 'c:\\temp\\cryptopricer.ini'
 
+        self.configMgr = ConfigurationManager(configPath)
+        self.dataPath = self.configMgr.dataPath
 
     def toggleCommandList(self):
         '''
@@ -100,7 +102,7 @@ class CryptoPricerGUI(BoxLayout):
             
             # Add the command to the ListView if not already in
             if not commandStr in self.commandList.adapter.data:
-                self.commandList.adapter.data.extend([commandStr])
+                self.commandList.adapter.data.extend([fullCommandStr])
 
             # Reset the ListView
             self.commandList._trigger_reset_populate()
@@ -226,7 +228,7 @@ class CryptoPricerGUI(BoxLayout):
 
         for command in self.commandList.adapter.data:
              outputResultStr, fullCommandStr = self.controller.getPrintableResultForInput(command)
-             print("command: {}\nfull command: {}\nres: {}".format(commandStr, fullCommandStr, outputResultStr))
+             print("command: {}\nfull command: {}\nres: {}".format(command, fullCommandStr, outputResultStr))
              self.outputResult(outputResultStr)
 
         self.refocusOncommandInput()
