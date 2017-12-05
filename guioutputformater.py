@@ -1,6 +1,7 @@
 import os
 
 from resultdata import ResultData
+from commandprice import CommandPrice
 from abstractoutputformater import AbstractOutputFormater
 from kivy.core.clipboard import Clipboard
 
@@ -21,7 +22,27 @@ class GuiOutputFormater(AbstractOutputFormater):
         outputStr = super(GuiOutputFormater, self).getPrintableData(resultData)
                                         	                                  	
         print(outputStr)
-
+        
+    def getFullCommandString(self, resultData):
+        commandDic = resultData.getValue(resultData.RESULT_KEY_COMMAND)
+        priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
+        
+        if priceType == resultData.PRICE_TYPE_RT:      
+            fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
+                             commandDic[CommandPrice.FIAT] + ' 0 ' + \
+                             commandDic[CommandPrice.EXCHANGE]
+        else:
+            fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
+                             commandDic[CommandPrice.FIAT] + ' ' + \
+                             commandDic[CommandPrice.DAY] + '/' + \
+                             commandDic[CommandPrice.MONTH] + '/' + \
+                             commandDic[CommandPrice.YEAR] + ' ' + \
+                             commandDic[CommandPrice.HOUR] + ':' + \
+                             commandDic[CommandPrice.MINUTE] + ' ' + \
+                             commandDic[CommandPrice.EXCHANGE]
+                             
+        return fullCommandStr
+        
 
     def toClipboard(self, numericVal):
         self._clipboard.copy(str(numericVal))

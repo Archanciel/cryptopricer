@@ -64,7 +64,10 @@ class Controller:
         result = command.execute()
 
         if result != '':
-            return self.printer.getPrintableData(result)
+            printResult = self.printer.getPrintableData(result)
+            fullCommandStr = self.printer.getFullCommandString(result)
+            
+            return (printResult, fullCommandStr)
 
 
 if __name__ == '__main__':

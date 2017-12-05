@@ -29,7 +29,7 @@ class CommandPrice(AbstractCommand):
         For example, entering 'btc usd 0 Bittrex' will cause the parsedParmData dic
         to be initialized with only CRYPTO, FIAT, DAY_MONTH_YEAR, DAY, MONTH, YEAR
         and EXCHANGE entries. HOUR_MINUTE, HOUR and MINUTE will be missing. This
-        will cause subsequent errors in Requester in case the firs usage was
+        will cause subsequent errors in Requester in case the first usage was
         'btc usd 0 Bittrex'
         :return:
         '''
@@ -102,6 +102,14 @@ class CommandPrice(AbstractCommand):
         else:
             minute = 0
 
+        #storing the parsed parm gata dicèionary before it
+        #may be modified in case the user requested a RT
+        #price. The initial dictionary wiLl be added to the
+        #returned resultData so the client can have access
+        #to the full command request, even if only a partial
+        #request like -d or -c was entered.
+        initialParsedParmDataDic = self.parsedParmData.copy()
+        
         if day + month + year == 0:
             # asking for RT price here. Current date is stored in parsed parm data for possible
             # use in next request
@@ -116,6 +124,8 @@ class CommandPrice(AbstractCommand):
                                               hour,
                                               minute)
         	                            
+        result.setValue(ResultData.RESULT_KEY_COMMAND, initialParsedParmDataDic)
+        
         return result
 
 

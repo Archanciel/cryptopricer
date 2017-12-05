@@ -9,6 +9,7 @@ class ResultData:
     RESULT_KEY_PRICE = 'PRICE'
     RESULT_KEY_PRICE_TYPE = 'PRICE_TYPE'
     RESULT_KEY_ERROR_MSG = 'ERROR_MSG'
+    RESULT_KEY_COMMAND = 'COMMAND' #full command which generated the result
 
     PRICE_TYPE_HISTO_DAY = 'HISTO_DAY'
     PRICE_TYPE_HISTO_MINUTE = 'HISTO_MINUTE'
@@ -25,6 +26,7 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_PRICE] = None
         self._resultDataDic[self.RESULT_KEY_PRICE_TYPE] = None
         self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None
+        self._resultDataDic[self.RESULT_KEY_COMMAND] = None
 
 
     def setValue(self, key, value):

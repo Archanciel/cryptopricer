@@ -94,7 +94,8 @@ class CryptoPricerGUI(BoxLayout):
         commandStr = self.commandInput.text
 
         if commandStr != '':
-            outputResultStr = self.controller.getPrintableResultForInput(commandStr)
+            outputResultStr, fullCommandStr = self.controller.getPrintableResultForInput(commandStr)
+            print("command: {}\nfull command: {}\nres: {}".format(commandStr, fullCommandStr, outputResultStr))
             self.outputResult(outputResultStr)
             
             # Add the command to the ListView if not already in
@@ -224,7 +225,8 @@ class CryptoPricerGUI(BoxLayout):
         self.outputResult('')
 
         for command in self.commandList.adapter.data:
-             outputResultStr = self.controller.getPrintableResultForInput(command)
+             outputResultStr, fullCommandStr = self.controller.getPrintableResultForInput(command)
+             print("command: {}\nfull command: {}\nres: {}".format(commandStr, fullCommandStr, outputResultStr))
              self.outputResult(outputResultStr)
 
         self.refocusOncommandInput()
