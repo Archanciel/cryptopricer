@@ -32,15 +32,20 @@ class GuiOutputFormater(AbstractOutputFormater):
                              commandDic[CommandPrice.FIAT] + ' 0 ' + \
                              commandDic[CommandPrice.EXCHANGE]
         else:
+            year = commandDic[CommandPrice.YEAR]
+            if year == None:
+                monthYear = commandDic[CommandPrice.MONTH] + ' '
+            else:
+                monthYear = commandDic[CommandPrice.MONTH] + '/' + commandDic[CommandPrice.YEAR] + ' '
+
             fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
                              commandDic[CommandPrice.FIAT] + ' ' + \
                              commandDic[CommandPrice.DAY] + '/' + \
-                             commandDic[CommandPrice.MONTH] + '/' + \
-                             commandDic[CommandPrice.YEAR] + ' ' + \
+                             monthYear + \
                              commandDic[CommandPrice.HOUR] + ':' + \
                              commandDic[CommandPrice.MINUTE] + ' ' + \
                              commandDic[CommandPrice.EXCHANGE]
-                             
+
         return fullCommandStr
         
 

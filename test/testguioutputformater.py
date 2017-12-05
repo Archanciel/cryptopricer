@@ -269,5 +269,49 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.assertEqual(str(y), self.printer.fromClipboard())
 
 
+    def testGetFullCommandStringYearNone(self):
+        crypto = 'ETH'
+        fiat = 'USD'
+
+        resultData = ResultData()
+
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 465.52)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '5/12/17 09:30')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
+        resultData.setValue(resultData.RESULT_KEY_COMMAND, {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': None, 'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
+
+        fullCommandStr = self.printer.getFullCommandString(resultData)
+
+        self.assertEqual(fullCommandStr, "eth usd 5/12 9:30 bittrex")
+
+
+    def testGetFullCommandStringYearDefined(self):
+        crypto = 'ETH'
+        fiat = 'USD'
+
+        resultData = ResultData()
+
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 465.52)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '5/12/17 09:30')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
+        resultData.setValue(resultData.RESULT_KEY_COMMAND,
+                            {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
+                             'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
+
+        fullCommandStr = self.printer.getFullCommandString(resultData)
+
+        self.assertEqual(fullCommandStr, "eth usd 5/12/17 9:30 bittrex")
+
+
 if __name__ == '__main__':
     unittest.main()
