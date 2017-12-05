@@ -11,7 +11,7 @@ CONFIG_KEY_DATE_ONLY_FORMAT = 'dateOnlyFormat'
 DEFAULT_DATE_ONLY_FORMAT = 'DD/MM/YY'
 
 CONFIG_KEY_DATA_PATH = 'dataPath'
-DEFAULT_DATA_PATH_ANDROID = '/sdcard'
+DEFAULT_DATA_PATH_ANDROID = '/sdcard/CryptoPricerData'
 DEFAULT_DATA_PATH_WINDOWS = 'c:\\temp'
 
 class ConfigurationManager:

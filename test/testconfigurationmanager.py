@@ -23,7 +23,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
         
         if os.name == 'posix':
-            self.assertEqual(self.configMgr.dataPath, '/sdcard')
+            self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
@@ -36,7 +36,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
         
         if os.name == 'posix':
-            self.assertEqual(self.configMgr.dataPath, '/sdcard')
+            self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
@@ -49,7 +49,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
         
         if os.name == 'posix':
-            self.assertEqual(self.configMgr.dataPath, '/sdcard')
+            self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
@@ -69,7 +69,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
         
         if os.name == 'posix':
-            self.assertEqual(self.configMgr.dataPath, '/sdcard')
+            self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
