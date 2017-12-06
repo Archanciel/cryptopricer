@@ -23,6 +23,7 @@ class GuiOutputFormater(AbstractOutputFormater):
                                         	                                  	
         print(outputStr)
         
+        
     def getFullCommandString(self, resultData):
         '''
         Returns empty string if the command generated an error msg.
@@ -38,9 +39,8 @@ class GuiOutputFormater(AbstractOutputFormater):
                              commandDic[CommandPrice.FIAT] + ' 0 ' + \
                              commandDic[CommandPrice.EXCHANGE]
         else:
-            print(str(commandDic))
-            print(str(resultData._resultDataDic))
             year = commandDic[CommandPrice.YEAR]
+
             if year == None:
                 monthYear = commandDic[CommandPrice.MONTH] + ' '
             else:

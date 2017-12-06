@@ -53,6 +53,7 @@ class CryptoPricerGUI(BoxLayout):
     commandInput = ObjectProperty()
     commandList = ObjectProperty()
     resultOutput = ObjectProperty()
+    #outputResultScrollView = ObjectProperty()
     showCommandList = False
     controller = Controller(GuiOutputFormater())
     
@@ -101,7 +102,6 @@ class CryptoPricerGUI(BoxLayout):
 
         if commandStr != '':
             outputResultStr, fullCommandStr = self.controller.getPrintableResultForInput(commandStr)
-            print("command: {}\nfull command: {}\nres: {}".format(commandStr, fullCommandStr, outputResultStr))
             self.outputResult(outputResultStr)
             
             # Add the command to the ListView if not already in
@@ -146,9 +146,7 @@ class CryptoPricerGUI(BoxLayout):
             self.resultOutput.text = resultStr
         else:
             self.resultOutput.text = self.resultOutput.text + '\n' + resultStr
-            # self.resultOutput.cursor = (10000, 10000)
-            # self.resultOutput.insert_text('\n' + resultStr)
-
+            #self.outputResultScrollView.scroll_to(100000)
 
     def refocusOncommandInput(self):
         #defining a delay of 0.1 sec ensure the
@@ -237,7 +235,7 @@ class CryptoPricerGUI(BoxLayout):
 
         for command in self.commandList.adapter.data:
              outputResultStr, fullCommandStr = self.controller.getPrintableResultForInput(command)
-             print("command: {}\nfull command: {}\nres: {}".format(command, fullCommandStr, outputResultStr))
+             #print("command: {}\nfull command: {}\nres: {}".format(command, fullCommandStr, outputResultStr))
              self.outputResult(outputResultStr)
 
         self.refocusOncommandInput()
@@ -249,7 +247,7 @@ class CryptoPricerGUI(BoxLayout):
 
     def displayHelp(self):
         self.dropDownMenu.dismiss()
-        popup = Popup(title='CryptoPricer', content=Label(text='Help !'), size_hint=(None, None), size=(400, 400))
+        popup = Popup(title='CryptoPricer', content=Label(text='Version 2.0.21'), size_hint=(None, None), size=(400, 400))
         popup.open()
 
 
