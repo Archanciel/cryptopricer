@@ -83,7 +83,11 @@ class CryptoPricerGUI(BoxLayout):
             self.commandList.height = '100dp'
             self.showCommandList = True
 
-        self.refocusOncommandInput()
+            # Reset the ListView
+            self.commandList.adapter.data.extend([]) #improves list view display, but only after user scrolled manually !
+            self.resetListViewScrollToEnd(self.commandList)
+
+            self.refocusOncommandInput()
 
 
     def submitCommand(self):
@@ -101,16 +105,21 @@ class CryptoPricerGUI(BoxLayout):
             self.outputResult(outputResultStr)
             
             # Add the command to the ListView if not already in
-            if not commandStr in self.commandList.adapter.data:
+            if fullCommandStr != '' and not fullCommandStr in self.commandList.adapter.data:
                 self.commandList.adapter.data.extend([fullCommandStr])
 
-            # Reset the ListView
-            self.commandList._trigger_reset_populate()
+                # Reset the ListView
+                self.resetListViewScrollToEnd(self.commandList)
             
             self.manageStateOfCommandListButtons()
             self.commandInput.text = ''
 
         self.refocusOncommandInput()
+
+
+    def resetListViewScrollToEnd(self, listView):
+        listView._trigger_reset_populate()
+        listView.scroll_to(len(self.commandList.adapter.data) - 1)
 
 
     def manageStateOfCommandListButtons(self):
@@ -279,6 +288,10 @@ class CryptoPricerGUI(BoxLayout):
         #emptying the list
         self.commandList.adapter.data[:] = []
 
+        if not filename:
+            #no file selected. Load dialog remains open ..
+            return
+            
         with open(os.path.join(path, filename[0])) as stream:
             lines = stream.readlines()
 
@@ -288,12 +301,17 @@ class CryptoPricerGUI(BoxLayout):
         self.dismissPopup()
 
         # Reset the ListView
-        self.commandList._trigger_reset_populate()
+        self.resetListViewScrollToEnd(self.commandList)
+
         self.manageStateOfCommandListButtons()
         self.refocusOncommandInput()
 
 
     def save(self, path, filename):
+        if not filename:
+            #no file selected. Save dialog remains open ..
+            return
+            
         with open(os.path.join(path, filename), 'w') as stream:
             for line in self.commandList.adapter.data:
                 line = line + '\n'

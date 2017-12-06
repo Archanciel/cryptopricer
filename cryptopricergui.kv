@@ -84,10 +84,10 @@ CryptoPricerGUI:
     # in the Python code
     ListView:
         id: commandListView
-        effect_cls: ScrollEffect #no effect !
         adapter: ListAdapter(data=[], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected})
         height: '0dp'
         size_hint_y: None
+        on_parent: self.container.parent.effect_cls = ScrollEffect #prevents overscrolling
         canvas.before:
             Color:
                 rgb: [0,0,0]
@@ -104,7 +104,7 @@ CryptoPricerGUI:
             Rectangle:
                 pos: self.pos
                 size: self.size
-        effect_cls: ScrollEffect #avoid overscrolling
+        effect_cls: ScrollEffect #prevents overscrolling
         TextInput:
             id: readOnlyLog
             size_hint: (1, None)

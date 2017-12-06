@@ -40,6 +40,11 @@ class ResultData:
     def isEmpty(self, key):
         return self._resultDataDic[key] == None
 
+    def isError(self):
+        '''
+        Return True if the ResultData contains an error msg
+        '''
+        return self._resultDataDic[self.RESULT_KEY_ERROR_MSG] != None
 
     def __str__(self):
         strRepr = ''
