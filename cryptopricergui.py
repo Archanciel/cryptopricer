@@ -147,6 +147,8 @@ class CryptoPricerGUI(BoxLayout):
         else:
             self.resultOutput.text = self.resultOutput.text + '\n' + resultStr
             #self.outputResultScrollView.scroll_to(100000)
+            #self.resultOutput.cursor = (10000,0)
+
 
     def refocusOncommandInput(self):
         #defining a delay of 0.1 sec ensure the
@@ -238,6 +240,7 @@ class CryptoPricerGUI(BoxLayout):
              #print("command: {}\nfull command: {}\nres: {}".format(command, fullCommandStr, outputResultStr))
              self.outputResult(outputResultStr)
 
+        #self.resultOutput.do_cursor_movement('cursor_pgdown')
         self.refocusOncommandInput()
                                               
 
