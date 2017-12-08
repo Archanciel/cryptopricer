@@ -102,15 +102,15 @@ class CommandPrice(AbstractCommand):
         else:
             minute = 0
 
-        #storing the parsed parm gata dictionary before it
+        #storing the parsed parm gata dicèionary before it
         #may be modified in case the user requested a RT
-        #price. The initial dictionary will be added to the
+        #price. The initial dictionary wiLl be added to the
         #returned resultData so the client can have access
         #to the full command request, even if only a partial
         #request like -d or -c was entered.
         initialParsedParmDataDic = self.parsedParmData.copy()
         
-#        if day + month + year == 0:
+        #if day + month + year == 0:
             # asking for RT price here. Current date is stored in parsed parm data for possible
             # use in next request
             #self._storeDateTimeDataForNextPartialRequest(localNow)
