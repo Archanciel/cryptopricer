@@ -13,6 +13,10 @@ class CommandPrice(AbstractCommand):
     MINUTE = "MINUTE"       #store MM user input
     HOUR_MINUTE = "HM"      #temporary store HH:MM user input
     DAY_MONTH_YEAR = "DMY"  #temporary store DD/MM/YY user input
+    PRICE_TYPE = 'PRICE_TYPE'
+
+    PRICE_TYPE_HISTO = 'HISTO'
+    PRICE_TYPE_RT = 'REAL_TIME'
 
     def __init__(self, receiver=None, configManager=None, rawParmData='', parsedParmData={}):
         super().__init__(receiver, 'CommandPrice', rawParmData, parsedParmData)
@@ -43,6 +47,7 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.MINUTE] = None
         self.parsedParmData[self.DAY_MONTH_YEAR] = None
         self.parsedParmData[self.HOUR_MINUTE] = None
+        self.parsedParmData[self.PRICE_TYPE] = None
 
 
     def execute(self):

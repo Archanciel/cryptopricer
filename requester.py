@@ -154,7 +154,8 @@ class Requester:
         match = re.match(Requester.USER_COMMAND_GRP_PATTERN, upperInputStr)
 
         if match == None:
-            #here, either historical/RT price request which has no command symbol or user input error
+            #here, either full or partial historical/RT price request which has no command symbol
+            #or user input error
             command = self._parseAndFillCommandPrice(inputStr)
             if command == self.commandPrice or command == self.commandError:
                 return command
@@ -193,7 +194,7 @@ class Requester:
 
     def _parseGroups(self, pattern, inputStr):
         '''
-        Embeding this trjvial code in a method enable to
+        Embeding this trivial code in a method enables to
         specifically test the correct functioning of the
         used patterns
         :param pattern:     pattern to parse
@@ -270,12 +271,28 @@ class Requester:
                             self.commandError.parsedParmData = [self.commandError.COMMAND_NOT_SUPPORTED_MSG.format(command)]
                             return self.commandError
                             
-                hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
-                dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
+                if self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == '0':
+                    #-d0 which means RT entered. In this case, the previous
+                    #date/time info are no longer relevant !
+                    hourMinute = None
+                    dayMonthYear = None
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_RT
+                elif self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == None and self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] == None:
+                    #here, partial command(s) not date/time related. Previous request price type must be considered !
+                    if self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_RT:
+                        hourMinute = None
+                        dayMonthYear = None
+                    else:           
+                        hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
+                        dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
+                else:           
+                    hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
+                    dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
+                    
             else: #neither full nor parrial pattern matched
                 return None
         else: #full command line entered. Here, parms were entered in an order reflected in the
-              # pattern: crypto fiat in this mandatory order, then date time exchange which order
+              # pattern: crypto fiat in this mandatory order, then date time exchange, of which order
               # can be different.
             self.commandPrice.resetData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
@@ -284,26 +301,30 @@ class Requester:
             self.commandPrice.parsedParmData.update(optionalParsedParmDataDic)
             hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
             dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
-
+            
         if hourMinute != None:
             hourMinuteList = hourMinute.split(':')
             if len(hourMinuteList) == 1:
-                if CommandPrice.HOUR in self.commandPrice.parsedParmData:
-                    hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
-                    minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
-                else:
-                    hour = None
-                    minute = None
+                #if CommandPrice.HOUR in self.commandPrice.parsedParmData:
+                #test above irrelevant since CommandPrice always
+                #contains all its keys !
+                hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
+                minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
+                #else:
+                    #hour = None
+                    #minute = None
             else:
                 minute = hourMinuteList[1]
                 hour = hourMinuteList[0] #in both cases, first item in hourMinuteList is hour
         else:
-            if CommandPrice.HOUR in self.commandPrice.parsedParmData:
-                hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
-                minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
-            else:
-                hour = None
-                minute = None
+#            if CommandPrice.HOUR in self.commandPrice.parsedParmData:
+             #test above irrelevant since CommandPrice always
+             #contains all its keys !
+            hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
+            minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
+#            else:
+#                hour = None
+#                minute = None
 
         self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
         self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
@@ -314,6 +335,7 @@ class Requester:
                 day = '0'
                 month = '0'
                 year = '0'
+                self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_RT
             else:
                 dayMonthYearList = dayMonthYear.split('/')
                 if len(dayMonthYearList) == 1: #only day specified
@@ -324,6 +346,7 @@ class Requester:
                     else:
                         month = None
                         year = None
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_HISTO
                 elif len(dayMonthYearList) == 2:
                     day = dayMonthYearList[0]
                     month = dayMonthYearList[1]
@@ -332,10 +355,12 @@ class Requester:
                     else:   # year not provided and not obtained from previous full price command input.
                             # Will be set by PriceRequester which knows in which timezone we are
                         year = None
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_HISTO
                 elif len(dayMonthYearList) == 3:
                     day = dayMonthYearList[0]
                     month = dayMonthYearList[1]
                     year = dayMonthYearList[2]
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_HISTO
                 else: #invalid date format here !
                     if CommandPrice.DAY in self.commandPrice.parsedParmData:
                         day = self.commandPrice.parsedParmData[CommandPrice.DAY]
@@ -350,6 +375,7 @@ class Requester:
                 day = self.commandPrice.parsedParmData[CommandPrice.DAY]
                 month = self.commandPrice.parsedParmData[CommandPrice.MONTH]
                 year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
+                self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_HISTO
             else:
                 day = None
                 month = None
