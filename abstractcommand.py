@@ -31,6 +31,10 @@ class AbstractCommand(metaclass=ABCMeta):
             self._initialiseParsedParmData()
 
 
+    def __str__(self):
+        return 'Raw data: ' + str(self.rawParmData) + '\nParm data: ' + str(self.parsedParmData)
+        
+        
     @abstractmethod
     def _initialiseParsedParmData(self):
         '''
