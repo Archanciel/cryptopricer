@@ -115,10 +115,10 @@ class CommandPrice(AbstractCommand):
         #request like -d or -c was entered.
         initialParsedParmDataDic = self.parsedParmData.copy()
         
-        #if day + month + year == 0:
+        if day + month + year == 0:
             # asking for RT price here. Current date is stored in parsed parm data for possible
             # use in next request
-            #self._storeDateTimeDataForNextPartialRequest(localNow)
+            self._storeDateTimeDataForNextPartialRequest(localNow)
 
         result = self.receiver.getCryptoPrice(cryptoUpper,
                                               fiatUpper,

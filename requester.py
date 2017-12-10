@@ -249,6 +249,28 @@ class Requester:
         return optionalParsedParmDataDic
 
 
+    def _wipeOutDateTimeInfoFromCommandPrice(self):
+        '''
+        Used to set to zero the date/time info stored
+        from the previous request in the parsed parm data
+        of the CommandPrice. This must be done if
+        we request a RT price or if we provide a partial
+        request whith parms neither date nor time AND
+        the previour request was for a RT price.
+        
+        return None, None tuple used to fill the dayMonthYear
+                          and hourMinute local variables
+        '''
+        self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_RT
+        self.commandPrice.parsedParmData[CommandPrice.DAY] = '0'
+        self.commandPrice.parsedParmData[CommandPrice.MONTH] = '0'
+        self.commandPrice.parsedParmData[CommandPrice.YEAR] = '0'
+        self.commandPrice.parsedParmData[CommandPrice.HOUR] = '0'
+        self.commandPrice.parsedParmData[CommandPrice.MINUTE] = '0'
+        
+        return (None, None)
+        
+
     def _parseAndFillCommandPrice(self, inputStr):
         groupList = self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
 
@@ -274,17 +296,17 @@ class Requester:
                 if self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == '0':
                     #-d0 which means RT entered. In this case, the previous
                     #date/time info are no longer relevant !
-                    hourMinute = None
-                    dayMonthYear = None
-                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_RT
+                    hourMinute, dayMonthYear = self._wipeOutDateTimeInfoFromCommandPrice()
                 elif self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == None and self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] == None:
-                    #here, partial command(s) not date/time related. Previous request price type must be considered !
+                    #here, partial command(s) which aren't date/time related were entered: the previous request price type must be considered !
                     if self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_RT:
-                        hourMinute = None
-                        dayMonthYear = None
-                    else:           
-                        hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
-                        dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
+                        hourMinute, dayMonthYear = self._wipeOutDateTimeInfoFromCommandPrice()
+                    else:
+                        #here, since previous request was not RT, hourMinute and dayRonthYear must be rebuild
+                        #from the date/time values of the previous request. Don't forget that OAY_MONTH_YEAR
+                        #and HOUR_MINUTE are set to None once date/time values have been acquired !          
+                        hourMinute = ':'.join([self.commandPrice.parsedParmData[CommandPrice.HOUR], self.commandPrice.parsedParmData[CommandPrice.MINUTE]])
+                        dayMonthYear = '/'.join([self.commandPrice.parsedParmData[CommandPrice.DAY], self.commandPrice.parsedParmData[CommandPrice.MONTH], self.commandPrice.parsedParmData[CommandPrice.YEAR]])
                 else:           
                     hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
                     dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
@@ -335,7 +357,7 @@ class Requester:
                 day = '0'
                 month = '0'
                 year = '0'
-                self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_RT
+                self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_RT
             else:
                 dayMonthYearList = dayMonthYear.split('/')
                 if len(dayMonthYearList) == 1: #only day specified
