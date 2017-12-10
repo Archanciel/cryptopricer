@@ -327,26 +327,14 @@ class Requester:
         if hourMinute != None:
             hourMinuteList = hourMinute.split(':')
             if len(hourMinuteList) == 1:
-                #if CommandPrice.HOUR in self.commandPrice.parsedParmData:
-                #test above irrelevant since CommandPrice always
-                #contains all its keys !
                 hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
                 minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
-                #else:
-                    #hour = None
-                    #minute = None
             else:
                 minute = hourMinuteList[1]
                 hour = hourMinuteList[0] #in both cases, first item in hourMinuteList is hour
         else:
-#            if CommandPrice.HOUR in self.commandPrice.parsedParmData:
-             #test above irrelevant since CommandPrice always
-             #contains all its keys !
             hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
             minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
-#            else:
-#                hour = None
-#                minute = None
 
         self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
         self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
