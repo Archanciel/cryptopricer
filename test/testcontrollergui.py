@@ -1014,7 +1014,7 @@ class TestControllerGui(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('ERROR - fiat missing or invalid\n', contentList[1])
-            self.assertEqual('ERROR - date not valid\n', contentList[3])
+            self.assertEqual('ERROR - invalid command -fusd 2:56\n', contentList[3])
             self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[5])
 
 
