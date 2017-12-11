@@ -249,28 +249,6 @@ class Requester:
         return optionalParsedParmDataDic
 
 
-    def _wipeOutDateTimeInfoFromCommandPrice(self):
-        '''
-        Used to set to zero the date/time info stored
-        from the previous request in the parsed parm data
-        of the CommandPrice. This must be done if
-        we request a RT price or if we provide a partial
-        request whith parms neither date nor time AND
-        the previour request was for a RT price.
-        
-        return None, None tuple used to fill the dayMonthYear
-                          and hourMinute local variables
-        '''
-        self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_RT
-        self.commandPrice.parsedParmData[CommandPrice.DAY] = '0'
-        self.commandPrice.parsedParmData[CommandPrice.MONTH] = '0'
-        self.commandPrice.parsedParmData[CommandPrice.YEAR] = '0'
-        self.commandPrice.parsedParmData[CommandPrice.HOUR] = '0'
-        self.commandPrice.parsedParmData[CommandPrice.MINUTE] = '0'
-        
-        return (None, None)
-        
-
     def _parseAndFillCommandPrice(self, inputStr):
         groupList = self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
 
@@ -304,9 +282,14 @@ class Requester:
                     else:
                         #here, since previous request was not RT, hourMinute and dayRonthYear must be rebuild
                         #from the date/time values of the previous request. Don't forget that OAY_MONTH_YEAR
-                        #and HOUR_MINUTE are set to None once date/time values have been acquired !          
-                        hourMinute = ':'.join([self.commandPrice.parsedParmData[CommandPrice.HOUR], self.commandPrice.parsedParmData[CommandPrice.MINUTE]])
-                        dayMonthYear = '/'.join([self.commandPrice.parsedParmData[CommandPrice.DAY], self.commandPrice.parsedParmData[CommandPrice.MONTH], self.commandPrice.parsedParmData[CommandPrice.YEAR]])
+                        #and HOUR_MINUTE are set to None once date/time values have been acquired !
+                        if self._isDateTimeInfoFromPreviousRequestAvailable():
+                            hourMinute = ':'.join([self.commandPrice.parsedParmData[CommandPrice.HOUR], self.commandPrice.parsedParmData[CommandPrice.MINUTE]])
+                            dayMonthYear = '/'.join([self.commandPrice.parsedParmData[CommandPrice.DAY], self.commandPrice.parsedParmData[CommandPrice.MONTH], self.commandPrice.parsedParmData[CommandPrice.YEAR]])
+                        else:
+                            return None # will cause an error. This occurs in a special situation when the xprevious
+                                        # was in error, which explains why the date/time info from previous request is
+                                        # incoherent.
                 else:           
                     hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
                     dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
@@ -397,6 +380,36 @@ class Requester:
         self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
         return self.commandPrice
+
+
+    def _wipeOutDateTimeInfoFromCommandPrice(self):
+        '''
+        Used to set to zero the date/time info stored
+        from the previous request in the parsed parm data
+        of the CommandPrice. This must be done if
+        we request a RT price or if we provide a partial
+        request whith parms neither date nor time AND
+        the previour request was for a RT price.
+
+        return None, None tuple used to fill the dayMonthYear
+                          and hourMinute local variables
+        '''
+        self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_RT
+        self.commandPrice.parsedParmData[CommandPrice.DAY] = '0'
+        self.commandPrice.parsedParmData[CommandPrice.MONTH] = '0'
+        self.commandPrice.parsedParmData[CommandPrice.YEAR] = '0'
+        self.commandPrice.parsedParmData[CommandPrice.HOUR] = '0'
+        self.commandPrice.parsedParmData[CommandPrice.MINUTE] = '0'
+
+        return (None, None)
+
+
+    def _isDateTimeInfoFromPreviousRequestAvailable(self):
+        return self.commandPrice.parsedParmData[CommandPrice.DAY] != None and \
+               self.commandPrice.parsedParmData[CommandPrice.MONTH] != None and \
+               self.commandPrice.parsedParmData[CommandPrice.YEAR] != None and \
+               self.commandPrice.parsedParmData[CommandPrice.HOUR] != None and \
+               self.commandPrice.parsedParmData[CommandPrice.MINUTE] != None
 
 
     def _printHelp(self):
