@@ -14,10 +14,15 @@ IDX_DATA_ENTRY_TO = 1
 
 class PriceRequester:
     def __init__(self):
-        self.ctx = ssl.create_default_context()
-        self.ctx.check_hostname = False
-        self.ctx.verify_mode = ssl.CERT_NONE
-
+        try:
+            #since ssl prevents requesting the data from CryptoCompare
+            #when run from Kivy GUI, it must be be disabled
+            self.ctx = ssl.create_default_context()
+            self.ctx.check_hostname = False
+            self.ctx.verify_mode = ssl.CERT_NONE
+        except AttributeError:
+            #occurs when run in QPython under Python 3.2
+            self.ctx = None
       
     def getHistoricalPriceAtUTCTimeStamp(self, crypto, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange):
         '''
@@ -60,8 +65,12 @@ class PriceRequester:
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
 
         try:
-            webURL = urllib.request.urlopen(url, context=self.ctx)
-        except HTTPError as e:
+            if self.ctx == None:
+                #here, run in QPython under Python 3.2
+                webURL = urllib.request.urlopen(url)
+            else:
+                webURL = urllib.request.urlopen(url, context=self.ctx)
+        except HTTPErrorweb as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except URLError as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
@@ -87,7 +96,11 @@ class PriceRequester:
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
 
         try:
-            webURL = urllib.request.urlopen(url, context=self.ctx)
+            if self.ctx == None:
+                #here, run in QPython under Python 3.2
+                webURL = urllib.request.urlopen(url)
+            else:
+                webURL = urllib.request.urlopen(url, context=self.ctx)
         except HTTPError as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except URLError as e:
@@ -118,7 +131,11 @@ class PriceRequester:
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
 
         try:
-            webURL = urllib.request.urlopen(url, context=self.ctx)
+            if self.ctx == None:
+                #here, run in QPython under Python 3.2
+                webURL = urllib.request.urlopen(url)
+            else:
+                webURL = urllib.request.urlopen(url, context=self.ctx)
         except HTTPError as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
         except URLError as e:
@@ -140,4 +157,5 @@ class PriceRequester:
 
 
 if __name__ == '__main__':
-    pass
+    pr = PriceRequester()
+
