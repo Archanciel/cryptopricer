@@ -25,7 +25,10 @@ from testguioutputformater import TestGuiOutputFormater
 
 
 if __name__ == "__main__":
-    loader = TestLoader() 
+    '''
+    This test suite runs on Android in Pydroid, but fails in QPython !
+    '''
+    loader = TestLoader()
     suite = TestSuite((loader.loadTestsFromTestCase(TestRequester),
                        loader.loadTestsFromTestCase(TestAbstractCommand),
                        loader.loadTestsFromTestCase(TestAbstractOutputFormater),

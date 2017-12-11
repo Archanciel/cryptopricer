@@ -24,6 +24,9 @@ from testconsoleoutputformater import TestConsoleOutputFormater
 
 
 if __name__ == "__main__":
+    '''
+    This test suite runs on Android in QPython, but fails in Pydroid !
+    '''
     loader = TestLoader() 
     suite = TestSuite((loader.loadTestsFromTestCase(TestRequester),
                        loader.loadTestsFromTestCase(TestAbstractCommand),
