@@ -289,7 +289,8 @@ class Requester:
                         else:
                             return None # will cause an error. This occurs in a special situation when the xprevious
                                         # was in error, which explains why the date/time info from previous request is
-                                        # incoherent.
+                                        # incoherent. Such a case is tested by TestController.
+                                        # testControllerHistoDayPriceIncompleteCommandScenario
                 else:           
                     hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
                     dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
