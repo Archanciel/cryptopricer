@@ -1135,5 +1135,171 @@ class TestController(unittest.TestCase):
             self.assertEqual('ERROR - invalid command -h22:21: -h not supported\n', contentList[3])
 
 
+    def testControllerScenarioMissingFiatBadErrorMsg(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc\n-fusd\n-d0\n-ebittrex\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        nowMinute = now.minute
+
+        if nowMinute < 10:
+            if nowMinute > 0:
+                nowMinuteStr = '0' + str(nowMinute)
+            else:
+                nowMinuteStr = '00'
+        else:
+            nowMinuteStr = str(nowMinute)
+
+        nowHour = now.hour
+
+        if nowHour < 10:
+            if nowHour > 0:
+                nowHourStr = '0' + str(nowHour)
+            else:
+                nowHourStr = '00'
+        else:
+            nowHourStr = str(nowHour)
+
+        nowDay = now.day
+
+        if nowDay < 10:
+            nowDayStr = '0' + str(nowDay)
+        else:
+            nowDayStr = str(nowDay)
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual(
+                'ERROR - fiat missing or invalid', contentList[1][:-1])
+            self.assertEqual(
+                'ERROR - invalid command -fusd', contentList[3][:-1]) #improve error msg
+            self.assertEqual(
+                'ERROR - exchange could not be parsed due to an error in your command', contentList[5][:-1])
+            self.assertEqual(
+                'BTC/USD on BitTrex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
+                                                                nowMinuteStr),
+                self.removePriceFromResult(contentList[7][:-1]))  # removing \n from contentList entry !
+
+
+    def testControllerScenarioModel(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        yesterday = now.shift(days=-2)
+        yesterdayDay = yesterday.day
+        yesterdayMonth = yesterday.month
+
+        stdin = sys.stdin
+        sys.stdin = StringIO('mcap usd 0 ccex\n-d{}/{}\n-d0\n-fbtc\nq\ny'.format(yesterdayDay, yesterdayMonth))
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run()
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        nowMinute = now.minute
+
+        if nowMinute < 10:
+            if nowMinute > 0:
+                nowMinuteStr = '0' + str(nowMinute)
+            else:
+                nowMinuteStr = '00'
+        else:
+            nowMinuteStr = str(nowMinute)
+
+        nowHour = now.hour
+
+        if nowHour < 10:
+            if nowHour > 0:
+                nowHourStr = '0' + str(nowHour)
+            else:
+                nowHourStr = '00'
+        else:
+            nowHourStr = str(nowHour)
+
+        nowDay = now.day
+
+        if nowDay < 10:
+            nowDayStr = '0' + str(nowDay)
+        else:
+            nowDayStr = str(nowDay)
+
+        yesterdayMinute = yesterday.minute
+
+        if yesterdayMinute < 10:
+            if yesterdayMinute > 0:
+                yesterdayMinuteStr = '0' + str(yesterdayMinute)
+            else:
+                yesterdayMinuteStr = '00'
+        else:
+            yesterdayMinuteStr = str(yesterdayMinute)
+
+        yesterdayHour = yesterday.hour
+
+        if yesterdayHour < 10:
+            if yesterdayHour > 0:
+                yesterdayHourStr = '0' + str(yesterdayHour)
+            else:
+                yesterdayHourStr = '00'
+        else:
+            yesterdayHourStr = str(yesterdayHour)
+
+        yesterdayDay = yesterday.day
+
+        if yesterdayDay < 10:
+            yesterdayDayStr = '0' + str(yesterdayDay)
+        else:
+            yesterdayDayStr = str(yesterdayDay)
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual(
+                'MCAP/USD on Ccex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
+                                                                nowMinuteStr),
+                self.removePriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
+            self.assertEqual(
+                'MCAP/USD on Ccex: ' + '{}/{}/{} {}:{}M'.format(yesterdayDayStr, yesterday.month, yesterday.year - 2000,
+                                                                yesterdayHourStr, yesterdayMinuteStr),
+                self.removePriceFromResult(contentList[3][:-1]))  # removing \n from contentList entry !
+            self.assertEqual(
+                'MCAP/USD on Ccex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
+                                                                nowMinuteStr),
+                self.removePriceFromResult(contentList[5][:-1]))  # removing \n from contentList entry !
+            self.assertEqual(
+                'MCAP/BTC on Ccex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
+                                                                nowMinuteStr),
+                self.removePriceFromResult(contentList[7][:-1]))  # removing \n from contentList entry !
+
+
 if __name__ == '__main__':
     unittest.main()
