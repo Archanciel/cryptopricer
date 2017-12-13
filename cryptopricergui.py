@@ -25,15 +25,24 @@ class SaveDialog(FloatLayout):
     save = ObjectProperty(None)
     cancel = ObjectProperty(None)
     fileChooser = ObjectProperty(None)
+    loadAtStartChkb = ObjectProperty(None)
+    owner = None
+    
 
+    def toggleLoadAtStart(self, active):
+        self.owner.toggleLoadAtStart(active)
+            
 
 class CommandListButton(ListItemButton):
     pass
     
 
 class CustomDropDown(DropDown):
-    owner = None
     saveButton = ObjectProperty(None)
+    
+    def __init__(self, owner):
+        super().__init__()
+        self.owner = owner
 
 
     def showLoad(self):
@@ -59,8 +68,7 @@ class CryptoPricerGUI(BoxLayout):
     
     def __init__(self, **kwargs):
         super(CryptoPricerGUI, self).__init__(**kwargs)
-        self.dropDownMenu = CustomDropDown()
-        self.dropDownMenu.owner = self
+        self.dropDownMenu = CustomDropDown(owner = self)
 
         if os.name == 'posix':
             configPath = '/sdcard/cryptopricer.ini'
@@ -254,6 +262,16 @@ class CryptoPricerGUI(BoxLayout):
         popup.open()
 
 
+    def toggleLoadAtStart(self, active):
+        if active:
+            self.displayToggleLoadAtStart()
+        
+        
+    def displayToggleLoadAtStart(self):
+        popup = Popup(title='CryptoPricer', content=Label(text='Load at start activated !'), size_hint=(None, None), size=(600, 280))
+        popup.open()
+        
+        
     # --- file chooser code ---
     def getStartPath(self):
         return "D:\\Users\\Jean-Pierre"
@@ -278,6 +296,7 @@ class CryptoPricerGUI(BoxLayout):
 
     def openSaveHistoryFileChooser(self):
         fileChooserDialog = SaveDialog(save=self.save, cancel=self.dismissPopup)
+        fileChooserDialog.owner = self
         fileChooserDialog.fileChooser.rootpath = self.dataPath
         self.popup = Popup(title="Save file", content=fileChooserDialog,
                             size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
@@ -308,16 +327,23 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOncommandInput()
 
 
-    def save(self, path, filename):
+    def save(self, path, filename, isLoadAtStart):
         if not filename:
             #no file selected. Save dialog remains open ..
             return
             
-        with open(os.path.join(path, filename), 'w') as stream:
+        pathFileName = os.path.join(path, filename)   
+        
+        with open(pathFileName, 'w') as stream:
             for line in self.commandList.adapter.data:
                 line = line + '\n'
                 stream.write(line)
 
+        if isLoadAtStart:
+            self.configMgr.loadAtStartPathFileName = pathFileName
+        else:
+            self.configMgr.loadAtStartPathFileName = ''
+           
         self.dismissPopup()
         self.refocusOncommandInput()
 

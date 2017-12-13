@@ -5,6 +5,7 @@
 #: import ListAdapter kivy.adapters.listadapter.ListAdapter
 #: import ListItemButton kivy.uix.listview.ListItemButton
 #: import ScrollEffect kivy.effects.scroll.ScrollEffect
+#: import CheckBox kivy.uix.checkbox.CheckBox
 
 
 CryptoPricerGUI:
@@ -168,6 +169,7 @@ CryptoPricerGUI:
 
 <SaveDialog>:
     fileChooser: filechooser
+    loadAtStartChkb: load_at_start
     BoxLayout:
         size: root.size
         pos: root.pos
@@ -183,7 +185,13 @@ CryptoPricerGUI:
             TextInput:
                 id: text_input
                 multiline: False
-
+            
+            CheckBox:
+                id: load_at_start
+                size_hint_max_x: 60
+                size_hint_y: None
+                on_press: root.toggleLoadAtStart(self.active)
+               
         BoxLayout:
             size_hint_y: None
             height: '28dp'
@@ -193,4 +201,4 @@ CryptoPricerGUI:
 
             Button:
                 text: "Save"
-                on_release: root.save(filechooser.path, text_input.text)
+                on_release: root.save(filechooser.path, text_input.text, load_at_start.active)
