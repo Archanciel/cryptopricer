@@ -296,7 +296,7 @@ class Requester:
                     dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
                     
             else: #neither full nor parrial pattern matched
-                return None
+                return None # will cause an error.
         else: #full command line entered. Here, parms were entered in an order reflected in the
               # pattern: crypto fiat in this mandatory order, then date time exchange, of which order
               # can be different.
@@ -311,8 +311,8 @@ class Requester:
         if hourMinute != None:
             hourMinuteList = hourMinute.split(':')
             if len(hourMinuteList) == 1:
-                hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
-                minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
+                #supplied time is invalid: does not respect expected format of 0:10 or 12:01 etc
+                return None # will cause an error.
             else:
                 minute = hourMinuteList[1]
                 hour = hourMinuteList[0] #in both cases, first item in hourMinuteList is hour

@@ -1422,18 +1422,7 @@ class TestRequester(unittest.TestCase):
 
         inputStr = "-ceth -fgbp -d11/8 -t5"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-        self.assertEqual(commandPrice, self.commandPrice)
-        parsedParmData = commandPrice.parsedParmData
-        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
-        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'gbp')
-        self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
-        self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
-        self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
-        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
-        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
-        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
-        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+        self.assertEqual(commandPrice, None)
 
 
     def test_parseAndFillPartialCommandPriceWithInitYear(self):
@@ -1847,19 +1836,10 @@ class TestRequester(unittest.TestCase):
         sys.stdin = StringIO("-fusd -t0")
         commandPrice = self.requester.request()
 
-        self.assertIsInstance(commandPrice, CommandPrice)
-        self.assertEqual(commandPrice, self.commandPrice)
-        parsedParmData = commandPrice.parsedParmData
-        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
-        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'usd')
-        self.assertEqual(parsedParmData[CommandPrice.DAY], '1')
-        self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
-        self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
-        self.assertEqual(parsedParmData[CommandPrice.HOUR], '13')
-        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
-        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
-        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
-        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+        self.assertIsInstance(commandPrice, CommandError)
+        self.assertEqual(commandPrice, self.commandError)
+        resultData = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command -fusd -t0", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
 
