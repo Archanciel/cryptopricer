@@ -14,6 +14,9 @@ CONFIG_KEY_DATA_PATH = 'dataPath'
 DEFAULT_DATA_PATH_ANDROID = '/sdcard/CryptoPricerData'
 DEFAULT_DATA_PATH_WINDOWS = 'c:\\temp'
 
+CONFIG_KEY_LOAD_AT_START_PATH_FILENAME = 'loadAtStartPathFilename'
+DEFAULT_LOAD_AT_START_PATH_FILENAME = ''
+
 class ConfigurationManager:
     def __init__(self, filename):
         self.config = ConfigObj(filename)
@@ -50,8 +53,13 @@ class ConfigurationManager:
                 
             self._updated = True
 
-        self.storeConfig() #will save config file in case one config key raised an exception
+        try:
+            self.__loadAtStartPathFilename = self.config[CONFIG_KEY_LOAD_AT_START_PATH_FILENAME]
+        except KeyError:
+            self.__loadAtStartPathFilename = DEFAULT_LOAD_AT_START_PATH_FILENAME
+            self._updated = True
 
+        self.storeConfig() #will save config file in case one config key raised an exception
 
     def _setAndStoreDefaultConf(self):
         '''
@@ -69,6 +77,7 @@ class ConfigurationManager:
         else:
             self.dataPath = DEFAULT_DATA_PATH_WINDOWS
 
+        self.loadAtStartPathFilename = DEFAULT_LOAD_AT_START_PATH_FILENAME
         self._updated = True
 
         self.storeConfig()
@@ -110,6 +119,15 @@ class ConfigurationManager:
         self.__dataPath = dataPathStr
         self._updated = True
 
+    @property
+    def loadAtStartPathFilename(self):
+        return self.__loadAtStartPathFilename
+
+    @loadAtStartPathFilename.setter
+    def loadAtStartPathFilename(self, loadAtStartPathFilenameStr):
+        self.__loadAtStartPathFilename = loadAtStartPathFilenameStr
+        self._updated = True
+
     def storeConfig(self):
         if not self._updated:
             return
@@ -118,6 +136,7 @@ class ConfigurationManager:
         self.config[CONFIG_KEY_DATE_TIME_FORMAT] = self.dateTimeFormat
         self.config[CONFIG_KEY_DATE_ONLY_FORMAT] = self.dateOnlyFormat
         self.config[CONFIG_KEY_DATA_PATH] = self.dataPath
+        self.config[CONFIG_KEY_LOAD_AT_START_PATH_FILENAME] = self.loadAtStartPathFilename
 
         self.config.write()
         
@@ -135,3 +154,4 @@ if __name__ == '__main__':
     print(cm.dateTimeFormat)
     print(cm.dateOnlyFormat)
     print(cm.dataPath)
+    print("loadAtStartPathFilename: '" + cm.loadAtStartPathFilename + "'")

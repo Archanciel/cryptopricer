@@ -27,6 +27,8 @@ class TestConfigurationManager(unittest.TestCase):
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
+        self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
+
 
     def testConfigurationManagerInstanciationNoConfigFile(self):
         os.remove(self.filePath)
@@ -40,6 +42,8 @@ class TestConfigurationManager(unittest.TestCase):
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
+        self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
+
 
     def testConfigurationManagerInstanciationEmptyConfigFile(self):
         open(self.filePath, 'w').close()
@@ -52,6 +56,8 @@ class TestConfigurationManager(unittest.TestCase):
             self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
+
+        self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
 
 
     def testConfigurationManagerInstanciationOneMissingKey(self):
@@ -72,6 +78,8 @@ class TestConfigurationManager(unittest.TestCase):
             self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
+
+        self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
 
 
 if __name__ == '__main__':
