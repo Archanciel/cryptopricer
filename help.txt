@@ -1,0 +1,17 @@
+CryptoPricer help
+Requesting RT and historical cryptocurrency prices
+Full request
+<crypto> <fiat> <date time> <exchange>
+<date time>:	0 for RT
+				21/12 or 21/12/17
+				21/12 8:34
+				Warning: specifying time only makes sense for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned.
+
+Ex: 	btc usd 0 bittrex --> BTC/USD on BitTrex: 16/12/17 22:10R 19120
+		eth btc 16/12 13:45 bittfinex --> ETH/BTC on Bittfinex: 16/12/17M 0.03893
+		eth btc 21/1 13:45 bittfinex --> ETH/BTC on Bittfinex: 21/01/17C 0.01185
+			R = RT
+			M = Minute price (precision at the minute)
+			C = Close price
+
+Partial request
