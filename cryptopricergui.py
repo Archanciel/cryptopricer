@@ -31,17 +31,22 @@ class SaveDialog(FloatLayout):
     
 
     def toggleLoadAtStart(self, active):
-        self.owner.toggleLoadAtStart(active)
-
+        if active:
+            self.owner.updateStatusBar('Load at start activated !')
+        else:
+            self.owner.updateStatusBar('')
+    
                 
     def saveFileSelected(self, filePathName):
         self.filePathName.text = filePathName
         
         if self.owner.isLoadAtStart(filePathName):
             self.loadAtStartChkb.active = True
+            self.owner.updateStatusBar('Load at start active !')
         else:
             self.loadAtStartChkb.active = False        
-            
+            self.owner.updateStatusBar('')
+           
 
 class CommandListButton(ListItemButton):
     pass
@@ -72,6 +77,7 @@ class CryptoPricerGUI(BoxLayout):
     commandInput = ObjectProperty()
     commandList = ObjectProperty()
     resultOutput = ObjectProperty()
+    statusBar = ObjectProperty()
     showCommandList = False
     controller = Controller(GuiOutputFormater())
     
@@ -278,16 +284,10 @@ class CryptoPricerGUI(BoxLayout):
         popup.open()
 
 
-    def toggleLoadAtStart(self, active):
-        if active:
-            self.displayToggleLoadAtStart()
-        
-        
-    def displayToggleLoadAtStart(self):
-        popup = Popup(title='CryptoPricer', content=Label(text='Load at start activated !'), size_hint=(None, None), size=(600, 280))
-        popup.open()
-        
-        
+    def updateStatusBar(self, messageStr):
+        self.statusBar.text = messageStr
+
+                        
     # --- file chooser code ---
     def getStartPath(self):
         return "D:\\Users\\Jean-Pierre"
@@ -298,6 +298,7 @@ class CryptoPricerGUI(BoxLayout):
         Act as a call back function for the cancel button of the load and save dialog
         :return: nothing
         '''
+        self.updateStatusBar('')
         self.popup.dismiss()
 
 
@@ -373,16 +374,6 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOncommandInput()
 
 # --- end file chooser code ---  
-
-
-    def on_pause(self):
-        # Here you can save data if needed
-        return True
-
-
-    def on_resume(self):
-        # Here you can check if any data needs replacing (usually nothing)
-        pass
                              
 
     def isLoadAtStart(self, filePathName):
@@ -392,7 +383,20 @@ class CryptoPricerGUI(BoxLayout):
 class CryptoPricerGUIApp(App):
     def build(self):
         return CryptoPricerGUI()
- 
+
+
+    # code moved from CryptoPricerGUI to CryptoPricerGUIApp ! Now, works !
+
+        def on_pause(self):
+            # Here you can save data if needed
+            return True
+
+        def on_resume(self):
+            # Here you can check if any data needs replacing (usually nothing)
+            pass
+
+    # end of code moved from CryptoPricerGUI to CryptoPricerGUIApp ! Now, works !
+
 
 if __name__== '__main__':
     dbApp = CryptoPricerGUIApp()

@@ -19,7 +19,9 @@ CryptoPricerGUI:
     deleteButton: deleteBtn
     replaceButton: replaceBtn
     replayAllButton: replayAllBtn
+    statusBar: status_bar
     #outputResultScrollView: scrlv
+    
     padding: 10
     spacing: 10
     canvas.before:
@@ -114,6 +116,23 @@ CryptoPricerGUI:
             readonly: True
             background_color: 0,0,0,0
             foreground_color: 1,1,1,1
+
+    BoxLayout:
+        size_hint_y: None
+        height: "28dp"
+        canvas.before:
+            Color:
+                rgb: [0,0,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        TextInput:
+            id: status_bar
+            background_color: 0,0,0,0
+            foreground_color: 1,1,1,1
+            readonly: True
+            multiline: False
 
 <CustomDropDown>
     saveButton: save_btn
