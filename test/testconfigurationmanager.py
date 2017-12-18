@@ -11,9 +11,9 @@ from configurationmanager import ConfigurationManager
 class TestConfigurationManager(unittest.TestCase):
     def setUp(self):
         if os.name == 'posix':
-            self.filePath = '/sdcard/cryptopricer.ini'
+            self.filePath = '/sdcard/cryptopricer_test.ini'
         else:
-            self.filePath = 'c:\\temp\\cryptopricer.ini'
+            self.filePath = 'c:\\temp\\cryptopricer_test.ini'
 
 
     def testConfigurationManagerInstanciation(self):

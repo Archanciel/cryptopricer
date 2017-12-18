@@ -26,11 +26,21 @@ class SaveDialog(FloatLayout):
     cancel = ObjectProperty(None)
     fileChooser = ObjectProperty(None)
     loadAtStartChkb = ObjectProperty(None)
+    filePathName = ObjectProperty(None)
     owner = None
     
 
     def toggleLoadAtStart(self, active):
         self.owner.toggleLoadAtStart(active)
+
+                
+    def saveFileSelected(self, filePathName):
+        self.filePathName.text = filePathName
+        
+        if self.owner.isLoadAtStart(filePathName):
+            self.loadAtStartChkb.active = True
+        else:
+            self.loadAtStartChkb.active = False        
             
 
 class CommandListButton(ListItemButton):
@@ -62,7 +72,6 @@ class CryptoPricerGUI(BoxLayout):
     commandInput = ObjectProperty()
     commandList = ObjectProperty()
     resultOutput = ObjectProperty()
-    #outputResultScrollView = ObjectProperty()
     showCommandList = False
     controller = Controller(GuiOutputFormater())
     
@@ -77,6 +86,13 @@ class CryptoPricerGUI(BoxLayout):
 
         self.configMgr = ConfigurationManager(configPath)
         self.dataPath = self.configMgr.dataPath
+
+        #loading the load at start history file if defined
+        pathFilename = self.configMgr.loadAtStartPathFilename
+        
+        if pathFilename != '':
+            self.loadPathFilename(pathFilename)
+
 
     def toggleCommandList(self):
         '''
@@ -305,20 +321,24 @@ class CryptoPricerGUI(BoxLayout):
 
 
     def load(self, path, filename):
-        #emptying the list
-        self.commandList.adapter.data[:] = []
-
         if not filename:
             #no file selected. Load dialog remains open ..
             return
-            
-        with open(os.path.join(path, filename[0])) as stream:
+        
+        pathFilename = os.path.join(path, filename[0])
+        self.loadPathFilename(pathFilename)
+        self.dismissPopup()
+
+
+    def loadPathFilename(self, pathFilename):
+        #emptying the list
+        self.commandList.adapter.data[:] = []
+
+        with open(pathFilename) as stream:
             lines = stream.readlines()
 
         lines = list(map(lambda line : line.strip('\n'), lines))
         self.commandList.adapter.data.extend(lines)
-
-        self.dismissPopup()
 
         # Reset the ListView
         self.resetListViewScrollToEnd(self.commandList)
@@ -339,11 +359,16 @@ class CryptoPricerGUI(BoxLayout):
                 line = line + '\n'
                 stream.write(line)
 
+        #saving in config file if the saved file
+        #is to be loaded at application start
         if isLoadAtStart:
-            self.configMgr.loadAtStartPathFileName = pathFileName
+            self.configMgr.loadAtStartPathFilename = pathFileName
         else:
-            self.configMgr.loadAtStartPathFileName = ''
-           
+            if self.configMgr.loadAtStartPathFilename == pathFileName:
+                self.configMgr.loadAtStartPathFilename = ''
+            
+        self.configMgr.storeConfig()
+        
         self.dismissPopup()
         self.refocusOncommandInput()
 
@@ -359,7 +384,11 @@ class CryptoPricerGUI(BoxLayout):
         # Here you can check if any data needs replacing (usually nothing)
         pass
                              
+
+    def isLoadAtStart(self, filePathName):
+        return self.configMgr.loadAtStartPathFilename == filePathName
                                            
+
 class CryptoPricerGUIApp(App):
     def build(self):
         return CryptoPricerGUI()
