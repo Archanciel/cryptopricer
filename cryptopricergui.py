@@ -387,13 +387,15 @@ class CryptoPricerGUIApp(App):
 
     # code moved from CryptoPricerGUI to CryptoPricerGUIApp ! Now, works !
 
-        def on_pause(self):
-            # Here you can save data if needed
-            return True
+    def on_pause(self):
+        # Here you can save data if needed
+        return True
 
-        def on_resume(self):
-            # Here you can check if any data needs replacing (usually nothing)
-            pass
+    def on_resume(self):
+        # Here you can check if any data needs replacing (usually nothing)
+       
+        
+          pass
 
     # end of code moved from CryptoPricerGUI to CryptoPricerGUIApp ! Now, works !
 
@@ -401,4 +403,5 @@ class CryptoPricerGUIApp(App):
 if __name__== '__main__':
     dbApp = CryptoPricerGUIApp()
  
-    dbApp.run()
+    dbApp.run() 
+     
