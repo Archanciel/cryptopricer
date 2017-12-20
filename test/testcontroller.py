@@ -35,7 +35,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -62,7 +62,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -89,7 +89,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -118,7 +118,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -150,7 +150,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -178,7 +178,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -219,7 +219,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -260,7 +260,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -300,7 +300,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -356,7 +356,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -412,7 +412,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -469,7 +469,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -525,7 +525,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -591,7 +591,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -646,7 +646,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -703,7 +703,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -759,7 +759,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -787,7 +787,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -815,7 +815,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -842,7 +842,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -869,7 +869,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -896,7 +896,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -923,7 +923,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -950,7 +950,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -977,7 +977,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -1012,7 +1012,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -1096,7 +1096,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -1125,7 +1125,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -1155,7 +1155,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -1223,7 +1223,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
@@ -1320,7 +1320,7 @@ class TestController(unittest.TestCase):
         try:
             with open(FILE_PATH, 'w') as outFile:
                 sys.stdout = outFile
-                self.controller.run()
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above #will eat up what has been filled in stdin using StringIO above
         except:
             pass
 
