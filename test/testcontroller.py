@@ -1361,7 +1361,7 @@ class TestController(unittest.TestCase):
                 'BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
                                                                  nowMinuteStr),
                 self.removePriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
-            self.assertEqual('ERROR - invalid command -t03.45', contentList[3][:-1])
+            self.assertEqual('ERROR - invalid command -t03.45: in -t03.45, 03.45 must respect 99:99 format !', contentList[3][:-1])
 
 
 if __name__ == '__main__':

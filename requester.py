@@ -322,7 +322,12 @@ class Requester:
             hourMinuteList = hourMinute.split(':')
             if len(hourMinuteList) == 1:
                 #supplied time is invalid: does not respect expected format of 0:10 or 12:01 etc
-                return None # will cause an error.
+                self.commandError.rawParmData = inputStr
+                # invalid time partial command format
+                invalidPartialCommand, invalidValue = self._wholeParmAndInvalidValue('-t', inputStr)
+                self.commandError.parsedParmData = [self.commandError.PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG.format(invalidPartialCommand, invalidValue)]
+
+                return self.commandError
             else:
                 minute = hourMinuteList[1]
                 hour = hourMinuteList[0] #in both cases, first item in hourMinuteList is hour
@@ -391,6 +396,14 @@ class Requester:
         self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
         return self.commandPrice
+
+
+    def _wholeParmAndInvalidValue(self, parmSymbol, inputStr):
+        regexpStr = r"({}([\d\w,\./]+))(?: .+|)".format(parmSymbol)
+        match = re.search(regexpStr, inputStr)
+
+        if match:
+            return match.group(1), match.group(2)
 
 
     def _tryMatchFullPriceCommand(self, inputStr):

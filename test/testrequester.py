@@ -1422,7 +1422,10 @@ class TestRequester(unittest.TestCase):
 
         inputStr = "-ceth -fgbp -d11/8 -t5"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-        self.assertEqual(commandPrice, None)
+        self.assertIsInstance(commandPrice, CommandError)
+        self.assertEqual(commandPrice, self.commandError)
+        resultData = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command -ceth -fgbp -d11/8 -t5: in -t5, 5 must respect 99:99 format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceWithInitYear(self):
@@ -1839,7 +1842,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(commandPrice, CommandError)
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -fusd -t0", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid command -fusd -t0: in -t0, 0 must respect 99:99 format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
 
