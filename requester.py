@@ -151,7 +151,7 @@ class Requester:
         :return: Command concrete instance
         '''
         upperInputStr = inputStr.upper()
-        match = re.match(Requester.USER_COMMAND_GRP_PATTERN, upperInputStr)
+        match = self._tryMatchCommandSymbol(upperInputStr)
 
         if match == None:
             #here, either full or partial historical/RT price request which has no command symbol
@@ -190,6 +190,16 @@ class Requester:
             self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
 
             return self.commandError
+
+
+    def _tryMatchCommandSymbol(self, upperInputStr):
+        '''
+        Try matching a command symbol like OO|XO|LO|HO|RO|VA in the command entered by the user.
+        If the user entered a price command, no command symbol is used !
+        :param upperInputStr:
+        :return: None or a Match object
+        '''
+        return re.match(Requester.USER_COMMAND_GRP_PATTERN, upperInputStr)
 
 
     def _parseGroups(self, pattern, inputStr):
@@ -250,10 +260,10 @@ class Requester:
 
 
     def _parseAndFillCommandPrice(self, inputStr):
-        groupList = self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        groupList = self._tryMatchFullPriceCommand(inputStr)
 
         if groupList == (): #full command pattern not matched --> try match partial command pattern
-            groupList = self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
+            groupList = self._tryMatchPartialPriceCommand(inputStr)
             if groupList != (): #here, parms are associated to parrm tag (i.e -c or -d). Means they have been
                                 #entered in any order and are all optional
                 keys = self.inputParmParmDataDicKeyDic.keys()
@@ -381,6 +391,24 @@ class Requester:
         self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
         return self.commandPrice
+
+
+    def _tryMatchFullPriceCommand(self, inputStr):
+        '''
+        Try matching a full price command like btc usd 0 bittrex
+        :param inputStr:
+        :return: None or a Match object
+        '''
+        return self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+
+
+    def _tryMatchPartialPriceCommand(self, inputStr):
+        '''
+        Try matching a partial price command like -d21/12 or -eccex
+        :param inputStr:
+        :return: None or a Match object
+        '''
+        return self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
 
     def _wipeOutDateTimeInfoFromCommandPrice(self):
