@@ -1428,6 +1428,31 @@ class TestRequester(unittest.TestCase):
         self.assertEqual("ERROR - invalid command -ceth -fgbp -d11/8 -t5: in -t5, 5 must respect 99:99 format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
+    def test_parseAndFillPartialCommandPriceNoInitYearNoMinuteInvalidTime(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.FIAT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = None
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+
+        inputStr = "-ceth -ebittrex -t6.45 -d21/12"
+        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertIsInstance(commandPrice, CommandError)
+        self.assertEqual(commandPrice, self.commandError)
+        resultData = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command -ceth -ebittrex -t6.45 -d21/12: in -t6.45, 6.45 must respect 99:99 format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+
     def test_parseAndFillPartialCommandPriceWithInitYear(self):
         commandPrice = self.requester.commandPrice
 

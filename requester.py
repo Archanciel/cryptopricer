@@ -399,6 +399,14 @@ class Requester:
 
 
     def _wholeParmAndInvalidValue(self, parmSymbol, inputStr):
+        '''
+        Help improve error msg in case of invalid partial command parm value. For example,
+        if inputStr == -ceth -ebittrex -t6.45 -d21/12 and parmSymbol == -t, returns
+        -t6.45 and 6.45 so that error msg for this invalid command can be meaningfull
+        :param parmSymbol:
+        :param inputStr:
+        :return:
+        '''
         regexpStr = r"({}([\d\w,\./]+))(?: .+|)".format(parmSymbol)
         match = re.search(regexpStr, inputStr)
 
