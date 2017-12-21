@@ -70,9 +70,9 @@ class Requester:
     PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)"
 
     '''
-    Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 followed
-    by several OPTIONAL groups sticking to the same format -<command letter> followed by 1 or more \w or \d or / or :
-    characters.
+    Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 or -ebittrex or -v0.00432btc 
+    followed by several OPTIONAL groups sticking to the same format -<command letter> followed by 1 or 
+    more \w or \d or / . or : characters.
 
     Unlike with pattern 'full', the groups can all occur in any order, reason for which all groups have the same
     structure
@@ -105,9 +105,9 @@ class Requester:
                         0:00, accepted. 
                         0:0, rejected. 
                         
-    Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken
+    Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken -v0.0044543eth
     '''
-    PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:]+))(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?(?: (-\w)([\w\d/:]+))?"
+    PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:\.]+))(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?"
 
     def __init__(self):
         self.commandQuit = None
