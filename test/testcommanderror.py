@@ -10,6 +10,7 @@ from resultdata import ResultData
 
 class TestCommandError(unittest.TestCase):
 
+
     def testCommandErrorInstanciation(self):
         commandError = CommandError(None)
         commandError.rawParmData = "-c"
