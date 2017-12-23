@@ -15,7 +15,10 @@ class ResultData:
     PRICE_TYPE_HISTO_MINUTE = 'HISTO_MINUTE'
     PRICE_TYPE_RT = 'REAL_TIME'
 
+    PRICE_VALUE_CRYPTO = 'PRICE_VAL_CRYPTO' #store the crypto price returned for -v command
+    PRICE_VALUE_FIAT = 'PRICE_VAL_FIAT'     #store the fiat price returned for -v command
 
+    
     def __init__(self):
         self._resultDataDic = {}
         self._resultDataDic[self.RESULT_KEY_CRYPTO] = None

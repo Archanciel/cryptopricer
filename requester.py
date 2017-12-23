@@ -109,6 +109,14 @@ class Requester:
     '''
     PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:\.]+))(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?"
 
+    '''
+    The next pattern splits the parameter data appended to the -v partial command.
+    
+    Ex: -v0.004325btc is splitted into 0.00432, btc, None
+        -v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
+    '''
+    PRICE_VALUE_PARM_DATA_PATTERN = r"([\d\.]+)(\w+)|(0)"
+
     def __init__(self):
         self.commandQuit = None
         self.commandError = None
@@ -124,7 +132,8 @@ class Requester:
                                            '-F': CommandPrice.FIAT,
                                            '-D': CommandPrice.DAY_MONTH_YEAR,
                                            '-T': CommandPrice.HOUR_MINUTE,
-                                           '-E': CommandPrice.EXCHANGE}
+                                           '-E': CommandPrice.EXCHANGE,
+                                           '-V': CommandPrice.PRICE_VALUE_DATA}
 
 
     def request(self):
@@ -297,7 +306,7 @@ class Requester:
                             hourMinute = ':'.join([self.commandPrice.parsedParmData[CommandPrice.HOUR], self.commandPrice.parsedParmData[CommandPrice.MINUTE]])
                             dayMonthYear = '/'.join([self.commandPrice.parsedParmData[CommandPrice.DAY], self.commandPrice.parsedParmData[CommandPrice.MONTH], self.commandPrice.parsedParmData[CommandPrice.YEAR]])
                         else:
-                            return None # will cause an error. This occurs in a special situation when the xprevious
+                            return None # will cause an error. This occurs in a special situation when the previous request
                                         # was in error, which explains why the date/time info from previous request is
                                         # incoherent. Such a case is tested by TestController.
                                         # testControllerHistoDayPriceIncompleteCommandScenario
@@ -335,9 +344,7 @@ class Requester:
             hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
             minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
 
-        self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
-        self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
-        self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        self._fillHourMinuteInfo(hour, minute)
 
         if dayMonthYear != None:
             if dayMonthYear == '0':
@@ -390,13 +397,74 @@ class Requester:
                 month = None
                 year = None
 
+        self._fillDayMonthYearInfo(day, month, year)
+
+        priceValueData = self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_DATA]
+
+        if priceValueData != None:
+            return self._fillPriceValueInfo(priceValueData, inputStr)
+        else:
+            #no partial command -v specified here !
+            return self.commandPrice
+
+
+    def _fillHourMinuteInfo(self, hour, minute):
+        '''
+        Fill parsed parm data hour and minute fields and empty combined hour/minute field
+        :param hour:
+        :param minute:
+        :return:
+        '''
+        self.commandPrice.parsedParmData[CommandPrice.HOUR] = hour
+        self.commandPrice.parsedParmData[CommandPrice.MINUTE] = minute
+        self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
+
+
+    def _fillDayMonthYearInfo(self, day, month, year):
+        '''
+        Fill parsed parm data day, month and year fields and empty combined daa/month/year field
+        :param day:
+        :param month:
+        :param year:
+        :return:
+        '''
         self.commandPrice.parsedParmData[CommandPrice.DAY] = day
         self.commandPrice.parsedParmData[CommandPrice.MONTH] = month
         self.commandPrice.parsedParmData[CommandPrice.YEAR] = year
         self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
-        return self.commandPrice
 
+    def _fillPriceValueInfo(self, priceValueData, inputStr):
+        '''
+        Fill parsed parm data price amount and price symbol fields and empty combined price data field
+        :param priceValueData: the data following thce -v partial command specification
+        :param inputStr: required in case a CommandError must be returned
+        :return: self.commandPrice or self.commandError in case -v invalid
+        '''
+
+        match = re.match(self.PRICE_VALUE_PARM_DATA_PATTERN, priceValueData)
+
+        if match:
+            priceValueAmount = match.group(1)
+            priceValueSymbol = match.group(2)
+            priceValueErase =  match.group(3)
+            if priceValueErase == None:
+                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = priceValueAmount
+                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = priceValueSymbol
+            elif priceValueErase == '0':
+                #here, -v0 was entered to stop price value calculation
+                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = None
+                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = None
+
+            self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_DATA] = None
+
+            return self.commandPrice
+        else:
+            #here, invalid -v command
+            self.commandError.rawParmData = inputStr
+            self.commandError.parsedParmData = [self.commandError.PARTIAL_PRICE_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + priceValueData, priceValueData)]
+
+            return self.commandError
 
     def _wholeParmAndInvalidValue(self, parmSymbol, inputStr):
         '''

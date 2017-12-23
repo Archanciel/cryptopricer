@@ -13,10 +13,16 @@ class CommandPrice(AbstractCommand):
     MINUTE = "MINUTE"       #store MM user input
     HOUR_MINUTE = "HM"      #temporary store HH:MM user input
     DAY_MONTH_YEAR = "DMY"  #temporary store DD/MM/YY user input
+
     PRICE_TYPE = 'PRICE_TYPE'
 
     PRICE_TYPE_HISTO = 'HISTO'
     PRICE_TYPE_RT = 'REAL_TIME'
+    
+    PRICE_VALUE_DATA = 'PRICE_VAL_DATA'     #temporary store the data specified with -v. Ex: -v0.0044254btc
+    PRICE_VALUE_AMOUNT = 'PRICE_VAL_AMOUNT' #store the price target specified with -v. Ex: 0.0044354
+    PRICE_VALUE_SYMBOL = 'PRICE_VAL_SYMBOL' #store the price symbol specified with -v. Ex: BTC
+
 
     def __init__(self, receiver=None, configManager=None, rawParmData='', parsedParmData={}):
         super().__init__(receiver, 'CommandPrice', rawParmData, parsedParmData)
@@ -48,6 +54,9 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.DAY_MONTH_YEAR] = None
         self.parsedParmData[self.HOUR_MINUTE] = None
         self.parsedParmData[self.PRICE_TYPE] = None
+        self.parsedParmData[self.PRICE_VALUE_DATA] = None
+        self.parsedParmData[self.PRICE_VALUE_AMOUNT] = None
+        self.parsedParmData[self.PRICE_VALUE_SYMBOL] = None
 
 
     def execute(self):
