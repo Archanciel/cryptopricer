@@ -158,7 +158,7 @@ class Processor:
             resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, convertedValue)
             resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, priceValueAmount)
         else:
-            resultData.setValue(ResultData.RESULT_KEY_WARNING_MSG, "WARNING - price value symbol {} differs from both crypto ({}) and fiat ({}). -v parameter ignored !".format(priceValueSymbol, crypto, fiat))
+            resultData.setValue(ResultData.RESULT_KEY_WARNING_MSG, "WARNING - price value symbol {} differs from both crypto ({}) and fiat ({}) of last request. -v parameter ignored !".format(priceValueSymbol, crypto, fiat))
             
         return resultData
 

@@ -19,13 +19,13 @@ class TestGuiOutputFormater(unittest.TestCase):
     def testPrintCryptoPriceHistorical(self):
         crypto = 'BTC'
         fiat = 'USD'
-        exchange = 'bittrex'
+        exchange = 'BitTrex'
 
         resultData = ResultData()
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
-        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
@@ -38,6 +38,108 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('BTC/USD on BitTrex: 12/09/17 00:00C 4122\n', capturedStdout.getvalue())
+
+
+    def testPrintCryptoPriceHistoricalPriceValue(self):
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'BitTrex'
+
+        resultData = ResultData()
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, '0.01698205')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, '70')
+
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
+
+        self.printer.printDataToConsole(resultData)
+        sys.stdout = stdout
+        self.assertEqual('0.01698205 BTC/70 USD on BitTrex: 12/09/17 00:00C 4122\n', capturedStdout.getvalue())
+
+
+    def testGetFullCommandStringYearDefinedDupl(self):
+        crypto = 'ETH'
+        fiat = 'USD'
+
+        resultData = ResultData()
+
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 465.52)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '5/12/17 09:30')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
+        resultData.setValue(resultData.RESULT_KEY_COMMAND,
+                            {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
+                             'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
+
+        fullCommandStr = self.printer.getFullCommandString(resultData)
+
+        self.assertEqual(fullCommandStr, "eth usd 5/12/17 9:30 bittrex")
+
+
+    def testPrintCryptoPriceHistoricalPriceValueDupl(self):
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'BitTrex'
+
+        resultData = ResultData()
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, '0.01698205')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, '70')
+
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
+
+        self.printer.printDataToConsole(resultData)
+        sys.stdout = stdout
+        self.assertEqual('0.01698205 BTC/70 USD on BitTrex: 12/09/17 00:00C 4122\n', capturedStdout.getvalue())
+
+
+    def testPrintCryptoPriceHistoricalPriceValueWarning(self):
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'BitTrex'
+
+        resultData = ResultData()
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, None)
+        resultData.setValue(resultData.RESULT_KEY_WARNING_MSG, "WARNING - price value symbol ETH differs from both crypto (BTC) and fiat (USD). -v parameter ignored !")
+
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
+
+        self.printer.printDataToConsole(resultData)
+        sys.stdout = stdout
+        self.assertEqual('BTC/USD on BitTrex: 12/09/17 00:00C 4122\nWARNING - price value symbol ETH differs from both crypto (BTC) and fiat (USD). -v parameter ignored !\n', capturedStdout.getvalue())
 
 
     def testGetCryptoPriceHistoricalRecent(self):

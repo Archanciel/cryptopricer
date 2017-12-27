@@ -25,9 +25,15 @@ class GuiOutputFormater(AbstractOutputFormater):
         
     def getFullCommandString(self, resultData):
         '''
-        Returns empty string if the command generated an error msg.
+        Recreate the full command string corresponding to a full or partial price request entered by the user.
+        The full command string will be stored in the command history list so it can be replayed or save to file.
+        An empty string is returned if the command generated an error or a warning msg (empty string will not be
+        added to history !
+        :param resultData: result of the last full or partial request
+        :return: full command string corresponding to a full or partial price request entered by the user.
+                 or empty string if the command generated an error or a warning msg
         '''
-        if resultData.isError():
+        if resultData.isError() or resultData.isWarning():
             return ''
             
         commandDic = resultData.getValue(resultData.RESULT_KEY_COMMAND)

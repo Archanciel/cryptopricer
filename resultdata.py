@@ -56,6 +56,13 @@ class ResultData:
         return self._resultDataDic[self.RESULT_KEY_ERROR_MSG] != None
 
 
+    def isWarning(self):
+        '''
+        Return True if the ResultData contains a warning msg
+        '''
+        return self._resultDataDic[self.RESULT_KEY_WARNING_MSG] != None
+
+
     def __str__(self):
         strRepr = ''
 

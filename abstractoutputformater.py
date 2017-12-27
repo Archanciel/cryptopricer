@@ -32,6 +32,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 
     def getPrintableData(self, resultData):
         errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
+
         if errorMsg == None:
             price = resultData.getValue(resultData.RESULT_KEY_PRICE)
             formattedPriceStr = self.formatFloatToStr(price)
@@ -46,16 +47,36 @@ class AbstractOutputFormater(metaclass=ABCMeta):
             else:
                 dateTimeStr += 'R'  # adding RT symbol
 
-            outputStr = '{}/{} on {}: {} {}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
-                                                    resultData.getValue(resultData.RESULT_KEY_FIAT),
-                                                    resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
-                                                    dateTimeStr,
-                                                    formattedPriceStr)
+            cryptoFiatPart = self._formatCryptoFiatPart(resultData)
+            outputStr = cryptoFiatPart + ' on {}: {} {}'.format(resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
+                                                                dateTimeStr,
+                                                                formattedPriceStr)
         else:
             outputStr = '{}'.format(errorMsg)
+
+        warningMsg = resultData.getValue(resultData.RESULT_KEY_WARNING_MSG)
+        
+        if warningMsg != None:
+            outputStr = outputStr + '\n' + warningMsg
+            
         return outputStr
 
 
+    def _formatCryptoFiatPart(self, resultData):
+        if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO) == None:
+            return '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 
+                                  resultData.getValue(resultData.RESULT_KEY_FIAT))
+        else:
+            formattedPriceCryptoStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO)))
+            formattedPriceFiatStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT)))
+            
+            return '{} {}/{} {}'.format(formattedPriceCryptoStr, 
+                                        resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+                                        formattedPriceFiatStr, 
+                                        resultData.getValue(resultData.RESULT_KEY_FIAT))
+                                                       
+        
+        
     def formatFloatToStr(self, floatNb):
         try:
             floatNbFormatted = self.FLOAT_FORMAT % floatNb
