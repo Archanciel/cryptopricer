@@ -9,14 +9,14 @@ class ResultData:
     RESULT_KEY_PRICE = 'PRICE'
     RESULT_KEY_PRICE_TYPE = 'PRICE_TYPE'
     RESULT_KEY_ERROR_MSG = 'ERROR_MSG'
+    RESULT_KEY_WARNING_MSG = 'WARNING_MSG'
     RESULT_KEY_COMMAND = 'COMMAND' #full command which generated the result
+    RESULT_KEY_PRICE_VALUE_CRYPTO = 'PRICE_VAL_CRYPTO' #store the crypto price returned for -v command
+    RESULT_KEY_PRICE_VALUE_FIAT = 'PRICE_VAL_FIAT'     #store the fiat price returned for -v command
 
     PRICE_TYPE_HISTO_DAY = 'HISTO_DAY'
     PRICE_TYPE_HISTO_MINUTE = 'HISTO_MINUTE'
     PRICE_TYPE_RT = 'REAL_TIME'
-
-    PRICE_VALUE_CRYPTO = 'PRICE_VAL_CRYPTO' #store the crypto price returned for -v command
-    PRICE_VALUE_FIAT = 'PRICE_VAL_FIAT'     #store the fiat price returned for -v command
 
     
     def __init__(self):
@@ -29,8 +29,13 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_PRICE] = None
         self._resultDataDic[self.RESULT_KEY_PRICE_TYPE] = None
         self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None
+        self._resultDataDic[self.RESULT_KEY_WARNING_MSG] = None
         self._resultDataDic[self.RESULT_KEY_COMMAND] = None
+        self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None       
+        self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_CRYPTO] = None
+        self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_FIAT] = None
 
+ 
 
     def setValue(self, key, value):
         self._resultDataDic[key] = value
@@ -43,11 +48,13 @@ class ResultData:
     def isEmpty(self, key):
         return self._resultDataDic[key] == None
 
+
     def isError(self):
         '''
         Return True if the ResultData contains an error msg
         '''
         return self._resultDataDic[self.RESULT_KEY_ERROR_MSG] != None
+
 
     def __str__(self):
         strRepr = ''

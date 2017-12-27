@@ -10,6 +10,7 @@ from configurationmanager import ConfigurationManager
 from pricerequester import PriceRequester
 from crypcompexchanges import CrypCompExchanges
 from datetimeutil import DateTimeUtil
+from guioutputformater import GuiOutputFormater
 
 class TestProcessor(unittest.TestCase):
     def setUp(self):
@@ -50,6 +51,147 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
+
+
+    def testGetCryptoPriceHistoricalPriceValueCryptoToFiat(self):    
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'bittrex'
+        day = 12
+        month = 9
+        year = 2017
+        hour = 10
+        minute = 5
+        priceValueSymbol = 'BTC' # -v0.001BTC
+        priceValueAmount = 0.001
+
+        resultData = self.processor.getCryptoPrice(crypto,
+                                               fiat,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
+                                               minute,
+                                               priceValueSymbol,
+                                               priceValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO), priceValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), 4.122)
+
+
+    def testGetCryptoPriceHistoricalPriceValueFromBadCryptoToFiat(self):    
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'bittrex'
+        day = 12
+        month = 9
+        year = 2017
+        hour = 10
+        minute = 5
+        priceValueSymbol = 'ETH' #-v0.001ETH
+        priceValueAmount = 0.001
+
+        resultData = self.processor.getCryptoPrice(crypto,
+                                               fiat,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
+                                               minute,
+                                               priceValueSymbol,
+                                               priceValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_WARNING_MSG), "WARNING - price value symbol ETH differs from both crypto (BTC) and fiat (USD). -v parameter ignored !")
+
+
+    def testGetCryptoPriceHistoricalPriceValueFiatToCrypto(self):    
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'bittrex'
+        day = 12
+        month = 9
+        year = 2017
+        hour = 10
+        minute = 5
+        priceValueSymbol = 'USD' #-v70USD
+        priceValueAmount = 70
+
+        resultData = self.processor.getCryptoPrice(crypto,
+                                               fiat,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
+                                               minute,
+                                               priceValueSymbol,
+                                               priceValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
+
+        outputFormater = GuiOutputFormater()
+        
+        self.assertEqual(outputFormater.formatFloatToStr(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO)), outputFormater.formatFloatToStr(0.01698205))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), priceValueAmount)
+
+
+    def testGetCryptoPriceHistoricalPriceValueFromBadFiatToCrypto(self):    
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'bittrex'
+        day = 12
+        month = 9
+        year = 2017
+        hour = 10
+        minute = 5
+        priceValueSymbol = 'EUR' #-v70EUR
+        priceValueAmount = 70
+
+        resultData = self.processor.getCryptoPrice(crypto,
+                                               fiat,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
+                                               minute,
+                                               priceValueSymbol,
+                                               priceValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)      
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_WARNING_MSG), "WARNING - price value symbol EUR differs from both crypto (BTC) and fiat (USD). -v parameter ignored !")
 
 
     def testGetCryptoPriceHistoricalRecent(self):    

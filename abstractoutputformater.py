@@ -4,6 +4,8 @@ from abc import abstractmethod
 class AbstractOutputFormater(metaclass=ABCMeta):
     '''
     '''
+    FLOAT_FORMAT = '%.8f'
+    
 
     def __init__(self, receiver=None, name='', rawParmData='', parsedParmData={}):
         pass

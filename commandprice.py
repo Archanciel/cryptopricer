@@ -3,6 +3,11 @@ from datetimeutil import DateTimeUtil
 from resultdata import ResultData
 
 class CommandPrice(AbstractCommand):
+    '''
+    This command handles RT and historidal price requests. In respect of the Command pattern,
+    it calls the getCryptoPrice method on its receiver, a Processor instance linked to the Command
+    by the Controller
+    '''
     CRYPTO = "CRYPTO"
     FIAT = "FIAT"
     EXCHANGE = "EXCHANGE"
@@ -121,13 +126,24 @@ class CommandPrice(AbstractCommand):
         #price. The initial dictionary wiLl be added to the
         #returned resultData so the client can have access
         #to the full command request, even if only a partial
-        #request like -d or -c was entered.
+        #request like -d or -c was entered. This is necessary
+        #bcecause if the client is a GUI, it stores the list
+        #of requests in order to be able to replay them !
         initialParsedParmDataDic = self.parsedParmData.copy()
         
         if day + month + year == 0:
             # asking for RT price here. Current date is stored in parsed parm data for possible
             # use in next request
             self._storeDateTimeDataForNextPartialRequest(localNow)
+
+        priceValueSymbol = self.parsedParmData[self.PRICE_VALUE_SYMBOL]
+        priceValueAmount = self.parsedParmData[self.PRICE_VALUE_AMOUNT]
+
+        if priceValueSymbol:
+            priceValueSymbol = priceValueSymbol.upper()
+
+        if priceValueAmount:
+            priceValueAmount = float(priceValueAmount)
 
         result = self.receiver.getCryptoPrice(cryptoUpper,
                                               fiatUpper,
@@ -136,7 +152,9 @@ class CommandPrice(AbstractCommand):
                                               month,
                                               year,
                                               hour,
-                                              minute)
+                                              minute,
+                                              priceValueSymbol,
+                                              priceValueAmount)
         	                            
         result.setValue(ResultData.RESULT_KEY_COMMAND, initialParsedParmDataDic)
         

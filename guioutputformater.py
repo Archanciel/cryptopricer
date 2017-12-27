@@ -7,7 +7,6 @@ from kivy.core.clipboard import Clipboard
 
 
 class GuiOutputFormater(AbstractOutputFormater):
-    FLOAT_FORMAT = '%.8f'
     
     
     def __init__(self):
