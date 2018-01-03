@@ -9,6 +9,7 @@ class CrypCompExchanges:
                      'CCEX': ['Ccex', 'MCAP', 'USD'],
                      'BTC38': ['BTC38', 'BTC', 'CNY'],
                      'BTER': ['BTER', 'ETH', 'BTC'],
+                     'BINANCE': ['Binance', 'ETH', 'BTC'],
                      'BIT2C': ['Bit2C', 'LTC', 'ILS'],
                      'BITFINEX': ['Bitfinex', 'BTC', 'USD'],
                      'BITSTAMP': ['Bitstamp', 'BTC', 'USD'],
@@ -57,7 +58,32 @@ class CrypCompExchanges:
                      'COINONE': ['Coinone', 'BTC', 'KRW'],
                      'TIDEX': ['Tidex', 'WAVES', 'BTC'],
                      'BLEUTRADE': ['Bleutrade', 'ETH', 'BTC'],
-                     'ETHEXINDIA': ['EthexIndia', 'ETH', 'INR']}
+                     'ETHEXINDIA': ['EthexIndia', 'ETH', 'INR'],
+                     'BTCCHINA': ['BTCChina', 'ETH', 'BTC'],
+                     'BTCE': ['BTCE', 'ETH', 'BTC'],
+                     'BTCXCHANGE': ['btcXchange', 'ETH', 'BTC'],
+                     'ANXBTC': ['ANXBTC', 'ETH', 'BTC'],
+                     'EXMO': ['Exmo', 'ETH', 'BTC'],
+                     'MERCADOBITCOIN': ['MercadoBitcoin', 'ETH', 'BTC'],
+                     'BITFLYERFX': ['bitFlyerFX', 'ETH', 'BTC'],
+                     'TUXEXCHANGE': ['TuxExchange', 'ETH', 'BTC'],
+                     'CRYPTOX': ['CryptoX', 'ETH', 'BTC'],
+                     'MTGOX': ['MtGox', 'ETH', 'BTC'],
+                     'BITHUMB': ['Bithumb', 'ETH', 'BTC'],
+                     'CHBTC': ['CHBTC', 'ETH', 'BTC'],
+                     'VIABTC': ['ViaBTC', 'ETH', 'BTC'],
+                     'JUBI': ['Jubi', 'ETH', 'BTC'],
+                     'ZAIF': ['Zaif', 'ETH', 'BTC'],
+                     'NOVAEXCHANGE': ['Novaexchange', 'ETH', 'BTC'],
+                     'WAVESDEX': ['WavesDEX', 'ETH', 'BTC'],
+                     'LYKKE': ['Lykke', 'ETH', 'BTC'],
+                     'REMITANO': ['Remitano', 'ETH', 'BTC'],
+                     'COINROOM': ['Coinroom', 'ETH', 'BTC'],
+                     'ABUCOINS': ['Abucoins', 'ETH', 'BTC'],
+                     'BXINTH': ['BXinth', 'ETH', 'BTC'],
+                     'GATEIO': ['Gateio', 'ETH', 'BTC'],
+                     'HUOBIPRO': ['HuobiPro', 'ETH', 'BTC'],
+                     'OKEX': ['OKEX', 'ETH', 'BTC']}
 
 
 
@@ -82,11 +108,33 @@ class CrypCompExchanges:
         return self._dic[exchangeName.upper()]
 
 
+    def _checkIfHandled(self):
+        '''
+        Since CryptoCompare constantly adds new exchanges, it is necessary to regularly check
+        if CrypCompExchanges supports the new entries. The list of exchange is accessible at
+        https://www.cryptocompare.com/api/
+        :return:
+        '''
+        exchangeNameString = "Cryptsy, BTCChina, Bitstamp, BTER, OKCoin, Coinbase, Poloniex, Cexio, BTCE, BitTrex, Kraken, Bitfinex, Yacuna, LocalBitcoins, Yunbi, itBit, HitBTC, btcXchange, BTC38, Coinfloor, Huobi, CCCAGG, LakeBTC, ANXBTC, Bit2C, Coinsetter, CCEX, Coinse, MonetaGo, Gatecoin, Gemini, CCEDK, Cryptopia, Exmo, Yobit, Korbit, BitBay, BTCMarkets, Coincheck, QuadrigaCX, BitSquare, Vaultoro, MercadoBitcoin, Bitso, Unocoin, BTCXIndia, Paymium, TheRockTrading, bitFlyer, Quoine, Luno, EtherDelta, bitFlyerFX, TuxExchange, CryptoX, Liqui, MtGox, BitMarket, LiveCoin, Coinone, Tidex, Bleutrade, EthexIndia, Bithumb, CHBTC, ViaBTC, Jubi, Zaif, Novaexchange, WavesDEX, Binance, Lykke, Remitano, Coinroom, Abucoins, BXinth, Gateio, HuobiPro, OKEX"
+        exchangeNameList = exchangeNameString.split(', ')
+
+        for name in exchangeNameList:
+            nameU = name.upper()
+            if not nameU in self._dic:
+                print("'{}': ['{}', 'ETH', 'BTC'],".format(nameU, name))
+
+
 if __name__ == '__main__':
     from pricerequester import PriceRequester
     from resultdata import ResultData
+    import sys
 
     cc = CrypCompExchanges()
+
+    # cc._checkIfHandled()
+    # sys.exit(0)
+
+
     pp = PriceRequester()
 
     ts = 1506729600
@@ -106,7 +154,7 @@ if __name__ == '__main__':
         if resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG) == None:
             print("{} {} {} {}".format(exch, crypto, fiat, resultData.getValue(ResultData.RESULT_KEY_PRICE)))
         else:
-            print("{} {}".format(exch, resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG)[0:26]))
+            print("{} {}".format(exch, resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG)))
 
     print('\n\n--- CURRENT PRICES ---\n')
 
@@ -121,5 +169,5 @@ if __name__ == '__main__':
         if resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG) == None:
             print("{} {} {} {}".format(exch, crypto, fiat, resultData.getValue(ResultData.RESULT_KEY_PRICE)))
         else:
-            print("{} {}".format(exch, resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG)[0:26]))
+            print("{} {}".format(exch, resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG)))
 
