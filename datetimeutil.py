@@ -47,20 +47,20 @@ class DateTimeUtil:
 
 
     @staticmethod
-    def dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute, second, timeZoneStr):
+    def dateTimeComponentsToArrowLocalDate(dayInt, monthInt, yearInt, hourInt, minuteInt, secondInt, timeZoneStr):
         '''
         Given the passed date/time components and a timezone string specification,
         return an arrow localized date time object.
 
-        :param day:
-        :param month:
-        :param year:
-        :param hour:
-        :param minute:
+        :param dayInt:
+        :param monthInt:
+        :param yearInt:
+        :param hourInt:
+        :param minuteInt:
         :param timeZoneStr: like 'Europe/Zurich' or 'US/Pacific'
         :return: arrow localized date time object.
         '''
-        return arrow.get(year, month, day, hour, minute, second).replace(tzinfo=timeZoneStr)
+        return arrow.get(yearInt, monthInt, dayInt, hourInt, minuteInt, secondInt).replace(tzinfo=timeZoneStr)
 
 
     @staticmethod
@@ -94,28 +94,28 @@ class DateTimeUtil:
 
 
     @staticmethod
-    def isDateOlderThan(dateTimeArrowObject, dayNumber):
+    def isDateOlderThan(dateTimeArrowObject, dayNumberInt):
         '''
         Return true if the passed dateTimeArrowObject converted to the UTC time zone
         is dayNumber days before UTC now.
 
         :param dateTimeArrowObject: arrow localized date time object.
-        :param dayNumber: int day number
+        :param dayNumberInt: int day number
         :return: True or False
         '''
-        return ((arrow.utcnow().timestamp - dateTimeArrowObject.to('UTC').timestamp) / dayNumber) > DateTimeUtil.SECONDS_PER_DAY
+        return ((arrow.utcnow().timestamp - dateTimeArrowObject.to('UTC').timestamp) / dayNumberInt) > DateTimeUtil.SECONDS_PER_DAY
 
 
     @staticmethod
-    def isTimeStampOlderThan(timeStamp, dayNumber):
+    def isTimeStampOlderThan(timeStamp, dayNumberInt):
         '''
         Return true if the passed time stamp is dayNumber days before UTC now.
 
         :param dateTimeArrowObject: arrow localized date time object.
-        :param dayNumber: int day number
+        :param dayNumberInt: int day number
         :return: True or False
         '''
-        return ((arrow.utcnow().timestamp - timeStamp) / dayNumber) > DateTimeUtil.SECONDS_PER_DAY
+        return ((arrow.utcnow().timestamp - timeStamp) / dayNumberInt) > DateTimeUtil.SECONDS_PER_DAY
 
 
     @staticmethod
