@@ -73,27 +73,41 @@ class TestCommandPrice(unittest.TestCase):
 
 
     def testExecuteHistoricalPriceNoYear(self):
+        testDayStr = '1'
+        testMonthStr = '1'
+        testHourStr = '01'
+        testMinuteStr = '15'
+        testTimeZoneStr = 'Europe/Zurich'
+
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
         self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
-        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
-        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
-        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '2017'
-        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
-        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = testDayStr
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = testMonthStr
+        #self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '2017'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = testHourStr
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = testMinuteStr
 
         resultData = self.commandPrice.execute()
 
-        now = DateTimeUtil.localNow('Europe/Zurich')
-        nowYear = now.year - 2000
+        now = DateTimeUtil.localNow(testTimeZoneStr)
+        fourDigitYear = now.year
+        nowYear = fourDigitYear - 2000
         nowYearStr = str(nowYear)
+
+        testDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(testDayStr), int(testMonthStr), fourDigitYear, int(testHourStr), int(testMinuteStr), 0, testTimeZoneStr)
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/{} 00:00'.format(nowYearStr))
+
+        if DateTimeUtil.isDateOlderThan(testDateTime, 7):
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '01/01/{} 00:00'.format(nowYearStr))
+        else:
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '01/01/{} {}:{}'.format(nowYearStr, testHourStr, testMinuteStr))
 
 
     def testExecuteHistoricalPriceNoMonth(self):
@@ -195,12 +209,19 @@ class TestCommandPrice(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr))
 
 
     def testExecuteRealTimePriceWrongExchange(self):
