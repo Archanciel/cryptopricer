@@ -45,3 +45,21 @@ Ex:	continuing from last full request above (eth btc 21/1 13:45 bitfinex)
 	
 	-d12/05 -fbtc -ekraken
 	ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
+	
+Valuation command -v
+--------------------
+
+Utilisée pour obtenir la valeur d'un montant en fiat/crypto au cours de la dernière requête, ou au nouveau cours temps réel
+
+Command format: -v999.9999ZZZ
+
+Ex: si la dernière requête était btc usd 0 bittrex --> BTC/USD on BitTrex: 16/12/17 22:10R 19120
+    -v705.55usd retourne
+    0.003661088 BTC/700 USD on BitTrex: 16/12/17 22:10R 19120 
+
+    -v0.1btc retourne (nota: ici, le cours RT s'est apprécié de 20 $ !
+    0.01 BTC/1914 USD on BitTrex: 16/12/17 22:10R 19140
+	
+	si la dernière requête était eth usd 21/11/17 bitfinex --> ETH/USD on Bitfinex: 21/11/17 00:00C 360
+    -v0.1eth retourne
+	0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
