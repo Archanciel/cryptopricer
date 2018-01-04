@@ -86,7 +86,8 @@ class PriceRequester:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
                 resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
             else:
-                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+                resultData = self._handleError(dic, resultData, url)
+
         return resultData
 
 
@@ -117,7 +118,8 @@ class PriceRequester:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
                 resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
             else:
-                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+                resultData = self._handleError(dic, resultData, url)
+
         return resultData
 
 
@@ -152,7 +154,17 @@ class PriceRequester:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
                 resultData.setValue(ResultData.RESULT_KEY_PRICE, dic[fiat]) #current price is indexed by fiat symbol in returned dic
             else:
-                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+                resultData = self._handleError(dic, resultData, url)
+
+        return resultData
+
+    def _handleError(self, dic, resultData, url):
+        if 'Message' in dic.keys():
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
+        else:
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
+                                'ERROR - ' + 'Request ' + url + 'did not return any data !')
+
         return resultData
 
 
