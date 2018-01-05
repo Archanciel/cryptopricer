@@ -70,7 +70,8 @@ class CommandPrice(AbstractCommand):
         if resultPriceOrBoolean != True:
             return resultPriceOrBoolean
 
-        localNow = DateTimeUtil.localNow(self.configManager.localTimeZone)
+        localTimezone = self.configManager.localTimeZone
+        localNow = DateTimeUtil.localNow(localTimezone)
 
         resultPriceOrBoolean = self._validateDateTimeData(localNow)
 
@@ -106,7 +107,7 @@ class CommandPrice(AbstractCommand):
                 year = 0
         else:
             year = localNow.year
-            
+
         hourStr = self.parsedParmData[self.HOUR]
 
         if hourStr != None:
@@ -135,6 +136,13 @@ class CommandPrice(AbstractCommand):
             # asking for RT price here. Current date is stored in parsed parm data for possible
             # use in next request
             self._storeDateTimeDataForNextPartialRequest(localNow)
+        else:
+            localRequestDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute, 0, localTimezone)
+            if DateTimeUtil.isAfter(localRequestDateTime, localNow):
+                # request date is in the future ---> invalid. This happens for example in case
+                # btc usd 31/12 bittrex entered sometime before 31/12. Then the year formatted
+                # from localNow.year must be decreased ba 1 !
+                year -= 1
 
         priceValueSymbol = self.parsedParmData[self.PRICE_VALUE_SYMBOL]
         priceValueAmount = self.parsedParmData[self.PRICE_VALUE_AMOUNT]
