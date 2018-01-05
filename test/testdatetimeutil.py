@@ -240,5 +240,30 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertEqual(1506729601, absoluteTimeStamp)
 
 
+    def testIsAfterOneSecond(self):
+        zhArrowDateTimeObjRef = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 02:00:00", 'Europe/Zurich',
+                                                                            "YYYY/MM/DD HH:mm:ss")
+        zhArrowDateTimeObjOneSecAfter = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 02:00:01", 'Europe/Zurich',
+                                                                                    "YYYY/MM/DD HH:mm:ss")
+        self.assertTrue(DateTimeUtil.isAfter(zhArrowDateTimeObjOneSecAfter, zhArrowDateTimeObjRef))
+
+
+    def testIsAfterSameDate(self):
+        zhArrowDateTimeObjRef = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 02:00:00", 'Europe/Zurich',
+                                                                            "YYYY/MM/DD HH:mm:ss")
+        zhArrowDateTimeObjSameDate = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 02:00:00", 'Europe/Zurich',
+                                                                                    "YYYY/MM/DD HH:mm:ss")
+        self.assertFalse(DateTimeUtil.isAfter(zhArrowDateTimeObjSameDate, zhArrowDateTimeObjRef))
+
+
+    def testIsAfterDateBefore(self):
+        zhArrowDateTimeObjRef = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 02:00:00", 'Europe/Zurich',
+                                                                            "YYYY/MM/DD HH:mm:ss")
+        zhArrowDateTimeObjOneSecBefore = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 01:59:59", 'Europe/Zurich',
+                                                                                     "YYYY/MM/DD HH:mm:ss")
+        self.assertFalse(DateTimeUtil.isAfter(zhArrowDateTimeObjOneSecBefore, zhArrowDateTimeObjRef))
+
+
+
 if __name__ == '__main__':
     unittest.main()

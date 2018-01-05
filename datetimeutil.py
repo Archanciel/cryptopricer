@@ -107,6 +107,18 @@ class DateTimeUtil:
 
 
     @staticmethod
+    def isAfter(dateArrowObjectAfter, dateArrowObjectBefore):
+        '''
+        Return True if dateArrowObjectAfter is after dateArrowObjectBefore, False if dateArrowObjectAfter
+        is on or is before dateArrowObjectBefore
+        :param dateArrowObjectAfter:
+        :param dateArrowObjectBefore:
+        :return: True or False
+        '''
+        return dateArrowObjectAfter.timestamp > dateArrowObjectBefore.timestamp
+
+
+    @staticmethod
     def isTimeStampOlderThan(timeStamp, dayNumberInt):
         '''
         Return true if the passed time stamp is dayNumber days before UTC now.
