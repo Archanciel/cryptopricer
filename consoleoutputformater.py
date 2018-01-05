@@ -1,6 +1,5 @@
 import os
 
-from resultdata import ResultData
 from abstractoutputformater import AbstractOutputFormater
 
 
