@@ -14,11 +14,15 @@ from consoleoutputformater import ConsoleOutputFormater
 
 class TestController(unittest.TestCase):
     '''
+    This test class is launched from allcl.py (all command line), the class that runs
+    all the tests in QPython on Android.
+
     Test the Controller using a ConsoleOutputFormaater in place of a GuiOuputFormater
+    since ConsoleOutputFormaater runs on Android in QPython, but fails in Pydroid !
     '''
     def setUp(self):
+        print('---- Instanciating Controller with ConsoleOutputFormater ----')
         self.controller = Controller(ConsoleOutputFormater())
-
 
     def testControllerHistoDayPrice(self):
         stdin = sys.stdin
@@ -335,10 +339,17 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 03:45M'.format(nowDayStr, now.month, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 03:45M'.format(nowDayStr, nowMonthStr, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
 
 
     def testControllerBugSpecifyTimeAfterAskedRT700(self):
@@ -391,10 +402,17 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 07:00M'.format(nowDayStr, now.month, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 07:00M'.format(nowDayStr, nowMonthStr, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
 
 
     def testControllerBugSpecifyTimeAfterAskedRT700ThenReaskRT(self):
@@ -447,11 +465,18 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 07:00M'.format(nowDayStr, now.month, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 07:00M'.format(nowDayStr, nowMonthStr, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
 
 
     def testControllerBugSpecifyDateAfterAskedRT2910(self):
@@ -504,9 +529,16 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
             self.assertEqual('BTC/USD on CCCAGG: ' + '29/10/17 00:00C 6147.52', contentList[3][:-1])
 
 
@@ -560,11 +592,18 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
             self.assertEqual('BTC/USD on CCCAGG: ' + '29/10/17 00:00C 6147.52', contentList[3][:-1])
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
 
 
     def removePriceFromResult(self, resultStr):
@@ -626,10 +665,17 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1]))
 
     def testControllerBugChangeCryptoAfterAskedRTThenAskRTAgain(self):
         stdin = sys.stdin
@@ -681,11 +727,18 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1]))
-            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1]))
 
 
     def testControllerBugAskRTTwice(self):
@@ -738,10 +791,17 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
 
 
     def testControllerInvalidYearThenValidDDMM(self):
@@ -994,12 +1054,12 @@ class TestController(unittest.TestCase):
 
     def testControllerRTThenHistoMinuteThenRThenNewFiat(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
-        yesterday = now.shift(days = -2)
-        yesterdayDay = yesterday.day
-        yesterdayMonth = yesterday.month
+        previousDate = now.shift(days = -2)
+        previsousDateDay = previousDate.day
+        previsousDateMonth = previousDate.month
 
         stdin = sys.stdin
-        sys.stdin = StringIO('mcap usd 0 ccex\n-d{}/{}\n-d0\n-fbtc\nq\ny'.format(yesterdayDay, yesterdayMonth))
+        sys.stdin = StringIO('eth usd 0 bitfinex\n-d{}/{}\n-d0\n-fbtc\nq\ny'.format(previsousDateDay, previsousDateMonth))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -1046,7 +1106,14 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
-        yesterdayMinute = yesterday.minute
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
+        yesterdayMinute = previousDate.minute
 
         if yesterdayMinute < 10:
             if yesterdayMinute > 0:
@@ -1056,7 +1123,7 @@ class TestController(unittest.TestCase):
         else:
             yesterdayMinuteStr = str(yesterdayMinute)
 
-        yesterdayHour = yesterday.hour
+        yesterdayHour = previousDate.hour
 
         if yesterdayHour < 10:
             if yesterdayHour > 0:
@@ -1066,19 +1133,26 @@ class TestController(unittest.TestCase):
         else:
             yesterdayHourStr = str(yesterdayHour)
 
-        yesterdayDay = yesterday.day
+        previsousDateDay = previousDate.day
 
-        if yesterdayDay < 10:
-            yesterdayDayStr = '0' + str(yesterdayDay)
+        if previsousDateDay < 10:
+            yesterdayDayStr = '0' + str(previsousDateDay)
         else:
-            yesterdayDayStr = str(yesterdayDay)
+            yesterdayDayStr = str(previsousDateDay)
+
+        previsousDateMonth = previousDate.month
+
+        if previsousDateMonth < 10:
+            yesterdayMonthStr = '0' + str(previsousDateMonth)
+        else:
+            yesterdayMonthStr = str(previsousDateMonth)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('MCAP/USD on Ccex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('MCAP/USD on Ccex: ' + '{}/{}/{} {}:{}M'.format(yesterdayDayStr, yesterday.month, yesterday.year - 2000, yesterdayHourStr, yesterdayMinuteStr), self.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
-            self.assertEqual('MCAP/USD on Ccex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
-            self.assertEqual('MCAP/BTC on Ccex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[7][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'.format(yesterdayDayStr, yesterdayMonthStr, previousDate.year - 2000, yesterdayHourStr, yesterdayMinuteStr), self.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[7][:-1])) #removing \n from contentList entry !
 
 
     def testControllerHistoDayPriceIncompleteCommandScenario(self):
@@ -1189,6 +1263,13 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual(
@@ -1198,7 +1279,7 @@ class TestController(unittest.TestCase):
             self.assertEqual(
                 'ERROR - exchange could not be parsed due to an error in your command', contentList[5][:-1])
             self.assertEqual(
-                'BTC/USD on BitTrex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
+                'BTC/USD on BitTrex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                 nowMinuteStr),
                 self.removePriceFromResult(contentList[7][:-1]))  # removing \n from contentList entry !
 
@@ -1210,7 +1291,7 @@ class TestController(unittest.TestCase):
         yesterdayMonth = yesterday.month
 
         stdin = sys.stdin
-        sys.stdin = StringIO('mcap usd 0 ccex\n-d{}/{}\n-d0\n-fbtc\nq\ny'.format(yesterdayDay, yesterdayMonth))
+        sys.stdin = StringIO('eth usd 0 bitfinex\n-d{}/{}\n-d0\n-fbtc\nq\ny'.format(yesterdayDay, yesterdayMonth))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -1257,6 +1338,13 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         yesterdayMinute = yesterday.minute
 
         if yesterdayMinute < 10:
@@ -1284,22 +1372,29 @@ class TestController(unittest.TestCase):
         else:
             yesterdayDayStr = str(yesterdayDay)
 
+        yesterdayMonth = yesterday.month
+
+        if yesterdayMonth < 10:
+            yesterdayMonthStr = '0' + str(yesterdayMonth)
+        else:
+            yesterdayMonthStr = str(yesterdayMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual(
-                'MCAP/USD on Ccex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
+                'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                 nowMinuteStr),
                 self.removePriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
             self.assertEqual(
-                'MCAP/USD on Ccex: ' + '{}/{}/{} {}:{}M'.format(yesterdayDayStr, yesterday.month, yesterday.year - 2000,
+                'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'.format(yesterdayDayStr, yesterdayMonthStr, yesterday.year - 2000,
                                                                 yesterdayHourStr, yesterdayMinuteStr),
                 self.removePriceFromResult(contentList[3][:-1]))  # removing \n from contentList entry !
             self.assertEqual(
-                'MCAP/USD on Ccex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
+                'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                 nowMinuteStr),
                 self.removePriceFromResult(contentList[5][:-1]))  # removing \n from contentList entry !
             self.assertEqual(
-                'MCAP/BTC on Ccex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
+                'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                 nowMinuteStr),
                 self.removePriceFromResult(contentList[7][:-1]))  # removing \n from contentList entry !
 
@@ -1355,10 +1450,17 @@ class TestController(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual(
-                'BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, now.month, now.year - 2000, nowHourStr,
+                'BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                  nowMinuteStr),
                 self.removePriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
             self.assertEqual('ERROR - invalid command -t03.45: in -t03.45, 03.45 must respect 99:99 format !', contentList[3][:-1])
