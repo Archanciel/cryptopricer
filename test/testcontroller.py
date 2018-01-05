@@ -289,9 +289,17 @@ class TestController(unittest.TestCase):
             self.assertEqual('NEO/BTC on Bitfinex: 11/10/17 00:00C 0.006228\n', contentList[1])
 
 
-    def testControllerBugSpecifyTimeAfterAskedRT345(self):
+    def testControllerBugSpecifyTimeAfterAskedRT001(self):
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 0 all\n-t03:45\nq\ny')
+
+        # The scenario below is not usable because if you run it between 0:01
+        # and 3:44, the test will fail since the specified time (3:45) will be
+        # after the current time, which causes the request to be performed for
+        # the year before (request can not be for a< date/time in the future !)
+        #
+        # sys.stdin = StringIO('btc usd 0 all\n-t3:45\n-d0\nq\ny')
+
+        sys.stdin = StringIO('btc usd 0 all\n-t00:01\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -349,12 +357,20 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 03:45M'.format(nowDayStr, nowMonthStr, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
 
 
-    def testControllerBugSpecifyTimeAfterAskedRT700(self):
+    def testControllerBugSpecifyTimeAfterAskedRT001(self):
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 0 all\n-t7:00\nq\ny')
+
+        # The scenario below is not usable because if you run it between 0:01
+        # and 6:59, the test will fail since the specified time (7:00) will be
+        # after the current time, which causes the request to be performed for
+        # the year before (request can not be for a< date/time in the future !)
+        #
+        # sys.stdin = StringIO('btc usd 0 all\n-t7:00\n-d0\nq\ny')
+
+        sys.stdin = StringIO('btc usd 0 all\n-t0:01\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -412,12 +428,20 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 07:00M'.format(nowDayStr, nowMonthStr, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
 
 
     def testControllerBugSpecifyTimeAfterAskedRT700ThenReaskRT(self):
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 0 all\n-t7:00\n-d0\nq\ny')
+
+        # The scenario below is not usable because if you run it between 0:01
+        # and 6:59, the test will fail since the specified time (7:00) will be
+        # after the current time, which causes the request to be performed for
+        # the year before (request can not be for a< date/time in the future !)
+        #
+        # sys.stdin = StringIO('btc usd 0 all\n-t7:00\n-d0\nq\ny')
+
+        sys.stdin = StringIO('btc usd 0 all\n-t0:01\n-d0\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -475,7 +499,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 07:00M'.format(nowDayStr, nowMonthStr, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, now.year - 2000), self.removePriceFromResult(contentList[3][:-1]))
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
 
 
