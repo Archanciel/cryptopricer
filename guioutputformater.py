@@ -1,6 +1,5 @@
 import os
 
-from resultdata import ResultData
 from commandprice import CommandPrice
 from abstractoutputformater import AbstractOutputFormater
 from kivy.core.clipboard import Clipboard
@@ -10,6 +9,12 @@ class GuiOutputFormater(AbstractOutputFormater):
     
     
     def __init__(self):
+        # commented code below does not run in Pydroid since Pydroid does not support
+        # the sl4a lib
+        # if os.name == 'posix':
+        #     import android
+        #     self._clipboard = android.Android()
+        # else:
         self._clipboard = Clipboard
 
 
