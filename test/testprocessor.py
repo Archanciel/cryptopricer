@@ -10,7 +10,7 @@ from configurationmanager import ConfigurationManager
 from pricerequester import PriceRequester
 from crypcompexchanges import CrypCompExchanges
 from datetimeutil import DateTimeUtil
-from guioutputformater import GuiOutputFormater
+from consoleoutputformater import ConsoleOutputFormater
 
 class TestProcessor(unittest.TestCase):
     def setUp(self):
@@ -153,7 +153,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
 
-        outputFormater = GuiOutputFormater()
+        outputFormater = ConsoleOutputFormater()
         
         self.assertEqual(outputFormater.formatFloatToStr(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO)), outputFormater.formatFloatToStr(0.01698205))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), priceValueAmount)
@@ -222,12 +222,17 @@ class TestProcessor(unittest.TestCase):
         else:
             recentDayStr = str(recentDay)
 
+        if month < 10:
+            monthStr = '0' + str(month)
+        else:
+            monthStr = str(month)
+
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} 10:05'.format(recentDayStr, month, year - 2000))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} 10:05'.format(recentDayStr, monthStr, year - 2000))
 
 
     def testGetCryptoPriceHistoricalWrongExchange(self):    
@@ -304,12 +309,19 @@ class TestProcessor(unittest.TestCase):
         else:
             nowDayStr = str(nowDay)
 
+        nowMonth = now.month
+
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr))
 
     def testGetCryptoPriceRealTimeWrongExchange(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
