@@ -21,7 +21,7 @@ class TestController(unittest.TestCase):
     since ConsoleOutputFormaater runs on Android in QPython, but fails in Pydroid !
     '''
     def setUp(self):
-        print('---- Instanciating Controller with ConsoleOutputFormater ----')
+        #print('---- Instanciating Controller with ConsoleOutputFormater ----')
         self.controller = Controller(ConsoleOutputFormater())
 
     def testControllerHistoDayPrice(self):

@@ -24,7 +24,7 @@ class TestControllerGui(TestController):
     All the test cases are defineed in the TestController parent to avoid code duplication
     '''
     def setUp(self):
-        print('---- Instanciating Controller with GuiOuputFormater ----')
+        #print('---- Instanciating Controller with GuiOuputFormater ----')
         self.controller = Controller(GuiOutputFormater())
 
 
