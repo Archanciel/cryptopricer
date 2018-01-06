@@ -10,7 +10,6 @@ from configurationmanager import ConfigurationManager
 from pricerequester import PriceRequester
 from crypcompexchanges import CrypCompExchanges
 from datetimeutil import DateTimeUtil
-from consoleoutputformater import ConsoleOutputFormater
 
 class TestProcessor(unittest.TestCase):
     def setUp(self):
@@ -153,8 +152,17 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
 
-        outputFormater = ConsoleOutputFormater()
-        
+        try:
+            from consoleoutputformater import ConsoleOutputFormater
+            outputFormater = ConsoleOutputFormater()
+        except ImportError:
+            #ImportError is raised when running TestProcessor in Pydroid
+            #since ConsoleOutputFormater is not compatible with Pydroid
+            #because of Pydroid not supporting the sl4a lib imported
+            #by ConsoleOutputFormater
+            from guioutputformater import GuiOutputFormater
+            outputFormater = GuiOutputFormater()
+
         self.assertEqual(outputFormater.formatFloatToStr(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO)), outputFormater.formatFloatToStr(0.01698205))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), priceValueAmount)
 
