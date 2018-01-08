@@ -181,40 +181,7 @@ class TestCommandPrice(unittest.TestCase):
 
         resultData = self.commandPrice.execute()
 
-        now = DateTimeUtil.localNow('Europe/Zurich')
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        now, nowDayStr, nowMonthStr, nowHourStr, nowMinuteStr = self.getFormattedNowDateTimeComponents()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
@@ -223,6 +190,35 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr))
 
+    def getFormattedNowDateTimeComponents(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowMinute = now.minute
+        if nowMinute < 10:
+            if nowMinute > 0:
+                nowMinuteStr = '0' + str(nowMinute)
+            else:
+                nowMinuteStr = '00'
+        else:
+            nowMinuteStr = str(nowMinute)
+        nowHour = now.hour
+        if nowHour < 10:
+            if nowHour > 0:
+                nowHourStr = '0' + str(nowHour)
+            else:
+                nowHourStr = '00'
+        else:
+            nowHourStr = str(nowHour)
+        nowDay = now.day
+        if nowDay < 10:
+            nowDayStr = '0' + str(nowDay)
+        else:
+            nowDayStr = str(nowDay)
+        nowMonth = now.month
+        if nowMonth < 10:
+            nowMonthStr = '0' + str(nowMonth)
+        else:
+            nowMonthStr = str(nowMonth)
+        return now, nowDayStr, nowMonthStr, nowHourStr, nowMinuteStr
 
     def testExecuteRealTimePriceWrongExchange(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -390,6 +386,91 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - minute must be in 0..59")
+
+
+    def testExecuteHistoricalPriceDateOneYearFromNow(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+
+        now, nowDayStr, nowMonthStr, nowHourStr, nowMinuteStr = self.getFormattedNowDateTimeComponents()
+
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = nowDayStr
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = nowMonthStr
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = str(now.year + 1)
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = nowHourStr
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = nowMinuteStr
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertTrue(resultData.containsWarning())
+        self.assertEqual(resultData.getWarning(), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year !".format(nowDayStr, nowMonthStr, (now.year + 1 - 2000), nowHourStr, nowMinuteStr))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), "{}/{}/{} 00:00".format(nowDayStr, nowMonthStr, (now.year - 1) - 2000))
+
+
+    def testExecuteHistoricalPriceDateTwoYearsFromNowNoTime(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+
+        now, nowDayStr, nowMonthStr, nowHourStr, nowMinuteStr = self.getFormattedNowDateTimeComponents()
+
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = nowDayStr
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = nowMonthStr
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = str(now.year + 2)
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = None
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = None
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertTrue(resultData.containsWarning())
+        self.assertEqual(resultData.getWarning(), "Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year !".format(nowDayStr, nowMonthStr, (now.year + 2 - 2000)))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), "{}/{}/{} 00:00".format(nowDayStr, nowMonthStr, (now.year - 1) - 2000))
+
+
+    def testExecuteHistoricalPriceDateOneMinuteFromNow(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+
+        now, nowDayStr, nowMonthStr, nowHourStr, nowMinuteStr = self.getFormattedNowDateTimeComponents()
+
+        minutePlusOne = now.minute + 1
+
+        if minutePlusOne < 10:
+            if minutePlusOne > 0:
+                nowMinutePlusOneStr = '0' + str(minutePlusOne)
+            else:
+                nowMinutePlusOneStr = '00'
+        else:
+            nowMinutePlusOneStr = str(minutePlusOne)
+
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = nowDayStr
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = nowMonthStr
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = str(now.year)
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = nowHourStr
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = nowMinutePlusOneStr
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertTrue(resultData.containsWarning())
+        self.assertEqual(resultData.getWarning(), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year !".format(nowDayStr, nowMonthStr, (now.year - 2000), nowHourStr, nowMinutePlusOneStr))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), "{}/{}/{} 00:00".format(nowDayStr, nowMonthStr, (now.year - 1 - 2000)))
 
 
 if __name__ == '__main__':

@@ -131,7 +131,10 @@ class CommandPrice(AbstractCommand):
         #bcecause if the client is a GUI, it stores the list
         #of requests in order to be able to replay them !
         initialParsedParmDataDic = self.parsedParmData.copy()
-        
+
+        wasDateInFutureSetToLastYear = False
+        localRequestDateTime = None
+
         if day + month + year == 0:
             # asking for RT price here. Current date is stored in parsed parm data for possible
             # use in next request
@@ -140,9 +143,10 @@ class CommandPrice(AbstractCommand):
             localRequestDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute, 0, localTimezone)
             if DateTimeUtil.isAfter(localRequestDateTime, localNow):
                 # request date is in the future ---> invalid. This happens for example in case
-                # btc usd 31/12 bittrex entered sometime before 31/12. Then the year formatted
-                # from localNow.year must be decreased ba 1 !
-                year -= 1
+                # btc usd 31/12 bittrex entered sometime before 31/12. Then the request year is
+                # forced to last year and a warning will be displayed.
+                year = localNow.year - 1
+                wasDateInFutureSetToLastYear = True
 
         priceValueSymbol = self.parsedParmData[self.PRICE_VALUE_SYMBOL]
         priceValueAmount = self.parsedParmData[self.PRICE_VALUE_AMOUNT]
@@ -165,6 +169,9 @@ class CommandPrice(AbstractCommand):
                                               priceValueAmount)
         	                            
         result.setValue(ResultData.RESULT_KEY_COMMAND, initialParsedParmDataDic)
+
+        if wasDateInFutureSetToLastYear:
+            result.setWarning("Warning - request date {} can not be in the future and was shifted back to last year !".format(localRequestDateTime.format(self.configManager.dateTimeFormat)))
         
         return result
 
@@ -188,9 +195,16 @@ class CommandPrice(AbstractCommand):
 
     def _validateDateTimeData(self, localNow):
         '''
+        Ensures that date/time info contained in the parsedParmData dic are valid and in
+        a right format. If everything is ok, returns True.
+
         ['1', '10', '0', '2', '58'] #btc usd 1/10/0 2:58
         [None, None, None, '2', '57'] # btc usd 1 2:57
         ['11', '10', None, None, None] # neo btc 11/10
+        :param localNow:
+        :return: True if date/time values stored in the parsedParmData dic are valid. If an
+                 error was detected, a new ResultData with a meaning full error msg is
+                 returned.
         '''
 
         resultData = True

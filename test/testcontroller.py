@@ -320,39 +320,7 @@ class TestController(unittest.TestCase):
         sys.stdout = stdout
 
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
@@ -391,39 +359,7 @@ class TestController(unittest.TestCase):
         sys.stdout = stdout
 
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
@@ -462,39 +398,7 @@ class TestController(unittest.TestCase):
         sys.stdout = stdout
 
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
@@ -526,39 +430,7 @@ class TestController(unittest.TestCase):
         sys.stdout = stdout
 
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
@@ -566,7 +438,79 @@ class TestController(unittest.TestCase):
             self.assertEqual('BTC/USD on CCCAGG: ' + '29/10/17 00:00C 6147.52', contentList[3][:-1])
 
 
-    def testControllerBugSpecifyDateAfterAskedRT2910ThenAskRTAgain(self):
+    def testControllerBugSpecifyDate10DaysBeforeAfterAskedRTThenAskRTAgain(self):
+        stdin = sys.stdin
+        oneDayBeforeNow = DateTimeUtil.localNow('Europe/Zurich').shift(days=-10)
+        oneDayBeforeNowMonthStr, oneDayBeforeNowDayStr, oneDayBeforeNowHourStr, oneDayBeforeNowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(oneDayBeforeNow)
+
+        sys.stdin = StringIO('btc usd 0 all\n-d{}/{}/{}\n-d0\nq\ny'.format(oneDayBeforeNowDayStr, oneDayBeforeNowMonthStr, oneDayBeforeNow.year))
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayBeforeNowDayStr, oneDayBeforeNowMonthStr, oneDayBeforeNow.year - 2000), self.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+
+
+    def getFormattedDateTimeComponentsForArrowDateTimeObj(self, dateTimeObj):
+        dateTimeObjMinute = dateTimeObj.minute
+
+        if dateTimeObjMinute < 10:
+            if dateTimeObjMinute > 0:
+                dateTimeObjMinuteStr = '0' + str(dateTimeObjMinute)
+            else:
+                dateTimeObjMinuteStr = '00'
+        else:
+            dateTimeObjMinuteStr = str(dateTimeObjMinute)
+
+        dateTimeObjHour = dateTimeObj.hour
+
+        if dateTimeObjHour < 10:
+            if dateTimeObjHour > 0:
+                dateTimeObjHourStr = '0' + str(dateTimeObjHour)
+            else:
+                dateTimeObjHourStr = '00'
+        else:
+            dateTimeObjHourStr = str(dateTimeObjHour)
+
+        dateTimeObjDay = dateTimeObj.day
+
+        if dateTimeObjDay < 10:
+            dateTimeObjDayStr = '0' + str(dateTimeObjDay)
+        else:
+            dateTimeObjDayStr = str(dateTimeObjDay)
+        dateTimeObjMonth = dateTimeObj.month
+
+        if dateTimeObjMonth < 10:
+            dateTimeObjMonthStr = '0' + str(dateTimeObjMonth)
+        else:
+            dateTimeObjMonthStr = str(dateTimeObjMonth)
+
+        return dateTimeObjMonthStr, dateTimeObjDayStr, dateTimeObjHourStr, dateTimeObjMinuteStr
+
+
+    def testControllerBugSpecifyFutureDateAfterAskedRTThenAskRTAgain(self):
         stdin = sys.stdin
         sys.stdin = StringIO('btc usd 0 all\n-d29/10\n-d0\nq\ny')
 
@@ -589,45 +533,14 @@ class TestController(unittest.TestCase):
         sys.stdout = stdout
 
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
             self.assertEqual('BTC/USD on CCCAGG: ' + '29/10/17 00:00C 6147.52', contentList[3][:-1])
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+            self.assertEqual("Warning - request date 29/10/{} {}:{} can not be in the future and was shifted back to last year !".format(now.year - 2000, nowHourStr, nowMinuteStr),  contentList[4][:-1])
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[6][:-1])) #removing \n from contentList entry !
 
 
     def removePriceFromResult(self, resultStr):
@@ -662,39 +575,7 @@ class TestController(unittest.TestCase):
         sys.stdout = stdout
 
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
@@ -724,39 +605,7 @@ class TestController(unittest.TestCase):
         sys.stdout = stdout
 
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
@@ -788,39 +637,7 @@ class TestController(unittest.TestCase):
         sys.stdout = stdout
 
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
@@ -1103,39 +920,7 @@ class TestController(unittest.TestCase):
         sys.stdin = stdin
         sys.stdout = stdout
 
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         yesterdayMinute = previousDate.minute
 
@@ -1260,39 +1045,7 @@ class TestController(unittest.TestCase):
         sys.stdin = stdin
         sys.stdout = stdout
 
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
@@ -1335,39 +1088,7 @@ class TestController(unittest.TestCase):
         sys.stdin = stdin
         sys.stdout = stdout
 
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         yesterdayMinute = yesterday.minute
 
@@ -1447,39 +1168,7 @@ class TestController(unittest.TestCase):
         sys.stdout = stdout
 
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        nowMonth = now.month
-
-        if nowMonth < 10:
-            nowMonthStr = '0' + str(nowMonth)
-        else:
-            nowMonthStr = str(nowMonth)
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
