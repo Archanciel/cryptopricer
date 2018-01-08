@@ -118,7 +118,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_WARNING_MSG), "WARNING - price value symbol ETH differs from both crypto (BTC) and fiat (USD) of last request. -v parameter ignored !")
+        self.assertEqual(resultData.getWarning(), "WARNING - price value symbol ETH differs from both crypto (BTC) and fiat (USD) of last request. -v parameter ignored !")
 
 
     def testGetCryptoPriceHistoricalPriceValueFiatToCrypto(self):    
@@ -199,7 +199,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)      
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_WARNING_MSG), "WARNING - price value symbol EUR differs from both crypto (BTC) and fiat (USD) of last request. -v parameter ignored !")
+        self.assertEqual(resultData.getWarning(), "WARNING - price value symbol EUR differs from both crypto (BTC) and fiat (USD) of last request. -v parameter ignored !")
 
 
     def testGetCryptoPriceHistoricalRecent(self):    

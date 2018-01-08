@@ -38,7 +38,7 @@ class GuiOutputFormater(AbstractOutputFormater):
         :return: full command string corresponding to a full or partial price request entered by the user.
                  or empty string if the command generated an error or a warning msg
         '''
-        if resultData.isError() or resultData.isWarning():
+        if resultData.isError() or resultData.containsWarning():
             return ''
             
         commandDic = resultData.getValue(resultData.RESULT_KEY_COMMAND)

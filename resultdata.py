@@ -56,11 +56,25 @@ class ResultData:
         return self._resultDataDic[self.RESULT_KEY_ERROR_MSG] != None
 
 
-    def isWarning(self):
+    def containsWarning(self):
         '''
         Return True if the ResultData contains a warning msg
         '''
         return self._resultDataDic[self.RESULT_KEY_WARNING_MSG] != None
+
+
+    def getWarning(self):
+        '''
+        Return the warning msg contained in the ResultData
+        '''
+        return self._resultDataDic[self.RESULT_KEY_WARNING_MSG]
+
+
+    def setWarning(self, warningStr):
+        '''
+        Set the warning msg entry in the ResultData
+        '''
+        self._resultDataDic[self.RESULT_KEY_WARNING_MSG] = warningStr
 
 
     def __str__(self):
