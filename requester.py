@@ -26,10 +26,17 @@ class Requester:
 
     '''
     Full price command parms pattern. Crypto symbol (mandatory, first position mandatory), fiat symbol (optional, 
-    if provided, must be in second position), date (optional), time (optional) and exchange (optional). The three
+    if provided, must be in second position), date (optional), time (optional) and exchange (optional). The four
     last parms can be provided in any order after the 2 first parms !
 
-    Ex; btc usd 13/9 12:15 Kraken
+    Ex; btc usd 0 Kraken
+        btc usd 10/9/17 12:45 Kraken
+        btc usd 10/9/17 Kraken
+        btc usd 10/9 Kraken
+        btc usd 0 Kraken -v0.01btc
+        btc usd 10/9/17 12:45 Kraken -v0.01btc
+        btc usd 10/9/17 Kraken -v0.01btc
+        btc usd 10/9 Kraken -v0.01btc
 
     Additional rules for the date and time parms. Those rules are enforced by the
     _buildFullCommandPriceOptionalParmsDic() method.
@@ -67,7 +74,7 @@ class Requester:
                         0:0, rejected. 
     '''
 
-    PATTERN_FULL_PRICE_REQUEST_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)"
+    PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (-\w[\w\d/:\.]+))?"
 
     '''
     Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 or -ebittrex or -v0.00432btc 
@@ -234,7 +241,7 @@ class Requester:
         and FIAT, this method differentiate them build an optional command price parm data dictionary
         with the right key. This dictionary will be added to the CommandPrice parmData dictionary.
 
-        :return optionalParsedParmDataDic
+        :return optionalParsedParmDataDic or None in case of syntax error.
         '''
 
         '''
@@ -252,7 +259,8 @@ class Requester:
         '''
         patternCommandDic = {r"\d+/\d+(?:/\d+)*|^0$" : CommandPrice.DAY_MONTH_YEAR,
                              r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
-                             r"[A-Za-z]+": CommandPrice.EXCHANGE}
+                             r"[A-Za-z]+": CommandPrice.EXCHANGE,
+                             r"(?:-[vV])([\w\d/:\.]+)": CommandPrice.PRICE_VALUE_DATA}
 
         optionalParsedParmDataDic = {}
 
@@ -263,10 +271,42 @@ class Requester:
                         #if for example DMY already found in optional full command parms,
                         #it will not be overwritten ! Ex: 12/09/17 0: both token match DMY
                         #pattern !
-                        optionalParsedParmDataDic[patternCommandDic[pattern]] = group
+                        data = self._extractData(pattern, group)
+                        if data != None:
+                            optionalParsedParmDataDic[patternCommandDic[pattern]] = data
+                        else:
+                            #full command syntax error !
+                            return None
 
         return optionalParsedParmDataDic
 
+
+    def _extractData(self, pattern, dataOrCommandStr):
+        '''
+        Applies the passed pattern to the passed dataOrCommandStr. If the pasaed dataOrCommandStr
+        is a command of type -v0.1btc, the passed pattern will extract the data part of the
+        dataOrCommandStr, i.e. 0.01btc in this case.
+
+        Else if the dataOrCommandStr does contain data only, without a command symbol, the passed
+        pattern does not extract any group and the data is returned as is
+
+        :param pattern:
+        :param dataOrCommandStr:
+        :return: passed data or data part of the passed command + data. In case of syntax error,
+                 None is returnedx
+        '''
+        match = re.match(pattern, dataOrCommandStr)
+
+        if match == None:
+            #denotes a syntax error !
+            return None
+
+        if match.groups():
+            data = match.group(1)
+        else:
+            data = dataOrCommandStr
+
+        return data
 
     def _parseAndFillCommandPrice(self, inputStr):
         groupList = self._tryMatchFullPriceCommand(inputStr)
@@ -323,7 +363,16 @@ class Requester:
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
             self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1] #mandatory fiat parm, its order is fixed
             optionalParsedParmDataDic = self._buildFullCommandPriceOptionalParmsDic(groupList[2:])
-            self.commandPrice.parsedParmData.update(optionalParsedParmDataDic)
+
+            if optionalParsedParmDataDic != None:
+                self.commandPrice.parsedParmData.update(optionalParsedParmDataDic)
+            else:
+                self.commandError.rawParmData = inputStr
+                # invalid full command format
+                self.commandError.parsedParmData = [self.commandError.FULL_COMMAND_PRICE_FORMAT_INVALID_MSG]
+
+                return self.commandError
+
             hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
             dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
             
@@ -488,7 +537,7 @@ class Requester:
         :param inputStr:
         :return: None or a Match object
         '''
-        return self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        return self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
 
     def _tryMatchPartialPriceCommand(self, inputStr):
@@ -634,7 +683,7 @@ if __name__ == '__main__':
     
     r.commandPrice = CommandPrice()
     inputStr = "btc usd Kraken 10/9/17 12:45"
-#    groupL = r._parseGroups(r.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+#    groupL = r._parseGroups(r.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
 #    print(groupL)
 #    print(r._validateFullCommandPriceParsedGroupsOrder(groupL))

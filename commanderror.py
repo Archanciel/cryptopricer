@@ -8,6 +8,7 @@ class CommandError(AbstractCommand):
     COMMAND_NOT_SUPPORTED_MSG = '{} not supported'
     PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG = 'in {}, {} must respect 99:99 format !'
     PARTIAL_PRICE_VALUE_COMMAND_FORMAT_INVALID_MSG = 'in {}, {} must respect 99.99999zzz <price><symbol> format !'
+    FULL_COMMAND_PRICE_FORMAT_INVALID_MSG = 'full command price format invalid !'
 
     def __init__(self, receiver=None, rawParmData='', parsedParmData=''):
         super().__init__(receiver, 'CommandError', rawParmData, parsedParmData)

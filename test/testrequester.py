@@ -295,94 +295,94 @@ class TestRequester(unittest.TestCase):
 
     def test_parseGroupsFullDayMonthHHMM(self):
         inputStr = "btc usd 10/9 12:45 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '10/9', '12:45', 'Kraken'), groupList)
+        self.assertEqual(('btc', 'usd', '10/9', '12:45', 'Kraken', None), groupList)
 
 
     def test_parseGroupsFullExchangeFirst(self):
         inputStr = "btc usd Kraken 10/9/17 12:45"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', 'Kraken', '10/9/17', '12:45'), groupList)
+        self.assertEqual(('btc', 'usd', 'Kraken', '10/9/17', '12:45', None), groupList)
 
 
     def test_parseGroupsFullDayMonthYearHMM(self):
         inputStr = "btc usd 10/9/2017 1:45 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '10/9/2017', '1:45', 'Kraken'), groupList)
+        self.assertEqual(('btc', 'usd', '10/9/2017', '1:45', 'Kraken', None), groupList)
 
 
     def test_parseGroupsFullDayMonthZeroYearHMM(self):
         inputStr = "btc usd 10/9/0 1:45 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '10/9/0', '1:45', 'Kraken'), groupList)
+        self.assertEqual(('btc', 'usd', '10/9/0', '1:45', 'Kraken', None), groupList)
 
 
     def test_parseGroupsFullDH(self):
         inputStr = "btc usd 1 2 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '1', '2', 'Kraken'), groupList)
+        self.assertEqual(('btc', 'usd', '1', '2', 'Kraken', None), groupList)
 
 
     def test_parseGroupsFullDDDMH(self):
         inputStr = "btc usd 111/9 2 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '111/9', '2', 'Kraken'), groupList)
+        self.assertEqual(('btc', 'usd', '111/9', '2', 'Kraken', None), groupList)
 
 
     def test_parseGroupsFullDMH(self):
         inputStr = "btc usd 1/9 2 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '1/9', '2', 'Kraken'), groupList)
+        self.assertEqual(('btc', 'usd', '1/9', '2', 'Kraken', None), groupList)
 
 
     def test_parseGroupsFullDayHH(self):
         inputStr = "btc usd 10 12 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '10', '12', 'Kraken'), groupList)
+        self.assertEqual(('btc', 'usd', '10', '12', 'Kraken', None), groupList)
 
 
     def test_parseGroupsFullDMYearHMM(self):
         inputStr = "btc usd 1/2/17 1:25 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-        self.assertEqual(('btc', 'usd', '1/2/17', '1:25', 'Kraken'), groupList)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
+        self.assertEqual(('btc', 'usd', '1/2/17', '1:25', 'Kraken', None), groupList)
 
 
     def test_parseGroupsFullDHH(self):
         inputStr = "btc usd 1 12 Kraken"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-        self.assertEqual(('btc', 'usd', '1', '12', 'Kraken'), groupList)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
+        self.assertEqual(('btc', 'usd', '1', '12', 'Kraken', None), groupList)
 
 
     def test_parseGroupsFullDMHHMMNoExchange(self):
         inputStr = "btc usd 1/9 12:05"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-        self.assertEqual(('btc', 'usd', '1/9', '12:05', None), groupList)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
+        self.assertEqual(('btc', 'usd', '1/9', '12:05', None, None), groupList)
 
 
     def test_parseGroupsFullNoFiatDMHHMMNoExchange(self):
         inputStr = "btc 1/9 12:05"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-        self.assertEqual(('btc', '1/9', '12:05', None, None), groupList)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
+        self.assertEqual(('btc', '1/9', '12:05', None, None, None), groupList)
 
 
     def test_parseGroupsFullNoFiatDMNoTimeNoExchange(self):
         inputStr = "btc 1/9"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-        self.assertEqual(('btc', '1/9', None, None, None), groupList)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
+        self.assertEqual(('btc', '1/9', None, None, None, None), groupList)
 
 
     def test_parseGroupsFullNoFiatNoDateNoTimeNoExchange(self):
         inputStr = "btc"
-        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_DATA, inputStr)
-        self.assertEqual(('btc', None, None, None, None), groupList)
+        groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
+        self.assertEqual(('btc', None, None, None, None, None), groupList)
 
     def test_buildFullCommandPriceOptionalParmsDic(self):
         '''
@@ -1266,6 +1266,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '500')
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'gbp')
 
+
     def test_parseAndFillPartialCommandPricePriceValuePreviouslySet(self):
         commandPrice = self.requester.commandPrice
 
@@ -1793,6 +1794,70 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
+
+        sys.stdin = stdin
+
+
+    def testRequestPriceCommandEndingFullWithPriceValueCommand(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -v0.01btc")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandPrice)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'usd')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], '17')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.01')
+        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
+
+        sys.stdin = stdin
+
+
+    def testRequestPriceCommandFullWithPriceValueCommandInInvalidPosThree(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd -v0.01btc 10/9/17 12:45 Kraken")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandError)
+        self.assertEqual(commandPrice, self.commandError)
+        resultData = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command btc usd -v0.01btc 10/9/17 12:45 Kraken: full command price format invalid !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+        sys.stdin = stdin
+
+
+    def testRequestPriceCommandFullWithPriceValueCommandInInvalidPosFour(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd 10/9/17 -v0.01btc 12:45 Kraken")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandError)
+        self.assertEqual(commandPrice, self.commandError)
+        resultData = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command btc usd 10/9/17 -v0.01btc 12:45 Kraken: full command price format invalid !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+        sys.stdin = stdin
+
+
+    def testRequestPriceCommandFullWithPriceValueCommandInInvalidPosFive(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd 10/9/17 12:45 -v0.01btc Kraken")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandError)
+        self.assertEqual(commandPrice, self.commandError)
+        resultData = self.commandError.execute()
+        self.assertEqual("ERROR - invalid command btc usd 10/9/17 12:45 -v0.01btc Kraken: full command price format invalid !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
 
