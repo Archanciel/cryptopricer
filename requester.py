@@ -166,6 +166,11 @@ class Requester:
         :param inputStr: input string to parse
         :return: Command concrete instance
         '''
+        if inputStr == '' and self.commandPrice.isValid():
+            #here, user entered RETURN to replay the last commannd
+            self._alignCommandPriceDateTimeDataWithPriceType()
+            return self.commandPrice
+
         upperInputStr = inputStr.upper()
         match = self._tryMatchCommandSymbol(upperInputStr)
 
@@ -206,6 +211,15 @@ class Requester:
             self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
 
             return self.commandError
+
+
+    def _alignCommandPriceDateTimeDataWithPriceType(self):
+        if self.commandPrice.parsedParmData[self.commandPrice.PRICE_TYPE] == self.commandPrice.PRICE_TYPE_RT:
+            self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '0'
+            self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '0'
+            self.commandPrice.parsedParmData[self.commandPrice.DAY] = '0'
+            self.commandPrice.parsedParmData[self.commandPrice.HOUR] = None
+            self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = None
 
 
     def _tryMatchCommandSymbol(self, upperInputStr):

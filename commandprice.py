@@ -176,6 +176,13 @@ class CommandPrice(AbstractCommand):
         return result
 
 
+    def isValid(self):
+        '''
+        Return True if the command contains valid data and can be executed
+        '''
+        return self.parsedParmData[self.PRICE_TYPE] != None
+
+
     def _validateMandatoryData(self):
         resultData = True
 

@@ -16,3 +16,10 @@ class CommandQuit(AbstractCommand):
             self.receiver.exit(0)
 
         return ''
+
+
+    def isValid(self):
+        '''
+        Return True if the command contains valid data and can be executed
+        '''
+        return True

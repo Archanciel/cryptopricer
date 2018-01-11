@@ -50,3 +50,11 @@ class AbstractCommand(metaclass=ABCMeta):
     @abstractmethod
     def execute(self):
         pass
+
+
+    @abstractmethod
+    def isValid(self):
+        '''
+        Return True if the command contains valid data and can be executed
+        '''
+        pass

@@ -28,3 +28,10 @@ class CommandError(AbstractCommand):
         resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid command " + self.rawParmData + errorDetails)
         
         return resultData
+
+
+    def isValid(self):
+        '''
+        Return True if the command contains valid data and can be executed
+        '''
+        return True

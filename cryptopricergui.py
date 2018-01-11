@@ -130,19 +130,19 @@ class CryptoPricerGUI(BoxLayout):
         # Get the student name from the TextInputs
         commandStr = self.commandInput.text
 
-        if commandStr != '':
-            outputResultStr, fullCommandStr = self.controller.getPrintableResultForInput(commandStr)
-            self.outputResult(outputResultStr)
-            
-            # Add the command to the ListView if not already in
-            if fullCommandStr != '' and not fullCommandStr in self.commandList.adapter.data:
-                self.commandList.adapter.data.extend([fullCommandStr])
+#        if commandStr != '':
+        outputResultStr, fullCommandStr = self.controller.getPrintableResultForInput(commandStr)
+        self.outputResult(outputResultStr)
 
-                # Reset the ListView
-                self.resetListViewScrollToEnd(self.commandList)
-            
-            self.manageStateOfCommandListButtons()
-            self.commandInput.text = ''
+        # Add the command to the ListView if not already in
+        if fullCommandStr != '' and not fullCommandStr in self.commandList.adapter.data:
+            self.commandList.adapter.data.extend([fullCommandStr])
+
+            # Reset the ListView
+            self.resetListViewScrollToEnd(self.commandList)
+
+        self.manageStateOfCommandListButtons()
+        self.commandInput.text = ''
 
         self.refocusOncommandInput()
 

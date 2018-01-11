@@ -17,3 +17,10 @@ class CommandCrypto(AbstractCommand):
 
     def execute(self):
         self.receiver.processCrypto(self.parsedParmData)
+
+
+    def isValid(self):
+        '''
+        Return True if the command contains valid data and can be executed
+        '''
+        return True
