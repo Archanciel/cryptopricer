@@ -5,7 +5,7 @@ Requesting RT and historical cryptocurrency prices
 Full request
 ------------
 
-<crypto> <fiat> <date time> <exchange>
+<crypto> <fiat> <date time> <exchange> <optional command>
 <date time>:	0 for RT
 				21/12 or 21/12/17
 				21/12 8:34
@@ -20,9 +20,14 @@ Ex: btc usd 0 bittrex -->
 	eth btc 21/1 13:45 bitfinex --> 
 	ETH/BTC on Bitfinex: 21/01/17C 0.01185
 
+	btc usd 0 bittrex -v0.01btc -->
+	0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
+	
 	R = RT
 	M = Minute price (precision at the minute)
 	C = Close price
+	
+	WARNING: <optional command> must be specified at the end of the full command price
 
 Partial request
 ---------------
@@ -49,17 +54,21 @@ Ex:	continuing from last full request above (eth btc 21/1 13:45 bitfinex)
 Valuation command -v
 --------------------
 
-Utilisée pour obtenir la valeur d'un montant en fiat/crypto au cours de la dernière requête, ou au nouveau cours temps réel
+Used to obtain the converted fiat/crypto amount at the rate of the last request, or at an up to date RT rate
 
 Command format: -v999.9999ZZZ
 
-Ex: si la dernière requête était btc usd 0 bittrex --> BTC/USD on BitTrex: 16/12/17 22:10R 19120
-    -v705.55usd retourne
+Ex: if the last request was btc usd 0 bittrex --> BTC/USD on BitTrex: 16/12/17 22:10R 19120
+    -v705.55usd returns
     0.003661088 BTC/700 USD on BitTrex: 16/12/17 22:10R 19120 
 
-    -v0.1btc retourne (nota: ici, le cours RT s'est apprécié de 20 $ !
+    -v0.1btc returns (note that here the RT price went up 20 $ !
     0.01 BTC/1914 USD on BitTrex: 16/12/17 22:10R 19140
 	
-	si la dernière requête était eth usd 21/11/17 bitfinex --> ETH/USD on Bitfinex: 21/11/17 00:00C 360
-    -v0.1eth retourne
+	if the last request was eth usd 21/11/17 bitfinex --> ETH/USD on Bitfinex: 21/11/17 00:00C 360
+    -v0.1eth returns
 	0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
+
+-v0 cancels the valuation command 
+	
+WARNING: until the -v command is cancelled, it stays i effect and impacts the new partial requests !
