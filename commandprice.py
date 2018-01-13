@@ -36,10 +36,10 @@ class CommandPrice(AbstractCommand):
     def __init__(self, receiver=None, configManager=None, rawParmData='', parsedParmData={}):
         super().__init__(receiver, 'CommandPrice', rawParmData, parsedParmData)
         self.configManager = configManager
-        self._initialiseParsedParmData()
+        self.initialiseParsedParmData()
 
 
-    def _initialiseParsedParmData(self):
+    def initialiseParsedParmData(self):
         '''
         Prefill the parsedParmData dictionary with empty key/value pair.
         If this is not done, the parsedParmData dictionary will only contain

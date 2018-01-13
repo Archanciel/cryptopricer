@@ -14,7 +14,7 @@ class CommandError(AbstractCommand):
         super().__init__(receiver, 'CommandError', rawParmData, parsedParmData)
 
 
-    def _initialiseParsedParmData(self):
+    def initialiseParsedParmData(self):
         pass
 
 

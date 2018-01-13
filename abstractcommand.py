@@ -19,24 +19,12 @@ class AbstractCommand(metaclass=ABCMeta):
         self.name = name # used as key in a AbstractCommand dictionary
 
 
-    def resetData(self):
-        '''
-        Ensure that internal parsedParmData is purged of previous value since command is reused
-        :return:
-        '''
-        self.rawParmData = ''
-        if len(self.parsedParmData) != 0:
-            self.parsedParmData = self.parsedParmData.fromkeys(self.parsedParmData.keys())
-        else:
-            self._initialiseParsedParmData()
-
-
     def __str__(self):
         return 'Raw data: ' + str(self.rawParmData) + '\nParm data: ' + str(self.parsedParmData)
         
         
     @abstractmethod
-    def _initialiseParsedParmData(self):
+    def initialiseParsedParmData(self):
         '''
         Prefill the parsedParmData dictionary with empty key/value pair.
         If this is not done, the parsedParmData dictionary will only contain

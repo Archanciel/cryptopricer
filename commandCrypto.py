@@ -9,7 +9,7 @@ class CommandCrypto(AbstractCommand):
         super().__init__(receiver, 'CommandCrypto', rawParmData, parsedParmData)
 
 
-    def _initialiseParsedParmData(self):
+    def initialiseParsedParmData(self):
         self.parsedParmData[self.CRYPTO_LIST] = None
         self.parsedParmData[self.FIAT_LIST] = None
         self.parsedParmData[self.FLAG] = None

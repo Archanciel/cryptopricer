@@ -391,7 +391,7 @@ class Requester:
         else: #full command line entered. Here, parms were entered in an order reflected in the
               # pattern: crypto fiat in this mandatory order, then date time exchange, of which order
               # can be different.
-            self.commandPrice.resetData()
+            self.commandPrice.initialiseParsedParmData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
             self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1] #mandatory fiat parm, its order is fixed
             optionalParsedParmDataDic = self._buildFullCommandPriceOptionalParmsDic(groupList[2:])

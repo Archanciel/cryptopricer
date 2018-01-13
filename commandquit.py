@@ -5,7 +5,7 @@ class CommandQuit(AbstractCommand):
         super().__init__(receiver, 'CommandQuit', rawParmData, parsedParmData)
 
 
-    def _initialiseParsedParmData(self):
+    def initialiseParsedParmData(self):
         pass
 
 
