@@ -28,10 +28,8 @@ class CommandPrice(AbstractCommand):
     PRICE_VALUE_AMOUNT = 'PRICE_VAL_AMOUNT' #store the price target specified with -v. Ex: 0.0044354
     PRICE_VALUE_SYMBOL = 'PRICE_VAL_SYMBOL' #store the price symbol specified with -v. Ex: BTC
 
-    PRICE_VALUE_SAVE = 'PRICE_VAL_SAVE'     #store 'S' or None to indicate if the price value command is to be stored in history (-vs) or not (-v)
+    PRICE_VALUE_SAVE = 'PRICE_VAL_SAVE'     #store True or False to indicate if the price value command is to be stored in history (-vs) or not (-v)
 
-    PRICE_VALUE_SAVE_STORE = 'S'
-    PRICE_VALUE_SAVE_DISCARD = None
 
     def __init__(self, receiver=None, configManager=None, rawParmData='', parsedParmData={}):
         super().__init__(receiver, 'CommandPrice', rawParmData, parsedParmData)
@@ -66,7 +64,7 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.PRICE_VALUE_DATA] = None
         self.parsedParmData[self.PRICE_VALUE_AMOUNT] = None
         self.parsedParmData[self.PRICE_VALUE_SYMBOL] = None
-        self.parsedParmData[self.PRICE_VALUE_SAVE] = None
+        self.parsedParmData[self.PRICE_VALUE_SAVE] = False
 
 
     def execute(self):

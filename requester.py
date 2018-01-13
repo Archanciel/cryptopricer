@@ -291,9 +291,9 @@ class Requester:
                             optionalParsedParmDataDic[patternCommandDic[pattern]] = data
                             patternCommandModifierKey = pattern + r"CommandModifier"
                             if optionalCommandModifier != None and optionalCommandModifier != '':
-                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = optionalCommandModifier.upper()
+                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = True
                             elif patternCommandModifierKey in optionalParsedParmDataDic.keys():
-                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = None
+                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = False
 
                         else:
                             #full command syntax error !
@@ -534,12 +534,14 @@ class Requester:
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = priceValueAmount
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = priceValueSymbol
                 if priceValueSaveFlag.upper() == 'S':
-                    self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = CommandPrice.PRICE_VALUE_SAVE_STORE
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = True
+                #else: do nothing: do not set commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] to
+                #False since it may have been set to True during full command parsing processing !
             elif priceValueErase == '0':
                 #here, -v0 was entered to stop price value calculation
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = None
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = None
-                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = None
+                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = False
 
             self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_DATA] = None
 

@@ -64,7 +64,7 @@ class GuiOutputFormater(AbstractOutputFormater):
                              commandDic[CommandPrice.MINUTE] + ' ' + \
                              commandDic[CommandPrice.EXCHANGE]
 
-        if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE) == resultData.PRICE_VALUE_SAVE_STORE:
+        if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE):
             fullCommandStr += ' -vs' + commandDic[CommandPrice.PRICE_VALUE_AMOUNT] + commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
 
         return fullCommandStr
