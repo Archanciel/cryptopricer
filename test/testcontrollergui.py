@@ -28,5 +28,37 @@ class TestControllerGui(TestController):
         self.controller = Controller(GuiOutputFormater())
 
 
+    @unittest.skip
+    def testControllerAskRTWithValueSave(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO('btc usd 0 all -vc0.01btc\nq\ny')
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptoout.txt'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+        stdout = sys.stdout
+
+        # using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+        try:
+            with open(FILE_PATH, 'w') as outFile:
+                sys.stdout = outFile
+                self.controller.run() #will eat up what has been filled in stdin using StringIO above
+        except:
+            pass
+
+        sys.stdin = stdin
+        sys.stdout = stdout
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        with open(FILE_PATH, 'r') as inFile:
+            contentList = inFile.readlines()
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+
+
 if __name__ == '__main__':
     unittest.main()

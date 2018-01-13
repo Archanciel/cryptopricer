@@ -28,6 +28,10 @@ class CommandPrice(AbstractCommand):
     PRICE_VALUE_AMOUNT = 'PRICE_VAL_AMOUNT' #store the price target specified with -v. Ex: 0.0044354
     PRICE_VALUE_SYMBOL = 'PRICE_VAL_SYMBOL' #store the price symbol specified with -v. Ex: BTC
 
+    PRICE_VALUE_SAVE = 'PRICE_VAL_SAVE'     #store 'S' or None to indicate if the price value command is to be stored in history (-vs) or not (-v)
+
+    PRICE_VALUE_SAVE_STORE = 'S'
+    PRICE_VALUE_SAVE_DISCARD = None
 
     def __init__(self, receiver=None, configManager=None, rawParmData='', parsedParmData={}):
         super().__init__(receiver, 'CommandPrice', rawParmData, parsedParmData)
@@ -62,6 +66,7 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.PRICE_VALUE_DATA] = None
         self.parsedParmData[self.PRICE_VALUE_AMOUNT] = None
         self.parsedParmData[self.PRICE_VALUE_SYMBOL] = None
+        self.parsedParmData[self.PRICE_VALUE_SAVE] = None
 
 
     def execute(self):
@@ -167,8 +172,13 @@ class CommandPrice(AbstractCommand):
                                               minute,
                                               priceValueSymbol,
                                               priceValueAmount)
-        	                            
+
+        #the command components	denoting the user request will be used to recreate
+        #a full command request which will be stored in the command history list.
+        #The historry list can be replayed, stored on disk, edited ...
         result.setValue(ResultData.RESULT_KEY_COMMAND, initialParsedParmDataDic)
+
+        result.setValue(ResultData.RESULT_KEY_PRICE_VALUE_SAVE, self.parsedParmData[self.PRICE_VALUE_SAVE])
 
         if wasDateInFutureSetToLastYear:
             result.setWarning("Warning - request date {} can not be in the future and was shifted back to last year !".format(localRequestDateTime.format(self.configManager.dateTimeFormat)))

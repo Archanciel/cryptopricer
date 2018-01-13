@@ -74,7 +74,7 @@ class Requester:
                         0:0, rejected. 
     '''
 
-    PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (-\w[\w\d/:\.]+))?"
+    PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (-\w\w?[\w\d/:\.]+))?"
 
     '''
     Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 or -ebittrex or -v0.00432btc 
@@ -122,7 +122,7 @@ class Requester:
     Ex: -v0.004325btc is splitted into 0.00432, btc, None
         -v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
     '''
-    PRICE_VALUE_PARM_DATA_PATTERN = r"([\d\.]+)(\w+)|(0)"
+    PRICE_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
 
     def __init__(self):
         self.commandQuit = None
@@ -274,7 +274,8 @@ class Requester:
         patternCommandDic = {r"\d+/\d+(?:/\d+)*|^0$" : CommandPrice.DAY_MONTH_YEAR,
                              r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
                              r"[A-Za-z]+": CommandPrice.EXCHANGE,
-                             r"(?:-[vV])([\w\d/:\.]+)": CommandPrice.PRICE_VALUE_DATA}
+                             r"(?:-[vV])([sS]?)([\w\d/:\.]+)": CommandPrice.PRICE_VALUE_DATA,
+                             r"(?:-[vV])([sS]?)([\w\d/:\.]+)CommandModifier": CommandPrice.PRICE_VALUE_SAVE}
 
         optionalParsedParmDataDic = {}
 
@@ -285,9 +286,15 @@ class Requester:
                         #if for example DMY already found in optional full command parms,
                         #it will not be overwritten ! Ex: 12/09/17 0: both token match DMY
                         #pattern !
-                        data = self._extractData(pattern, group)
+                        data, optionalCommandModifier = self._extractData(pattern, group)
                         if data != None:
                             optionalParsedParmDataDic[patternCommandDic[pattern]] = data
+                            patternCommandModifierKey = pattern + r"CommandModifier"
+                            if optionalCommandModifier != None and optionalCommandModifier != '':
+                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = optionalCommandModifier.upper()
+                            elif patternCommandModifierKey in optionalParsedParmDataDic.keys():
+                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = None
+
                         else:
                             #full command syntax error !
                             return None
@@ -298,29 +305,40 @@ class Requester:
     def _extractData(self, pattern, dataOrCommandStr):
         '''
         Applies the passed pattern to the passed dataOrCommandStr. If the pasaed dataOrCommandStr
-        is a command of type -v0.1btc, the passed pattern will extract the data part of the
-        dataOrCommandStr, i.e. 0.01btc in this case.
+        is a command of type -v0.1btc or -vs0.1btc, the passed pattern will extract the data part of the
+        dataOrCommandStr, i.e. 0.01btc in this case and the optional command modifier part of the
+        dataOrCommandStr, i.e. s in this case.
 
         Else if the dataOrCommandStr does contain data only, without a command symbol, the passed
         pattern does not extract any group and the data is returned as is
 
         :param pattern:
         :param dataOrCommandStr:
-        :return: passed data or data part of the passed command + data. In case of syntax error,
-                 None is returnedx
+        :return: passed data or data part of the passed command + data aswell as the optional command
+                 modifier. If -v0.1btc is passed as dataOrCommandStr, 0.1btc is returned.
+                 If -vs0.1btc is passed as dataOrCommandStr, 0.1btc and s is returned.
+
+                 In case of syntax error,
+                 None is returned
         '''
         match = re.match(pattern, dataOrCommandStr)
 
         if match == None:
             #denotes a syntax error !
-            return None
+            return None, None
 
-        if match.groups():
+        commandModifierValue = None
+        grpNumber = len(match.groups())
+
+        if grpNumber == 1:
             data = match.group(1)
+        elif grpNumber == 2:
+            commandModifierValue = match.group(1)
+            data = match.group(2)
         else:
             data = dataOrCommandStr
 
-        return data
+        return data, commandModifierValue
 
     def _parseAndFillCommandPrice(self, inputStr):
         groupList = self._tryMatchFullPriceCommand(inputStr)
@@ -508,16 +526,20 @@ class Requester:
         match = re.match(self.PRICE_VALUE_PARM_DATA_PATTERN, priceValueData)
 
         if match:
-            priceValueAmount = match.group(1)
-            priceValueSymbol = match.group(2)
-            priceValueErase =  match.group(3)
+            priceValueSaveFlag = match.group(1)
+            priceValueAmount = match.group(2)
+            priceValueSymbol = match.group(3)
+            priceValueErase =  match.group(4)
             if priceValueErase == None:
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = priceValueAmount
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = priceValueSymbol
+                if priceValueSaveFlag.upper() == 'S':
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = CommandPrice.PRICE_VALUE_SAVE_STORE
             elif priceValueErase == '0':
                 #here, -v0 was entered to stop price value calculation
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = None
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = None
+                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = None
 
             self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_DATA] = None
 

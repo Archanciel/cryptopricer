@@ -1,5 +1,3 @@
-
-
 class ResultData:
     RESULT_KEY_CRYPTO = 'CRYPTO'
     RESULT_KEY_FIAT = 'FIAT'
@@ -13,6 +11,10 @@ class ResultData:
     RESULT_KEY_COMMAND = 'COMMAND' #full command which generated the result
     RESULT_KEY_PRICE_VALUE_CRYPTO = 'PRICE_VAL_CRYPTO' #store the crypto price returned for -v command
     RESULT_KEY_PRICE_VALUE_FIAT = 'PRICE_VAL_FIAT'     #store the fiat price returned for -v command
+    RESULT_KEY_PRICE_VALUE_SAVE = 'PRICE_VAL_SAVE'     #store 'S' or None to indicate if the price value command is to be stored in history (-vs) or not (-v)
+
+    PRICE_VALUE_SAVE_STORE = 'S'
+    PRICE_VALUE_SAVE_DISCARD = None
 
     PRICE_TYPE_HISTO_DAY = 'HISTO_DAY'
     PRICE_TYPE_HISTO_MINUTE = 'HISTO_MINUTE'
@@ -34,6 +36,7 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None       
         self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_CRYPTO] = None
         self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_FIAT] = None
+        self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_SAVE] = None
 
  
 
