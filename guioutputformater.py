@@ -34,12 +34,28 @@ class GuiOutputFormater(AbstractOutputFormater):
         The full command string will be stored in the command history list so it can be replayed or save to file.
         An empty string is returned if the command generated an error or a warning msg (empty string will not be
         added to history !
+
+        In case an option to the command with save mode is in effect - for example -vs -, then the full
+        command with the save mode option is returned aswell. Othervise, if no command option in save mode
+        is in effect (no option or -v for example), then None is returned as second return value.
+
         :param resultData: result of the last full or partial request
-        :return: full command string corresponding to a full or partial price request entered by the user.
-                 or empty string if the command generated an error or a warning msg
+        :return: 1/ full command string with no command option corresponding to a full or partial price request
+                    entered by the user or empty string if the command generated an error or a warning msg.
+                 2/ full command string with command option in save mode or none if no command option in save mode
+                    is in effect.
+
+                 Ex: 1/ eth usd 0 bitfinex
+                     2/ eth usd 0 bitfinex -vs0.1eth
+
+                     1/ eth usd 0 bitfinex
+                     2/ None (-v0.1eth option in effect)
+
+                     1/ eth usd 0 bitfinex
+                     3/ None (no option in effect)
         '''
         if resultData.isError() or resultData.containsWarning():
-            return ''
+            return '', None
             
         commandDic = resultData.getValue(resultData.RESULT_KEY_COMMAND)
         priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
@@ -64,10 +80,12 @@ class GuiOutputFormater(AbstractOutputFormater):
                              commandDic[CommandPrice.MINUTE] + ' ' + \
                              commandDic[CommandPrice.EXCHANGE]
 
-        if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE):
-            fullCommandStr += ' -vs' + commandDic[CommandPrice.PRICE_VALUE_AMOUNT] + commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
+        fullCommandStrWithSaveModeOptions = None
 
-        return fullCommandStr
+        if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE):
+            fullCommandStrWithSaveModeOptions = fullCommandStr + ' -vs' + commandDic[CommandPrice.PRICE_VALUE_AMOUNT] + commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
+
+        return fullCommandStr, fullCommandStrWithSaveModeOptions
         
 
     def toClipboard(self, numericVal):

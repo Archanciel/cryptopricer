@@ -130,12 +130,19 @@ class CryptoPricerGUI(BoxLayout):
         # Get the student name from the TextInputs
         commandStr = self.commandInput.text
 
-#        if commandStr != '':
-        outputResultStr, fullCommandStr = self.controller.getPrintableResultForInput(commandStr)
+        outputResultStr, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(commandStr)
         self.outputResult(outputResultStr)
 
-        # Add the command to the ListView if not already in
-        if fullCommandStr != '' and not fullCommandStr in self.commandList.adapter.data:
+        if fullCommandStrWithSaveModeOptions != None and not fullCommandStrWithSaveModeOptions in self.commandList.adapter.data:
+            if fullCommandStr in self.commandList.adapter.data:
+                self.commandList.adapter.data.remove(fullCommandStr)
+
+            self.commandList.adapter.data.extend([fullCommandStrWithSaveModeOptions])
+
+            # Reset the ListView
+            self.resetListViewScrollToEnd(self.commandList)
+        elif fullCommandStr != '' and not fullCommandStr in self.commandList.adapter.data:
+            # Add the command to the ListView if not already in
             self.commandList.adapter.data.extend([fullCommandStr])
 
             # Reset the ListView
@@ -266,7 +273,7 @@ class CryptoPricerGUI(BoxLayout):
         self.outputResult('')
 
         for command in self.commandList.adapter.data:
-             outputResultStr, fullCommandStr = self.controller.getPrintableResultForInput(command)
+             outputResultStr, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(command)
              #print("command: {}\nfull command: {}\nres: {}".format(command, fullCommandStr, outputResultStr))
              self.outputResult(outputResultStr)
 
