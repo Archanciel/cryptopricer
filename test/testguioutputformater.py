@@ -84,9 +84,9 @@ class TestGuiOutputFormater(unittest.TestCase):
                             {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
                              'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
 
-        fullCommandStr = self.printer.getFullCommandString(resultData)
-
-        self.assertEqual(fullCommandStr, "eth usd 5/12/17 9:30 bittrex")
+        fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+        self.assertEqual(fullCommandString, "eth usd 5/12/17 9:30 bittrex")
 
 
     def testPrintCryptoPriceHistoricalPriceValueDupl(self):
@@ -387,9 +387,9 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
         resultData.setValue(resultData.RESULT_KEY_COMMAND, {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': None, 'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
 
-        fullCommandStr = self.printer.getFullCommandString(resultData)
-
-        self.assertEqual(fullCommandStr, "eth usd 5/12 9:30 bittrex")
+        fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+        self.assertEqual(fullCommandString, "eth usd 5/12 9:30 bittrex")
 
 
     def testGetFullCommandStringYearDefined(self):
@@ -410,9 +410,9 @@ class TestGuiOutputFormater(unittest.TestCase):
                             {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
                              'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
 
-        fullCommandStr = self.printer.getFullCommandString(resultData)
-
-        self.assertEqual(fullCommandStr, "eth usd 5/12/17 9:30 bittrex")
+        fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+        self.assertEqual(fullCommandString, "eth usd 5/12/17 9:30 bittrex")
 
 
     def testGetCryptoPriceRealTimeWithValueFlag(self):
@@ -478,7 +478,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('0.01 BTC/160 USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
-        fullCommandString = self.printer.getFullCommandString(resultData)
+        fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandString)
 
 
@@ -604,8 +605,9 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('0.01 BTC/160 USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
-        fullCommandString = self.printer.getFullCommandString(resultData)
-        self.assertEqual('btc usd 0 bittrex -vs0.01btc', fullCommandString)
+        fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        self.assertEqual('btc usd 0 bittrex -vs0.01btc', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('btc usd 0 bittrex', fullCommandString)
 
 
 if __name__ == '__main__':
