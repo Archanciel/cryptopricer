@@ -61,6 +61,7 @@ class TestControllerGui(TestController):
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
 
 
+    def testGetPrintableResultForInputscenarioWithValueCommand(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         yesterday = now.shift(days=-2)
         yesterdayDay = yesterday.day
