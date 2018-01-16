@@ -32,8 +32,7 @@ class GuiOutputFormater(AbstractOutputFormater):
         '''
         Recreate the full command string corresponding to a full or partial price request entered by the user.
         The full command string will be stored in the command history list so it can be replayed or save to file.
-        An empty string is returned if the command generated an error or a warning msg (empty string will not be
-        added to history !
+        An empty string is returned if the command generated an error (empty string will not be added to history !
 
         In case an option to the command with save mode is in effect - for example -vs -, then the full
         command with the save mode option is returned aswell. Othervise, if no command option in save mode
