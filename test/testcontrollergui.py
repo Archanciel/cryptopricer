@@ -69,40 +69,6 @@ class TestControllerGui(TestController):
 
         nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
-        yesterdayMinute = yesterday.minute
-
-        if yesterdayMinute < 10:
-            if yesterdayMinute > 0:
-                yesterdayMinuteStr = '0' + str(yesterdayMinute)
-            else:
-                yesterdayMinuteStr = '00'
-        else:
-            yesterdayMinuteStr = str(yesterdayMinute)
-
-        yesterdayHour = yesterday.hour
-
-        if yesterdayHour < 10:
-            if yesterdayHour > 0:
-                yesterdayHourStr = '0' + str(yesterdayHour)
-            else:
-                yesterdayHourStr = '00'
-        else:
-            yesterdayHourStr = str(yesterdayHour)
-
-        yesterdayDay = yesterday.day
-
-        if yesterdayDay < 10:
-            yesterdayDayStr = '0' + str(yesterdayDay)
-        else:
-            yesterdayDayStr = str(yesterdayDay)
-
-        yesterdayMonth = yesterday.month
-
-        if yesterdayMonth < 10:
-            yesterdayMonthStr = '0' + str(yesterdayMonth)
-        else:
-            yesterdayMonthStr = str(yesterdayMonth)
-
         #first command: RT price command
         inputStr = 'eth usd 0 bitfinex'
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
