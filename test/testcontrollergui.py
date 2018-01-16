@@ -63,9 +63,6 @@ class TestControllerGui(TestController):
 
     def testGetPrintableResultForInputscenarioWithValueCommand(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
-        yesterday = now.shift(days=-2)
-        yesterdayDay = yesterday.day
-        yesterdayMonth = yesterday.month
 
         nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -92,6 +89,147 @@ class TestControllerGui(TestController):
         self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
+        #third command: value save command
+        inputStr = '-vs100usd'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            self.removePricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        #fourth command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            self.removePricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        #fifth command: change crypto
+        inputStr = '-cneo'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            self.removePricesFromCommandValueResult(printResult))
+        self.assertEqual('neo usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('neo usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        #sixth command: remove value command
+        inputStr = '-v0'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            self.removePriceFromResult(printResult))
+        self.assertEqual('neo usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInputscenarioWithValueCommandV0InFullCommand(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        yesterday = now.shift(days=-2)
+
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price full command with save value command
+        inputStr = 'eth usd 0 bitfinex -vs100usd'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            self.removePricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        #second command: RT price full command with remove value command. This is not usefull since
+        #each time you enter a full command, you wioe out any previously entered command, as tested
+        #by testGetPrintableResultForInputscenarioWithValueSaveCommandWipedOutByFullCommand() !
+        inputStr = 'eth usd 0 bitfinex -v0'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            self.removePriceFromResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInputscenarioWithValueSaveCommandWipedOutByFullCommand(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        yesterday = now.shift(days=-2)
+
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price full command with save value command
+        inputStr = 'eth usd 0 bitfinex -vs100usd'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            self.removePricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        #second command: RT price full command with remove value command. This is not usefull since
+        #each time you enter a full command, you wioe out any previously entered command !
+        inputStr = 'eth usd 0 bitfinex'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            self.removePriceFromResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInputscenarioWithValueCommandAndWarning(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'btc usd 0 bitfinex -vs10btc'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            self.removePricesFromCommandValueResult(printResult))
+        self.assertEqual('btc usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('btc usd 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
+
+        #second command: value command
+        inputStr = '-feth'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ERROR - Bitfinex market does not exist for this coin pair (BTC-ETH)',printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+# continue scenario
+# Scenario to test in TestController and in TestGuiOutputFormatter to check the 2 returned values
+# btc usd 0 bitfinex -vs10btc
+# -feth
+# -cxmr
+# -cbtc
+# -ceth
+
+        return
         #third command: value save command
         inputStr = '-vs100usd'
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(

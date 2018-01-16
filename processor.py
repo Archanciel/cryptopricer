@@ -110,7 +110,7 @@ class Processor:
 
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
                 
-        if priceValueSymbol != None:
+        if priceValueSymbol != None and not resultData.isError():
             resultData = self._computePriceValue(resultData, crypto, fiat, priceValueSymbol, priceValueAmount)
             
         return resultData
