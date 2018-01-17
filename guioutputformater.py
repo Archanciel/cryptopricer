@@ -40,20 +40,20 @@ class GuiOutputFormater(AbstractOutputFormater):
 
         :param resultData: result of the last full or partial request
         :return: 1/ full command string with no command option corresponding to a full or partial price request
-                    entered by the user or empty string if the command generated an error or a warning msg.
+                    entered by the user or empty string if the command generated an error msg.
                  2/ full command string with command option in save mode or none if no command option in save mode
-                    is in effect.
+                    is in effect or if the command option generated a warning.
 
                  Ex: 1/ eth usd 0 bitfinex
                      2/ eth usd 0 bitfinex -vs0.1eth
 
                      1/ eth usd 0 bitfinex
-                     2/ None (-v0.1eth option in effect)
+                     2/ None (-v0.1btc option was entered, which generated a warning)
 
                      1/ eth usd 0 bitfinex
                      3/ None (no option in effect)
         '''
-        if resultData.isError() or resultData.containsWarning():
+        if resultData.isError():
             return '', None
             
         commandDic = resultData.getValue(resultData.RESULT_KEY_COMMAND)
@@ -81,7 +81,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 
         fullCommandStrWithSaveModeOptions = None
 
-        if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE):
+        if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE) and not resultData.containsWarning():
             fullCommandStrWithSaveModeOptions = fullCommandStr + ' -vs' + commandDic[CommandPrice.PRICE_VALUE_AMOUNT] + commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
 
         return fullCommandStr, fullCommandStrWithSaveModeOptions
