@@ -131,7 +131,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, None)
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, None)
-        resultData.setWarning("WARNING - price value symbol ETH differs from both crypto (BTC) and fiat (USD). -v parameter ignored !")
+        resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+                              "WARNING - price value symbol ETH differs from both crypto (BTC) and fiat (USD). -v parameter ignored !")
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -531,7 +532,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
-        resultData.setWarning("WARNING - price value symbol ETH differs from both crypto (BTC) and fiat (USD). -v parameter ignored !")
+        resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+                              "WARNING - price value symbol ETH differs from both crypto (BTC) and fiat (USD). -v parameter ignored !")
 
         stdout = sys.stdout
         capturedStdout = StringIO()

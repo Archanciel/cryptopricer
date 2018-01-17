@@ -179,7 +179,9 @@ class CommandPrice(AbstractCommand):
         result.setValue(ResultData.RESULT_KEY_PRICE_VALUE_SAVE, self.parsedParmData[self.PRICE_VALUE_SAVE])
 
         if wasDateInFutureSetToLastYear:
-            result.setWarning("Warning - request date {} can not be in the future and was shifted back to last year !".format(localRequestDateTime.format(self.configManager.dateTimeFormat)))
+            result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,
+                              "Warning - request date {} can not be in the future and was shifted back to last year !".format(
+                                  localRequestDateTime.format(self.configManager.dateTimeFormat)))
         
         return result
 

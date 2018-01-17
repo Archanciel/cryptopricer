@@ -7,11 +7,14 @@ class ResultData:
     RESULT_KEY_PRICE = 'PRICE'
     RESULT_KEY_PRICE_TYPE = 'PRICE_TYPE'
     RESULT_KEY_ERROR_MSG = 'ERROR_MSG'
-    RESULT_KEY_WARNING_MSG = 'WARNING_MSG'
+    RESULT_KEY_WARNINGS_DIC = 'WARNING_MSG'
     RESULT_KEY_COMMAND = 'COMMAND' #full command which generated the result
     RESULT_KEY_PRICE_VALUE_CRYPTO = 'PRICE_VAL_CRYPTO' #store the crypto price returned for -v command
     RESULT_KEY_PRICE_VALUE_FIAT = 'PRICE_VAL_FIAT'     #store the fiat price returned for -v command
     RESULT_KEY_PRICE_VALUE_SAVE = 'PRICE_VAL_SAVE'     #store True or False to indicate if the price value command is to be stored in history (-vs) or not (-v)
+
+    WARNING_TYPE_FUTURE_DATE = 'FUTURE_DATE'
+    WARNING_TYPE_COMMAND_VALUE = 'VALUE_COMMAND'
 
     PRICE_TYPE_HISTO_DAY = 'HISTO_DAY'
     PRICE_TYPE_HISTO_MINUTE = 'HISTO_MINUTE'
@@ -28,7 +31,7 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_PRICE] = None
         self._resultDataDic[self.RESULT_KEY_PRICE_TYPE] = None
         self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None
-        self._resultDataDic[self.RESULT_KEY_WARNING_MSG] = None
+        self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC] = {}
         self._resultDataDic[self.RESULT_KEY_COMMAND] = None
         self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None       
         self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_CRYPTO] = None
@@ -60,21 +63,33 @@ class ResultData:
         '''
         Return True if the ResultData contains a warning msg
         '''
-        return self._resultDataDic[self.RESULT_KEY_WARNING_MSG] != None
+        return self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC] != {}
 
 
-    def getWarning(self):
+    def getWarning(self, warningType):
         '''
         Return the warning msg contained in the ResultData
+        :param warningType:
         '''
-        return self._resultDataDic[self.RESULT_KEY_WARNING_MSG]
+        return self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC][warningType]
 
 
-    def setWarning(self, warningStr):
+    def setWarning(self, warningType, warningStr):
         '''
         Set the warning msg entry in the ResultData
+        :param warningType:
         '''
-        self._resultDataDic[self.RESULT_KEY_WARNING_MSG] = warningStr
+        warningsDic = self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC]
+        warningsDic[warningType] = warningStr
+
+
+    def getWarningMessages(self):
+        '''
+        Return a list of warning messages.
+        :return: list containing the warning msg strings
+        '''
+
+        return list(self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC].values())
 
 
     def __str__(self):

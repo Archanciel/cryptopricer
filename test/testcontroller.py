@@ -250,8 +250,10 @@ class TestController(unittest.TestCase):
 
     def testControllerRegressionOnDDMMDate(self):
         # error msg not optimal in this case !!
+        requestDay = '11'
+        requestMonth = '10'
         stdin = sys.stdin
-        sys.stdin = StringIO('neo btc 11/10 bitfinex\nq\ny')
+        sys.stdin = StringIO('neo btc {}/{} bitfinex\nq\ny'.format(requestDay, requestMonth))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -286,7 +288,9 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('NEO/BTC on Bitfinex: 11/10/17 00:00C 0.006228\n', contentList[1])
+            self.assertEqual('NEO/BTC on Bitfinex: ' + '{}/{}/{} 00:00C'.format(requestDay, requestMonth, now.year - 2001), self.removePriceFromResult(contentList[1][:-1]))
+            self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year !'.format(requestDay, requestMonth, now.year - 2000), contentList[2][:-1])
+         #   self.assertEqual('NEO/BTC on Bitfinex: 11/10/17 00:00C 0.006228\n', contentList[1])
 
 
     def testControllerBugSpecifyTimeAfterAskedRT001(self):
@@ -409,7 +413,9 @@ class TestController(unittest.TestCase):
 
     def testControllerBugSpecifyDateAfterAskedRT2910(self):
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 0 all\n-d29/10\nq\ny')
+        nextRequestDay = '29'
+        nextRequestMonth = '10'
+        sys.stdin = StringIO('btc usd 0 all\n-d{}/{}\nq\ny'.format(nextRequestDay, nextRequestMonth))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -435,7 +441,8 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '29/10/17 00:00C 6147.52', contentList[3][:-1])
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year !'.format(nextRequestDay, nextRequestMonth, now.year - 2000, nowHourStr, nowMinuteStr), contentList[4][:-1])
 
 
     def testControllerBugSpecifyDate10DaysBeforeAfterAskedRTThenAskRTAgain(self):
@@ -512,7 +519,9 @@ class TestController(unittest.TestCase):
 
     def testControllerBugSpecifyFutureDateAfterAskedRTThenAskRTAgain(self):
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 0 all\n-d29/10\n-d0\nq\ny')
+        nextRequestDay = '29'
+        nextRequestMonth = '10'
+        sys.stdin = StringIO('btc usd 0 all\n-d{}/{}\n-d0\nq\ny'.format(nextRequestDay, nextRequestMonth))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -538,8 +547,8 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '29/10/17 00:00C 6147.52', contentList[3][:-1])
-            self.assertEqual("Warning - request date 29/10/{} {}:{} can not be in the future and was shifted back to last year !".format(now.year - 2000, nowHourStr, nowMinuteStr),  contentList[4][:-1])
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year !'.format(nextRequestDay, nextRequestMonth, now.year - 2000, nowHourStr, nowMinuteStr), contentList[4][:-1])
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr), self.removePriceFromResult(contentList[6][:-1])) #removing \n from contentList entry !
 
 
@@ -646,8 +655,10 @@ class TestController(unittest.TestCase):
 
 
     def testControllerInvalidYearThenValidDDMM(self):
+        nextRequestDay = '30'
+        nextRequestMonth = '9'
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 20/9/201 all\n-d30/9\nq\ny')
+        sys.stdin = StringIO('btc usd 20/9/201 all\n-d{}/{}\nq\ny'.format(nextRequestDay, nextRequestMonth))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -666,16 +677,21 @@ class TestController(unittest.TestCase):
 
         sys.stdin = stdin
         sys.stdout = stdout
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual("ERROR - 201 not conform to accepted year format (YYYY, YY or '')\n", contentList[1])
-            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00C 4360.62\n', contentList[3])
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/0{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('Warning - request date {}/0{}/{} 00:00 can not be in the future and was shifted back to last year !'.format(nextRequestDay, nextRequestMonth, now.year - 2000), contentList[4][:-1])
 
 
     def testControllerInvalidMonthThenValidDDMM(self):
+        nextRequestDay = '30'
+        nextRequestMonth = '9'
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 20/999 all\n-d30/9\nq\ny')
+        sys.stdin = StringIO('btc usd 20/999 all\n-d{}/{}\nq\ny'.format(nextRequestDay, nextRequestMonth))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -695,10 +711,13 @@ class TestController(unittest.TestCase):
         sys.stdin = stdin
         sys.stdout = stdout
 
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual("ERROR - 999 not conform to accepted month format (MM or M)\n", contentList[1])
-            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00C 4360.62\n', contentList[3])
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/0{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), self.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('Warning - request date {}/0{}/{} 00:00 can not be in the future and was shifted back to last year !'.format(nextRequestDay, nextRequestMonth, now.year - 2000), contentList[4][:-1])
 
 
     def testControllerInvalidMonthValue(self):
@@ -965,6 +984,9 @@ class TestController(unittest.TestCase):
 
 
     def testControllerHistoDayPriceIncompleteCommandScenario(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nextRequestDay = '23'
+        nextRequestMonth = '9'
         stdin = sys.stdin
         sys.stdin = StringIO('btc 23/9 2:56 bittrex\n-fusd 2:56\n-d23/9\nq\ny')
 
@@ -986,11 +1008,14 @@ class TestController(unittest.TestCase):
         sys.stdin = stdin
         sys.stdout = stdout
 
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('ERROR - fiat missing or invalid\n', contentList[1])
             self.assertEqual('ERROR - invalid command -fusd 2:56\n', contentList[3])
-            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[5])
+            self.assertEqual('BTC/USD on BitTrex: ' + '{}/0{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), self.removePriceFromResult(contentList[5][:-1]))
+            self.assertEqual('Warning - request date {}/0{}/{} 02:56 can not be in the future and was shifted back to last year !'.format(nextRequestDay, nextRequestMonth, now.year - 2000, nowHourStr, nowMinuteStr), contentList[6][:-1])
 
 
     def testControllerHistoDayPriceWrongCommand(self):
