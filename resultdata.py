@@ -66,7 +66,7 @@ class ResultData:
         return self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC] != {}
 
 
-    def getWarning(self, warningType):
+    def getWarningMessage(self, warningType):
         '''
         Return the warning msg contained in the ResultData
         :param warningType:
@@ -74,16 +74,16 @@ class ResultData:
         return self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC][warningType]
 
 
-    def setWarning(self, warningType, warningStr):
+    def setWarning(self, warningType, warningMessage):
         '''
         Set the warning msg entry in the ResultData
         :param warningType:
         '''
         warningsDic = self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC]
-        warningsDic[warningType] = warningStr
+        warningsDic[warningType] = warningMessage
 
 
-    def getWarningMessages(self):
+    def getAllWarningMessages(self):
         '''
         Return a list of warning messages.
         :return: list containing the warning msg strings
