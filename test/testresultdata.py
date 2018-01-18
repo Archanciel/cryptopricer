@@ -36,5 +36,56 @@ class TestResultData(unittest.TestCase):
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_CRYPTO), 'USD')
 
 
+    def testSetGetWarning(self):
+        commValWarningMsg = "test warning command value"
+        futureDateWarningMsg = "test warning future date"
+
+        self.resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE, commValWarningMsg)
+        self.resultData.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE, futureDateWarningMsg)
+
+        self.assertEqual(commValWarningMsg, self.resultData.getWarningMessage(ResultData.WARNING_TYPE_COMMAND_VALUE))
+        self.assertEqual(futureDateWarningMsg, self.resultData.getWarningMessage(ResultData.WARNING_TYPE_FUTURE_DATE))
+
+
+    def testGetAllWarningMessages(self):
+        commValWarningMsg = "test warning command value"
+        futureDateWarningMsg = "test warning future date"
+
+        self.resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE, commValWarningMsg)
+        self.resultData.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE, futureDateWarningMsg)
+
+        self.assertEqual([commValWarningMsg, futureDateWarningMsg], self.resultData.getAllWarningMessages())
+
+
+    def testContainsWarning(self):
+        commValWarningMsg = "test warning command value"
+        futureDateWarningMsg = "test warning future date"
+
+        self.assertFalse(self.resultData.containsWarning())
+
+        self.resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE, commValWarningMsg)
+        self.assertTrue(self.resultData.containsWarning())
+
+        self.resultData.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE, futureDateWarningMsg)
+        self.assertTrue(self.resultData.containsWarning())
+
+
+    def testOverwriteWarning(self):
+        commValWarningMsgOne = "test warning command value one"
+        futureDateWarningMsgOne = "test warning future date one"
+
+        self.resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE, commValWarningMsgOne)
+        self.resultData.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE, futureDateWarningMsgOne)
+
+        commValWarningMsgTwo = "test warning command value two"
+        futureDateWarningMsgTwo = "test warning future date two"
+
+        self.resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE, commValWarningMsgTwo)
+        self.resultData.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE, futureDateWarningMsgTwo)
+
+        self.assertEqual(commValWarningMsgTwo, self.resultData.getWarningMessage(ResultData.WARNING_TYPE_COMMAND_VALUE))
+        self.assertEqual(futureDateWarningMsgTwo, self.resultData.getWarningMessage(ResultData.WARNING_TYPE_FUTURE_DATE))
+
+
 if __name__ == '__main__':
     unittest.main()
