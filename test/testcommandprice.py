@@ -445,7 +445,7 @@ class TestCommandPrice(unittest.TestCase):
 
         now, nowDayStr, nowMonthStr, nowHourStr, nowMinuteStr = self.getFormattedNowDateTimeComponents()
 
-        minutePlusOne = now.minute + 1
+        minutePlusOne = (now.minute + 1) % 60
 
         if minutePlusOne < 10:
             if minutePlusOne > 0:
