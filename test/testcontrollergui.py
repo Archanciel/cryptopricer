@@ -85,7 +85,7 @@ class TestControllerGui(TestController):
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                nowMinuteStr),
-            self.removePricesFromCommandValueResult(printResult))
+            self.removeAllPricesFromCommandValueResult(printResult))
         self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -96,7 +96,7 @@ class TestControllerGui(TestController):
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                nowMinuteStr),
-            self.removePricesFromCommandValueResult(printResult))
+            self.removeAllPricesFromCommandValueResult(printResult))
         self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
         self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
@@ -107,7 +107,7 @@ class TestControllerGui(TestController):
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                nowMinuteStr),
-            self.removePricesFromCommandValueResult(printResult))
+            self.removeAllPricesFromCommandValueResult(printResult))
         self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
         self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
@@ -118,7 +118,7 @@ class TestControllerGui(TestController):
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                nowMinuteStr),
-            self.removePricesFromCommandValueResult(printResult))
+            self.removeAllPricesFromCommandValueResult(printResult))
         self.assertEqual('neo usd 0 bitfinex', fullCommandStr)
         self.assertEqual('neo usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
@@ -147,7 +147,7 @@ class TestControllerGui(TestController):
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                nowMinuteStr),
-            self.removePricesFromCommandValueResult(printResult))
+            self.removeAllPricesFromCommandValueResult(printResult))
         self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
         self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
@@ -178,7 +178,7 @@ class TestControllerGui(TestController):
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                nowMinuteStr),
-            self.removePricesFromCommandValueResult(printResult))
+            self.removeAllPricesFromCommandValueResult(printResult))
         self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
         self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
@@ -208,7 +208,7 @@ class TestControllerGui(TestController):
         self.assertEqual(
             'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
                                                                nowMinuteStr),
-            self.removePricesFromCommandValueResult(printResult))
+            self.removeAllPricesFromCommandValueResult(printResult))
         self.assertEqual('btc usd 0 bitfinex', fullCommandStr)
         self.assertEqual('btc usd 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
@@ -217,7 +217,7 @@ class TestControllerGui(TestController):
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'ERROR - Bitfinex market does not exist for this coin pair (BTC-ETH)',printResult)
+            'ERROR - Bitfinex market does not exist for this coin pair (BTC-ETH)', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -229,53 +229,38 @@ class TestControllerGui(TestController):
 # -cbtc
 # -ceth
 
-        return
+
         #third command: value save command
-        inputStr = '-vs100usd'
+        inputStr = '-cxmr'
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
-                                                               nowMinuteStr),
-            self.removePricesFromCommandValueResult(printResult))
-        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
-        self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
-
-        #fourth command: '' to replay lst command
-        inputStr = ''
-        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
-            inputStr)
-        self.assertEqual(
-            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
-                                                               nowMinuteStr),
-            self.removePricesFromCommandValueResult(printResult))
-        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
-        self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
-
-        #fifth command: change crypto
-        inputStr = '-cneo'
-        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
-            inputStr)
-        self.assertEqual(
-            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
-                                                               nowMinuteStr),
-            self.removePricesFromCommandValueResult(printResult))
-        self.assertEqual('neo usd 0 bitfinex', fullCommandStr)
-        self.assertEqual('neo usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
-
-        #sixth command: remove value command
-        inputStr = '-v0'
-        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
-            inputStr)
-        self.assertEqual(
-            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
-                                                               nowMinuteStr),
-            self.removePriceFromResult(printResult))
-        self.assertEqual('neo usd 0 bitfinex', fullCommandStr)
+            'ERROR - Bitfinex market does not exist for this coin pair (XMR-ETH)', printResult)
+        self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
+        #third command: value save command
+        inputStr = '-cbtc'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ERROR - Bitfinex market does not exist for this coin pair (BTC-ETH)', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
-    def removePricesFromCommandValueResult(self, resultStr):
+        #fifth command: value save command
+        inputStr = '-fusd'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            self.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('btc usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('btc usd 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
+
+
+    def removeAllPricesFromCommandValueResult(self, resultStr):
         match = re.match(r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (.*) (?:[\d\.]*)", resultStr)
 
         if match != None:
