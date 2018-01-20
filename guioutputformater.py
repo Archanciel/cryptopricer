@@ -71,12 +71,19 @@ class GuiOutputFormater(AbstractOutputFormater):
             else:
                 monthYear = commandDic[CommandPrice.MONTH] + '/' + commandDic[CommandPrice.YEAR] + ' '
 
+            commandHour = commandDic[CommandPrice.HOUR]
+            commandMinute = commandDic[CommandPrice.MINUTE]
+
+            if commandHour != None and commandMinute != None:
+                hourMinuteStr = commandHour + ':' + commandMinute + ' '
+            else:
+                hourMinuteStr = ''
+
             fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
                              commandDic[CommandPrice.FIAT] + ' ' + \
                              commandDic[CommandPrice.DAY] + '/' + \
                              monthYear + \
-                             commandDic[CommandPrice.HOUR] + ':' + \
-                             commandDic[CommandPrice.MINUTE] + ' ' + \
+                             hourMinuteStr + \
                              commandDic[CommandPrice.EXCHANGE]
 
         fullCommandStrWithSaveModeOptions = None

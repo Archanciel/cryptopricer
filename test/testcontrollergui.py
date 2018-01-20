@@ -221,15 +221,6 @@ class TestControllerGui(TestController):
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
-# continue scenario
-# Scenario to test in TestController and in TestGuiOutputFormatter to check the 2 returned values
-# btc usd 0 bitfinex -vs10btc
-# -feth
-# -cxmr
-# -cbtc
-# -ceth
-
-
         #third command: value save command
         inputStr = '-cxmr'
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
@@ -267,6 +258,35 @@ class TestControllerGui(TestController):
             return match.group(1) + match.group(2)
         else:
             return ()
+
+
+    def testControllerBugSpecifyDateBegOfYear(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = self.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        requestDayStr = '1'
+        requestMonthStr = '1'
+        requestArrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(requestDayStr), int(requestMonthStr), now.year, 0, 0, 0, timezoneStr)
+        inputStr = 'mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(requestArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = nowHourStr
+            minuteStr = nowMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'MCAP/BTC on HitBTC: ' + '0{}/0{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr, minuteStr, priceType),
+                                                        self.removePriceFromResult(printResult))
+        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
 if __name__ == '__main__':
