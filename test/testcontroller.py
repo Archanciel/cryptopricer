@@ -24,6 +24,7 @@ class TestController(unittest.TestCase):
         #print('---- Instanciating Controller with ConsoleOutputFormater ----')
         self.controller = Controller(ConsoleOutputFormater())
 
+
     def testControllerHistoDayPrice(self):
         stdin = sys.stdin
         sys.stdin = StringIO('btc usd 23/9/2017 2:56 bittrex\nq\ny')
