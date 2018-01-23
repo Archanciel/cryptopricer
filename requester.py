@@ -365,6 +365,7 @@ class Requester:
                 if self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == '0':
                     #-d0 which means RT entered. In this case, the previous
                     #date/time info are no longer relevant !
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_RT
                     hourMinute, dayMonthYear = self._wipeOutDateTimeInfoFromCommandPrice()
                 elif self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == None and self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] == None:
                     #here, partial command(s) which aren't date/time related were entered: the previous request price type must be considered !
@@ -622,7 +623,6 @@ class Requester:
         return None, None tuple used to fill the dayMonthYear
                           and hourMinute local variables
         '''
-        self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_RT
         self.commandPrice.parsedParmData[CommandPrice.DAY] = '0'
         self.commandPrice.parsedParmData[CommandPrice.MONTH] = '0'
         self.commandPrice.parsedParmData[CommandPrice.YEAR] = '0'
