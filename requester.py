@@ -371,12 +371,11 @@ class Requester:
                     if self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_RT:
                         hourMinute, dayMonthYear = self._wipeOutDateTimeInfoFromCommandPrice()
                     else:
-                        #here, since previous request was not RT, hourMinute and dayRonthYear must be rebuild
+                        #here, since previous request was not RT, hourMinute and dayRonthYear must be rebuilt
                         #from the date/time values of the previous request. Don't forget that OAY_MONTH_YEAR
                         #and HOUR_MINUTE are set to None once date/time values have been acquired !
-                        if self._isDateTimeInfoFromPreviousRequestAvailable():
-                            hourMinute = ':'.join([self.commandPrice.parsedParmData[CommandPrice.HOUR], self.commandPrice.parsedParmData[CommandPrice.MINUTE]])
-                            dayMonthYear = '/'.join([self.commandPrice.parsedParmData[CommandPrice.DAY], self.commandPrice.parsedParmData[CommandPrice.MONTH], self.commandPrice.parsedParmData[CommandPrice.YEAR]])
+                        if self._isMinimalDateTimeInfoFromPreviousRequestAvailable():
+                            dayMonthYear, hourMinute = self._rebuildPreviousRequestDateTimeValues()
                         else:
                             return None # will cause an error. This occurs in a special situation when the previous request
                                         # was in error, which explains why the date/time info from previous request is
@@ -487,6 +486,26 @@ class Requester:
         else:
             #no partial command -v specified here !
             return self.commandPrice
+
+    def _rebuildPreviousRequestDateTimeValues(self):
+        hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
+        minute = self.commandPrice.parsedParmData[CommandPrice.MINUTE]
+
+        if hour and minute:
+            hourMinute = hour + ':' + minute
+        else:
+            hourMinute = None
+
+        year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
+
+        if year:
+            dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY] + '/' + \
+                           self.commandPrice.parsedParmData[CommandPrice.MONTH] + '/' + year
+        else:
+            dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY] + '/' + \
+                           self.commandPrice.parsedParmData[CommandPrice.MONTH]
+
+        return dayMonthYear, hourMinute
 
 
     def _fillHourMinuteInfo(self, hour, minute):
@@ -609,12 +628,13 @@ class Requester:
         return (None, None)
 
 
-    def _isDateTimeInfoFromPreviousRequestAvailable(self):
+    def _isMinimalDateTimeInfoFromPreviousRequestAvailable(self):
+        '''
+        Tests if at least a day and month from the previous request are available
+        :return: True if at least a day and month value are available from the previous request.
+        '''
         return self.commandPrice.parsedParmData[CommandPrice.DAY] != None and \
-               self.commandPrice.parsedParmData[CommandPrice.MONTH] != None and \
-               self.commandPrice.parsedParmData[CommandPrice.YEAR] != None and \
-               self.commandPrice.parsedParmData[CommandPrice.HOUR] != None and \
-               self.commandPrice.parsedParmData[CommandPrice.MINUTE] != None
+               self.commandPrice.parsedParmData[CommandPrice.MONTH] != None
 
 
     def _printHelp(self):

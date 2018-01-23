@@ -26,7 +26,6 @@ class TestControllerGui(unittest.TestCase):
     All the test cases are defineed in the TestController parent to avoid code duplication
     '''
     def setUp(self):
-        #print('---- Instanciating Controller with GuiOuputFormater ----')
         self.controller = Controller(GuiOutputFormater())
 
 
@@ -281,13 +280,12 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    @unittest.skip("does not pass.Bug not yet fixed !")
     def testControllerBugSpecifyValueCommandAfterAskHistoDay(self):
         timezoneStr = 'Europe/Zurich'
         now = DateTimeUtil.localNow(timezoneStr)
-        eightDayBeforeArrowDate = now.shift(days=-8)
+        eightDaysBeforeArrowDate = now.shift(days=-8)
 
-        eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDayBeforeArrowDate)
+        eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
 
         requestDayStr = eightDaysBeforeDayStr
         requestMonthStr = eightDaysBeforeMonthStr
@@ -295,7 +293,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        if DateTimeUtil.isDateOlderThan(eightDayBeforeArrowDate, 7):
+        if DateTimeUtil.isDateOlderThan(eightDaysBeforeArrowDate, 7):
             hourStr = '00'
             minuteStr = '00'
             priceType = 'C'
@@ -316,9 +314,130 @@ class TestControllerGui(unittest.TestCase):
 
         self.assertEqual(
             'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testControllerBugSpecifySaveValueCommandAfterAskHistoDay(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        eightDaysBeforeArrowDate = now.shift(days=-8)
+
+        eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
+
+        requestDayStr = eightDaysBeforeDayStr
+        requestMonthStr = eightDaysBeforeMonthStr
+        inputStr = 'mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(eightDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = eightDaysBeforeHourStr
+            minuteStr = eightDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removePriceFromResult(printResult))
         self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        inputStr = '-vs12mcap'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual('mcap btc {}/{} hitbtc -vs12mcap'.format(requestDayStr, requestMonthStr), fullCommandStrWithSaveModeOptions)
+
+
+    def testControllerBugSpecifyValueCommandAfterAskHistoMinute(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        fiveDaysBeforeArrowDate = now.shift(days=-5)
+
+        fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+        requestDayStr = fiveDaysBeforeDayStr
+        requestMonthStr = fiveDaysBeforeMonthStr
+        requestHourStr = fiveDaysBeforeHourStr
+        requestMinuteStr = fiveDaysBeforeMinuteStr
+        inputStr = 'eth btc {}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestHourStr, requestMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = fiveDaysBeforeHourStr
+            minuteStr = fiveDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc {}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        inputStr = '-v12eth'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth btc {}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testControllerBugSpecifySaveValueCommandAfterAskHistoMinute(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        fiveDaysBeforeArrowDate = now.shift(days=-5)
+
+        fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+        requestDayStr = fiveDaysBeforeDayStr
+        requestMonthStr = fiveDaysBeforeMonthStr
+        requestHourStr = fiveDaysBeforeHourStr
+        requestMinuteStr = fiveDaysBeforeMinuteStr
+        inputStr = 'eth btc {}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestHourStr, requestMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = fiveDaysBeforeHourStr
+            minuteStr = fiveDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc {}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        inputStr = '-vs12eth'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth btc {}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual('eth btc {}/{} {}:{} hitbtc -vs12eth'.format(requestDayStr, requestMonthStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
 
 
 if __name__ == '__main__':
