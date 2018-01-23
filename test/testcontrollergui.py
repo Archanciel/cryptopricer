@@ -524,5 +524,503 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc -vs12eth'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
 
 
+    def testGetPrintableResultForReplayRealTime(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'eth usd 0 bitfinex'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForReplayHistoDay(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        eightDaysBeforeArrowDate = now.shift(days=-8)
+
+        eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
+
+        requestDayStr = eightDaysBeforeDayStr
+        requestMonthStr = eightDaysBeforeMonthStr
+        inputStr = 'mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(eightDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = eightDaysBeforeHourStr
+            minuteStr = eightDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForReplayHistoMinute(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        fiveDaysBeforeArrowDate = now.shift(days=-5)
+
+        fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+        requestDayStr = fiveDaysBeforeDayStr
+        requestMonthStr = fiveDaysBeforeMonthStr
+        requestHourStr = fiveDaysBeforeHourStr
+        requestMinuteStr = fiveDaysBeforeMinuteStr
+        yearTwoDigitStr = str(fiveDaysBeforeArrowDate.year - 2000)
+        inputStr = 'eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = fiveDaysBeforeHourStr
+            minuteStr = fiveDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForReplayRealTimeThenValueCommand(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'eth usd 0 bitfinex'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: value command
+        inputStr = '-v10eth'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: value save command
+        inputStr = '-vs100usd'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        #next command: change crypto
+        inputStr = '-cneo'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('neo usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('neo usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('neo usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('neo usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        #next command: remove value command
+        inputStr = '-v0'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('neo usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('neo usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForReplayHistoMinuteThenValueCommand(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        fiveDaysBeforeArrowDate = now.shift(days=-5)
+
+        fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+        requestDayStr = fiveDaysBeforeDayStr
+        requestMonthStr = fiveDaysBeforeMonthStr
+        requestHourStr = fiveDaysBeforeHourStr
+        requestMinuteStr = fiveDaysBeforeMinuteStr
+        yearTwoDigitStr = str(fiveDaysBeforeArrowDate.year - 2000)
+        inputStr = 'eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr)
+
+        if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = requestHourStr
+            minuteStr = requestMinuteStr
+            priceType = 'M'
+
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: value command
+        inputStr = '-v10eth'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: value save command
+        inputStr = '-vs100usd'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex -vs100usd'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex -vs100usd'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
+
+        #next command: change crypto
+        inputStr = '-cneo'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex -vs100usd'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex -vs100usd'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
+
+        #next command: remove value command
+        inputStr = '-v0'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr, priceType),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, requestHourStr,
+                                                               requestMinuteStr, priceType),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForReplayHistoDayThenValueCommand(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        eightDaysBeforeArrowDate = now.shift(days=-8)
+
+        eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
+
+        requestDayStr = eightDaysBeforeDayStr
+        requestMonthStr = eightDaysBeforeMonthStr
+        requestHourStr = eightDaysBeforeHourStr
+        requestMinuteStr = eightDaysBeforeMinuteStr
+        yearTwoDigitStr = str(eightDaysBeforeArrowDate.year - 2000)
+        inputStr = 'eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr)
+
+        if DateTimeUtil.isDateOlderThan(eightDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = requestHourStr
+            minuteStr = requestMinuteStr
+            priceType = 'M'
+
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: value command
+        inputStr = '-v10eth'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr,
+                                                               minuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr,
+                                                               minuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: value save command
+        inputStr = '-vs100usd'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr,
+                                                               minuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex -vs100usd'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr,
+                                                               minuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex -vs100usd'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStrWithSaveModeOptions)
+
+        #next command: change crypto
+        inputStr = '-cneo'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr,
+                                                               minuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex -vs100usd'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr,
+                                                               minuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex -vs100usd'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStrWithSaveModeOptions)
+
+        #next command: remove value command
+        inputStr = '-v0'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr,
+                                                               minuteStr, priceType),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '' to replay lst command
+        inputStr = ''
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, now.year - 2000, hourStr,
+                                                               minuteStr, priceType),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('neo usd {}/{}/{} {}:{} bitfinex'.format(requestDayStr, requestMonthStr, yearTwoDigitStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
 if __name__ == '__main__':
     unittest.main()

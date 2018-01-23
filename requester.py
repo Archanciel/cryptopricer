@@ -442,7 +442,7 @@ class Requester:
                     else:
                         month = None
                         year = None
-                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_HISTO
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_HISTO
                 elif len(dayMonthYearList) == 2:
                     day = dayMonthYearList[0]
                     month = dayMonthYearList[1]
@@ -451,12 +451,12 @@ class Requester:
                     else:   # year not provided and not obtained from previous full price command input.
                             # Will be set by PriceRequester which knows in which timezone we are
                         year = None
-                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_HISTO
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_HISTO
                 elif len(dayMonthYearList) == 3:
                     day = dayMonthYearList[0]
                     month = dayMonthYearList[1]
                     year = dayMonthYearList[2]
-                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_HISTO
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_HISTO
                 else: #invalid date format here !
                     if CommandPrice.DAY in self.commandPrice.parsedParmData:
                         day = self.commandPrice.parsedParmData[CommandPrice.DAY]
@@ -471,7 +471,11 @@ class Requester:
                 day = self.commandPrice.parsedParmData[CommandPrice.DAY]
                 month = self.commandPrice.parsedParmData[CommandPrice.MONTH]
                 year = self.commandPrice.parsedParmData[CommandPrice.YEAR]
-                self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_HISTO
+
+                if day == '0' and month == '0' and year == '0':
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_RT
+                else:
+                    self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_HISTO
             else:
                 day = None
                 month = None
@@ -631,7 +635,8 @@ class Requester:
     def _isMinimalDateTimeInfoFromPreviousRequestAvailable(self):
         '''
         Tests if at least a day and month from the previous request are available. For a request to be
-        valid, it must be either RT with 0 for date/time info or have at least a day and month speciication.
+        valid, it must be either RT with 0 for date/time info or have at least a day and month
+        specification.
         :return: True if at least a day and month value are available from the previous request.
         '''
         return self.commandPrice.parsedParmData[CommandPrice.DAY] != None and \
