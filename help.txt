@@ -71,4 +71,4 @@ Ex: if the last request was btc usd 0 bittrex --> BTC/USD on BitTrex: 16/12/17 2
 
 -v0 cancels the valuation command 
 	
-WARNING: until the -v command is cancelled, it stays i effect and impacts the new partial requests !
+WARNING: until the -v command is cancelled, it stays in effect and impacts the new partial requests !
