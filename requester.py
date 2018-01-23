@@ -630,7 +630,8 @@ class Requester:
 
     def _isMinimalDateTimeInfoFromPreviousRequestAvailable(self):
         '''
-        Tests if at least a day and month from the previous request are available
+        Tests if at least a day and month from the previous request are available. For a request to be
+        valid, it must be either RT with 0 for date/time info or have at least a day and month speciication.
         :return: True if at least a day and month value are available from the previous request.
         '''
         return self.commandPrice.parsedParmData[CommandPrice.DAY] != None and \
