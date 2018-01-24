@@ -133,11 +133,15 @@ class CryptoPricerGUI(BoxLayout):
         outputResultStr, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(commandStr)
         self.outputResult(outputResultStr)
 
-        if fullCommandStrWithSaveModeOptions != None and not fullCommandStrWithSaveModeOptions in self.commandList.adapter.data:
+        if fullCommandStrWithSaveModeOptions != None:
             if fullCommandStr in self.commandList.adapter.data:
+                #if the full command string corresponding to the full command string with options is already
+                #in the history list, it is removed before the full command string with options is added
+                #to the list. Otherwise, this would engender a duplicate !
                 self.commandList.adapter.data.remove(fullCommandStr)
 
-            self.commandList.adapter.data.extend([fullCommandStrWithSaveModeOptions])
+            if not fullCommandStrWithSaveModeOptions in self.commandList.adapter.data:
+                self.commandList.adapter.data.extend([fullCommandStrWithSaveModeOptions])
 
             # Reset the ListView
             self.resetListViewScrollToEnd(self.commandList)
@@ -229,11 +233,12 @@ class CryptoPricerGUI(BoxLayout):
             # Remove the matching item
             self.commandList.adapter.data.remove(selection)
  
-            # Get the student name from the TextInputs
+            # Get the command from the TextInputs
             commandStr = self.commandInput.text
  
-            # Add the updated data to the list
-            self.commandList.adapter.data.extend([commandStr])
+            # Add the updated data to the list if not already in
+            if not commandStr in self.commandList.adapter.data:
+                self.commandList.adapter.data.extend([commandStr])
  
             # Reset the ListView
             self.commandList._trigger_reset_populate()
