@@ -161,7 +161,7 @@ class TestProcessor(unittest.TestCase):
             #because of Pydroid not supporting the sl4a lib imported
             #by ConsoleOutputFormater
             from guioutputformater import GuiOutputFormater
-            outputFormater = GuiOutputFormater()
+            outputFormater = GuiOutputFormater(self.configMgr)
 
         self.assertEqual(outputFormater.formatFloatToStr(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO)), outputFormater.formatFloatToStr(0.01698205))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), priceValueAmount)
