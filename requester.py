@@ -87,9 +87,9 @@ class Requester:
     The rules below apply to -d and -t values !
     
     Date can be: 0, accepted. 
-                 1, rejected. 
-                 10, rejected. 
-                 01, rejected. 
+                 1, accepted. 
+                 10, accepted. 
+                 01, accepted. 
                  01/0, accepted. 
                  01/1, accepted. 
                  01/10, accepted. 
