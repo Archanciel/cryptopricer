@@ -33,7 +33,12 @@ class GuiOutputFormater(AbstractOutputFormater):
     def getFullCommandString(self, resultData):
         '''
         Recreate the full command string corresponding to a full or partial price request entered by the user.
-        The full command string will be stored in the command history list so it can be replayed or save to file.
+
+        The full command string contains a full date and time which is formatted according to the date time
+        format as specified in the configuration file. Even if the request only contained partial date time info,
+        the full command string ccontains a full date time specification.
+
+        The full command string will be stored in the command history list so it can be replayed or saved to file.
         An empty string is returned if the command generated an error (empty string will not be added to history !
 
         In case an option to the command with save mode is in effect - for example -vs -, then the full
@@ -66,35 +71,7 @@ class GuiOutputFormater(AbstractOutputFormater):
                              commandDic[CommandPrice.FIAT] + ' 0 ' + \
                              commandDic[CommandPrice.EXCHANGE]
         else:
-            timezoneStr = self.configurationMgr.localTimeZone
-            dayInt = int(commandDic[CommandPrice.DAY])
-            monthInt = int(commandDic[CommandPrice.MONTH])
-
-            year = commandDic[CommandPrice.YEAR]
-
-            if year == None:
-                now = DateTimeUtil.localNow(timezoneStr)
-                yearInt = now.year
-            else:
-                yearInt = int(year)
-
-            hour = commandDic[CommandPrice.HOUR]
-            minute = commandDic[CommandPrice.MINUTE]
-
-            if hour != None and minute != None:
-                #hour can not exist without minute and vice versa
-                hourInt = int(hour)
-                minuteInt = int(minute)
-            else:
-                hourInt = 0
-                minuteInt = 0
-
-            requestArrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(dayInt, monthInt, yearInt, hourInt, minuteInt, 0, timezoneStr)
-            dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(requestArrowDate, self.configurationMgr.dateTimeFormat)
-            dateSeparator = separatorsList[0]
-            timeSeparator = separatorsList[1]
-            requestDateDMY = dateTimeComponentValueList[0] + dateSeparator + dateTimeComponentValueList[1] + dateSeparator + dateTimeComponentValueList[2]
-            requestDateHM = dateTimeComponentValueList[3] + timeSeparator + dateTimeComponentValueList[4]
+            requestDateDMY, requestDateHM = self._buildFullDateAndTimeStrings(commandDic, self.configurationMgr.localTimeZone)
 
             fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
                              commandDic[CommandPrice.FIAT] + ' ' + \
@@ -108,7 +85,58 @@ class GuiOutputFormater(AbstractOutputFormater):
             fullCommandStrWithSaveModeOptions = fullCommandStr + ' -vs' + commandDic[CommandPrice.PRICE_VALUE_AMOUNT] + commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
 
         return fullCommandStr, fullCommandStrWithSaveModeOptions
-        
+
+
+    def _buildFullDateAndTimeStrings(self, commandDic, timezoneStr):
+        '''
+        This method ensures that the full command string is unified whatever the completness of the
+        dated/time components specified in the request by the user.
+
+        Ex: btc usd 1/1 bitfinex or btc usd 1/01/18 bitfinex or btc usd 1/1 12:23 bitfinex all return
+            a full commaand of btc usd 01/01/18 00:00 bitfinex, btc usd 01/01/18 12:23 bitfinex
+            respectively.
+
+        This is important since the ful command string is what is stored in the command history list, with
+        no duplicates. Otherwxise, btc usd 1/1 00:00 bitfinex and btc usd 01/01/18 00:00 bitfinex would
+        be stored as 2 entries !
+
+        :param commandDic:
+        :param timezoneStr:
+        :return:
+        '''
+        dayInt = int(commandDic[CommandPrice.DAY])
+        monthInt = int(commandDic[CommandPrice.MONTH])
+        year = commandDic[CommandPrice.YEAR]
+
+        if year == None:
+            now = DateTimeUtil.localNow(timezoneStr)
+            yearInt = now.year
+        else:
+            yearInt = int(year)
+
+        hour = commandDic[CommandPrice.HOUR]
+        minute = commandDic[CommandPrice.MINUTE]
+
+        if hour != None and minute != None:
+            # hour can not exist without minute and vice versa !
+            hourInt = int(hour)
+            minuteInt = int(minute)
+        else:
+            hourInt = 0
+            minuteInt = 0
+
+        requestArrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(dayInt, monthInt, yearInt, hourInt,
+                                                                           minuteInt, 0, timezoneStr)
+        dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(
+            requestArrowDate, self.configurationMgr.dateTimeFormat)
+        dateSeparator = separatorsList[0]
+        timeSeparator = separatorsList[1]
+        requestDateDMY = dateTimeComponentValueList[0] + dateSeparator + dateTimeComponentValueList[1] + dateSeparator + \
+                         dateTimeComponentValueList[2]
+        requestDateHM = dateTimeComponentValueList[3] + timeSeparator + dateTimeComponentValueList[4]
+
+        return requestDateDMY, requestDateHM
+
 
     def toClipboard(self, numericVal):
         self._clipboard.copy(str(numericVal))
