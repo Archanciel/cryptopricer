@@ -164,29 +164,44 @@ class DateTimeUtil:
     @staticmethod
     def getFormattedDateTimeComponents(arrowDateTimeObj, dateTimeformat):
         '''
-        Returns 2 lists, one containing the date/time components symbols in the order they are used in the
-        passed dateTimeFormat and the second containing the corresponding formated values.
+        Returns 3 lists, one containing the date/time components symbols in the order they are used in the
+        passed dateTimeFormat, the second containing 2 elements: the date and the time separator, and the
+        third containing the corresponding formated values.
 
-        Ex: for dateTimeformat = 'DD/MM/YY HH:mm' and 24//1/2018 4:41, returns
-            ['DD', 'MM', 'YY', 'HH', 'mm'] and
+        Ex: for dateTimeformat = 'DD/MM/YY HH:mm' and 24/1/2018 4:41, returns
+            ['DD', 'MM', 'YY', 'HH', 'mm']
+            ['/', ':'] and
             ['24', '01', '18', '04', '41']
 
-            for dateTimeformat = 'YYYY/MM/DD HH:mm' and 24//1/2018 4:41, returns
+            for dateTimeformat = 'YYYY-MM-DD HH.mm' and 24-1-2018 4.41, returns
             ['YYYY', 'MM', 'DD', 'HH', 'mm']
+            ['-', '.'] and
             ['2018', '01', '24', '04', '41']
 
 
         :param arrowDateTimeObj:
         :param dateTimeformat: in the format used by Arrow dates
-        :return: dateTimeComponentSymbolList and dateTimeComponentValueList
+        :return: dateTimeComponentSymbolList, separatorsList and dateTimeComponentValueList
         '''
-        dateTimeComponentSymbolList = re.split('/| |:', dateTimeformat)
+        # find the separators in 'DD/MM/YY HH:mm' - ['/', '/', ':'] or 'YYYY.MM.DD HH.mm' - ['.', '.', '.']
+        dateTimeSeparators = re.findall(r"[^\w^ ]", dateTimeformat)
+
+        # build the split pattern '/| |:' or '\.| |\.'
+        if dateTimeSeparators[0] == '.':
+            dateTimeSeparators[0] = r'\.'
+
+        if dateTimeSeparators[-1] == '.':
+            dateTimeSeparators[-1] = r'\.'
+
+        separatorsList = [dateTimeSeparators[0], dateTimeSeparators[-1]]
+        dateTimeComponentsSplitPattern = '{}| |{}'.format(dateTimeSeparators[0], dateTimeSeparators[-1])
+        dateTimeComponentSymbolList = re.split(dateTimeComponentsSplitPattern, dateTimeformat)
         dateTimeComponentValueList = []
 
         for dateTimeSymbol in dateTimeComponentSymbolList:
             dateTimeComponentValueList.append(arrowDateTimeObj.format(dateTimeSymbol))
 
-        return dateTimeComponentSymbolList, dateTimeComponentValueList
+        return dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList
 
 
 if __name__ == '__main__':
@@ -216,11 +231,13 @@ if __name__ == '__main__':
     timezoneStr = 'Europe/Zurich'
     now = DateTimeUtil.localNow(timezoneStr)
     dateTimeformat = 'DD/MM/YY HH:mm'
-    dateTimeComponentSymbolList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(now, dateTimeformat)
+    dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(now, dateTimeformat)
     print(dateTimeComponentSymbolList)
+    print(separatorsList)
     print(dateTimeComponentValueList)
-    dateTimeformat = 'YYYY/MM/DD HH:mm'
-    dateTimeComponentSymbolList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(now, dateTimeformat)
+    dateTimeformat = 'YYYY.MM.DD HH.mm'
+    dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(now, dateTimeformat)
     print(dateTimeComponentSymbolList)
+    print(separatorsList)
     print(dateTimeComponentValueList)
 
