@@ -79,8 +79,7 @@ class CryptoPricerGUI(BoxLayout):
     resultOutput = ObjectProperty()
     statusBar = ObjectProperty()
     showCommandList = False
-    controller = Controller(GuiOutputFormater())
-    
+
     def __init__(self, **kwargs):
         super(CryptoPricerGUI, self).__init__(**kwargs)
         self.dropDownMenu = CustomDropDown(owner = self)
@@ -91,6 +90,7 @@ class CryptoPricerGUI(BoxLayout):
             configPath = 'c:\\temp\\cryptopricer.ini'
 
         self.configMgr = ConfigurationManager(configPath)
+        self.controller = Controller(GuiOutputFormater(self.configMgr))
         self.dataPath = self.configMgr.dataPath
 
         #loading the load at start history file if defined
