@@ -1022,5 +1022,68 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
+    def testGetPrintableResultForRealThenChengeTimeThenChangeCrypto(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'btc usd 0 bitfinex'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('btc usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        tenMinutesBeforeArrowDate = now.shift(minutes=-10)
+
+        tenMinutesBeforeMonthStr, tenMinutesBeforeDayStr, tenMinutesBeforeHourStr, tenMinutesBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(tenMinutesBeforeArrowDate)
+
+        requestDayStr = tenMinutesBeforeDayStr
+        requestMonthStr = tenMinutesBeforeMonthStr
+        requestHourStr = tenMinutesBeforeHourStr
+        requestMinuteStr = tenMinutesBeforeMinuteStr
+        yearTwoDigitStr = str(tenMinutesBeforeArrowDate.year - 2000)
+
+        if DateTimeUtil.isDateOlderThan(tenMinutesBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = requestHourStr
+            minuteStr = requestMinuteStr
+            priceType = 'M'
+
+        #next command: '-t' 10 minutes before
+        inputStr = '-t{}:{}'.format(hourStr, minuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(tenMinutesBeforeDayStr, tenMinutesBeforeMonthStr, tenMinutesBeforeArrowDate.year - 2000, hourStr,
+                                                               minuteStr, priceType),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(tenMinutesBeforeDayStr, tenMinutesBeforeArrowDate.month, tenMinutesBeforeArrowDate.year, hourStr,
+                                                               minuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: '-ceth'
+        inputStr = '-ceth'.format(hourStr, minuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(tenMinutesBeforeDayStr, tenMinutesBeforeMonthStr, tenMinutesBeforeArrowDate.year - 2000, hourStr,
+                                                               minuteStr, priceType),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(tenMinutesBeforeDayStr, tenMinutesBeforeArrowDate.month, tenMinutesBeforeArrowDate.year, hourStr,
+                                                               minuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
 if __name__ == '__main__':
     unittest.main()
