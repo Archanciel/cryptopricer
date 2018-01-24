@@ -435,7 +435,7 @@ class Requester:
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_RT
             else:
                 dayMonthYearList = dayMonthYear.split('/')
-                if len(dayMonthYearList) == 1: #only day specified
+                if len(dayMonthYearList) == 1: #only day specified, the case for -d12 for example (12th of current month)
                     day = dayMonthYearList[0]
                     if CommandPrice.DAY in self.commandPrice.parsedParmData:
                         month = self.commandPrice.parsedParmData[CommandPrice.MONTH]
