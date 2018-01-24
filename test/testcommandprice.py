@@ -292,6 +292,38 @@ class TestCommandPrice(unittest.TestCase):
                          "ERROR - 017 not conform to accepted year format (YYYY, YY or '')")
 
 
+    def testExecuteRealTimePriceInvalidYearFiveDigit(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '20017'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - 20017 not conform to accepted year format (YYYY, YY or '')")
+
+
+    def testExecuteRealTimePriceInvalidYearNonDigit(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = 'O7'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - O7 violates format for year")
+
+
     def testExecuteRealTimePriceInvalidMonthThreeDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
         self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'

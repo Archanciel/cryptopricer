@@ -1094,5 +1094,251 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
+    def testGetPrintableResultForInvalidDayFormatAfterHistoMinute(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        fiveDaysBeforeArrowDate = now.shift(days=-5)
+
+        fiveDaysBeforeYearStr, fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+        requestDayStr = fiveDaysBeforeDayStr
+        requestMonthStr = fiveDaysBeforeMonthStr
+        requestHourStr = fiveDaysBeforeHourStr
+        requestMinuteStr = fiveDaysBeforeMinuteStr
+        inputStr = 'eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = fiveDaysBeforeHourStr
+            minuteStr = fiveDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: -d with invalid date format
+        inputStr = '-d10:01'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - 10:01 violates format for day', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInvalidMonthFormatAfterHistoMinute(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        fiveDaysBeforeArrowDate = now.shift(days=-5)
+
+        fiveDaysBeforeYearStr, fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+        requestDayStr = fiveDaysBeforeDayStr
+        requestMonthStr = fiveDaysBeforeMonthStr
+        requestHourStr = fiveDaysBeforeHourStr
+        requestMinuteStr = fiveDaysBeforeMinuteStr
+        inputStr = 'eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = fiveDaysBeforeHourStr
+            minuteStr = fiveDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: -d with invalid date format
+        inputStr = '-d10/O1'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - O1 violates format for month', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInvalidYearFormatAfterHistoMinute(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        fiveDaysBeforeArrowDate = now.shift(days=-5)
+
+        fiveDaysBeforeYearStr, fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+        requestDayStr = fiveDaysBeforeDayStr
+        requestMonthStr = fiveDaysBeforeMonthStr
+        requestHourStr = fiveDaysBeforeHourStr
+        requestMinuteStr = fiveDaysBeforeMinuteStr
+        inputStr = 'eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = fiveDaysBeforeHourStr
+            minuteStr = fiveDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: -d with invalid date format
+        inputStr = '-d1/1/20O1'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - 20O1 violates format for year', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInvalidMinuteFormatAfterHistoMinute(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        fiveDaysBeforeArrowDate = now.shift(days=-5)
+
+        fiveDaysBeforeYearStr, fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+        requestDayStr = fiveDaysBeforeDayStr
+        requestMonthStr = fiveDaysBeforeMonthStr
+        requestHourStr = fiveDaysBeforeHourStr
+        requestMinuteStr = fiveDaysBeforeMinuteStr
+        inputStr = 'eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = fiveDaysBeforeHourStr
+            minuteStr = fiveDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: -d with invalid date format
+        inputStr = '-t10:O1'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - O1 violates format for minute', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInvalidMinuteValueAfterHistoMinute(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        fiveDaysBeforeArrowDate = now.shift(days=-5)
+
+        fiveDaysBeforeYearStr, fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+        requestDayStr = fiveDaysBeforeDayStr
+        requestMonthStr = fiveDaysBeforeMonthStr
+        requestHourStr = fiveDaysBeforeHourStr
+        requestMinuteStr = fiveDaysBeforeMinuteStr
+        inputStr = 'eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = fiveDaysBeforeHourStr
+            minuteStr = fiveDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: -d with invalid date format
+        inputStr = '-t10:61'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - minute must be in 0..59', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInvalidHourFormatAfterHistoMinute(self):
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        fiveDaysBeforeArrowDate = now.shift(days=-5)
+
+        fiveDaysBeforeYearStr, fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+        requestDayStr = fiveDaysBeforeDayStr
+        requestMonthStr = fiveDaysBeforeMonthStr
+        requestHourStr = fiveDaysBeforeHourStr
+        requestMinuteStr = fiveDaysBeforeMinuteStr
+        inputStr = 'eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = fiveDaysBeforeHourStr
+            minuteStr = fiveDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr, priceType),
+                                                        UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next command: -d with invalid date format
+        inputStr = '-t1O:01'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - 1O violates format for hour', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
 if __name__ == '__main__':
     unittest.main()

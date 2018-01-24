@@ -279,6 +279,16 @@ class CommandPrice(AbstractCommand):
             if minuteStr == None:
                 minuteStr = str(localNow.minute)
 
+            dateTimeTupleList = [('day', dayStr), ('month', monthStr), ('year', yearStr), ('hour', hourStr), ('minute', minuteStr)]
+
+            try:
+                for name, value in dateTimeTupleList:
+                    int(value)
+            except ValueError as e:
+                resultData = ResultData()
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} violates format for {}".format(value, name))
+                return resultData
+
             try:
                 DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr),
                                                                 int(hourStr), int(minuteStr), 0,
