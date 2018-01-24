@@ -1,4 +1,5 @@
 import arrow
+import re
 
 class DateTimeUtil:
     SECONDS_PER_DAY = 86400
@@ -160,6 +161,34 @@ class DateTimeUtil:
         return endOfDayDateTimeArrowObject.timestamp
 
 
+    @staticmethod
+    def getFormattedDateTimeComponents(arrowDateTimeObj, dateTimeformat):
+        '''
+        Returns 2 lists, one containing the date/time components symbols in the order they are used in the
+        passed dateTimeFormat and the second containing the corresponding formated values.
+
+        Ex: for dateTimeformat = 'DD/MM/YY HH:mm' and 24//1/2018 4:41, returns
+            ['DD', 'MM', 'YY', 'HH', 'mm'] and
+            ['24', '01', '18', '04', '41']
+
+            for dateTimeformat = 'YYYY/MM/DD HH:mm' and 24//1/2018 4:41, returns
+            ['YYYY', 'MM', 'DD', 'HH', 'mm']
+            ['2018', '01', '24', '04', '41']
+
+
+        :param arrowDateTimeObj:
+        :param dateTimeformat: in the format used by Arrow dates
+        :return: dateTimeComponentSymbolList and dateTimeComponentValueList
+        '''
+        dateTimeComponentSymbolList = re.split('/| |:', dateTimeformat)
+        dateTimeComponentValueList = []
+
+        for dateTimeSymbol in dateTimeComponentSymbolList:
+            dateTimeComponentValueList.append(arrowDateTimeObj.format(dateTimeSymbol))
+
+        return dateTimeComponentSymbolList, dateTimeComponentValueList
+
+
 if __name__ == '__main__':
     utcArrowDateTimeObj_endOfPreviousDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/29 23:59:59", 'UTC',
                                                                       "YYYY/MM/DD HH:mm:ss")
@@ -183,3 +212,15 @@ if __name__ == '__main__':
 
     tsEOD = DateTimeUtil.shiftTimeStampToEndOfDay(utcArrowDateTimeObj_begOfCurrentDay.timestamp)
     print('shifted:                    ' + str(tsEOD))
+
+    timezoneStr = 'Europe/Zurich'
+    now = DateTimeUtil.localNow(timezoneStr)
+    dateTimeformat = 'DD/MM/YY HH:mm'
+    dateTimeComponentSymbolList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(now, dateTimeformat)
+    print(dateTimeComponentSymbolList)
+    print(dateTimeComponentValueList)
+    dateTimeformat = 'YYYY/MM/DD HH:mm'
+    dateTimeComponentSymbolList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(now, dateTimeformat)
+    print(dateTimeComponentSymbolList)
+    print(dateTimeComponentValueList)
+
