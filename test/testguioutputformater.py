@@ -5,15 +5,25 @@ from io import StringIO
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
+sys.path.insert(0,currentdir) # this instruction is necessary for successful importation of utilityfortest module when
+                              # the test is executed standalone
 
 import re
 from guioutputformater import GuiOutputFormater
 from resultdata import ResultData
 from datetimeutil import DateTimeUtil
+from configurationmanager import ConfigurationManager
+from utilityfortest import UtilityForTest
 
 class TestGuiOutputFormater(unittest.TestCase):
     def setUp(self):
-        self.printer = GuiOutputFormater()
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptopricer.ini'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptopricer.ini'
+
+        configMgr = ConfigurationManager(FILE_PATH)
+        self.printer = GuiOutputFormater(configMgr)
 
 
     def testPrintCryptoPriceHistorical(self):
@@ -86,7 +96,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
         fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
-        self.assertEqual(fullCommandString, "eth usd 5/12/17 9:30 bittrex")
+        self.assertEqual(fullCommandString, "eth usd 05/12/17 09:30 bittrex")
 
 
     def testPrintCryptoPriceHistoricalPriceValueDupl(self):
@@ -373,6 +383,10 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 
     def testGetFullCommandStringYearNone(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
         crypto = 'ETH'
         fiat = 'USD'
 
@@ -390,7 +404,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
         fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
-        self.assertEqual(fullCommandString, "eth usd 5/12 9:30 bittrex")
+        self.assertEqual(fullCommandString, "eth usd 05/12/{} 09:30 bittrex".format(nowYearStr))
 
 
     def testGetFullCommandStringYearDefined(self):
@@ -413,7 +427,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
         fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
-        self.assertEqual(fullCommandString, "eth usd 5/12/17 9:30 bittrex")
+        self.assertEqual(fullCommandString, "eth usd 05/12/17 09:30 bittrex")
 
 
     def testGetCryptoPriceRealTimeWithValueFlag(self):

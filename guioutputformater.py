@@ -3,12 +3,13 @@ import os
 from commandprice import CommandPrice
 from abstractoutputformater import AbstractOutputFormater
 from kivy.core.clipboard import Clipboard
+from datetimeutil import DateTimeUtil
 
 
 class GuiOutputFormater(AbstractOutputFormater):
     
     
-    def __init__(self):
+    def __init__(self, configurationMgr):
         # commented code below does not run in Pydroid since Pydroid does not support
         # the sl4a lib
         # if os.name == 'posix':
@@ -16,6 +17,7 @@ class GuiOutputFormater(AbstractOutputFormater):
         #     self._clipboard = android.Android()
         # else:
         self._clipboard = Clipboard
+        self.configurationMgr = configurationMgr
 
 
     def printDataToConsole(self, resultData):
@@ -64,26 +66,40 @@ class GuiOutputFormater(AbstractOutputFormater):
                              commandDic[CommandPrice.FIAT] + ' 0 ' + \
                              commandDic[CommandPrice.EXCHANGE]
         else:
+            timezoneStr = self.configurationMgr.localTimeZone
+            dayInt = int(commandDic[CommandPrice.DAY])
+            monthInt = int(commandDic[CommandPrice.MONTH])
+
             year = commandDic[CommandPrice.YEAR]
 
             if year == None:
-                monthYear = commandDic[CommandPrice.MONTH] + ' '
+                now = DateTimeUtil.localNow(timezoneStr)
+                yearInt = now.year
             else:
-                monthYear = commandDic[CommandPrice.MONTH] + '/' + commandDic[CommandPrice.YEAR] + ' '
+                yearInt = int(year)
 
-            commandHour = commandDic[CommandPrice.HOUR]
-            commandMinute = commandDic[CommandPrice.MINUTE]
+            hour = commandDic[CommandPrice.HOUR]
+            minute = commandDic[CommandPrice.MINUTE]
 
-            if commandHour != None and commandMinute != None:
-                hourMinuteStr = commandHour + ':' + commandMinute + ' '
+            if hour != None and minute != None:
+                #hour can not exist without minute and vice versa
+                hourInt = int(hour)
+                minuteInt = int(minute)
             else:
-                hourMinuteStr = ''
+                hourInt = 0
+                minuteInt = 0
+
+            requestArrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(dayInt, monthInt, yearInt, hourInt, minuteInt, 0, timezoneStr)
+            dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(requestArrowDate, self.configurationMgr.dateTimeFormat)
+            dateSeparator = separatorsList[0]
+            timeSeparator = separatorsList[1]
+            requestDateDMY = dateTimeComponentValueList[0] + dateSeparator + dateTimeComponentValueList[1] + dateSeparator + dateTimeComponentValueList[2]
+            requestDateHM = dateTimeComponentValueList[3] + timeSeparator + dateTimeComponentValueList[4]
 
             fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
                              commandDic[CommandPrice.FIAT] + ' ' + \
-                             commandDic[CommandPrice.DAY] + '/' + \
-                             monthYear + \
-                             hourMinuteStr + \
+                             requestDateDMY + ' ' + \
+                             requestDateHM + ' ' + \
                              commandDic[CommandPrice.EXCHANGE]
 
         fullCommandStrWithSaveModeOptions = None

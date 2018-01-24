@@ -12,6 +12,7 @@ import re
 from controller import Controller
 from datetimeutil import DateTimeUtil
 from guioutputformater import GuiOutputFormater
+from configurationmanager import ConfigurationManager
 from utilityfortest import UtilityForTest
 
 
@@ -26,7 +27,13 @@ class TestControllerGui(unittest.TestCase):
     All the test cases are defineed in the TestController parent to avoid code duplication
     '''
     def setUp(self):
-        self.controller = Controller(GuiOutputFormater())
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptopricer.ini'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptopricer.ini'
+
+        configMgr = ConfigurationManager(FILE_PATH)
+        self.controller = Controller(GuiOutputFormater(configMgr))
 
 
     @unittest.skip
@@ -277,7 +284,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'MCAP/BTC on HitBTC: ' + '0{}/0{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual('mcap btc 0{}/0{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
@@ -307,7 +314,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual('mcap btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-v12mcap'
@@ -317,7 +324,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
-        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual('mcap btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
@@ -347,7 +354,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual('mcap btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-vs12mcap'
@@ -357,8 +364,8 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
-        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
-        self.assertEqual('mcap btc {}/{} hitbtc -vs12mcap'.format(requestDayStr, requestMonthStr), fullCommandStrWithSaveModeOptions)
+        self.assertEqual('mcap btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual('mcap btc {}/{}/{} {}:{} hitbtc -vs12mcap'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
 
 
     def testControllerBugSpecifyValueCommandAfterAskHistoMinute(self):
@@ -389,7 +396,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual('eth btc {}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr, requestMinuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-v12eth'
@@ -399,7 +406,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
-        self.assertEqual('eth btc {}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
@@ -431,7 +438,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual('eth btc {}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestHourStr, requestMinuteStr), fullCommandStr)
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr, requestMinuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-vs12eth'
@@ -441,8 +448,8 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'ETH/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
-        self.assertEqual('eth btc {}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, hourStr, minuteStr), fullCommandStr)
-        self.assertEqual('eth btc {}/{} {}:{} hitbtc -vs12eth'.format(requestDayStr, requestMonthStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual('eth btc {}/{}/{} {}:{} hitbtc -vs12eth'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
 
 
     def testControllerBugSpecifyValueCommandAfterAskHistoMinuteYearSupplied(self):
@@ -585,7 +592,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual('mcap btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         #next command: '' to replay lst command
@@ -596,7 +603,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'MCAP/BTC on HitBTC: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual('mcap btc {}/{} hitbtc'.format(requestDayStr, requestMonthStr), fullCommandStr)
+        self.assertEqual('mcap btc {}/{}/{} {}:{} hitbtc'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
@@ -1069,7 +1076,7 @@ class TestControllerGui(unittest.TestCase):
             'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(tenMinutesBeforeDayStr, tenMinutesBeforeMonthStr, tenMinutesBeforeYearStr, hourStr,
                                                                minuteStr, priceType),
             UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(tenMinutesBeforeDayStr, tenMinutesBeforeArrowDate.month, tenMinutesBeforeArrowDate.year, hourStr,
+        self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(tenMinutesBeforeDayStr, tenMinutesBeforeMonthStr, tenMinutesBeforeYearStr, hourStr,
                                                                minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1082,7 +1089,7 @@ class TestControllerGui(unittest.TestCase):
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(tenMinutesBeforeDayStr, tenMinutesBeforeMonthStr, tenMinutesBeforeYearStr, hourStr,
                                                                minuteStr, priceType),
             UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(tenMinutesBeforeDayStr, tenMinutesBeforeArrowDate.month, tenMinutesBeforeArrowDate.year, hourStr,
+        self.assertEqual('eth usd {}/{}/{} {}:{} bitfinex'.format(tenMinutesBeforeDayStr, tenMinutesBeforeMonthStr, tenMinutesBeforeYearStr, hourStr,
                                                                minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 

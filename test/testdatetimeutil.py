@@ -268,15 +268,29 @@ class TestDateTimeUtil(unittest.TestCase):
         zhArrowDateTimeObjRef = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 02:00:00", 'Europe/Zurich',
                                                                             "YYYY/MM/DD HH:mm:ss")
 
-        dateTimeComponentSymbolList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(zhArrowDateTimeObjRef, 'DD/MM/YY HH:mm')
+        dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(zhArrowDateTimeObjRef, 'DD/MM/YY HH:mm')
 
         self.assertEqual(['DD', 'MM', 'YY', 'HH', 'mm'], dateTimeComponentSymbolList)
+        self.assertEqual(['/', ':'], separatorsList)
         self.assertEqual(['30', '09', '17', '02', '00'], dateTimeComponentValueList)
 
-        dateTimeComponentSymbolList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(zhArrowDateTimeObjRef, 'YYYY/MM/DD HH:mm')
+        dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(zhArrowDateTimeObjRef, 'YYYY.MM.DD HH.mm')
 
         self.assertEqual(['YYYY', 'MM', 'DD', 'HH', 'mm'], dateTimeComponentSymbolList)
+        self.assertEqual(['\.', '\.'], separatorsList)
         self.assertEqual(['2017', '09', '30', '02', '00'], dateTimeComponentValueList)
+
+        dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(zhArrowDateTimeObjRef, 'YYYY.MM.DD HH-mm')
+
+        self.assertEqual(['YYYY', 'MM', 'DD', 'HH', 'mm'], dateTimeComponentSymbolList)
+        self.assertEqual(['\.', '-'], separatorsList)
+        self.assertEqual(['2017', '09', '30', '02', '00'], dateTimeComponentValueList)
+
+        dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(zhArrowDateTimeObjRef, 'MM-DD-YYYY HH.mm')
+
+        self.assertEqual(['MM', 'DD', 'YYYY', 'HH', 'mm'], dateTimeComponentSymbolList)
+        self.assertEqual(['-', '\.'], separatorsList)
+        self.assertEqual(['09', '30', '2017', '02', '00'], dateTimeComponentValueList)
 
 
 if __name__ == '__main__':
