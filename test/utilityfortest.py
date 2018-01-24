@@ -13,40 +13,13 @@ class UtilityForTest:
     '''
     @staticmethod
     def getFormattedDateTimeComponentsForArrowDateTimeObj(dateTimeObj):
-        dateTimeObjMinute = dateTimeObj.minute
+        dateTimeObjDayStr = dateTimeObj.format('DD')
+        dateTimeObjMonthStr = dateTimeObj.format('MM')
+        dateTimeObjYearStr = dateTimeObj.format('YY')
+        dateTimeObjHourStr = dateTimeObj.format('HH')
+        dateTimeObjMinuteStr = dateTimeObj.format('mm')
 
-        if dateTimeObjMinute < 10:
-            if dateTimeObjMinute > 0:
-                dateTimeObjMinuteStr = '0' + str(dateTimeObjMinute)
-            else:
-                dateTimeObjMinuteStr = '00'
-        else:
-            dateTimeObjMinuteStr = str(dateTimeObjMinute)
-
-        dateTimeObjHour = dateTimeObj.hour
-
-        if dateTimeObjHour < 10:
-            if dateTimeObjHour > 0:
-                dateTimeObjHourStr = '0' + str(dateTimeObjHour)
-            else:
-                dateTimeObjHourStr = '00'
-        else:
-            dateTimeObjHourStr = str(dateTimeObjHour)
-
-        dateTimeObjDay = dateTimeObj.day
-
-        if dateTimeObjDay < 10:
-            dateTimeObjDayStr = '0' + str(dateTimeObjDay)
-        else:
-            dateTimeObjDayStr = str(dateTimeObjDay)
-        dateTimeObjMonth = dateTimeObj.month
-
-        if dateTimeObjMonth < 10:
-            dateTimeObjMonthStr = '0' + str(dateTimeObjMonth)
-        else:
-            dateTimeObjMonthStr = str(dateTimeObjMonth)
-
-        return dateTimeObjMonthStr, dateTimeObjDayStr, dateTimeObjHourStr, dateTimeObjMinuteStr
+        return dateTimeObjYearStr, dateTimeObjMonthStr, dateTimeObjDayStr, dateTimeObjHourStr, dateTimeObjMinuteStr
 
 
     @staticmethod
