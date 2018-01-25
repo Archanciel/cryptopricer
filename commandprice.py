@@ -290,17 +290,12 @@ class CommandPrice(AbstractCommand):
                 return resultData
 
             try:
-                DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr),
+                date = DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr),
                                                                 int(hourStr), int(minuteStr), 0,
                                                                 self.configManager.localTimeZone)
             except ValueError as e:
                 resultData = ResultData()
                 resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - " + str(e))
-
-        # debug code useful on phone !
-        #        dateTimeList = [dayStr, monthStr, yearStr, hourStr, minuteStr]
-        #        with open('/sdcard/compri.txt', 'a') as f:
-        #            f.write(str(dateTimeList) + '\n')
 
         return resultData
 

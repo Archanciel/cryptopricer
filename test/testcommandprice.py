@@ -308,22 +308,6 @@ class TestCommandPrice(unittest.TestCase):
                          "ERROR - 20017 not conform to accepted year format (YYYY, YY or '')")
 
 
-    def testExecuteRealTimePriceInvalidYearNonDigit(self):
-        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
-        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
-        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '1'
-        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
-        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = 'O7'
-        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
-        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
-
-        resultData = self.commandPrice.execute()
-
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - O7 violates format for year")
-
-
     def testExecuteRealTimePriceInvalidMonthThreeDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
         self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
@@ -503,6 +487,86 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), "{}/{}/{} 00:00".format(nowDayStr, nowMonthStr, (now.year - 1 - 2000)))
+
+
+    def testExecuteRealTimePriceInvalidYearNonDigit(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = 'O7'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - O7 violates format for year")
+
+
+    def testExecuteRealTimePriceInvalidDayFormat(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10:00'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - 10:00 violates format for day")
+
+
+    def testExecuteRealTimePriceInvalidDayFormat(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = 'o1'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - o1 violates format for month")
+
+
+    def testExecuteRealTimePriceInvalidHourFormat(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '1o'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - 1o violates format for hour")
+
+
+    def testExecuteRealTimePriceInvalidMinuteFormat(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = 'o5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - o5 violates format for minute")
 
 
 if __name__ == '__main__':
