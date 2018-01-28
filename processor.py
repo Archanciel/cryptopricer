@@ -25,7 +25,8 @@ class Processor:
                        hour,
                        minute,
                        priceValueSymbol = None,
-                       priceValueAmount = None):
+                       priceValueAmount = None,
+                       requestInputString = ''):
         '''
         Ask the PriceRequester either a RT price or a historical price. Then, in case a price value parm (-v)
         was specified, does the conversion and add its result to the returned ResultData
@@ -62,11 +63,13 @@ class Processor:
                                         converted value will be 1 / 20000 USD * 500 USD => 0.025 BTC
 
         :param priceValueAmount: float price value amount
+        :param requestInputString): used for better error msg !
+
         :return: a ResultData filled with result values
         '''
         if exchange == None:
             resultData = ResultData()
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your command")
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your command ({})".format(requestInputString))
             return resultData
         else:
             #this responsability is specific to the PriceRequester and should be moved to it !

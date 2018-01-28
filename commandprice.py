@@ -169,7 +169,8 @@ class CommandPrice(AbstractCommand):
                                               hour,
                                               minute,
                                               priceValueSymbol,
-                                              priceValueAmount)
+                                              priceValueAmount,
+                                              self.requestInputString)
 
         #the command components	denoting the user request will be used to recreate
         #a full command request which will be stored in the command history list.

@@ -38,7 +38,8 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_FIAT] = None
         self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_SAVE] = None
 
- 
+        self.requestInputString = ''
+
 
     def setValue(self, key, value):
         self._resultDataDic[key] = value
