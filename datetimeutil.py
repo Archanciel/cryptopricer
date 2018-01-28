@@ -187,6 +187,8 @@ class DateTimeUtil:
         dateTimeSeparators = re.findall(r"[^\w^ ]", dateTimeformat)
 
         # build the split pattern '/| |:' or '\.| |\.'
+        
+        # if a separator is a dot, must be escaped !
         if dateTimeSeparators[0] == '.':
             dateTimeSeparators[0] = r'\.'
 
