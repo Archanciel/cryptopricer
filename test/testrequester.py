@@ -183,7 +183,9 @@ class TestRequester(unittest.TestCase):
         cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command btc [5/7 0.0015899 6/7 0.00153]: fiat list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid command : fiat list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseOOCommandParmsFiatListMissingWithOtherCommand(self):
@@ -191,7 +193,9 @@ class TestRequester(unittest.TestCase):
         cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command btc [5/7 0.0015899 6/7 0.00153] -nosave: fiat list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid command : fiat list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseOOCommandParms(self):
@@ -1414,7 +1418,9 @@ class TestRequester(unittest.TestCase):
         commandError = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandError, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -ceth -vooo -fgbp -d11/8/15 -t22:46 -eKraken: in -vooo, ooo must respect 99.99999zzz <price><symbol> format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid command : in -vooo, ooo must respect 99.99999zzz <price><symbol> format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 #end
     def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSave(self):
@@ -1631,7 +1637,9 @@ class TestRequester(unittest.TestCase):
         commandError = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandError, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -ceth -vs -fgbp -d11/8/15 -t22:46 -eKraken: in -vs, s must respect 99.99999zzz <price><symbol> format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid command : in -vs, s must respect 99.99999zzz <price><symbol> format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceInvalidPriceValueSaveSpec(self):
@@ -1658,7 +1666,9 @@ class TestRequester(unittest.TestCase):
         commandError = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandError, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -ceth -vsooo -fgbp -d11/8/15 -t22:46 -eKraken: in -vsooo, sooo must respect 99.99999zzz <price><symbol> format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid command : in -vsooo, sooo must respect 99.99999zzz <price><symbol> format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceWithInitYearWithPartialYear(self):
@@ -1868,7 +1878,9 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(commandPrice, CommandError)
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -ceth -fgbp -d11/8 -t5: in -t5, 5 must respect 99:99 format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid command : in -t5, 5 must respect 99:99 format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearNoMinuteInvalidTime(self):
@@ -1893,7 +1905,9 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(commandPrice, CommandError)
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -ceth -ebittrex -t6.45 -d21/12: in -t6.45, 6.45 must respect 99:99 format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid command : in -t6.45, 6.45 must respect 99:99 format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceWithInitYear(self):
@@ -1955,7 +1969,8 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(commandError, self.commandError)
         parsedParmData = commandError.parsedParmData
         self.assertEqual(parsedParmData[0], '-h not supported')
-        self.assertEqual(commandError.rawParmData, '-ceth -fgbp -d11/8 -h22:46 -eKraken')
+
+        # formatting of request input string has been moved to end of Requester.getCommand !
 
 
     def test_parseAndFillPartialCommandPriceCommandNoHiphen(self):

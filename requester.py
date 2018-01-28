@@ -166,51 +166,56 @@ class Requester:
         :param inputStr: input string to parse
         :return: Command concrete instance
         '''
+        retunedCommand = None
+
         if inputStr == '' and self.commandPrice.isValid():
             #here, user entered RETURN to replay the last commannd
             self._alignCommandPriceDateTimeDataWithPriceType()
-            return self.commandPrice
-
-        upperInputStr = inputStr.upper()
-        match = self._tryMatchCommandSymbol(upperInputStr)
-
-        if match == None:
-            #here, either full or partial historical/RT price request which has no command symbol
-            #or user input error
-            command = self._parseAndFillCommandPrice(inputStr)
-            if command == self.commandPrice or command == self.commandError:
-                return command
-            else:
-                # here, either invalid historical/RT price request which has no command symbol (for ex -t alone)
-                # or other request with missing command symbol (for ex [btc 05/07 0.0015899] [usd-chf] -nosave)
-                self.commandError.rawParmData = inputStr
-                if '[' in inputStr:
-                    # command symbol missing
-                    self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
-                else:
-                    # invakid partial command parm
-                    self.commandError.parsedParmData = ['']
-                return self.commandError
-
-        userCommand = match.group(1)
-
-        if userCommand == "OO":
-            upperInputStrWithoutUserCommand = upperInputStr[len(userCommand) + 1:]
-            cryptoDataList, fiatDataList, flag = self._parseOOCommandParms(inputStr, upperInputStrWithoutUserCommand)
-
-            if cryptoDataList == self.commandError:
-                return self.commandError
-
-            self.commandCrypto.parsedParmData = {self.commandCrypto.CRYPTO_LIST : cryptoDataList, \
-                                                 self.commandCrypto.FIAT_LIST : fiatDataList, \
-                                                 self.commandCrypto.FLAG : flag}
-
-            return self.commandCrypto
+            retunedCommand = self.commandPrice
         else:
-            self.commandError.rawParmData = inputStr
-            self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
+            upperInputStr = inputStr.upper()
+            match = self._tryMatchCommandSymbol(upperInputStr)
 
-            return self.commandError
+            if match == None:
+                #here, either full or partial historical/RT price request which has no command symbol
+                #or user input error
+                command = self._parseAndFillCommandPrice(inputStr)
+                if command == self.commandPrice or command == self.commandError:
+                    retunedCommand = command
+                else:
+                    # here, either invalid historical/RT price request which has no command symbol (for ex -t alone)
+                    # or other request with missing command symbol (for ex [btc 05/07 0.0015899] [usd-chf] -nosave)
+                    if '[' in inputStr:
+                        # command symbol missing
+                        self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
+                    else:
+                        # invakid partial command parm
+                        self.commandError.parsedParmData = ['']
+
+                    retunedCommand = self.commandError
+            else:
+                userCommandSymbol = match.group(1)
+
+                if userCommandSymbol == "OO":
+                    upperInputStrWithoutUserCommand = upperInputStr[len(userCommandSymbol) + 1:]
+                    cryptoDataList, fiatDataList, flag = self._parseOOCommandParms(inputStr, upperInputStrWithoutUserCommand)
+
+                    if cryptoDataList == self.commandError:
+                        retunedCommand = self.commandError
+                    else:
+                        self.commandCrypto.parsedParmData = {self.commandCrypto.CRYPTO_LIST : cryptoDataList, \
+                                                             self.commandCrypto.FIAT_LIST : fiatDataList, \
+                                                             self.commandCrypto.FLAG : flag}
+
+                        retunedCommand = self.commandCrypto
+                else:
+                    self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
+
+                    retunedCommand = self.commandError
+
+        retunedCommand.requestInputString = inputStr
+
+        return retunedCommand
 
 
     def _alignCommandPriceDateTimeDataWithPriceType(self):
@@ -357,7 +362,6 @@ class Requester:
                         if commandUpper in keys:
                             self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = value
                         else:
-                            self.commandError.rawParmData = inputStr
                             # unknown partial command symbol
                             self.commandError.parsedParmData = [self.commandError.COMMAND_NOT_SUPPORTED_MSG.format(command)]
                             return self.commandError
@@ -399,7 +403,6 @@ class Requester:
             if optionalParsedParmDataDic != None:
                 self.commandPrice.parsedParmData.update(optionalParsedParmDataDic)
             else:
-                self.commandError.rawParmData = inputStr
                 # invalid full command format
                 self.commandError.parsedParmData = [self.commandError.FULL_COMMAND_PRICE_FORMAT_INVALID_MSG]
 
@@ -412,7 +415,6 @@ class Requester:
             hourMinuteList = hourMinute.split(':')
             if len(hourMinuteList) == 1:
                 #supplied time is invalid: does not respect expected format of 0:10 or 12:01 etc
-                self.commandError.rawParmData = inputStr
                 # invalid time partial command format
                 invalidPartialCommand, invalidValue = self._wholeParmAndInvalidValue('-t', inputStr)
                 self.commandError.parsedParmData = [self.commandError.PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG.format(invalidPartialCommand, invalidValue)]
@@ -572,7 +574,6 @@ class Requester:
             return self.commandPrice
         else:
             #here, invalid -v command
-            self.commandError.rawParmData = inputStr
             self.commandError.parsedParmData = [self.commandError.PARTIAL_PRICE_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + priceValueData, priceValueData)]
 
             return self.commandError
@@ -729,7 +730,6 @@ class Requester:
                             cryptoDataList.append(elem)
 
         if (grpNumber == 0) or (grpNumber == 1 and flag != None):
-            self.commandError.rawParmData = inputStr
             self.commandError.parsedParmData = [self.commandError.FIAT_LIST_MISSING_MSG]
             return self.commandError, fiatDataList, flag
         else:

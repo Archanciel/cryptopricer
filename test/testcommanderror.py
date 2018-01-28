@@ -13,7 +13,7 @@ class TestCommandError(unittest.TestCase):
 
     def testCommandErrorInstanciation(self):
         commandError = CommandError(None)
-        commandError.rawParmData = "-c"
+        commandError.requestInputString = "-c"
         commandError.parsedParmData = [commandError.CRYPTO_SYMBOL_MISSING_MSG]
 
 

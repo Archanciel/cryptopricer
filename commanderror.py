@@ -25,7 +25,7 @@ class CommandError(AbstractCommand):
         if errorDetails != '':
             errorDetails = ': ' + errorDetails
             
-        resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid command " + self.rawParmData + errorDetails)
+        resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid command " + self.requestInputString + errorDetails)
         
         return resultData
 

@@ -5,22 +5,22 @@ class AbstractCommand(metaclass=ABCMeta):
     '''
     Classes derived from AbstractCommand implement the GOF AbstractCommand pattern.
 
-    rawParmData stores the command data as the user entered it. Useful in case a
+    requestInputString stores the command data as the user entered it. Useful in case a
                 meaningful error message has to be displayed.
 
-    parsedParmData stores a dictionary of elements parsed from the rawParmData.
+    parsedParmData stores a dictionary of elements parsed from the requestInputString.
     Ex: {CRYPTO:[]}
     '''
 
-    def __init__(self, receiver=None, name='', rawParmData='', parsedParmData={}):
+    def __init__(self, receiver=None, name='', requestInputString='', parsedParmData={}):
         self.receiver = receiver
-        self.rawParmData = rawParmData
+        self.requestInputString = requestInputString
         self.parsedParmData = parsedParmData
         self.name = name # used as key in a AbstractCommand dictionary
 
 
     def __str__(self):
-        return 'Raw data: ' + str(self.rawParmData) + '\nParm data: ' + str(self.parsedParmData)
+        return 'Raw data: ' + str(self.requestInputString) + '\nParm data: ' + str(self.parsedParmData)
         
         
     @abstractmethod
