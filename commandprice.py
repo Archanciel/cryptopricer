@@ -174,7 +174,7 @@ class CommandPrice(AbstractCommand):
         #the command components	denoting the user request will be used to recreate
         #a full command request which will be stored in the command history list.
         #The historry list can be replayed, stored on disk, edited ...
-        result.setValue(ResultData.RESULT_KEY_COMMAND, initialParsedParmDataDic)
+        result.setValue(ResultData.RESULT_KEY_INITIAL_COMMAND_PARMS, initialParsedParmDataDic)
 
         result.setValue(ResultData.RESULT_KEY_PRICE_VALUE_SAVE, self.parsedParmData[self.PRICE_VALUE_SAVE])
 

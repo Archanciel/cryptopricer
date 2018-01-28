@@ -63,7 +63,7 @@ class GuiOutputFormater(AbstractOutputFormater):
         if resultData.isError():
             return '', None
             
-        commandDic = resultData.getValue(resultData.RESULT_KEY_COMMAND)
+        commandDic = resultData.getValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS)
         priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
         
         if priceType == resultData.PRICE_TYPE_RT:      
