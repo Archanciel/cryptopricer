@@ -1466,5 +1466,21 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
+    def testGetPrintableResultForInputscenarioWithInvalidValueCommand(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'btc usd 0 -vs10btc bitfinex'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - invalid command btc usd 0 -vs10btc bitfinex: full command price format invalid !', printResult)
+        self.assertEqual('', fullCommandStr) #empty string since request caused an error !
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
 if __name__ == '__main__':
     unittest.main()
