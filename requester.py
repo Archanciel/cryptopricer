@@ -171,12 +171,12 @@ class Requester:
         :return: Command concrete instance
         '''
 
-        retunedCommand = None
+        returnedCommand = None
 
         if inputStr == '' and self.commandPrice.isValid():
             #here, user entered RETURN to replay the last commannd
             self._alignCommandPriceDateTimeDataWithPriceType()
-            retunedCommand = self.commandPrice
+            returnedCommand = self.commandPrice
         else:
             upperInputStr = inputStr.upper()
             match = self._tryMatchCommandSymbol(upperInputStr)
@@ -186,7 +186,7 @@ class Requester:
                 #or user input error
                 command = self._parseAndFillCommandPrice(inputStr)
                 if command == self.commandPrice or command == self.commandError:
-                    retunedCommand = command
+                    returnedCommand = command
                 else:
                     # here, either invalid historical/RT price request which has no command symbol (for ex -t alone)
                     # or other request with missing command symbol (for ex [btc 05/07 0.0015899] [usd-chf] -nosave)
@@ -197,7 +197,7 @@ class Requester:
                         # invakid partial command parm
                         self.commandError.parsedParmData = ['']
 
-                    retunedCommand = self.commandError
+                    returnedCommand = self.commandError
             else:
                 userCommandSymbol = match.group(1)
 
@@ -206,21 +206,21 @@ class Requester:
                     cryptoDataList, fiatDataList, flag = self._parseOOCommandParms(inputStr, upperInputStrWithoutUserCommand)
 
                     if cryptoDataList == self.commandError:
-                        retunedCommand = self.commandError
+                        returnedCommand = self.commandError
                     else:
                         self.commandCrypto.parsedParmData = {self.commandCrypto.CRYPTO_LIST : cryptoDataList, \
                                                              self.commandCrypto.FIAT_LIST : fiatDataList, \
                                                              self.commandCrypto.FLAG : flag}
 
-                        retunedCommand = self.commandCrypto
+                        returnedCommand = self.commandCrypto
                 else:
                     self.commandError.parsedParmData = [self.commandError.USER_COMMAND_MISSING_MSG]
 
-                    retunedCommand = self.commandError
+                    returnedCommand = self.commandError
 
-        retunedCommand.requestInputString = inputStr
+        returnedCommand.requestInputString = inputStr
 
-        return retunedCommand
+        return returnedCommand
 
 
     def _alignCommandPriceDateTimeDataWithPriceType(self):
