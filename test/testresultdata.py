@@ -61,13 +61,14 @@ class TestResultData(unittest.TestCase):
         commValWarningMsg = "test warning command value"
         futureDateWarningMsg = "test warning future date"
 
-        self.assertFalse(self.resultData.containsWarning())
+        self.assertFalse(self.resultData.containsWarnings())
 
         self.resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE, commValWarningMsg)
-        self.assertTrue(self.resultData.containsWarning())
+        self.assertTrue(self.resultData.containsWarning(ResultData.WARNING_TYPE_COMMAND_VALUE))
+        self.assertFalse(self.resultData.containsWarning(ResultData.WARNING_TYPE_FUTURE_DATE))
 
         self.resultData.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE, futureDateWarningMsg)
-        self.assertTrue(self.resultData.containsWarning())
+        self.assertTrue(self.resultData.containsWarning(ResultData.WARNING_TYPE_FUTURE_DATE))
 
 
     def testOverwriteWarning(self):

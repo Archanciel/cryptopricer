@@ -1482,5 +1482,47 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
+    def testGetPrintableResultForInputscenarioWithInvalidCommand(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'btc usd 0 all -ebitfinex'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex !'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                nowMinuteStr), UtilityForTest.removePriceFromResult(printResult))  #removing \n from contentList entry !
+        self.assertEqual('btc usd 0 all', fullCommandStr) #empty string since request caused an error !
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        # then replay same request with no error
+        inputStr = 'btc usd 0 all'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                nowMinuteStr), UtilityForTest.removePriceFromResult(printResult))  #removing \n from contentList entry !
+        self.assertEqual('btc usd 0 all', fullCommandStr) #empty string since request caused an error !
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInputscenarioWithValueCommandAndInvalidCommand(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'btc usd 0 all -vs100.2usd -ebitfinex'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -vs100.2usd -ebitfinex !'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                nowMinuteStr), UtilityForTest.removeAllPricesFromCommandValueResult(printResult))  #removing \n from contentList entry !
+        self.assertEqual('btc usd 0 all', fullCommandStr) #empty string since request caused an error !
+        self.assertEqual('btc usd 0 all -vs100.2usd', fullCommandStrWithSaveModeOptions)
+
+
 if __name__ == '__main__':
     unittest.main()

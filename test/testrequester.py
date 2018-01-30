@@ -301,92 +301,92 @@ class TestRequester(unittest.TestCase):
         inputStr = "btc usd 10/9 12:45 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '10/9', '12:45', 'Kraken', None), groupList)
+        self.assertEqual(('btc', 'usd', '10/9', '12:45', 'Kraken', None, None), groupList)
 
 
     def test_parseGroupsFullExchangeFirst(self):
         inputStr = "btc usd Kraken 10/9/17 12:45"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', 'Kraken', '10/9/17', '12:45', None), groupList)
+        self.assertEqual(('btc', 'usd', 'Kraken', '10/9/17', '12:45', None, None), groupList)
 
 
     def test_parseGroupsFullDayMonthYearHMM(self):
         inputStr = "btc usd 10/9/2017 1:45 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '10/9/2017', '1:45', 'Kraken', None), groupList)
+        self.assertEqual(('btc', 'usd', '10/9/2017', '1:45', 'Kraken', None, None), groupList)
 
 
     def test_parseGroupsFullDayMonthZeroYearHMM(self):
         inputStr = "btc usd 10/9/0 1:45 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '10/9/0', '1:45', 'Kraken', None), groupList)
+        self.assertEqual(('btc', 'usd', '10/9/0', '1:45', 'Kraken', None, None), groupList)
 
 
     def test_parseGroupsFullDH(self):
         inputStr = "btc usd 1 2 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '1', '2', 'Kraken', None), groupList)
+        self.assertEqual(('btc', 'usd', '1', '2', 'Kraken', None, None), groupList)
 
 
     def test_parseGroupsFullDDDMH(self):
         inputStr = "btc usd 111/9 2 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '111/9', '2', 'Kraken', None), groupList)
+        self.assertEqual(('btc', 'usd', '111/9', '2', 'Kraken', None, None), groupList)
 
 
     def test_parseGroupsFullDMH(self):
         inputStr = "btc usd 1/9 2 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '1/9', '2', 'Kraken', None), groupList)
+        self.assertEqual(('btc', 'usd', '1/9', '2', 'Kraken', None, None), groupList)
 
 
     def test_parseGroupsFullDayHH(self):
         inputStr = "btc usd 10 12 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-        self.assertEqual(('btc', 'usd', '10', '12', 'Kraken', None), groupList)
+        self.assertEqual(('btc', 'usd', '10', '12', 'Kraken', None, None), groupList)
 
 
     def test_parseGroupsFullDMYearHMM(self):
         inputStr = "btc usd 1/2/17 1:25 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
-        self.assertEqual(('btc', 'usd', '1/2/17', '1:25', 'Kraken', None), groupList)
+        self.assertEqual(('btc', 'usd', '1/2/17', '1:25', 'Kraken', None, None), groupList)
 
 
     def test_parseGroupsFullDHH(self):
         inputStr = "btc usd 1 12 Kraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
-        self.assertEqual(('btc', 'usd', '1', '12', 'Kraken', None), groupList)
+        self.assertEqual(('btc', 'usd', '1', '12', 'Kraken', None, None), groupList)
 
 
     def test_parseGroupsFullDMHHMMNoExchange(self):
         inputStr = "btc usd 1/9 12:05"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
-        self.assertEqual(('btc', 'usd', '1/9', '12:05', None, None), groupList)
+        self.assertEqual(('btc', 'usd', '1/9', '12:05', None, None, None), groupList)
 
 
     def test_parseGroupsFullNoFiatDMHHMMNoExchange(self):
         inputStr = "btc 1/9 12:05"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
-        self.assertEqual(('btc', '1/9', '12:05', None, None, None), groupList)
+        self.assertEqual(('btc', '1/9', '12:05', None, None, None, None), groupList)
 
 
     def test_parseGroupsFullNoFiatDMNoTimeNoExchange(self):
         inputStr = "btc 1/9"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
-        self.assertEqual(('btc', '1/9', None, None, None, None), groupList)
+        self.assertEqual(('btc', '1/9', None, None, None, None, None), groupList)
 
 
     def test_parseGroupsFullNoFiatNoDateNoTimeNoExchange(self):
         inputStr = "btc"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
-        self.assertEqual(('btc', None, None, None, None, None), groupList)
+        self.assertEqual(('btc', None, None, None, None, None, None), groupList)
 
     def test_buildFullCommandPriceOptionalParmsDic(self):
         '''
@@ -487,144 +487,144 @@ class TestRequester(unittest.TestCase):
         inputStr = "-ceth -fgbp -d11/0 -t22:46 -ekraken -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/0', '-t', '22:46', '-e', 'kraken', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/0', '-t', '22:46', '-e', 'kraken', '-v', '700usd', None, None, None, None), groupList)
 
     def test_parseGroupsPartialDayZeroMonth(self):
         inputStr = "-ceth -fgbp -d1/0 -t22:46 -ekraken -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '1/0', '-t', '22:46', '-e', 'kraken', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '1/0', '-t', '22:46', '-e', 'kraken', '-v', '700usd', None, None, None, None), groupList)
 
     def test_parseGroupsPartialZeroDayZeroMonth(self):
         inputStr = "-ceth -fgbp -d0/0 -t22:46 -ekraken -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '0/0', '-t', '22:46', '-e', 'kraken', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '0/0', '-t', '22:46', '-e', 'kraken', '-v', '700usd', None, None, None, None), groupList)
 
     def test_parseGroupsPartialDayMonthHHMM(self):
         inputStr = "-ceth -fgbp -d11/8 -t22:46 -ekraken -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8', '-t', '22:46', '-e', 'kraken', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8', '-t', '22:46', '-e', 'kraken', '-v', '700usd', None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDayMonthYearHMM(self):
         inputStr = "-ceth -fgbp -d11/8/17 -t2:46 -ekraken -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8/17', '-t', '2:46', '-e', 'kraken', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8/17', '-t', '2:46', '-e', 'kraken', '-v', '700usd', None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDayMonthYearHHMM(self):
         inputStr = "-ceth -fgbp -d11/8/17 -t12:46 -ebtc38 -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8/17', '-t', '12:46', '-e', 'btc38', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8/17', '-t', '12:46', '-e', 'btc38', '-v', '700usd', None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDayMonthZeroYearHHMM(self):
         inputStr = "-ceth -fgbp -d11/8/0 -t12:46 -ebtc38 -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8/0', '-t', '12:46', '-e', 'btc38', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8/0', '-t', '12:46', '-e', 'btc38', '-v', '700usd', None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDH(self):
         inputStr = "-ceth -fgbp -d1 -t2 -ekraken -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '1', '-t', '2', '-e', 'kraken', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '1', '-t', '2', '-e', 'kraken', '-v', '700usd', None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDHH(self):
         inputStr = "-ceth -fgbp -d1 -t2:5 -ebit2c -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '1', '-t', '2:5', '-e', 'bit2c', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '1', '-t', '2:5', '-e', 'bit2c', '-v', '700usd', None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDayHH(self):
         inputStr = "-ceth -fgbp -d11 -t22 -eKraken -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11', '-t', '22', '-e', 'Kraken', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11', '-t', '22', '-e', 'Kraken', '-v', '700usd', None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDMHH(self):
         inputStr = "-ceth -fgbp -d1/2 -t22 -eKraken -v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '1/2', '-t', '22', '-e', 'Kraken', '-v', '700usd'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '1/2', '-t', '22', '-e', 'Kraken', '-v', '700usd', None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDDDMHHValue(self):
         inputStr = "-ceth -fgbp -d110/2 -t22 -eKraken -v0.0044235btc"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '110/2', '-t', '22', '-e', 'Kraken', '-v', '0.0044235btc'), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '110/2', '-t', '22', '-e', 'Kraken', '-v', '0.0044235btc', None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDDDMHHNoValue(self):
         inputStr = "-ceth -fgbp -d110/2 -t22 -eKraken"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '110/2', '-t', '22', '-e', 'Kraken', None, None), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '110/2', '-t', '22', '-e', 'Kraken', None, None, None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDayMonthHHMMNoExchangeNoValue(self):
         inputStr = "-ceth -fgbp -d11/8 -t22:46"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8', '-t', '22:46', None, None, None, None), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8', '-t', '22:46', None, None, None, None, None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialDayMonthNoTimeNoExchangeNoValue(self):
         inputStr = "-ceth -fgbp -d11/8"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8', None, None, None, None, None, None), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', '-d', '11/8', None, None, None, None, None, None, None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialNoDateNoTimeNoExchangeNoValue(self):
         inputStr = "-ceth -fgbp"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', '-f', 'gbp', None, None, None, None, None, None, None, None), groupList)
+        self.assertEqual(('-c', 'eth', '-f', 'gbp', None, None, None, None, None, None, None, None, None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialNoFiatNoDateNoTimeNoExchangeNoValue(self):
         inputStr = "-ceth"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-c', 'eth', None, None, None, None, None, None, None, None, None, None), groupList)
+        self.assertEqual(('-c', 'eth', None, None, None, None, None, None, None, None, None, None, None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialNoCryptoNoDateNoTimeNoExchangeNoValue(self):
         inputStr = "-fgbp"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-f', 'gbp', None, None, None, None, None, None, None, None, None, None), groupList)
+        self.assertEqual(('-f', 'gbp', None, None, None, None, None, None, None, None, None, None, None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialValueFloatNoCryptoNoFiatNoDateNoTimeNoExchange(self):
         inputStr = "-v700.05usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-v', '700.05usd', None, None, None, None, None, None, None, None, None, None), groupList)
+        self.assertEqual(('-v', '700.05usd', None, None, None, None, None, None, None, None, None, None, None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialValueIntNoCryptoNoFiatNoDateNoTimeNoExchange(self):
         inputStr = "-v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-v', '700usd', None, None, None, None, None, None, None, None, None, None), groupList)
+        self.assertEqual(('-v', '700usd', None, None, None, None, None, None, None, None, None, None, None, None, None, None), groupList)
 
 
     def test_parseGroupsPartialNoCryptoNoDateNoExchangeNoValue(self):
         inputStr = "-fgbp -t3:45"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
-        self.assertEqual(('-f', 'gbp', '-t', '3:45', None, None, None, None, None, None, None, None), groupList)
+        self.assertEqual(('-f', 'gbp', '-t', '3:45', None, None, None, None, None, None, None, None, None, None, None, None), groupList)
 
 
     def test_parseAndFillFullCommandPrice(self):
@@ -1198,7 +1198,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.0044256')
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearCommandUppercasePriceValue(self):
@@ -1234,7 +1236,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.0044256')
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearWithPartialYearPriceValue(self):
@@ -1271,7 +1275,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '500')
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'gbp')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPricePriceValuePreviouslySet(self):
@@ -1292,7 +1298,6 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
         parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
         parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
 
         inputStr = "-ceth -fgbp -d11/8/15 -t22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1311,7 +1316,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '500')
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'gbp')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceErasePriceValue(self):
@@ -1332,7 +1339,6 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
         parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
         parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
 
         inputStr = "-ceth -v0 -fgbp -d11/8/15 -t22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1351,7 +1357,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceIneffectivePriceValueSpec(self):
@@ -1412,7 +1420,9 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
         parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
         parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
         inputStr = "-ceth -vooo -fgbp -d11/8/15 -t22:46 -eKraken"
         commandError = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1422,7 +1432,7 @@ class TestRequester(unittest.TestCase):
         #formatting of request input string has been moved to end of Requester.getCommand !
         self.assertEqual("ERROR - invalid command : in -vooo, ooo must respect 99.99999zzz <price><symbol> format !", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
-#end
+
     def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSave(self):
         commandPrice = self.requester.commandPrice
 
@@ -1458,6 +1468,32 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.0044256')
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], True)
+
+
+    def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSaveAndUnsupportedCommand(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.FIAT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = None
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+
+        inputStr = "-ceth -fgbp -d11/8 -t22:46 -eKraken -vs0.0044256btc -zunsupported"
+        commandError = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandError, self.commandError)
+        resultData = self.commandError.execute()
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid command : -z not supported", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearCommandUppercasePriceValueSave(self):
@@ -1610,7 +1646,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceIneffectivePriceValueSaveSpec(self):
@@ -1705,7 +1743,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceWithInitYearNoPartialYear(self):
@@ -1742,7 +1782,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceWithInitYearWithPartialDateDayOnly(self):
@@ -1779,7 +1821,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearNoExchange(self):
@@ -1816,7 +1860,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearNoExchangeNoTime(self):
@@ -1853,7 +1899,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearNoExchangeNoMinute(self):
@@ -1944,7 +1992,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def test_parseAndFillPartialCommandPriceWrongCommand(self):
@@ -1992,7 +2042,6 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.PRICE_VALUE_DATA] = None
         parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = None
         parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = None
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
 
         inputStr = "-ceth fgbp -d11/8 -t22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
@@ -2011,7 +2060,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
 
     def testRequestPriceCommandFull(self):
@@ -2035,7 +2086,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
         sys.stdin = stdin
 
@@ -2061,7 +2114,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.01')
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
         sys.stdin = stdin
 
@@ -2087,7 +2142,63 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.01')
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], True)
+        self.assertIsNotNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+        sys.stdin = stdin
+
+
+    def testRequestPriceCommandFullEndingWithPriceValueSaveCommandAndUnsupportedCommand(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01btc -zunsupported")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandPrice)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'usd')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], '17')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.01')
+        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
+        self.assertIsNotNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND], '-z')
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA], 'unsupported')
+
+        sys.stdin = stdin
+
+
+    def testRequestPriceCommandFullEndingWithPriceUnsupportedCommandAndValueSaveCommand(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -zunsupported -vs0.01btc")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandPrice)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.FIAT], 'usd')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], '17')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.01')
+        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
+        self.assertIsNotNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND], '-z')
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA], 'unsupported')
 
         sys.stdin = stdin
 
@@ -2145,6 +2256,22 @@ class TestRequester(unittest.TestCase):
 
         sys.stdin = stdin
 
+
+    def testRequestPriceCommandFullWithPriceValueSaveCommandInInvalidPosThreeAndUnsupportedCommand(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd -vs0.01btc 10/9/17 12:45 Kraken -zunsupported")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandError)
+        self.assertEqual(commandPrice, self.commandError)
+        resultData = self.commandError.execute()
+        self.assertEqual(
+            "ERROR - invalid command btc usd -vs0.01btc 10/9/17 12:45 Kraken -zunsupported: full command price format invalid !",
+            resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+        sys.stdin = stdin
+
+
     def testRequestPriceCommandFullWithPriceValueSaveCommandInInvalidPosFour(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd 10/9/17 -vs0.01btc 12:45 Kraken")
@@ -2195,7 +2322,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
         sys.stdin = stdin
 
@@ -2221,7 +2350,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
         sys.stdin = stdin
 
@@ -2247,7 +2378,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
         self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
 
         sys.stdin = stdin
 

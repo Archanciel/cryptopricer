@@ -28,8 +28,10 @@ class CommandPrice(AbstractCommand):
     PRICE_VALUE_AMOUNT = 'PRICE_VAL_AMOUNT' #store the price target specified with -v. Ex: 0.0044354
     PRICE_VALUE_SYMBOL = 'PRICE_VAL_SYMBOL' #store the price symbol specified with -v. Ex: BTC
 
-    PRICE_VALUE_SAVE = 'PRICE_VAL_SAVE'     #store True or False to indicate if the price value command is to be stored in history (-vs) or not (-v)
+    PRICE_VALUE_SAVE = 'PRICE_VAL_SAVE'     #store s or S or None to indicate if the price value command is to be stored in history (-vs) or not (-v) --> None
 
+    UNSUPPORTED_COMMAND = "UNSUPPORTED_COMMAND"             #store an unsupported command specification
+    UNSUPPORTED_COMMAND_DATA = "UNSUPPORTED_COMMAND_DATA"   #store any unsupported command specification data
 
     def __init__(self, receiver=None, configManager=None, rawParmData='', parsedParmData={}):
         super().__init__(receiver, 'CommandPrice', rawParmData, parsedParmData)
@@ -64,7 +66,17 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.PRICE_VALUE_DATA] = None
         self.parsedParmData[self.PRICE_VALUE_AMOUNT] = None
         self.parsedParmData[self.PRICE_VALUE_SYMBOL] = None
-        self.parsedParmData[self.PRICE_VALUE_SAVE] = False
+        self.parsedParmData[self.PRICE_VALUE_SAVE] = None
+        self.resetTemporaryData()
+
+
+    def resetTemporaryData(self):
+        '''
+        This method cleans up any data which are not to be kept between user requessts
+        :return:
+        '''
+        self.parsedParmData[self.UNSUPPORTED_COMMAND] = None
+        self.parsedParmData[self.UNSUPPORTED_COMMAND_DATA] = None
 
 
     def execute(self):
@@ -183,7 +195,13 @@ class CommandPrice(AbstractCommand):
             result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,
                               "Warning - request date {} can not be in the future and was shifted back to last year !".format(
                                   localRequestDateTime.format(self.configManager.dateTimeFormat)))
-        
+
+        unsupportedCommand = self.parsedParmData[self.UNSUPPORTED_COMMAND]
+
+        if unsupportedCommand:
+            result.setWarning(ResultData.WARNING_TYPE_UNSUPPORTED_COMMAND,
+                              "Warning - unsupported option {}{} in request {} !".format(unsupportedCommand, self.parsedParmData[self.UNSUPPORTED_COMMAND_DATA], self.requestInputString))
+
         return result
 
 

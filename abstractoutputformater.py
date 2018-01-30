@@ -54,7 +54,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
         else:
             outputStr = '{}'.format(errorMsg)
 
-        if resultData.containsWarning():
+        if resultData.containsWarnings():
             outputStr = outputStr + '\n' + '\n'.join(resultData.getAllWarningMessages())
             
         return outputStr

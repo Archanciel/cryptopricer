@@ -29,13 +29,24 @@ class UtilityForTest:
         :param resultStr:
         :return:
         '''
-        match = re.match(r"(.*) ([\d\.]*)", resultStr)
+        patternNoWarning = r"(.*) ([\d\.]*)"
+        patternOneWarning = r"(.*) ([\d\.]*)(\n.*)" #in raw string, \ must not be escaped (\\n not working !)
+        match = re.match(patternOneWarning, resultStr)
 
-        if match != None:
-            return match.group(1)
-        else:
-            return ()
+        if (match):
+            if len(match.groups()) == 3:
+                # here, resultStr contains a warning like in
+                # BTC/USD on CCCAGG: 30/01/18 01:51R 11248.28\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex !
+                return match.group(1) + match.group(3)
 
+        match = re.match(patternNoWarning, resultStr)
+
+        if (match):
+            if len(match.groups()) == 2:
+                # the case for resultStr containing BTC/USD on CCCAGG: 30/01/18 01:49R 11243.72 for example !
+                return match.group(1)
+
+        return ()
 
     @staticmethod
     def removeAllPricesFromCommandValueResult(resultStr):
@@ -44,9 +55,17 @@ class UtilityForTest:
         :param resultStr:
         :return:
         '''
-        match = re.match(r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (.*) (?:[\d\.]*)", resultStr)
+        patternNoWarning = r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (.*) (?:[\d\.]*)"
+        patternOneWarning = r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (.*) (?:[\d\.]*(\n.*))"
+        match = re.match(patternOneWarning, resultStr, re.M)
 
         if match != None:
+            if len(match.groups()) == 3:
+                return match.group(1) + match.group(2) + match.group(3)
+
+        match = re.match(patternNoWarning, resultStr, re.M)
+
+        if len(match.groups()) == 2:
             return match.group(1) + match.group(2)
         else:
             return ()

@@ -15,6 +15,7 @@ class ResultData:
 
     WARNING_TYPE_FUTURE_DATE = 'FUTURE_DATE'
     WARNING_TYPE_COMMAND_VALUE = 'VALUE_COMMAND'
+    WARNING_TYPE_UNSUPPORTED_COMMAND = 'UNSUPPORTED_COMMAND'
 
     PRICE_TYPE_HISTO_DAY = 'HISTO_DAY'
     PRICE_TYPE_HISTO_MINUTE = 'HISTO_MINUTE'
@@ -60,7 +61,19 @@ class ResultData:
         return self._resultDataDic[self.RESULT_KEY_ERROR_MSG] != None
 
 
-    def containsWarning(self):
+    def containsWarning(self, warningType):
+        '''
+        Return True if the ResultData contains a warning msg
+        '''
+        warningDic = self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC]
+
+        if warningDic == {}:
+            return False
+        else:
+            return warningType in warningDic.keys()
+
+
+    def containsWarnings(self):
         '''
         Return True if the ResultData contains a warning msg
         '''

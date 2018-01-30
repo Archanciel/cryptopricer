@@ -26,8 +26,10 @@ class Requester:
 
     '''
     Full price command parms pattern. Crypto symbol (mandatory, first position mandatory), fiat symbol (optional, 
-    if provided, must be in second position), date (optional), time (optional) and exchange (optional). The four
+    if provided, must be in second position), date (optional), time (optional) and exchange (optional). The three
     last parms can be provided in any order after the 2 first parms !
+    
+    Additionally, 2 request command options can be added to the regular full command. For example -vs12 btc.
 
     Ex; btc usd 0 Kraken
         btc usd 10/9/17 12:45 Kraken
@@ -74,7 +76,7 @@ class Requester:
                         0:0, rejected. 
     '''
 
-    PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (-\w\w?[\w\d/:\.]+))?"
+    PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (-\w\w?[\w\d/:\.]+))?(?: (-\w\w?[\w\d/:\.]+))?"
 
     '''
     Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 or -ebittrex or -v0.00432btc 
@@ -83,7 +85,8 @@ class Requester:
 
     Unlike with pattern 'full', the groups can all occur in any order, reason for which all groups have the same
     structure
-    
+     
+   
     The rules below apply to -d and -t values !
     
     Date can be: 0, accepted. 
@@ -114,7 +117,7 @@ class Requester:
                         
     Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken -v0.0044543eth
     '''
-    PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:\.]+))(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?"
+    PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:\.]+))(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?"
 
     '''
     The next pattern splits the parameter data appended to the -v partial command.
@@ -166,6 +169,7 @@ class Requester:
         :param inputStr: input string to parse
         :return: Command concrete instance
         '''
+
         retunedCommand = None
 
         if inputStr == '' and self.commandPrice.isValid():
@@ -276,11 +280,16 @@ class Requester:
         Hour minute can be 0, rejected. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted. 
                            01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected. 
         '''
+
+        COMMAND_OR_OPTION = 'commandOrOption'
+
         patternCommandDic = {r"\d+/\d+(?:/\d+)*|^0$" : CommandPrice.DAY_MONTH_YEAR,
                              r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
                              r"[A-Za-z]+": CommandPrice.EXCHANGE,
                              r"(?:-[vV])([sS]?)([\w\d/:\.]+)": CommandPrice.PRICE_VALUE_DATA,
-                             r"(?:-[vV])([sS]?)([\w\d/:\.]+)CommandModifier": CommandPrice.PRICE_VALUE_SAVE}
+                             r"(?:-[vV])([sS]?)([\w\d/:\.]+)" + COMMAND_OR_OPTION: CommandPrice.PRICE_VALUE_SAVE,
+                             r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)": CommandPrice.UNSUPPORTED_COMMAND_DATA, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+                             r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)" + COMMAND_OR_OPTION: CommandPrice.UNSUPPORTED_COMMAND}
 
         optionalParsedParmDataDic = {}
 
@@ -294,11 +303,11 @@ class Requester:
                         data, optionalCommandModifier = self._extractData(pattern, group)
                         if data != None:
                             optionalParsedParmDataDic[patternCommandDic[pattern]] = data
-                            patternCommandModifierKey = pattern + r"CommandModifier"
+                            patternCommandModifierKey = pattern + COMMAND_OR_OPTION
                             if optionalCommandModifier != None and optionalCommandModifier != '':
-                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = True
+                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = optionalCommandModifier
                             elif patternCommandModifierKey in optionalParsedParmDataDic.keys():
-                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = False
+                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = None
 
                         else:
                             #full command syntax error !
@@ -352,6 +361,12 @@ class Requester:
             groupList = self._tryMatchPartialPriceCommand(inputStr)
             if groupList != (): #here, parms are associated to parrm tag (i.e -c or -d). Means they have been
                                 #entered in any order and are all optional
+
+                # ensuring command price temporary data like unsupported command data from previous
+                # request are purged. Necessary here when handling partial command(s) since, unlike
+                # when a full command is processed, the command price is not reinitialized !
+                self.commandPrice.resetTemporaryData()
+
                 keys = self.inputParmParmDataDicKeyDic.keys()
                 it = iter(groupList)
 
@@ -567,7 +582,7 @@ class Requester:
                 #here, -v0 was entered to stop price value calculation
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = None
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = None
-                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = False
+                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = None
 
             self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_DATA] = None
 
