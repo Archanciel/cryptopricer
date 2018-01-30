@@ -57,13 +57,13 @@ class UtilityForTest:
         '''
         patternNoWarning = r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (.*) (?:[\d\.]*)"
         patternOneWarning = r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (.*) (?:[\d\.]*(\n.*))"
-        match = re.match(patternOneWarning, resultStr, re.M)
+        match = re.match(patternOneWarning, resultStr)
 
         if match != None:
             if len(match.groups()) == 3:
                 return match.group(1) + match.group(2) + match.group(3)
 
-        match = re.match(patternNoWarning, resultStr, re.M)
+        match = re.match(patternNoWarning, resultStr)
 
         if len(match.groups()) == 2:
             return match.group(1) + match.group(2)
