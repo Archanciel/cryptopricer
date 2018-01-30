@@ -29,7 +29,7 @@ class Requester:
     if provided, must be in second position), date (optional), time (optional) and exchange (optional). The three
     last parms can be provided in any order after the 2 first parms !
     
-    Additionally, 2 request command options can be added to the regular full command. For example -vs12 btc.
+    Additionally, 2 request command options can be added to the regular full command. For example -vs12btc.
 
     Ex; btc usd 0 Kraken
         btc usd 10/9/17 12:45 Kraken
@@ -86,6 +86,7 @@ class Requester:
     Unlike with pattern 'full', the groups can all occur in any order, reason for which all groups have the same
     structure
      
+    Additionally, 2 request command options can be added to the regular partial commands. For example -vs12btc.
    
     The rules below apply to -d and -t values !
     
