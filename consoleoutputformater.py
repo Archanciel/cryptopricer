@@ -28,7 +28,8 @@ class ConsoleOutputFormater(AbstractOutputFormater):
         if os.name == 'posix':
             self._clipboard.setClipboard(str(numericVal))
         else:
-            self._clipboard.copy(str(numericVal))
+            pass
+#            self._clipboard.copy(str(numericVal))
 
 
     def fromClipboard(self):

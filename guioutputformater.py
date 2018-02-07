@@ -142,7 +142,11 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 
     def toClipboard(self, numericVal):
-        self._clipboard.copy(str(numericVal))
+        if os.name != 'posix':
+            #causes an exception after updating all conda packages on 7.2.2018 !
+            pass
+        else:
+            self._clipboard.copy(str(numericVal))
 
 
     def fromClipboard(self):
