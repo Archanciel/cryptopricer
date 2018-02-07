@@ -172,6 +172,7 @@ class CommandPrice(AbstractCommand):
         if priceValueAmount:
             priceValueAmount = float(priceValueAmount)
 
+        priceValueSaveFlag = self.parsedParmData[self.PRICE_VALUE_SAVE]
         result = self.receiver.getCryptoPrice(cryptoUpper,
                                               fiatUpper,
                                               exchange,
@@ -182,6 +183,7 @@ class CommandPrice(AbstractCommand):
                                               minute,
                                               priceValueSymbol,
                                               priceValueAmount,
+                                              priceValueSaveFlag,
                                               self.requestInputString)
 
         #the command components	denoting the user request will be used to recreate
@@ -189,7 +191,7 @@ class CommandPrice(AbstractCommand):
         #The historry list can be replayed, stored on disk, edited ...
         result.setValue(ResultData.RESULT_KEY_INITIAL_COMMAND_PARMS, initialParsedParmDataDic)
 
-        result.setValue(ResultData.RESULT_KEY_PRICE_VALUE_SAVE, self.parsedParmData[self.PRICE_VALUE_SAVE])
+        result.setValue(ResultData.RESULT_KEY_PRICE_VALUE_SAVE, priceValueSaveFlag)
 
         if wasDateInFutureSetToLastYear:
             result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,

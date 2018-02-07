@@ -202,7 +202,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithValueCommandAndWarning(self):
+    def testGetPrintableResultForInputscenarioWithValueCommandAndError(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -219,7 +219,6 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('btc usd 0 bitfinex', fullCommandStr)
         self.assertEqual('btc usd 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
-        #second command: value command
         inputStr = '-feth'
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -228,7 +227,6 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
-        #third command: value save command
         inputStr = '-cxmr'
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -237,7 +235,6 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
-        #third command: value save command
         inputStr = '-cbtc'
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -246,7 +243,6 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
-        #fifth command: value save command
         inputStr = '-fusd'
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -1522,6 +1518,62 @@ class TestControllerGui(unittest.TestCase):
                                 nowMinuteStr), UtilityForTest.removeAllPricesFromCommandValueResult(printResult))  #removing \n from contentList entry !
         self.assertEqual('btc usd 0 all', fullCommandStr) #empty string since request caused an error !
         self.assertEqual('btc usd 0 all -vs100.2usd', fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInputscenarioWithSaveValueCommandAndWarning(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        inputStr = 'eth usd 0 bitfinex -vs100usd'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        inputStr = '-cxmr'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'XMR/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('xmr usd 0 bitfinex', fullCommandStr)
+        self.assertEqual('xmr usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
+
+        inputStr = '-fbtc'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'XMR/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - price value symbol USD differs from both crypto (XMR) and fiat (BTC) of last request. -vs parameter ignored !'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('xmr btc 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        inputStr = '-ceth'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - price value symbol USD differs from both crypto (ETH) and fiat (BTC) of last request. -vs parameter ignored !'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        inputStr = '-v0'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth btc 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
 if __name__ == '__main__':

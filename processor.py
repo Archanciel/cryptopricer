@@ -26,6 +26,7 @@ class Processor:
                        minute,
                        priceValueSymbol = None,
                        priceValueAmount = None,
+                       priceValueSaveFlag = None,
                        requestInputString = ''):
         '''
         Ask the PriceRequester either a RT price or a historical price. Then, in case a price value parm (-v)
@@ -63,6 +64,7 @@ class Processor:
                                         converted value will be 1 / 20000 USD * 500 USD => 0.025 BTC
 
         :param priceValueAmount: float price value amount
+        :param priceValueSaveFlag: used to refine warning if value command not applicable
         :param requestInputString): used for better error msg !
 
         :return: a ResultData filled with result values
@@ -114,12 +116,12 @@ class Processor:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
                 
         if priceValueSymbol != None and not resultData.isError():
-            resultData = self._computePriceValue(resultData, crypto, fiat, priceValueSymbol, priceValueAmount)
+            resultData = self._computePriceValue(resultData, crypto, fiat, priceValueSymbol, priceValueAmount, priceValueSaveFlag)
             
         return resultData
 
 
-    def _computePriceValue(self, resultData, crypto, fiat, priceValueSymbol, priceValueAmount):
+    def _computePriceValue(self, resultData, crypto, fiat, priceValueSymbol, priceValueAmount, priceValueSaveFlag):
         '''
         Compute the priceValueAmount according to the passed parms and put the result in
         the passed resultData.
@@ -146,6 +148,7 @@ class Processor:
                                         converted value will be 1 / 20000 USD * 500 USD => 0.025 BTC
 
         :param priceValueAmount: float price value amount
+        :param priceValueSaveFlag: used to refine warning if value command not applicable
         :return: a ResultData in which price value info has been added.
         '''
         conversionRate = resultData.getValue(resultData.RESULT_KEY_PRICE)
@@ -161,9 +164,14 @@ class Processor:
             resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, convertedValue)
             resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, priceValueAmount)
         else:
+            if priceValueSaveFlag:
+                valueCommand = '-vs'
+            else:
+                valueCommand = '-v'
+
             resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
-                                  "WARNING - price value symbol {} differs from both crypto ({}) and fiat ({}) of last request. -v parameter ignored !".format(
-                                      priceValueSymbol, crypto, fiat))
+                                  "WARNING - price value symbol {} differs from both crypto ({}) and fiat ({}) of last request. {} parameter ignored !".format(
+                                      priceValueSymbol, crypto, fiat, valueCommand))
             
         return resultData
 
