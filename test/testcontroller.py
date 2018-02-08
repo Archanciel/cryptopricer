@@ -169,7 +169,7 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('ERROR - exchange could not be parsed due to an error in your command (btc usd 23/9/2017 2.56 bittrex)\n', contentList[1])
+            self.assertEqual('ERROR - exchange could not be parsed due to an error in your request (btc usd 23/9/2017 2.56 bittrex)\n', contentList[1])
 
 
     def testControllerOnlyDayProvided(self):
@@ -1039,7 +1039,7 @@ class TestController(unittest.TestCase):
             self.assertEqual(
                 'ERROR - invalid command -fusd', contentList[3][:-1]) #improve error msg
             self.assertEqual(
-                'ERROR - exchange could not be parsed due to an error in your command (-d0)', contentList[5][:-1])
+                'ERROR - exchange could not be parsed due to an error in your request (-d0)', contentList[5][:-1])
             self.assertEqual(
                 'BTC/USD on BitTrex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                 nowMinuteStr),

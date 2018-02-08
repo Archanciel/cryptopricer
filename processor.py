@@ -71,7 +71,7 @@ class Processor:
         '''
         if exchange == None:
             resultData = ResultData()
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your command ({})".format(requestInputString))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your request ({})".format(requestInputString))
             return resultData
         else:
             #this responsability is specific to the PriceRequester and should be moved to it !
