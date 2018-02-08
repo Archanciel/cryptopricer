@@ -435,6 +435,10 @@ class Requester:
                 invalidPartialCommand, invalidValue = self._wholeParmAndInvalidValue('-t', inputStr)
                 self.commandError.parsedParmData = [self.commandError.PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG.format(invalidPartialCommand, invalidValue)]
 
+                # remove invalid time specification form parsedParData to avoid polluting next partial
+                # request !
+                self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
+
                 return self.commandError
             else:
                 minute = hourMinuteList[1]

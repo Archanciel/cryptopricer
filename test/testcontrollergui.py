@@ -1602,5 +1602,93 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
+    def testGetPrintableResultWithInvalidDateCommandAfterInvalidTimeCommandFollowingRealTimeRequest(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowBegOfMonth = now.replace(day = 1)
+
+        requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'eth usd 0 bitfinex'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next: invalid time command '-t12.56'
+        inputStr = '-t12.56'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - invalid command -t12.56: in -t12.56, 12.56 must respect 99:99 format', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next: invalid time command '-t12.56'
+        inputStr = '-d23:11'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - 23:11 violates format for day', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultWithInvalidTimeCommandAfterInvalidDateCommandFollowingRealTimeRequest(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowBegOfMonth = now.replace(day = 1)
+
+        requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'eth usd 0 bitfinex'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next: invalid time command '-t12.56'
+        inputStr = '-d23:11'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - 23:11 violates format for day', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next: invalid time command '-t12.56'
+        inputStr = '-t12.56'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - invalid command -t12.56: in -t12.56, 12.56 must respect 99:99 format', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #next: valid -e command
+        inputStr = '-eall'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - 23:11 violates format for day', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
 if __name__ == '__main__':
     unittest.main()
