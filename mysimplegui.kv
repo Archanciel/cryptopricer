@@ -52,7 +52,7 @@ MySimpleGui:
     # in the Python code
     ListView:
         id: commandListView
-        adapter: ListAdapter(data=[], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected})
+        adapter: ListAdapter(data=['one', 'two', 'three', 'four'], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected,'size_hint_y': None,'height': 30})
         height: '0dp'
         size_hint_y: None
         on_parent: self.container.parent.effect_cls = ScrollEffect #prevents overscrolling
