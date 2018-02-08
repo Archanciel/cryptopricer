@@ -1338,7 +1338,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForReplayRealTimeThenOneDigitDateSpec(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowBegOfMonth = now.replace(day = 1)
+        nowBegOfMonth = now.replace(day = 1, hours = 0)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
         nowBegOfMonthYearStr, nowBegOfMonthMonthStr, nowBegOfMonthDayStr, nowBegOfMonthHourStr, nowBegOfMonthMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(nowBegOfMonth)
