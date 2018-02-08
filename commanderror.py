@@ -16,7 +16,7 @@ class CommandError(AbstractCommand):
     COMMAND_ERROR_TYPE_PARTIAL_REQUEST = 'PARTIAL_REQUEST_ERROR'
     COMMAND_ERROR_TYPE_INVALID_COMMAND = 'INVALID_COMMAND_ERROR'
 
-    COMMAND_ERROR_DETAIL_KEY = 'COMMAND_ERROR_DETAIL'
+    COMMAND_ERROR_MSG_KEY = 'COMMAND_ERROR_MSG'
 
     def __init__(self, receiver = None, rawParmData = '', parsedParmData = {}):
         super().__init__(receiver, 'CommandError', rawParmData, parsedParmData)
@@ -24,12 +24,12 @@ class CommandError(AbstractCommand):
 
     def initialiseParsedParmData(self):
         self.parsedParmData[self.COMMAND_ERROR_TYPE_KEY] = None
-        self.parsedParmData[self.COMMAND_ERROR_DETAIL_KEY] = None
+        self.parsedParmData[self.COMMAND_ERROR_MSG_KEY] = None
 
 
     def execute(self):
         resultData = ResultData()
-        errorDetails = self.parsedParmData[self.COMMAND_ERROR_DETAIL_KEY]
+        errorDetails = self.parsedParmData[self.COMMAND_ERROR_MSG_KEY]
         errorType = self.parsedParmData[self.COMMAND_ERROR_TYPE_KEY]
         errorTypeLabelStr = ''
 

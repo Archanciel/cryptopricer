@@ -194,11 +194,11 @@ class Requester:
                         # command symbol missing
                         self.commandError.parsedParmData[
                             self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_INVALID_COMMAND
-                        self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_DETAIL_KEY] = self.commandError.USER_COMMAND_MISSING_MSG
+                        self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.USER_COMMAND_MISSING_MSG
                     else:
                         # invakid partial command parm
                         self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-                        self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_DETAIL_KEY] = ''
+                        self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = ''
 
                     returnedCommand = self.commandError
             else:
@@ -219,7 +219,7 @@ class Requester:
                 else:
                     self.commandError.parsedParmData[
                         self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_INVALID_COMMAND
-                    self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_DETAIL_KEY] = self.commandError.USER_COMMAND_MISSING_MSG
+                    self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.USER_COMMAND_MISSING_MSG
 
                     returnedCommand = self.commandError
 
@@ -426,7 +426,7 @@ class Requester:
             else:
                 # invalid full command format
                 self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST
-                self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_DETAIL_KEY] = self.commandError.FULL_COMMAND_PRICE_FORMAT_INVALID_MSG
+                self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.FULL_COMMAND_PRICE_FORMAT_INVALID_MSG
 
                 return self.commandError
 
@@ -440,7 +440,7 @@ class Requester:
                 # invalid time partial command format
                 invalidPartialCommand, invalidValue = self._wholeParmAndInvalidValue('-t', inputStr)
                 self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-                self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_DETAIL_KEY] = self.commandError.PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG.format(invalidPartialCommand, invalidValue)
+                self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG.format(invalidPartialCommand, invalidValue)
 
                 # remove invalid time specification form parsedParData to avoid polluting next partial
                 # request !
@@ -603,7 +603,7 @@ class Requester:
             #here, invalid -v command
             self.commandError.parsedParmData[
                 self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_DETAIL_KEY] = self.commandError.PARTIAL_PRICE_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + priceValueData, priceValueData)
+            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_PRICE_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + priceValueData, priceValueData)
 
             return self.commandError
 
@@ -761,7 +761,7 @@ class Requester:
         if (grpNumber == 0) or (grpNumber == 1 and flag != None):
             self.commandError.parsedParmData[
                 self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_INVALID_COMMAND
-            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_DETAIL_KEY] = self.commandError.FIAT_LIST_MISSING_MSG
+            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.FIAT_LIST_MISSING_MSG
 
             return self.commandError, fiatDataList, flag
         else:
