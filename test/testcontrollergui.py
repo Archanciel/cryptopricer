@@ -1473,7 +1473,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - invalid command btc usd 0 -vs10btc bitfinex: full command price format invalid', printResult)
+            'ERROR - invalid full request btc usd 0 -vs10btc bitfinex: full command price format invalid', printResult)
         self.assertEqual('', fullCommandStr) #empty string since request caused an error !
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1626,7 +1626,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - invalid command -t12.56: in -t12.56, 12.56 must respect 99:99 format', printResult)
+            'ERROR - invalid partial request -t12.56: in -t12.56, 12.56 must respect 99:99 format', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1675,7 +1675,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - invalid command -t12.56: in -t12.56, 12.56 must respect 99:99 format', printResult)
+            'ERROR - invalid partial request -t12.56: in -t12.56, 12.56 must respect 99:99 format', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1687,6 +1687,54 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(
             'ERROR - 23:11 violates format for day', printResult)
         self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultWithInvalidDateAndTimePartialRequestCommandsFollowingRealTimeRequest(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'eth usd 0 bitfinex'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        inputStr = '-d{}:{} -t00.01'.format(requestDayStr, requestMonthStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - invalid partial request -d{}:{} -t00.01: in -t00.01, 00.01 must respect 99:99 format'.format(requestDayStr, requestMonthStr), printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        inputStr = '-t00:01'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - {}:{} violates format for day'.format(requestDayStr, requestMonthStr), printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        inputStr = '-d{}/{}'.format(requestDayStr, requestMonthStr)
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on Bitfinex: ' + '{}/{}/{} 00:01M'.format(requestDayStr, requestMonthStr, requestYearStr,
+                                                               requestHourStr,
+                                                               requestMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('eth usd 09/02/18 00:01 bitfinex', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 

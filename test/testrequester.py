@@ -79,7 +79,7 @@ class TestRequester(unittest.TestCase):
         cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid request [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def testGetCommandInvalidC(self):
@@ -87,7 +87,7 @@ class TestRequester(unittest.TestCase):
         cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -c", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request -c", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def testGetCommandInvalidF(self):
@@ -95,7 +95,7 @@ class TestRequester(unittest.TestCase):
         cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -f", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request -f", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def testGetCommandInvalidD(self):
@@ -103,7 +103,7 @@ class TestRequester(unittest.TestCase):
         cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -d", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request -d", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def testGetCommandInvalidT(self):
@@ -111,7 +111,7 @@ class TestRequester(unittest.TestCase):
         cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -t", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request -t", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def testGetCommandInvalidE(self):
@@ -119,15 +119,7 @@ class TestRequester(unittest.TestCase):
         cryptoData = self.requester.getCommand(inputStr)
         self.assertEqual(cryptoData, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -e", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
-
-
-    def testGetCommandInvalidC(self):
-        inputStr = "-c"
-        cryptoData = self.requester.getCommand(inputStr)
-        self.assertEqual(cryptoData, self.commandError)
-        resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -c", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request -e", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseDatePriceTwoPairs(self):
@@ -185,7 +177,7 @@ class TestRequester(unittest.TestCase):
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
-        self.assertEqual("ERROR - invalid command : fiat list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid request : fiat list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseOOCommandParmsFiatListMissingWithOtherCommand(self):
@@ -195,7 +187,7 @@ class TestRequester(unittest.TestCase):
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
-        self.assertEqual("ERROR - invalid command : fiat list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid request : fiat list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseOOCommandParms(self):
@@ -1430,7 +1422,7 @@ class TestRequester(unittest.TestCase):
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
-        self.assertEqual("ERROR - invalid command : in -vooo, ooo must respect 99.99999zzz <price><symbol> format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request : in -vooo, ooo must respect 99.99999zzz <price><symbol> format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSave(self):
@@ -1675,7 +1667,7 @@ class TestRequester(unittest.TestCase):
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
-        self.assertEqual("ERROR - invalid command : in -vs, s must respect 99.99999zzz <price><symbol> format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request : in -vs, s must respect 99.99999zzz <price><symbol> format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceInvalidPriceValueSaveSpec(self):
@@ -1704,7 +1696,7 @@ class TestRequester(unittest.TestCase):
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
-        self.assertEqual("ERROR - invalid command : in -vsooo, sooo must respect 99.99999zzz <price><symbol> format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request : in -vsooo, sooo must respect 99.99999zzz <price><symbol> format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceWithInitYearWithPartialYear(self):
@@ -1926,7 +1918,7 @@ class TestRequester(unittest.TestCase):
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
-        self.assertEqual("ERROR - invalid command : in -t5, 5 must respect 99:99 format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request : in -t5, 5 must respect 99:99 format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearNoMinuteInvalidTime(self):
@@ -1953,7 +1945,7 @@ class TestRequester(unittest.TestCase):
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
-        self.assertEqual("ERROR - invalid command : in -t6.45, 6.45 must respect 99:99 format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request : in -t6.45, 6.45 must respect 99:99 format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceWithInitYear(self):
@@ -2209,7 +2201,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(commandPrice, CommandError)
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command btc usd -v0.01btc 10/9/17 12:45 Kraken: full command price format invalid", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid full request btc usd -v0.01btc 10/9/17 12:45 Kraken: full command price format invalid", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
 
@@ -2222,7 +2214,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(commandPrice, CommandError)
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command btc usd 10/9/17 -v0.01btc 12:45 Kraken: full command price format invalid", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid full request btc usd 10/9/17 -v0.01btc 12:45 Kraken: full command price format invalid", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
 
@@ -2235,7 +2227,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(commandPrice, CommandError)
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command btc usd 10/9/17 12:45 -v0.01btc Kraken: full command price format invalid", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid full request btc usd 10/9/17 12:45 -v0.01btc Kraken: full command price format invalid", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
 
@@ -2249,7 +2241,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual(
-            "ERROR - invalid command btc usd -vs0.01btc 10/9/17 12:45 Kraken: full command price format invalid",
+            "ERROR - invalid full request btc usd -vs0.01btc 10/9/17 12:45 Kraken: full command price format invalid",
             resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
@@ -2264,7 +2256,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual(
-            "ERROR - invalid command btc usd -vs0.01btc 10/9/17 12:45 Kraken -zunsupported: full command price format invalid",
+            "ERROR - invalid full request btc usd -vs0.01btc 10/9/17 12:45 Kraken -zunsupported: full command price format invalid",
             resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
@@ -2279,7 +2271,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual(
-            "ERROR - invalid command btc usd 10/9/17 -vs0.01btc 12:45 Kraken: full command price format invalid",
+            "ERROR - invalid full request btc usd 10/9/17 -vs0.01btc 12:45 Kraken: full command price format invalid",
             resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
@@ -2293,7 +2285,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
         self.assertEqual(
-            "ERROR - invalid command btc usd 10/9/17 12:45 -vs0.01btc Kraken: full command price format invalid",
+            "ERROR - invalid full request btc usd 10/9/17 12:45 -vs0.01btc Kraken: full command price format invalid",
             resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
@@ -2618,7 +2610,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(commandPrice, CommandError)
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid command -fusd -t0: in -t0, 0 must respect 99:99 format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request -fusd -t0: in -t0, 0 must respect 99:99 format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
 

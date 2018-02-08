@@ -14,11 +14,12 @@ class TestCommandError(unittest.TestCase):
     def testCommandErrorInstanciation(self):
         commandError = CommandError(None)
         commandError.requestInputString = "-c"
-        commandError.parsedParmData = [commandError.CRYPTO_SYMBOL_MISSING_MSG]
+        commandError.parsedParmData[commandError.COMMAND_ERROR_TYPE_KEY] = commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
+        commandError.parsedParmData[commandError.COMMAND_ERROR_DETAIL_KEY] = commandError.CRYPTO_SYMBOL_MISSING_MSG
 
 
         resultData = commandError.execute()
-        self.assertEqual("ERROR - invalid command -c: crypto symbol missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request -c: crypto symbol missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 if __name__ == '__main__':

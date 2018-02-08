@@ -10,22 +10,40 @@ class CommandError(AbstractCommand):
     PARTIAL_PRICE_VALUE_COMMAND_FORMAT_INVALID_MSG = 'in {}, {} must respect 99.99999zzz <price><symbol> format'
     FULL_COMMAND_PRICE_FORMAT_INVALID_MSG = 'full command price format invalid'
 
-    def __init__(self, receiver=None, rawParmData='', parsedParmData=''):
+    COMMAND_ERROR_TYPE_KEY = 'COMMAND_ERROR_TYPE'
+
+    COMMAND_ERROR_TYPE_FULL_REQUEST = 'FULL_REQUEST_ERROR'
+    COMMAND_ERROR_TYPE_PARTIAL_REQUEST = 'PARTIAL_REQUEST_ERROR'
+    COMMAND_ERROR_TYPE_INVALID_COMMAND = 'INVALID_COMMAND_ERROR'
+
+    COMMAND_ERROR_DETAIL_KEY = 'COMMAND_ERROR_DETAIL'
+
+    def __init__(self, receiver = None, rawParmData = '', parsedParmData = {}):
         super().__init__(receiver, 'CommandError', rawParmData, parsedParmData)
 
 
     def initialiseParsedParmData(self):
-        pass
+        self.parsedParmData[self.COMMAND_ERROR_TYPE_KEY] = None
+        self.parsedParmData[self.COMMAND_ERROR_DETAIL_KEY] = None
 
 
     def execute(self):
         resultData = ResultData()
-        errorDetails = self.parsedParmData[0]
-        
+        errorDetails = self.parsedParmData[self.COMMAND_ERROR_DETAIL_KEY]
+        errorType = self.parsedParmData[self.COMMAND_ERROR_TYPE_KEY]
+        errorTypeLabelStr = ''
+
+        if errorType == self.COMMAND_ERROR_TYPE_FULL_REQUEST:
+            errorTypeLabelStr = 'invalid full request'
+        elif errorType == self.COMMAND_ERROR_TYPE_PARTIAL_REQUEST:
+            errorTypeLabelStr = 'invalid partial request'
+        elif errorType == self.COMMAND_ERROR_TYPE_INVALID_COMMAND:
+            errorTypeLabelStr = 'invalid request'
+
         if errorDetails != '':
             errorDetails = ': ' + errorDetails
             
-        resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid command " + self.requestInputString + errorDetails)
+        resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} {}{}".format(errorTypeLabelStr, self.requestInputString, errorDetails))
         
         return resultData
 

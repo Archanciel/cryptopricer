@@ -138,11 +138,11 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00C 4360.62\n', contentList[1])
-            self.assertEqual('ERROR - invalid command -t\n', contentList[3])
-            self.assertEqual('ERROR - invalid command -d\n', contentList[5])
-            self.assertEqual('ERROR - invalid command -e\n', contentList[7])
-            self.assertEqual('ERROR - invalid command -c\n', contentList[9])
-            self.assertEqual('ERROR - invalid command -f\n', contentList[11])
+            self.assertEqual('ERROR - invalid partial request -t\n', contentList[3])
+            self.assertEqual('ERROR - invalid partial request -d\n', contentList[5])
+            self.assertEqual('ERROR - invalid partial request -e\n', contentList[7])
+            self.assertEqual('ERROR - invalid partial request -c\n', contentList[9])
+            self.assertEqual('ERROR - invalid partial request -f\n', contentList[11])
 
 
     def testControllerHistoDayPriceInvalidTimeFormat(self):
@@ -973,7 +973,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('ERROR - fiat missing or invalid\n', contentList[1])
-            self.assertEqual('ERROR - invalid command -fusd 2:56\n', contentList[3])
+            self.assertEqual('ERROR - invalid partial request -fusd 2:56\n', contentList[3])
             self.assertEqual('BTC/USD on BitTrex: ' + '{}/0{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[5][:-1]))
             self.assertEqual('Warning - request date {}/0{}/{} 02:56 can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[6][:-1])
 
@@ -1037,7 +1037,7 @@ class TestController(unittest.TestCase):
             self.assertEqual(
                 'ERROR - fiat missing or invalid', contentList[1][:-1])
             self.assertEqual(
-                'ERROR - invalid command -fusd', contentList[3][:-1]) #improve error msg
+                'ERROR - invalid partial request -fusd', contentList[3][:-1]) #improve error msg
             self.assertEqual(
                 'ERROR - exchange could not be parsed due to an error in your request (-d0)', contentList[5][:-1])
             self.assertEqual(
@@ -1161,7 +1161,7 @@ class TestController(unittest.TestCase):
                 'BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                  nowMinuteStr),
                 UtilityForTest.removePriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
-            self.assertEqual('ERROR - invalid command -t03.45: in -t03.45, 03.45 must respect 99:99 format', contentList[3][:-1])
+            self.assertEqual('ERROR - invalid partial request -t03.45: in -t03.45, 03.45 must respect 99:99 format', contentList[3][:-1])
 
 
 if __name__ == '__main__':

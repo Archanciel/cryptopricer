@@ -17,6 +17,7 @@ class AbstractCommand(metaclass=ABCMeta):
         self.requestInputString = requestInputString
         self.parsedParmData = parsedParmData
         self.name = name # used as key in a AbstractCommand dictionary
+        self.initialiseParsedParmData()
 
 
     def __str__(self):

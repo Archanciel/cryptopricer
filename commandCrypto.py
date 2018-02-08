@@ -5,7 +5,7 @@ class CommandCrypto(AbstractCommand):
     FIAT_LIST = "FIAT"
     FLAG = "FLAG"
 
-    def __init__(self, receiver=None, rawParmData='', parsedParmData={}):
+    def __init__(self, receiver = None, rawParmData = '', parsedParmData = {}):
         super().__init__(receiver, 'CommandCrypto', rawParmData, parsedParmData)
 
 
