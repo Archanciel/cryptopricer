@@ -36,7 +36,7 @@ class UtilityForTest:
         if (match):
             if len(match.groups()) == 3:
                 # here, resultStr contains a warning like in
-                # BTC/USD on CCCAGG: 30/01/18 01:51R 11248.28\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex !
+                # BTC/USD on CCCAGG: 30/01/18 01:51R 11248.28\nWarning - unsupported command -ebitfinex in request btc usd 0 all -ebitfinex !
                 return match.group(1) + match.group(3)
 
         match = re.match(patternNoWarning, resultStr)

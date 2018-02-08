@@ -32,7 +32,7 @@ class SaveDialog(FloatLayout):
 
     def toggleLoadAtStart(self, active):
         if active:
-            self.owner.updateStatusBar('Load at start activated !')
+            self.owner.updateStatusBar('Load at start activated')
         else:
             self.owner.updateStatusBar('')
     
@@ -42,7 +42,7 @@ class SaveDialog(FloatLayout):
         
         if self.owner.isLoadAtStart(filePathName):
             self.loadAtStartChkb.active = True
-            self.owner.updateStatusBar('Load at start active !')
+            self.owner.updateStatusBar('Load at start active')
         else:
             self.loadAtStartChkb.active = False        
             self.owner.updateStatusBar('')

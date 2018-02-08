@@ -163,7 +163,7 @@ class PriceRequester:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - ' + dic['Message'])
         else:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-                                'ERROR - ' + 'Request ' + url + ' did not return any data !')
+                                'ERROR - ' + 'Request ' + url + ' did not return any data')
 
         return resultData
 

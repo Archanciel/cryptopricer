@@ -29,7 +29,7 @@ class Requester:
     if provided, must be in second position), date (optional), time (optional) and exchange (optional). The three
     last parms can be provided in any order after the 2 first parms !
     
-    Additionally, 2 request command options can be added to the regular full command. For example -vs12btc.
+    Additionally, 2 request commands can be added to the regular full command. For example -vs12btc.
 
     Ex; btc usd 0 Kraken
         btc usd 10/9/17 12:45 Kraken
@@ -86,7 +86,7 @@ class Requester:
     Unlike with pattern 'full', the groups can all occur in any order, reason for which all groups have the same
     structure
      
-    Additionally, 2 request command options can be added to the regular partial commands. For example -vs12btc.
+    Additionally, 2 request commands can be added to the regular partial commands. For example -vs12btc.
    
     The rules below apply to -d and -t values !
     
@@ -379,9 +379,9 @@ class Requester:
                             self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = value
                         else:
                             # unknown partial command symbol
-                            self.commandError.parsedParmData = [self.commandError.COMMAND_NOT_SUPPORTED_MSG.format(command)]
-                            return self.commandError
-                            
+                            self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_COMMAND] = command
+                            self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_COMMAND_DATA] = value
+
                 if self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == '0':
                     #-d0 which means RT entered. In this case, the previous
                     #date/time info are no longer relevant !
@@ -666,7 +666,7 @@ class Requester:
         print('btc usd 21/11/17 9:08 bittrex  or')
         print('btc usd 21/11 bittrex          or')
         print('btc usd 0 bittrex (real time)  or')
-        print('\nany of those options, alone or combined:\n')
+        print('\nany of those commands, alone or combined:\n')
         print('   -cbtc')
         print('   -fusd')
         print('   -d21/11')

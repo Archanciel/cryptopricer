@@ -1473,7 +1473,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - invalid command btc usd 0 -vs10btc bitfinex: full command price format invalid !', printResult)
+            'ERROR - invalid command btc usd 0 -vs10btc bitfinex: full command price format invalid', printResult)
         self.assertEqual('', fullCommandStr) #empty string since request caused an error !
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1488,7 +1488,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex !'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported command -ebitfinex in request btc usd 0 all -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                 nowMinuteStr), UtilityForTest.removePriceFromResult(printResult))  #removing \n from contentList entry !
         self.assertEqual('btc usd 0 all', fullCommandStr) #empty string since request caused an error !
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1514,9 +1514,9 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -vs100.2usd -ebitfinex !'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported command -ebitfinex in request btc usd 0 all -vs100.2usd -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                 nowMinuteStr), UtilityForTest.removeAllPricesFromCommandValueResult(printResult))  #removing \n from contentList entry !
-        self.assertEqual('btc usd 0 all', fullCommandStr) #empty string since request caused an error !
+        self.assertEqual('btc usd 0 all', fullCommandStr)
         self.assertEqual('btc usd 0 all -vs100.2usd', fullCommandStrWithSaveModeOptions)
 
 
@@ -1549,7 +1549,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'XMR/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - price value symbol USD differs from both crypto (XMR) and fiat (BTC) of last request. -vs parameter ignored !'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+            'XMR/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - price value symbol USD differs from both crypto (XMR) and fiat (BTC) of last request. -vs parameter ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                nowMinuteStr),
             UtilityForTest.removePriceFromResult(printResult))
         self.assertEqual('xmr btc 0 bitfinex', fullCommandStr)
@@ -1559,7 +1559,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - price value symbol USD differs from both crypto (ETH) and fiat (BTC) of last request. -vs parameter ignored !'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+            'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - price value symbol USD differs from both crypto (ETH) and fiat (BTC) of last request. -vs parameter ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                nowMinuteStr),
             UtilityForTest.removePriceFromResult(printResult))
         self.assertEqual('eth btc 0 bitfinex', fullCommandStr)
@@ -1573,6 +1573,32 @@ class TestControllerGui(unittest.TestCase):
                                                                nowMinuteStr),
             UtilityForTest.removePriceFromResult(printResult))
         self.assertEqual('eth btc 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForInputscenarioWithInvalidCommandInFullAndPartialRequests(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'btc usd 0 all -zooo'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported command -zooo in request btc usd 0 all -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                nowMinuteStr), UtilityForTest.removePriceFromResult(printResult))  #removing \n from contentList entry !
+        self.assertEqual('btc usd 0 all', fullCommandStr) #empty string since request caused an error !
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        # then replay same request with no error
+        inputStr = '-feth -zooo'
+        printResult, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual('BTC/ETH on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported command -zooo in request -feth -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                nowMinuteStr), UtilityForTest.removePriceFromResult(printResult))  #removing \n from contentList entry !
+        self.assertEqual('btc eth 0 all', fullCommandStr) #empty string since request caused an error !
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 

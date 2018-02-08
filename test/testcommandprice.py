@@ -421,7 +421,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_FUTURE_DATE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year !".format(nowDayStr, nowMonthStr, (now.year + 1 - 2000), nowHourStr, nowMinuteStr))
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year".format(nowDayStr, nowMonthStr, (now.year + 1 - 2000), nowHourStr, nowMinuteStr))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
@@ -446,7 +446,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_FUTURE_DATE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year !".format(nowDayStr, nowMonthStr, (now.year + 2 - 2000)))
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year".format(nowDayStr, nowMonthStr, (now.year + 2 - 2000)))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
@@ -481,7 +481,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_FUTURE_DATE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year !".format(nowDayStr, nowMonthStr, (now.year - 2000), nowHourStr, nowMinutePlusOneStr))
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year".format(nowDayStr, nowMonthStr, (now.year - 2000), nowHourStr, nowMinutePlusOneStr))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')

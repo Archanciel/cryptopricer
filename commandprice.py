@@ -195,14 +195,14 @@ class CommandPrice(AbstractCommand):
 
         if wasDateInFutureSetToLastYear:
             result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,
-                              "Warning - request date {} can not be in the future and was shifted back to last year !".format(
+                              "Warning - request date {} can not be in the future and was shifted back to last year".format(
                                   localRequestDateTime.format(self.configManager.dateTimeFormat)))
 
         unsupportedCommand = self.parsedParmData[self.UNSUPPORTED_COMMAND]
 
         if unsupportedCommand:
             result.setWarning(ResultData.WARNING_TYPE_UNSUPPORTED_COMMAND,
-                              "Warning - unsupported option {}{} in request {} !".format(unsupportedCommand, self.parsedParmData[self.UNSUPPORTED_COMMAND_DATA], self.requestInputString))
+                              "Warning - unsupported command {}{} in request {}".format(unsupportedCommand, self.parsedParmData[self.UNSUPPORTED_COMMAND_DATA], self.requestInputString))
 
         return result
 

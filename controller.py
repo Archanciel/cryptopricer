@@ -77,11 +77,11 @@ class Controller:
 
                      1/ 0.1 ETH/36 USD on Bitfinex: 21/11/17 10:00 360
                      2/ eth usd 0 bitfinex
-                     3/ None (-v0.1eth option in effect)
+                     3/ None (-v0.1eth command in effect)
 
                      1/ ETH/USD on Bitfinex: 21/11/17 10:00 360
                      2/ eth usd 0 bitfinex
-                     3/ None (no option in effect)
+                     3/ None (no command in effect)
         '''
         command = self.requester.getCommand(inputStr)
         result = command.execute()

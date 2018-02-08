@@ -295,7 +295,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('NEO/BTC on Bitfinex: ' + '{}/{}/{} 00:00C'.format(requestDay, requestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[1][:-1]))
-            self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year !'.format(requestDay, requestMonth, now.year - 2000), contentList[2][:-1])
+            self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(requestDay, requestMonth, now.year - 2000), contentList[2][:-1])
          #   self.assertEqual('NEO/BTC on Bitfinex: 11/10/17 00:00C 0.006228\n', contentList[1])
 
 
@@ -448,7 +448,7 @@ class TestController(unittest.TestCase):
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
-            self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year !'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
+            self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
 
 
     def testControllerBugSpecifyDate10DaysBeforeAfterAskedRTThenAskRTAgain(self):
@@ -517,7 +517,7 @@ class TestController(unittest.TestCase):
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
-            self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year !'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
+            self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[6][:-1])) #removing \n from contentList entry !
 
 
@@ -644,7 +644,7 @@ class TestController(unittest.TestCase):
             contentList = inFile.readlines()
             self.assertEqual("ERROR - 201 not conform to accepted year format (YYYY, YY or '')\n", contentList[1])
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/0{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
-            self.assertEqual('Warning - request date {}/0{}/{} 00:00 can not be in the future and was shifted back to last year !'.format(nextRequestDay, nextRequestMonth, now.year - 2000), contentList[4][:-1])
+            self.assertEqual('Warning - request date {}/0{}/{} 00:00 can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, now.year - 2000), contentList[4][:-1])
 
 
     def testControllerInvalidMonthThenValidDDMM(self):
@@ -677,7 +677,7 @@ class TestController(unittest.TestCase):
             contentList = inFile.readlines()
             self.assertEqual("ERROR - 999 not conform to accepted month format (MM or M)\n", contentList[1])
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/0{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
-            self.assertEqual('Warning - request date {}/0{}/{} 00:00 can not be in the future and was shifted back to last year !'.format(nextRequestDay, nextRequestMonth, now.year - 2000), contentList[4][:-1])
+            self.assertEqual('Warning - request date {}/0{}/{} 00:00 can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, now.year - 2000), contentList[4][:-1])
 
 
     def testControllerInvalidMonthValue(self):
@@ -975,7 +975,7 @@ class TestController(unittest.TestCase):
             self.assertEqual('ERROR - fiat missing or invalid\n', contentList[1])
             self.assertEqual('ERROR - invalid command -fusd 2:56\n', contentList[3])
             self.assertEqual('BTC/USD on BitTrex: ' + '{}/0{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[5][:-1]))
-            self.assertEqual('Warning - request date {}/0{}/{} 02:56 can not be in the future and was shifted back to last year !'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[6][:-1])
+            self.assertEqual('Warning - request date {}/0{}/{} 02:56 can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[6][:-1])
 
 
     def testControllerHistoDayPriceWrongCommand(self):
@@ -1002,8 +1002,8 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[1])
-            self.assertEqual('ERROR - invalid command -h22:21: -h not supported\n', contentList[3])
+            self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[3])
+            self.assertEqual('Warning - unsupported command -h22:21 in request -h22:21\n', contentList[4])
 
 
     def testControllerScenarioMissingFiatBadErrorMsg(self):
@@ -1161,7 +1161,7 @@ class TestController(unittest.TestCase):
                 'BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                  nowMinuteStr),
                 UtilityForTest.removePriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
-            self.assertEqual('ERROR - invalid command -t03.45: in -t03.45, 03.45 must respect 99:99 format !', contentList[3][:-1])
+            self.assertEqual('ERROR - invalid command -t03.45: in -t03.45, 03.45 must respect 99:99 format', contentList[3][:-1])
 
 
 if __name__ == '__main__':

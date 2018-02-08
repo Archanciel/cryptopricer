@@ -58,7 +58,8 @@ Valuation command -v or -vs or -v0 (zero)
 
 Used to obtain the converted fiat/crypto amount at the rate of the last request, or at an up to date RT rate
 
-Command format: -v999.9999ZZZ or -vs999.9999ZZZ
+Command format: -v999.9999ZZZ or -vs999.9999ZZZ, s is a save command option which means the command will be in effect 
+across the subsequent partial requests 
 
 Ex: if the last request was btc usd 0 bittrex --> BTC/USD on BitTrex: 16/12/17 22:10R 19120
     -v705.55usd returns

@@ -170,7 +170,7 @@ class Processor:
                 valueCommand = '-v'
 
             resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
-                                  "WARNING - price value symbol {} differs from both crypto ({}) and fiat ({}) of last request. {} parameter ignored !".format(
+                                  "WARNING - price value symbol {} differs from both crypto ({}) and fiat ({}) of last request. {} parameter ignored".format(
                                       priceValueSymbol, crypto, fiat, valueCommand))
             
         return resultData

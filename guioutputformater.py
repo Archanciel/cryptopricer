@@ -55,7 +55,7 @@ class GuiOutputFormater(AbstractOutputFormater):
                      2/ eth usd 0 bitfinex -vs0.1eth
 
                      1/ eth usd 0 bitfinex
-                     2/ None (-v0.1btc option was entered, which generated a warning)
+                     2/ None (-v0.1btc command was entered, which generated a warning)
 
                      1/ eth usd 0 bitfinex
                      3/ None (no option in effect)
