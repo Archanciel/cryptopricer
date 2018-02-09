@@ -306,7 +306,7 @@ class CommandPrice(AbstractCommand):
                     int(value)
             except ValueError as e:
                 resultData = ResultData()
-                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} violates format for {}".format(value, name))
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid value: {} violates format for {}".format(value, name))
                 return resultData
 
             try:
