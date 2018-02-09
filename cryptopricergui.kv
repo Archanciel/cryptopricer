@@ -20,7 +20,7 @@ CryptoPricerGUI:
     replaceButton: replaceBtn
     replayAllButton: replayAllBtn
     statusBar: status_bar
-    cleaeResultOutputButton: clearOutputBtn
+    clearResultOutputButton: clearOutputBtn
     #outputResultScrollView: scrlv
     
     padding: 10
@@ -141,6 +141,7 @@ CryptoPricerGUI:
                 text: 'Clear'
                 size_hint_x: None
                 width: 50
+                disabled: True
                 on_press: root.clearOutput()
 
 <CustomDropDown>

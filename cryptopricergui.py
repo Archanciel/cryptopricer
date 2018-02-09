@@ -129,6 +129,7 @@ class CryptoPricerGUI(BoxLayout):
         '''
         # Get the student name from the TextInputs
         commandStr = self.commandInput.text
+        self.updateStatusBar(commandStr)
 
         outputResultStr, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(commandStr)
         self.outputResult(outputResultStr)
@@ -155,11 +156,31 @@ class CryptoPricerGUI(BoxLayout):
         self.manageStateOfCommandListButtons()
         self.commandInput.text = ''
 
+        #displaying request and result in status bar
+
+        if 'ERROR' in outputResultStr:
+            if commandStr == '':
+                self.updateStatusBar('REPLAY --> ' + outputResultStr)
+            elif commandStr:
+                self.updateStatusBar(commandStr + ' --> ' + outputResultStr)
+        else:
+            if fullCommandStrWithSaveModeOptions:
+                if commandStr == '':
+                    self.updateStatusBar('REPLAY --> ' + fullCommandStrWithSaveModeOptions)
+                elif commandStr:
+                    self.updateStatusBar(commandStr + ' --> ' + fullCommandStrWithSaveModeOptions)
+            else:
+                if commandStr == '':
+                    self.updateStatusBar('REPLAY --> ' + fullCommandStr)
+                elif commandStr:
+                    self.updateStatusBar(commandStr + ' --> ' + fullCommandStr)
+
         self.refocusOncommandInput()
 
 
     def clearOutput(self):
         self.resultOutput.text = ''
+        self.clearResultOutputButton.disabled = True
         self.refocusOncommandInput()
 
 
@@ -194,6 +215,8 @@ class CryptoPricerGUI(BoxLayout):
             self.resultOutput.text = self.resultOutput.text + '\n' + resultStr
             #self.outputResultScrollView.scroll_to(100000)
             #self.resultOutput.cursor = (10000,0)
+
+        self.clearResultOutputButton.disabled = False
 
 
     def refocusOncommandInput(self):
