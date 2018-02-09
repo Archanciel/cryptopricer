@@ -7,6 +7,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
 from requester import Requester
+from configurationmanager import ConfigurationManager
 from commandprice import CommandPrice
 from commandcrypto import CommandCrypto
 from commandquit import CommandQuit
@@ -28,7 +29,14 @@ class TestRequester(unittest.TestCase):
     nosave command
     '''
     def setUp(self):
-        requester = Requester()
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptopricer.ini'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptopricer.ini'
+
+        configMgr = ConfigurationManager(FILE_PATH)
+
+        requester = Requester(configMgr)
         self.commandPrice = CommandPrice(None)
         requester.commandPrice = self.commandPrice
         requester.commandCrypto = CommandCrypto(None)
@@ -1918,7 +1926,7 @@ class TestRequester(unittest.TestCase):
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
-        self.assertEqual("ERROR - invalid partial request : in -t5, 5 must respect 99:99 format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request : in -t5, 5 must respect HH:mm format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearNoMinuteInvalidTime(self):
@@ -1945,7 +1953,7 @@ class TestRequester(unittest.TestCase):
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
-        self.assertEqual("ERROR - invalid partial request : in -t6.45, 6.45 must respect 99:99 format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request : in -t6.45, 6.45 must respect HH:mm format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
     def test_parseAndFillPartialCommandPriceWithInitYear(self):
@@ -2610,7 +2618,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(commandPrice, CommandError)
         self.assertEqual(commandPrice, self.commandError)
         resultData = self.commandError.execute()
-        self.assertEqual("ERROR - invalid partial request -fusd -t0: in -t0, 0 must respect 99:99 format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request -fusd -t0: in -t0, 0 must respect HH:mm format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
         sys.stdin = stdin
 

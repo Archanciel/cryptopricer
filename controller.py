@@ -28,7 +28,7 @@ class Controller:
         self.priceRequester = PriceRequester()
         self.crypCompTranslator = CrypCompExchanges()
         self.processor = Processor(self.configMgr, self.priceRequester, self.crypCompTranslator)
-        self.requester = Requester()
+        self.requester = Requester(self.configMgr)
 
         self.commandPrice = CommandPrice(self.processor, self.configMgr)
         self.commandCrypto = CommandCrypto(self.processor)

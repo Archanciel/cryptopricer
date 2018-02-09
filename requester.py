@@ -1,6 +1,7 @@
 import re
 from commandprice import CommandPrice
-
+from configurationmanager import ConfigurationManager
+from datetimeutil import DateTimeUtil
 
 class Requester:
     '''
@@ -128,7 +129,8 @@ class Requester:
     '''
     PRICE_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
 
-    def __init__(self):
+    def __init__(self, configMgr):
+        self.configMgr = configMgr
         self.commandQuit = None
         self.commandError = None
         self.commandPrice = None
@@ -439,8 +441,10 @@ class Requester:
                 #supplied time is invalid: does not respect expected format of 0:10 or 12:01 etc
                 # invalid time partial command format
                 invalidPartialCommand, invalidValue = self._wholeParmAndInvalidValue('-t', inputStr)
+                dtFormatDic = DateTimeUtil.getDateAndTimeFormatDictionary(self.configMgr.dateTimeFormat)
+                timeFormat = dtFormatDic[DateTimeUtil.TIME_FORMAT_KEY]
                 self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-                self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG.format(invalidPartialCommand, invalidValue)
+                self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG.format(invalidPartialCommand, invalidValue, timeFormat)
 
                 # remove invalid time specification form parsedParData to avoid polluting next partial
                 # request !
