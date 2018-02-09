@@ -18,11 +18,27 @@ MyGui:
     deleteButton: deleteBtn
     replaceButton: replaceBtn
     replayAllButton: replayAllBtn
+    statusBar: status_bar
     #outputResultScrollView: scrlv
+
+    padding: 10
+    spacing: 10
+    canvas.before:
+        Color:
+            rgb: [0.22,0.22,0.22]
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
     BoxLayout:
         size_hint_y: None
         height: "28dp"
+        canvas.before:
+            Color:
+                rgb: [0,0,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
         TextInput:
             id: command
@@ -80,6 +96,12 @@ MyGui:
     ScrollView:
         id: scrlv
         size_hint: (1, 1)
+        canvas.before:
+            Color:
+                rgb: [0,0,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
         effect_cls: ScrollEffect #prevents overscrolling
         TextInput:
             id: readOnlyLog
@@ -88,3 +110,26 @@ MyGui:
             readonly: True
             background_color: 0,0,0,0
             foreground_color: 1,1,1,1
+
+    BoxLayout:
+        size_hint_y: None
+        height: "28dp"
+        canvas.before:
+            Color:
+                rgb: [0,0,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        GridLayout:
+            cols: 2
+            TextInput:
+                id: status_bar
+                background_color: 0,0,0,0
+                foreground_color: 1,1,1,1
+                readonly: True
+                multiline: False
+            Button:
+                text: 'Clear'
+                size_hint_x: None
+                width: 50

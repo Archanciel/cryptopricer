@@ -170,6 +170,9 @@ class MyGui(BoxLayout):
         # self.resultOutput.do_cursor_movement('cursor_pgdown')
         self.refocusOncommandInput()
 
+    def updateStatusBar(self, messageStr):
+        self.statusBar.text = messageStr
+
 
 class MyGuiApp(App):
     def build(self):

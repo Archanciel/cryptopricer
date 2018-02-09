@@ -158,6 +158,11 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOncommandInput()
 
 
+    def clearOutput(self):
+        self.resultOutput.text = ''
+        self.refocusOncommandInput()
+
+
     def resetListViewScrollToEnd(self, listView):
         listView._trigger_reset_populate()
         listView.scroll_to(len(self.commandList.adapter.data) - 1)
@@ -275,6 +280,7 @@ class CryptoPricerGUI(BoxLayout):
 
 
     def replayAllCommands(self):
+        #output blank line
         self.outputResult('')
 
         for command in self.commandList.adapter.data:
