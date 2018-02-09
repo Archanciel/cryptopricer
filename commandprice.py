@@ -244,6 +244,12 @@ class CommandPrice(AbstractCommand):
                  returned.
         '''
 
+        dtFormatDic = DateTimeUtil.getDateAndTimeFormatDictionary(self.configManager.dateTimeFormat)
+
+        dateShortFormat = dtFormatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY]
+        dateLongFormat = dtFormatDic[DateTimeUtil.LONG_DATE_FORMAT_KEY]
+        timeFormat = dtFormatDic[DateTimeUtil.TIME_FORMAT_KEY]
+
         resultData = True
 
         dayStr = self.parsedParmData[self.DAY]
@@ -299,14 +305,14 @@ class CommandPrice(AbstractCommand):
             if minuteStr == None:
                 minuteStr = str(localNow.minute)
 
-            dateTimeTupleList = [('day', dayStr), ('month', monthStr), ('year', yearStr), ('hour', hourStr), ('minute', minuteStr)]
+            dateTimeTupleList = [('day', dayStr, dateShortFormat), ('month', monthStr, dateShortFormat), ('year', yearStr, dateLongFormat), ('hour', hourStr, timeFormat), ('minute', minuteStr, timeFormat)]
 
             try:
-                for name, value in dateTimeTupleList:
+                for name, value, format in dateTimeTupleList:
                     int(value)
             except ValueError as e:
                 resultData = ResultData()
-                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid value: {} violates format for {}".format(value, name))
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid value: {} violates format for {} ({})".format(value, name, format))
                 return resultData
 
             try:

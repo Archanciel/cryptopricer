@@ -293,5 +293,53 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertEqual(['09', '30', '2017', '02', '00'], dateTimeComponentValueList)
 
 
+    def test_extractDateTimeFormatComponentFromDateTimeFormat(self):
+        dateTimeComponentSymbolList, separatorsList = DateTimeUtil._extractDateTimeFormatComponentFromDateTimeFormat('DD/MM/YY HH:mm')
+
+        self.assertEqual(['DD', 'MM', 'YY', 'HH', 'mm'], dateTimeComponentSymbolList)
+        self.assertEqual(['/', ':'], separatorsList)
+
+        dateTimeComponentSymbolList, separatorsList = DateTimeUtil._extractDateTimeFormatComponentFromDateTimeFormat('YYYY.MM.DD HH.mm')
+
+        self.assertEqual(['YYYY', 'MM', 'DD', 'HH', 'mm'], dateTimeComponentSymbolList)
+        self.assertEqual(['\.', '\.'], separatorsList)
+
+        dateTimeComponentSymbolList, separatorsList = DateTimeUtil._extractDateTimeFormatComponentFromDateTimeFormat('YYYY.MM.DD HH-mm')
+
+        self.assertEqual(['YYYY', 'MM', 'DD', 'HH', 'mm'], dateTimeComponentSymbolList)
+        self.assertEqual(['\.', '-'], separatorsList)
+
+        dateTimeComponentSymbolList, separatorsList = DateTimeUtil._extractDateTimeFormatComponentFromDateTimeFormat('MM-DD-YYYY HH.mm')
+
+        self.assertEqual(['MM', 'DD', 'YYYY', 'HH', 'mm'], dateTimeComponentSymbolList)
+        self.assertEqual(['-', '\.'], separatorsList)
+
+
+    def testGetDateAndTimeFormatDictionary(self):
+        formatDic = DateTimeUtil.getDateAndTimeFormatDictionary('DD/MM/YY HH:mm')
+
+        self.assertEqual('DD/MM/YY', formatDic[DateTimeUtil.LONG_DATE_FORMAT_KEY])
+        self.assertEqual('DD/MM', formatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY])
+        self.assertEqual('HH:mm', formatDic[DateTimeUtil.TIME_FORMAT_KEY])
+
+        formatDic = DateTimeUtil.getDateAndTimeFormatDictionary('YYYY.MM.DD HH.mm')
+
+        self.assertEqual('YYYY.MM.DD', formatDic[DateTimeUtil.LONG_DATE_FORMAT_KEY])
+        self.assertEqual('MM.DD', formatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY])
+        self.assertEqual('HH.mm', formatDic[DateTimeUtil.TIME_FORMAT_KEY])
+
+        formatDic = DateTimeUtil.getDateAndTimeFormatDictionary('YYYY.MM.DD HH-mm')
+
+        self.assertEqual('YYYY.MM.DD', formatDic[DateTimeUtil.LONG_DATE_FORMAT_KEY])
+        self.assertEqual('MM.DD', formatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY])
+        self.assertEqual('HH-mm', formatDic[DateTimeUtil.TIME_FORMAT_KEY])
+
+        formatDic = DateTimeUtil.getDateAndTimeFormatDictionary('MM-DD-YYYY HH.mm')
+
+        self.assertEqual('MM-DD-YYYY', formatDic[DateTimeUtil.LONG_DATE_FORMAT_KEY])
+        self.assertEqual('MM-DD', formatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY])
+        self.assertEqual('HH.mm', formatDic[DateTimeUtil.TIME_FORMAT_KEY])
+
+
 if __name__ == '__main__':
     unittest.main()

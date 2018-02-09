@@ -1,8 +1,13 @@
 import arrow
 import re
 
+
 class DateTimeUtil:
     SECONDS_PER_DAY = 86400
+
+    SHORT_DATE_FORMAT_KEY = 'SHORT_DATE_FORMAT'
+    LONG_DATE_FORMAT_KEY = 'LONG_DATE_FORMAT'
+    TIME_FORMAT_KEY = 'TIME_FORMAT'
 
     @staticmethod
     def timeStampToArrowLocalDate(timeStamp, timeZoneStr):
@@ -183,27 +188,119 @@ class DateTimeUtil:
         :param dateTimeformat: in the format used by Arrow dates
         :return: dateTimeComponentSymbolList, separatorsList and dateTimeComponentValueList
         '''
-        # find the separators in 'DD/MM/YY HH:mm' - ['/', '/', ':'] or 'YYYY.MM.DD HH.mm' - ['.', '.', '.']
-        dateTimeSeparators = re.findall(r"[^\w^ ]", dateTimeformat)
-
-        # build the split pattern '/| |:' or '\.| |\.'
-        
-        # if a separator is a dot, must be escaped !
-        if dateTimeSeparators[0] == '.':
-            dateTimeSeparators[0] = r'\.'
-
-        if dateTimeSeparators[-1] == '.':
-            dateTimeSeparators[-1] = r'\.'
-
-        separatorsList = [dateTimeSeparators[0], dateTimeSeparators[-1]]
-        dateTimeComponentsSplitPattern = '{}| |{}'.format(dateTimeSeparators[0], dateTimeSeparators[-1])
-        dateTimeComponentSymbolList = re.split(dateTimeComponentsSplitPattern, dateTimeformat)
+        dateTimeComponentSymbolList, separatorsList = DateTimeUtil._extractDateTimeFormatComponentFromDateTimeFormat(
+            dateTimeformat)
         dateTimeComponentValueList = []
 
         for dateTimeSymbol in dateTimeComponentSymbolList:
             dateTimeComponentValueList.append(arrowDateTimeObj.format(dateTimeSymbol))
 
         return dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList
+
+
+    @staticmethod
+    def _extractDateTimeFormatComponentFromDateTimeFormat(dateTimeformat):
+        '''
+        Returns 2 lists, the first containing the date/time components symbols in the order
+        they are used in the passed dateTimeFormat, the second containing 2 elements:
+        the date and the time separator.
+
+        Ex: for dateTimeformat = 'DD/MM/YY HH:mm', returns
+            ['DD', 'MM', 'YY', 'HH', 'mm']
+            ['/', ':'] and
+
+            for dateTimeformat = 'YYYY-MM-DD HH.mm', returns
+            ['YYYY', 'MM', 'DD', 'HH', 'mm']
+            ['-', '.'] and
+
+        :param dateTimeformat: in the format used by Arrow dates
+        :return: dateTimeComponentSymbolList, separatorsList
+        '''
+        # find the separators in 'DD/MM/YY HH:mm' - ['/', '/', ':'] or 'YYYY.MM.DD HH.mm' - ['.', '.', '.']
+        dateTimeSeparators = re.findall(r"[^\w^ ]", dateTimeformat)
+        # build the split pattern '/| |:' or '\.| |\.'
+        # if a separator is a dot, must be escaped !
+        if dateTimeSeparators[0] == '.':
+            dateTimeSeparators[0] = r'\.'
+        if dateTimeSeparators[-1] == '.':
+            dateTimeSeparators[-1] = r'\.'
+        separatorsList = [dateTimeSeparators[0], dateTimeSeparators[-1]]
+        dateTimeComponentsSplitPattern = '{}| |{}'.format(dateTimeSeparators[0], dateTimeSeparators[-1])
+        dateTimeComponentSymbolList = re.split(dateTimeComponentsSplitPattern, dateTimeformat)
+        return dateTimeComponentSymbolList, separatorsList
+
+
+    @staticmethod
+    def getDateAndTimeFormatDictionary(dateTimeformat):
+        '''
+        Returns a dictonary containing the date and time formats corresponding to the
+        passed Arrow dateTimeformat
+
+        Ex: for dateTimeformat = 'DD/MM/YY HH:mm', returns
+            ['DD', 'MM', 'YY', 'HH', 'mm']
+            ['/', ':'] and
+
+            for dateTimeformat = 'YYYY-MM-DD HH.mm', returns
+            ['YYYY', 'MM', 'DD', 'HH', 'mm']
+            ['-', '.'] and
+
+        :param dateTimeformat: in the format used by Arrow dates
+        :return: formatDic: dictionary containing the date and time formats
+        '''
+        dateTimeComponentSymbolList, separatorsList = DateTimeUtil._extractDateTimeFormatComponentFromDateTimeFormat(dateTimeformat)
+        separatorsList = [(lambda x : x.strip('\\'))(x) for x in separatorsList]
+        formatDic = {}
+
+        # handling date formats
+        dateSep = separatorsList[0]
+
+        if 'Y' in dateTimeComponentSymbolList[0].upper():
+            #date start with year
+            formatDic[DateTimeUtil.LONG_DATE_FORMAT_KEY] = '{}{}{}{}{}'.format(dateTimeComponentSymbolList[0],
+                                                                  dateSep,
+                                                                  dateTimeComponentSymbolList[1],
+                                                                  dateSep,
+                                                                  dateTimeComponentSymbolList[2])
+            formatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY] = '{}{}{}'.format(dateTimeComponentSymbolList[1],
+                                           dateSep,
+                                           dateTimeComponentSymbolList[2])
+        elif 'D' in dateTimeComponentSymbolList[0].upper():
+            #date start with day
+            formatDic[DateTimeUtil.LONG_DATE_FORMAT_KEY] = '{}{}{}{}{}'.format(dateTimeComponentSymbolList[0],
+                                                                  dateSep,
+                                                                  dateTimeComponentSymbolList[1],
+                                                                  dateSep,
+                                                                  dateTimeComponentSymbolList[2])
+            formatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY] = '{}{}{}'.format(dateTimeComponentSymbolList[0],
+                                                dateSep,
+                                                dateTimeComponentSymbolList[1])
+        elif 'M' in dateTimeComponentSymbolList[0].upper():
+            # date start with month
+            formatDic[DateTimeUtil.LONG_DATE_FORMAT_KEY] = '{}{}{}{}{}'.format(dateTimeComponentSymbolList[0],
+                                                                               dateSep,
+                                                                               dateTimeComponentSymbolList[1],
+                                                                               dateSep,
+                                                                               dateTimeComponentSymbolList[2])
+            formatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY] = '{}{}{}'.format(dateTimeComponentSymbolList[0],
+                                                                            dateSep,
+                                                                            dateTimeComponentSymbolList[1])
+        else:
+            #unsupported date format
+            pass
+
+        # handling time formats
+        timeSep = separatorsList[1]
+
+        formatDic[DateTimeUtil.TIME_FORMAT_KEY] = '{}{}{}'.format(dateTimeComponentSymbolList[3],
+                                       timeSep,
+                                       dateTimeComponentSymbolList[4])
+
+        return formatDic
+
+
+    @staticmethod
+    def _unescape(str):
+        return str.strip('\\')
 
 
 if __name__ == '__main__':
