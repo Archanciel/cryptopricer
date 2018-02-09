@@ -1126,7 +1126,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - 10:01 violates format for day', printResult)
+            'ERROR - invalid value: 10:01 violates format for day', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1167,7 +1167,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - O1 violates format for month', printResult)
+            'ERROR - invalid value: O1 violates format for month', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1208,7 +1208,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - 20O1 violates format for year', printResult)
+            'ERROR - invalid value: 20O1 violates format for year', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1249,7 +1249,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - O1 violates format for minute', printResult)
+            'ERROR - invalid value: O1 violates format for minute', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1331,7 +1331,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - 1O violates format for hour', printResult)
+            'ERROR - invalid value: 1O violates format for hour', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1636,7 +1636,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - 23:11 violates format for day', printResult)
+            'ERROR - invalid value: 23:11 violates format for day', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1665,7 +1665,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - 23:11 violates format for day', printResult)
+            'ERROR - invalid value: 23:11 violates format for day', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1685,7 +1685,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - 23:11 violates format for day', printResult)
+            'ERROR - invalid value: 23:11 violates format for day', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1721,7 +1721,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - {}:{} violates format for day'.format(requestDayStr, requestMonthStr), printResult)
+            'ERROR - invalid value: {}:{} violates format for day'.format(requestDayStr, requestMonthStr), printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
