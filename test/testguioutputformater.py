@@ -92,9 +92,9 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
                             {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
-                             'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
+                             'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'PRICE_VAL_AMOUNT': None, 'PRICE_VAL_SYMBOL': None})
 
-        fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        fullCommandString, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual(fullCommandString, "eth usd 05/12/17 09:30 bittrex")
 
@@ -405,10 +405,13 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '5/12/17 09:30')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': None, 'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
+        resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
+                            {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
+                             'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'PRICE_VAL_AMOUNT': None, 'PRICE_VAL_SYMBOL': None})
 
-        fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        fullCommandString, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
-        self.assertEqual(fullCommandString, "eth usd 05/12/{} 09:30 bittrex".format(nowYearStr))
+        self.assertEqual(fullCommandString, "eth usd 05/12/17 09:30 bittrex")
 
 
     def testGetFullCommandStringYearDefined(self):
@@ -427,9 +430,9 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
                             {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
-                             'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
+                             'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'PRICE_VAL_AMOUNT': None, 'PRICE_VAL_SYMBOL': None})
 
-        fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        fullCommandString, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual(fullCommandString, "eth usd 05/12/17 09:30 bittrex")
 
@@ -497,7 +500,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('0.01 BTC/160 USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
-        fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        fullCommandString, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandString)
 
@@ -625,7 +628,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('0.01 BTC/160 USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
-        fullCommandString, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        fullCommandString, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
         self.assertEqual('btc usd 0 bittrex -vs0.01btc', fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandString)
 

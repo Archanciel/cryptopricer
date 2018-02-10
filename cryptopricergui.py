@@ -131,7 +131,13 @@ class CryptoPricerGUI(BoxLayout):
         commandStr = self.commandInput.text
         self.updateStatusBar(commandStr)
 
-        outputResultStr, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(commandStr)
+        # purpose of the informations obtained from the business layer:
+        #   outputResultStr - for the output text zone
+        #   fullCommandStr - for the request history list
+        #   fullCommandStrWithOptions - for the status bar
+        #   fullCommandStrWithSaveModeOptions - for the request history list
+        outputResultStr, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(commandStr)
+
         self.outputResult(outputResultStr)
 
         if fullCommandStrWithSaveModeOptions != None:
@@ -147,8 +153,12 @@ class CryptoPricerGUI(BoxLayout):
             # Reset the ListView
             self.resetListViewScrollToEnd(self.commandList)
         elif fullCommandStr != '' and not fullCommandStr in self.commandList.adapter.data:
-            # Add the command to the ListView if not already in
+            # Add the full command to the ListView if not already in
             self.commandList.adapter.data.extend([fullCommandStr])
+
+            # if an identical full command string with options is in the history, it is not
+            # removed automatically. If the user wants to get rid of it, he must do it exolicitely
+            # using the delete button !
 
             # Reset the ListView
             self.resetListViewScrollToEnd(self.commandList)
@@ -170,10 +180,13 @@ class CryptoPricerGUI(BoxLayout):
                 elif commandStr:
                     self.updateStatusBar(commandStr + ' --> ' + fullCommandStrWithSaveModeOptions)
             else:
+                if not fullCommandStrWithOptions:
+                    fullCommandStrWithOptions = fullCommandStr
+
                 if commandStr == '':
-                    self.updateStatusBar('REPLAY --> ' + fullCommandStr)
+                    self.updateStatusBar('REPLAY --> ' + fullCommandStrWithOptions)
                 elif commandStr:
-                    self.updateStatusBar(commandStr + ' --> ' + fullCommandStr)
+                    self.updateStatusBar(commandStr + ' --> ' + fullCommandStrWithOptions)
 
         self.refocusOncommandInput()
 
@@ -307,7 +320,7 @@ class CryptoPricerGUI(BoxLayout):
         self.outputResult('')
 
         for command in self.commandList.adapter.data:
-             outputResultStr, fullCommandStr, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(command)
+             outputResultStr, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(command)
              #print("command: {}\nfull command: {}\nres: {}".format(command, fullCommandStr, outputResultStr))
              self.outputResult(outputResultStr)
 

@@ -68,29 +68,33 @@ class Controller:
         :param inputStr:
         :return: 1/ printable request result
                  2/ full request command without any command option
-                 3/ full request command with any specified save mode option, None if no save mode option
+                 3/ full request command with any non save command option
+                 4/ full request command with any specified save mode option, None if no save mode option
                     is in effect
 
                  Ex: 1/ 0.1 ETH/36 USD on Bitfinex: 21/11/17 10:00 360
                      2/ eth usd 0 bitfinex
-                     3/ eth usd 0 bitfinex -vs0.1eth
+                     3/ None (value command with save mode in effect !)
+                     4/ eth usd 0 bitfinex -vs0.1eth
 
                      1/ 0.1 ETH/36 USD on Bitfinex: 21/11/17 10:00 360
                      2/ eth usd 0 bitfinex
-                     3/ None (-v0.1eth command in effect)
+                     3/ eth usd 0 bitfinex -v0.1eth
+                     4/ None (no value command save option in effect)
 
                      1/ ETH/USD on Bitfinex: 21/11/17 10:00 360
                      2/ eth usd 0 bitfinex
-                     3/ None (no command in effect)
+                     3/ None (no value command in effect)
+                     4/ None (no value command save option in effect)
         '''
         command = self.requester.getCommand(inputStr)
         result = command.execute()
 
         if result != '':
             printResult = self.printer.getPrintableData(result)
-            fullCommandStr, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(result)
+            fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(result)
             
-            return printResult, fullCommandStr, fullCommandStrWithSaveModeOptions
+            return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
 
 
 if __name__ == '__main__':

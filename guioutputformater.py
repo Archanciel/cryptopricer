@@ -48,20 +48,24 @@ class GuiOutputFormater(AbstractOutputFormater):
         :param resultData: result of the last full or partial request
         :return: 1/ full command string with no command option corresponding to a full or partial price request
                     entered by the user or empty string if the command generated an error msg.
-                 2/ full command string with command option in save mode or none if no command option in save mode
+                 2/ full request command with any non save command option
+                 3/ full command string with command option in save mode or none if no command option in save mode
                     is in effect or if the command option generated a warning.
 
                  Ex: 1/ eth usd 0 bitfinex
-                     2/ eth usd 0 bitfinex -vs0.1eth
+                     2/ None
+                     3/ eth usd 0 bitfinex -vs0.1eth
 
                      1/ eth usd 0 bitfinex
-                     2/ None (-v0.1btc command was entered, which generated a warning)
+                     2/ eth usd 0 bitfinex -v0.1btc (even if warning generated !)
+                     3/ None (-v0.1btc command was entered, which generated a warning)
 
                      1/ eth usd 0 bitfinex
-                     3/ None (no option in effect)
+                     2/ None (no value command in effect)
+                     3/ None (no value command with save option in effect)
         '''
         if resultData.isError():
-            return '', None
+            return '', None, None
             
         commandDic = resultData.getValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS)
         priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
@@ -80,14 +84,22 @@ class GuiOutputFormater(AbstractOutputFormater):
                              commandDic[CommandPrice.EXCHANGE]
 
         fullCommandStrWithSaveModeOptions = None
+        fullCommandStrWithOptions = None
 
-        if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE) and not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
-            #in case the value command generated a warning, if the value command data contains a crypto or fiat
-            #different from the crypto or fiat of tthe request, the fullCommandStrWithSaveModeOptions remains
-            #None and wont't be stored in the request history list of the GUI !
-            fullCommandStrWithSaveModeOptions = fullCommandStr + ' -vs' + commandDic[CommandPrice.PRICE_VALUE_AMOUNT] + commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
+        if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE):
+            if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
+                #in case the value command generated a warning, if the value command data contains a crypto or fiat
+                #different from the crypto or fiat of tthe request, the fullCommandStrWithSaveModeOptions remains
+                #None and wont't be stored in the request history list of the GUI !
+                fullCommandStrWithSaveModeOptions = fullCommandStr + ' -vs' + commandDic[CommandPrice.PRICE_VALUE_AMOUNT] + commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
+        else:
+            valueCommandAmountStr = commandDic[CommandPrice.PRICE_VALUE_AMOUNT]
+            valueCommandSymbolStr = commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
+            if valueCommandAmountStr and valueCommandSymbolStr:
+                #even in case the value command generated a warning, it will be displayed in the status bar !
+                fullCommandStrWithOptions = fullCommandStr + ' -v' + valueCommandAmountStr + valueCommandSymbolStr
 
-        return fullCommandStr, fullCommandStrWithSaveModeOptions
+        return fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
 
 
     def _buildFullDateAndTimeStrings(self, commandDic, timezoneStr):

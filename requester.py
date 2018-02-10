@@ -3,6 +3,10 @@ from commandprice import CommandPrice
 from configurationmanager import ConfigurationManager
 from datetimeutil import DateTimeUtil
 
+REQUEST_TYPE_PARTIAL = 'partial'
+REQUEST_TYPE_FULL = 'full'
+
+
 class Requester:
     '''
     Read in commands entered by the
@@ -363,16 +367,25 @@ class Requester:
         return data, commandModifierValue
 
     def _parseAndFillCommandPrice(self, inputStr):
+        '''
+        This method try parsing a full or a partial request.
+
+        :param inputStr:
+        :return: self.commandPrice or self.commandError or None, which will cause an error to be raised
+        '''
         groupList = self._tryMatchFullPriceCommand(inputStr)
+
+        requestType = None
 
         if groupList == (): #full command pattern not matched --> try match partial command pattern
             groupList = self._tryMatchPartialPriceCommand(inputStr)
-            if groupList != (): #here, parms are associated to parrm tag (i.e -c or -d). Means they have been
-                                #entered in any order and are all optional
-
-                # ensuring command price temporary data like unsupported command data from previous
+            if groupList != ():
+                # partial request entered. Here, parms are associated to parrm tag (i.e -c or -d).
+                # Means they have been entered in any order and are all optional ensuring
+                # command price temporary data like unsupported command data from previous
                 # request are purged. Necessary here when handling partial command(s) since, unlike
                 # when a full command is processed, the command price is not reinitialized !
+                requestType = REQUEST_TYPE_PARTIAL
                 self.commandPrice.resetTemporaryData()
 
                 keys = self.inputParmParmDataDicKeyDic.keys()
@@ -415,9 +428,10 @@ class Requester:
                     
             else: #neither full nor parrial pattern matched
                 return None # will cause an error.
-        else: #full command line entered. Here, parms were entered in an order reflected in the
+        else: #full request entered. Here, parms were entered in an order reflected in the
               # pattern: crypto fiat in this mandatory order, then date time exchange, of which order
               # can be different.
+            requestType = REQUEST_TYPE_FULL
             self.commandPrice.initialiseParsedParmData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
             self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1] #mandatory fiat parm, its order is fixed
@@ -520,7 +534,7 @@ class Requester:
         priceValueData = self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_DATA]
 
         if priceValueData != None:
-            return self._fillPriceValueInfo(priceValueData, inputStr)
+            return self._fillPriceValueInfo(priceValueData, requestType)
         else:
             #no partial command -v specified here !
             return self.commandPrice
@@ -572,11 +586,11 @@ class Requester:
         self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
 
-    def _fillPriceValueInfo(self, priceValueData, inputStr):
+    def _fillPriceValueInfo(self, priceValueData, requestType):
         '''
         Fill parsed parm data price amount and price symbol fields and empty combined price data field
         :param priceValueData: the data following thce -v partial command specification
-        :param inputStr: required in case a CommandError must be returned
+        :param requestType: indicate if we are handling a full or a partial request
         :return: self.commandPrice or self.commandError in case -v invalid
         '''
 
@@ -590,10 +604,15 @@ class Requester:
             if priceValueErase == None:
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = priceValueAmount
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = priceValueSymbol
-                if priceValueSaveFlag.upper() == 'S':
-                    self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = True
-                #else: do nothing: do not set commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] to
-                #False since it may have been set to True during full command parsing processing !
+                if requestType == REQUEST_TYPE_PARTIAL:
+                    # only in case of partial request containing a value command may the passed
+                    # priceValueData contain a s option.
+                    # for full requesst containing a value command, the s option if present is parsed
+                    # differently and is never contained in the passed priceValueData !
+                    if priceValueSaveFlag.upper() == 'S':
+                        self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = True
+                    else:
+                        self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = None
             elif priceValueErase == '0':
                 #here, -v0 was entered to stop price value calculation
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = None
@@ -605,6 +624,7 @@ class Requester:
             return self.commandPrice
         else:
             #here, invalid -v command
+            self.commandError
             self.commandError.parsedParmData[
                 self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
             self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_PRICE_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + priceValueData, priceValueData)
