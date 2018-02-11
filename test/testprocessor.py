@@ -380,7 +380,7 @@ class TestProcessor(unittest.TestCase):
                                                hour,
                                                minute)
 
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), exchange)

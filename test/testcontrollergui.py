@@ -223,7 +223,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'ERROR - Bitfinex market does not exist for this coin pair (BTC-ETH)', printResult)
+            'PROVIDER ERROR - Bitfinex market does not exist for this coin pair (BTC-ETH)', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -231,7 +231,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'ERROR - Bitfinex market does not exist for this coin pair (XMR-ETH)', printResult)
+            'PROVIDER ERROR - Bitfinex market does not exist for this coin pair (XMR-ETH)', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -239,7 +239,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'ERROR - Bitfinex market does not exist for this coin pair (BTC-ETH)', printResult)
+            'PROVIDER ERROR - Bitfinex market does not exist for this coin pair (BTC-ETH)', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
