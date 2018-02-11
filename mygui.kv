@@ -82,7 +82,7 @@ MyGui:
     # in the Python code
     ListView:
         id: commandListView
-        adapter: ListAdapter(data=[], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected})
+        adapter: ListAdapter(data=[], cls=main.RequestListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected})
         height: '0dp'
         size_hint_y: None
         on_parent: self.container.parent.effect_cls = ScrollEffect #prevents overscrolling
@@ -130,6 +130,8 @@ MyGui:
                 readonly: True
                 multiline: False
             Button:
+                id: clear_output_Button
                 text: 'Clear'
                 size_hint_x: None
-                width: 50
+                width: 130
+                on_press: root.clearOutput()

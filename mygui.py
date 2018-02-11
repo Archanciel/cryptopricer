@@ -20,7 +20,7 @@ class MyGui(BoxLayout):
         super(MyGui, self).__init__(**kwargs)
 
 
-    def toggleCommandList(self):
+    def toggleRequestList(self):
         '''
         called by 'History' toggle button to toggle the display of the history
         command list.
@@ -41,7 +41,7 @@ class MyGui(BoxLayout):
 
             self.refocusOncommandInput()
 
-    def submitCommand(self):
+    def submitRequest(self):
         '''
         Submit the command, output the result and add the command to the
         command list
@@ -50,6 +50,7 @@ class MyGui(BoxLayout):
         # Get the student name from the TextInputs
         commandStr = self.commandInput.text
         self.outputResult(commandStr)
+        self.updateStatusBar(commandStr)
 
         self.commandList.adapter.data.extend([commandStr])
 
@@ -98,7 +99,7 @@ class MyGui(BoxLayout):
     def refocusTextInput(self, *args):
         self.commandInput.focus = True
 
-    def deleteCommand(self, *args):
+    def deleteRequest(self, *args):
         # If a list item is selected
         if self.commandList.adapter.selection:
             # Get the text from the item selected
@@ -116,7 +117,7 @@ class MyGui(BoxLayout):
 
         self.refocusOncommandInput()
 
-    def replaceCommand(self, *args):
+    def replaceRequest(self, *args):
         # If a list item is selected
         if self.commandList.adapter.selection:
 
@@ -161,7 +162,7 @@ class MyGui(BoxLayout):
         self.deleteButton.disabled = True
         self.replaceButton.disabled = True
 
-    def replayAllCommands(self):
+    def replayAllRequests(self):
         self.outputResult('')
 
         for command in self.commandList.adapter.data:
@@ -173,6 +174,9 @@ class MyGui(BoxLayout):
     def updateStatusBar(self, messageStr):
         self.statusBar.text = messageStr
 
+    def clearOutput(self):
+        self.resultOutput.text = ''
+        self.refocusOncommandInput()
 
 class MyGuiApp(App):
     def build(self):
