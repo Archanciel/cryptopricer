@@ -1,6 +1,5 @@
-# ---------- mygui.kv  ----------
+# ---------- mysimplegui.kv  ----------
 
-# Reference cryptopricergui.py
 #: import main cryptopricergui
 #: import ListAdapter kivy.adapters.listadapter.ListAdapter
 #: import ListItemButton kivy.uix.listview.ListItemButton
@@ -11,19 +10,18 @@ MySimpleGui:
 
 <MySimpleGui>:
     orientation: "vertical"
-    commandInput: command
-    commandList: commandListView
+    requestInput: request
+    requestList: requestListView
     resultOutput: readOnlyLog
     toggleHistoButton: toggleHistoryBtn
     replayAllButton: replayAllBtn
-    #outputResultScrollView: scrlv
 
     BoxLayout:
         size_hint_y: None
         height: "28dp"
 
         TextInput:
-            id: command
+            id: request
             background_color: 0,0,0,0
             foreground_color: 1,1,1,1
             focus: True
@@ -51,8 +49,8 @@ MySimpleGui:
     # Define starting data and point to the ListItemButton
     # in the Python code
     ListView:
-        id: commandListView
-        adapter: ListAdapter(data=['one', 'two', 'three', 'four'], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected,'size_hint_y': None,'height': 30})
+        id: requestListView
+        adapter: ListAdapter(data=[], cls=main.RequestListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected,'size_hint_y': None,'height': 130})
         height: '0dp'
         size_hint_y: None
         on_parent: self.container.parent.effect_cls = ScrollEffect #prevents overscrolling

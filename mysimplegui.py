@@ -5,75 +5,75 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.listview import ListItemButton
 
 
-class CommandListButton(ListItemButton):
+class RequestListButton(ListItemButton):
     pass
 
 
 class MySimpleGui(BoxLayout):
-    commandInput = ObjectProperty()
-    commandList = ObjectProperty()
+    requestInput = ObjectProperty()
+    requestList = ObjectProperty()
     resultOutput = ObjectProperty()
-    showCommandList = False
+    showRequestList = False
 
     def __init__(self, **kwargs):
         super(MySimpleGui, self).__init__(**kwargs)
 
 
-    def toggleCommandList(self):
+    def toggleRequestList(self):
         '''
         called by 'History' toggle button to toggle the display of the history
         command list.
         '''
-        if self.showCommandList:
-            self.commandList.size_hint_y = None
-            self.commandList.height = '0dp'
-            self.showCommandList = False
+        if self.showRequestList:
+            self.requestList.size_hint_y = None
+            self.requestList.height = '0dp'
+            self.showRequestList = False
         else:
-            self.commandList.height = '100dp'
-            self.showCommandList = True
+            self.requestList.height = '100dp'
+            self.showRequestList = True
 
             # Reset the ListView
-            self.commandList.adapter.data.extend(
+            self.requestList.adapter.data.extend(
                 [])  # improves list view display, but only after user scrolled manually !
-            self.resetListViewScrollToEnd(self.commandList)
+            self.resetListViewScrollToEnd(self.requestList)
 
-            self.refocusOncommandInput()
+            self.refocusOnrequestInput()
 
-    def submitCommand(self):
+    def submitRequest(self):
         '''
-        Submit the command, output the result and add the command to the
-        command list
+        Submit the request, output the result and add the request to the
+        request list
         :return:
         '''
         # Get the student name from the TextInputs
-        commandStr = self.commandInput.text
-        self.outputResult(commandStr)
+        requestStr = self.requestInput.text
+        self.outputResult(requestStr)
 
-        self.commandList.adapter.data.extend([commandStr])
+        self.requestList.adapter.data.extend([requestStr])
 
         # Reset the ListView
-        self.resetListViewScrollToEnd(self.commandList)
-        self.manageStateOfCommandListButtons()
-        self.commandInput.text = ''
+        self.resetListViewScrollToEnd(self.requestList)
+        self.manageStateOfRequestListButtons()
+        self.requestInput.text = ''
 
-        self.refocusOncommandInput()
+        self.refocusOnrequestInput()
 
     def resetListViewScrollToEnd(self, listView):
         listView._trigger_reset_populate()
-        listView.scroll_to(len(self.commandList.adapter.data) - 1)
+        listView.scroll_to(len(self.requestList.adapter.data) - 1)
 
-    def manageStateOfCommandListButtons(self):
+    def manageStateOfRequestListButtons(self):
         '''
         Enable or disable history command list related controls according to
         the status of the list: filled with items or empty.
-        :return: 
+        :return:
         '''
-        if len(self.commandList.adapter.data) == 0:
+        if len(self.requestList.adapter.data) == 0:
             # command list is empty
             self.toggleHistoButton.state = 'normal'
             self.toggleHistoButton.disabled = True
             self.replayAllButton.disabled = True
-            self.commandList.height = '0dp'
+            self.requestList.height = '0dp'
         else:
             self.toggleHistoButton.disabled = False
             self.replayAllButton.disabled = False
@@ -84,7 +84,7 @@ class MySimpleGui(BoxLayout):
         else:
             self.resultOutput.text = self.resultOutput.text + '\n' + resultStr
 
-    def refocusOncommandInput(self):
+    def refocusOnrequestInput(self):
         # defining a delay of 0.1 sec ensure the
         # refocus works in all situations. Leaving
         # it empty (== next frame) does not work
@@ -92,29 +92,26 @@ class MySimpleGui(BoxLayout):
         Clock.schedule_once(self.refocusTextInput, 0.1)
 
     def refocusTextInput(self, *args):
-        self.commandInput.focus = True
+        self.requestInput.focus = True
 
     def historyItemSelected(self, instance):
-        commandStr = str(instance.text)
+        requestStr = str(instance.text)
 
-        self.commandInput.text = commandStr
-        self.refocusOncommandInput()
+        self.requestInput.text = requestStr
+        self.refocusOnrequestInput()
 
-    def replayAllCommands(self):
+    def replayAllRequests(self):
         self.outputResult('')
 
-        for command in self.commandList.adapter.data:
-            self.outputResult(command)
+        for request in self.requestList.adapter.data:
+            self.outputResult(request)
 
-        # self.resultOutput.do_cursor_movement('cursor_pgdown')
-        self.refocusOncommandInput()
+        self.refocusOnrequestInput()
 
 
 class MySimpleGuiApp(App):
     def build(self):
         return MySimpleGui()
-
-    # code moved from CryptoPricerGUI to CryptoPricerGUIApp ! Now, works !
 
     def on_pause(self):
         # Here you can save data if needed
@@ -125,11 +122,9 @@ class MySimpleGuiApp(App):
 
         pass
 
-    # end of code moved from CryptoPricerGUI to CryptoPricerGUIApp ! Now, works !
-
 
 if __name__ == '__main__':
     dbApp = MySimpleGuiApp()
 
-    dbApp.run() 
+    dbApp.run()
 
