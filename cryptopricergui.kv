@@ -12,15 +12,15 @@ CryptoPricerGUI:
 
 <CryptoPricerGUI>:
     orientation: "vertical"
-    commandInput: command
-    commandList: commandListView
-    resultOutput: readOnlyLog
-    toggleHistoButton: toggleHistoryBtn
-    deleteButton: deleteBtn
-    replaceButton: replaceBtn
-    replayAllButton: replayAllBtn
+    requestInput: request_TextInput
+    requestList: request_ListView
+    resultOutput: ro_output_TextInput
+    toggleHistoButton: toggle_history_list_Button
+    deleteButton: delete_Button
+    replaceButton: replace_Button
+    replayAllButton: replay_all_Button
     statusBar: status_bar
-    clearResultOutputButton: clearOutputBtn
+    clearResultOutputButton: clear_output_Button
     #outputResultScrollView: scrlv
     
     padding: 10
@@ -43,43 +43,43 @@ CryptoPricerGUI:
                 size: self.size
 
         TextInput:
-            id: command
+            id: request_TextInput
             background_color: 0,0,0,0
             foreground_color: 1,1,1,1
             focus: True
             multiline: False
-            #ENTER triggers root.submitCommand()
-            on_text_validate: root.submitCommand()
+            #ENTER triggers root.submitRequest()
+            on_text_validate: root.submitRequest()
 
     BoxLayout:
         size_hint_y: None
         height: "28dp"
         ToggleButton:
-            id: toggleHistoryBtn
+            id: toggle_history_list_Button
             text: "History"
             size_hint_x: 15
             disabled:True
-            on_press: root.toggleCommandList()
+            on_press: root.toggleRequestList()
         Button:
-            id: deleteBtn
+            id: delete_Button
             text: "Delete"
             size_hint_x: 15
             disabled: True
-            on_press: root.deleteCommand()
+            on_press: root.deleteRequest()
         Button:
-            id: replaceBtn
+            id: replace_Button
             text: "Replace"
             size_hint_x: 15
             disabled: True
-            on_press: root.replaceCommand()
+            on_press: root.replaceRequest()
         Button:
-            id: replayAllBtn
+            id: replay_all_Button
             text: "Replay All"
             size_hint_x: 15
             disabled: True
-            on_press: root.replayAllCommands()
+            on_press: root.replayAllRequests()
         Button:
-            id: menuBtn
+            id: menu_Button
             text: "..."
             size_hint_x: 8
             on_release: root.openDropDownMenu(self)
@@ -88,8 +88,8 @@ CryptoPricerGUI:
     # Define starting data and point to the ListItemButton
     # in the Python code
     ListView:
-        id: commandListView
-        adapter: ListAdapter(data=[], cls=main.CommandListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected,'size_hint_y': None,'height': 90})
+        id: request_ListView
+        adapter: ListAdapter(data=[], cls=main.RequestListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected,'size_hint_y': None,'height': 90})
         height: '0dp'
         size_hint_y: None
         on_parent: self.container.parent.effect_cls = ScrollEffect #prevents overscrolling
@@ -111,7 +111,7 @@ CryptoPricerGUI:
                 size: self.size
         effect_cls: ScrollEffect #prevents overscrolling
         TextInput:
-            id: readOnlyLog
+            id: ro_output_TextInput
             size_hint: (1, None)
             height: max(self.minimum_height, scrlv.height) #required to enable scrolling when list starts to grow
             readonly: True
@@ -137,7 +137,7 @@ CryptoPricerGUI:
                 readonly: True
                 multiline: False
             Button:
-                id: clearOutputBtn
+                id: clear_output_Button
                 text: 'Clear'
                 size_hint_x: None
                 width: 130
@@ -145,14 +145,14 @@ CryptoPricerGUI:
                 on_press: root.clearOutput()
 
 <CustomDropDown>
-    saveButton: save_btn
+    saveButton: save_Button
     Button:
         text: 'Load'
         size_hint_y: None
         height: '28dp'
         on_release: root.showLoad()
     Button:
-        id: save_btn
+        id: save_Button
         text: 'Save'
         size_hint_y: None
         height: '28dp'

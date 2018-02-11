@@ -48,7 +48,7 @@ class SaveDialog(FloatLayout):
             self.owner.updateStatusBar('')
            
 
-class CommandListButton(ListItemButton):
+class RequestListButton(ListItemButton):
     pass
     
 
@@ -74,11 +74,11 @@ class CustomDropDown(DropDown):
 
 class CryptoPricerGUI(BoxLayout):
  
-    commandInput = ObjectProperty()
-    commandList = ObjectProperty()
+    requestInput = ObjectProperty()
+    requestList = ObjectProperty()
     resultOutput = ObjectProperty()
     statusBar = ObjectProperty()
-    showCommandList = False
+    showRequestList = False
 
     def __init__(self, **kwargs):
         super(CryptoPricerGUI, self).__init__(**kwargs)
@@ -100,120 +100,120 @@ class CryptoPricerGUI(BoxLayout):
             self.loadPathFilename(pathFilename)
 
 
-    def toggleCommandList(self):
+    def toggleRequestList(self):
         '''
         called by 'History' toggle button to toggle the display of the history
-        command list.
+        request list.
         '''
-        if self.showCommandList:
-            self.commandList.size_hint_y = None
-            self.commandList.height = '0dp'
-            self.disableCommandListItemButtons()
-            self.showCommandList = False
+        if self.showRequestList:
+            self.requestList.size_hint_y = None
+            self.requestList.height = '0dp'
+            self.disableRequestListItemButtons()
+            self.showRequestList = False
         else:
-            self.commandList.height = '100dp'
-            self.showCommandList = True
+            self.requestList.height = '100dp'
+            self.showRequestList = True
 
             # Reset the ListView
-            self.commandList.adapter.data.extend([]) #improves list view display, but only after user scrolled manually !
-            self.resetListViewScrollToEnd(self.commandList)
+            self.requestList.adapter.data.extend([]) #improves list view display, but only after user scrolled manually !
+            self.resetListViewScrollToEnd(self.requestList)
 
-            self.refocusOncommandInput()
+            self.refocusOnRequestInput()
 
 
-    def submitCommand(self):
+    def submitRequest(self):
         '''
-        Submit the command, output the result and add the command to the
-        command list
+        Submit the request, output the result and add the request to the
+        request list
         :return:
         '''
-        # Get the student name from the TextInputs
-        commandStr = self.commandInput.text
-        self.updateStatusBar(commandStr)
+        # Get the request from the TextInput
+        requestStr = self.requestInput.text
+        self.updateStatusBar(requestStr)
 
         # purpose of the informations obtained from the business layer:
         #   outputResultStr - for the output text zone
-        #   fullCommandStr - for the request history list
-        #   fullCommandStrWithOptions - for the status bar
-        #   fullCommandStrWithSaveModeOptions - for the request history list
-        outputResultStr, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(commandStr)
+        #   fullRequestStr - for the request history list
+        #   fullRequestStrWithOptions - for the status bar
+        #   fullRequestStrWithSaveModeOptions - for the request history list
+        outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(requestStr)
 
         self.outputResult(outputResultStr)
 
-        if fullCommandStrWithSaveModeOptions != None:
-            if fullCommandStr in self.commandList.adapter.data:
-                #if the full command string corresponding to the full command string with options is already
-                #in the history list, it is removed before the full command string with options is added
+        if fullRequestStrWithSaveModeOptions != None:
+            if fullRequestStr in self.requestList.adapter.data:
+                #if the full request string corresponding to the full request string with options is already
+                #in the history list, it is removed before the full request string with options is added
                 #to the list. Otherwise, this would engender a duplicate !
-                self.commandList.adapter.data.remove(fullCommandStr)
+                self.requestList.adapter.data.remove(fullRequestStr)
 
-            if not fullCommandStrWithSaveModeOptions in self.commandList.adapter.data:
-                self.commandList.adapter.data.extend([fullCommandStrWithSaveModeOptions])
+            if not fullRequestStrWithSaveModeOptions in self.requestList.adapter.data:
+                self.requestList.adapter.data.extend([fullRequestStrWithSaveModeOptions])
 
             # Reset the ListView
-            self.resetListViewScrollToEnd(self.commandList)
-        elif fullCommandStr != '' and not fullCommandStr in self.commandList.adapter.data:
-            # Add the full command to the ListView if not already in
-            self.commandList.adapter.data.extend([fullCommandStr])
+            self.resetListViewScrollToEnd(self.requestList)
+        elif fullRequestStr != '' and not fullRequestStr in self.requestList.adapter.data:
+            # Add the full request to the ListView if not already in
+            self.requestList.adapter.data.extend([fullRequestStr])
 
-            # if an identical full command string with options is in the history, it is not
+            # if an identical full request string with options is in the history, it is not
             # removed automatically. If the user wants to get rid of it, he must do it exolicitely
             # using the delete button !
 
             # Reset the ListView
-            self.resetListViewScrollToEnd(self.commandList)
+            self.resetListViewScrollToEnd(self.requestList)
 
-        self.manageStateOfCommandListButtons()
-        self.commandInput.text = ''
+        self.manageStateOfRequestListButtons()
+        self.requestInput.text = ''
 
         #displaying request and result in status bar
 
         if 'ERROR' in outputResultStr:
-            if commandStr == '':
+            if requestStr == '':
                 self.updateStatusBar('REPLAY --> ' + outputResultStr)
-            elif commandStr:
-                self.updateStatusBar(commandStr + ' --> ' + outputResultStr)
+            elif requestStr:
+                self.updateStatusBar(requestStr + ' --> ' + outputResultStr)
         else:
-            if fullCommandStrWithSaveModeOptions:
-                if commandStr == '':
-                    self.updateStatusBar('REPLAY --> ' + fullCommandStrWithSaveModeOptions)
-                elif commandStr:
-                    self.updateStatusBar(commandStr + ' --> ' + fullCommandStrWithSaveModeOptions)
+            if fullRequestStrWithSaveModeOptions:
+                if requestStr == '':
+                    self.updateStatusBar('REPLAY --> ' + fullRequestStrWithSaveModeOptions)
+                elif requestStr:
+                    self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithSaveModeOptions)
             else:
-                if not fullCommandStrWithOptions:
-                    fullCommandStrWithOptions = fullCommandStr
+                if not fullRequestStrWithOptions:
+                    fullRequestStrWithOptions = fullRequestStr
 
-                if commandStr == '':
-                    self.updateStatusBar('REPLAY --> ' + fullCommandStrWithOptions)
-                elif commandStr:
-                    self.updateStatusBar(commandStr + ' --> ' + fullCommandStrWithOptions)
+                if requestStr == '':
+                    self.updateStatusBar('REPLAY --> ' + fullRequestStrWithOptions)
+                elif requestStr:
+                    self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithOptions)
 
-        self.refocusOncommandInput()
+        self.refocusOnRequestInput()
 
 
     def clearOutput(self):
         self.resultOutput.text = ''
         self.clearResultOutputButton.disabled = True
-        self.refocusOncommandInput()
+        self.refocusOnRequestInput()
 
 
     def resetListViewScrollToEnd(self, listView):
         listView._trigger_reset_populate()
-        listView.scroll_to(len(self.commandList.adapter.data) - 1)
+        listView.scroll_to(len(self.requestList.adapter.data) - 1)
 
 
-    def manageStateOfCommandListButtons(self):
+    def manageStateOfRequestListButtons(self):
         '''
-        Enable or disable history command list related controls according to
+        Enable or disable history request list related controls according to
         the status of the list: filled with items or empty.
         :return: 
         '''
-        if len(self.commandList.adapter.data) == 0:
-            #command list is empty
+        if len(self.requestList.adapter.data) == 0:
+            #request list is empty
             self.toggleHistoButton.state = 'normal'
             self.toggleHistoButton.disabled = True
             self.replayAllButton.disabled = True
-            self.commandList.height = '0dp'
+            self.requestList.height = '0dp'
             self.dropDownMenu.saveButton.disabled = True
         else:
             self.toggleHistoButton.disabled = False
@@ -232,7 +232,7 @@ class CryptoPricerGUI(BoxLayout):
         self.clearResultOutputButton.disabled = False
 
 
-    def refocusOncommandInput(self):
+    def refocusOnRequestInput(self):
         #defining a delay of 0.1 sec ensure the
         #refocus works in all situations. Leaving
         #it empty (== next frame) does not work
@@ -241,91 +241,90 @@ class CryptoPricerGUI(BoxLayout):
 
 
     def refocusTextInput(self, *args):
-        self.commandInput.focus = True
+        self.requestInput.focus = True
 
                                       
-    def deleteCommand(self, *args):
+    def deleteRequest(self, *args):
         # If a list item is selected
-        if self.commandList.adapter.selection:
+        if self.requestList.adapter.selection:
  
             # Get the text from the item selected
-            selection = self.commandList.adapter.selection[0].text
+            selection = self.requestList.adapter.selection[0].text
  
             # Remove the matching item
-            self.commandList.adapter.data.remove(selection)
+            self.requestList.adapter.data.remove(selection)
  
             # Reset the ListView
-            self.commandList._trigger_reset_populate()
-            self.commandInput.text = ''
-            self.disableCommandListItemButtons()
+            self.requestList._trigger_reset_populate()
+            self.requestInput.text = ''
+            self.disableRequestListItemButtons()
             
-        self.manageStateOfCommandListButtons()
+        self.manageStateOfRequestListButtons()
                         
-        self.refocusOncommandInput()
+        self.refocusOnRequestInput()
 
   
-    def replaceCommand(self, *args):
+    def replaceRequest(self, *args):
         # If a list item is selected
-        if self.commandList.adapter.selection:
+        if self.requestList.adapter.selection:
  
             # Get the text from the item selected
-            selection = self.commandList.adapter.selection[0].text
+            selection = self.requestList.adapter.selection[0].text
  
             # Remove the matching item
-            self.commandList.adapter.data.remove(selection)
+            self.requestList.adapter.data.remove(selection)
  
-            # Get the command from the TextInputs
-            commandStr = self.commandInput.text
+            # Get the request from the TextInputs
+            requestStr = self.requestInput.text
  
             # Add the updated data to the list if not already in
-            if not commandStr in self.commandList.adapter.data:
-                self.commandList.adapter.data.extend([commandStr])
+            if not requestStr in self.requestList.adapter.data:
+                self.requestList.adapter.data.extend([requestStr])
  
             # Reset the ListView
-            self.commandList._trigger_reset_populate()
-            self.commandInput.text = ''
-            self.disableCommandListItemButtons()
+            self.requestList._trigger_reset_populate()
+            self.requestInput.text = ''
+            self.disableRequestListItemButtons()
             
-        self.refocusOncommandInput()
+        self.refocusOnRequestInput()
 
 
     def historyItemSelected(self, instance):
-        commandStr = str(instance.text)
+        requestStr = str(instance.text)
         
         #counter-intuitive, but test must be defined that way !
         if instance.is_selected:
-            #disabling the 2 history command list item related buttons 
-            self.disableCommandListItemButtons()
+            #disabling the 2 history request list item related buttons
+            self.disableRequestListItemButtons()
         else:
-            self.enableCommandListItemButtons()
+            self.enableRequestListItemButtons()
 
-        self.commandInput.text = commandStr
-        self.refocusOncommandInput()
+        self.requestInput.text = requestStr
+        self.refocusOnRequestInput()
 
         self.dropDownMenu.saveButton.disabled = False
 
 
-    def enableCommandListItemButtons(self):
+    def enableRequestListItemButtons(self):
         self.deleteButton.disabled = False
         self.replaceButton.disabled = False
 
 
-    def disableCommandListItemButtons(self):
+    def disableRequestListItemButtons(self):
         self.deleteButton.disabled = True
         self.replaceButton.disabled = True
 
 
-    def replayAllCommands(self):
+    def replayAllRequests(self):
         #output blank line
         self.outputResult('')
 
-        for command in self.commandList.adapter.data:
-             outputResultStr, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(command)
-             #print("command: {}\nfull command: {}\nres: {}".format(command, fullCommandStr, outputResultStr))
+        for request in self.requestList.adapter.data:
+             outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(request)
              self.outputResult(outputResultStr)
 
         #self.resultOutput.do_cursor_movement('cursor_pgdown')
-        self.refocusOncommandInput()
+        self.refocusOnRequestInput()
                                               
 
     def openDropDownMenu(self, widget):
@@ -387,19 +386,19 @@ class CryptoPricerGUI(BoxLayout):
 
     def loadPathFilename(self, pathFilename):
         #emptying the list
-        self.commandList.adapter.data[:] = []
+        self.requestList.adapter.data[:] = []
 
         with open(pathFilename) as stream:
             lines = stream.readlines()
 
         lines = list(map(lambda line : line.strip('\n'), lines))
-        self.commandList.adapter.data.extend(lines)
+        self.requestList.adapter.data.extend(lines)
 
         # Reset the ListView
-        self.resetListViewScrollToEnd(self.commandList)
+        self.resetListViewScrollToEnd(self.requestList)
 
-        self.manageStateOfCommandListButtons()
-        self.refocusOncommandInput()
+        self.manageStateOfRequestListButtons()
+        self.refocusOnRequestInput()
 
 
     def save(self, path, filename, isLoadAtStart):
@@ -410,7 +409,7 @@ class CryptoPricerGUI(BoxLayout):
         pathFileName = os.path.join(path, filename)   
         
         with open(pathFileName, 'w') as stream:
-            for line in self.commandList.adapter.data:
+            for line in self.requestList.adapter.data:
                 line = line + '\n'
                 stream.write(line)
 
@@ -425,7 +424,7 @@ class CryptoPricerGUI(BoxLayout):
         self.configMgr.storeConfig()
         
         self.dismissPopup()
-        self.refocusOncommandInput()
+        self.refocusOnRequestInput()
 
 # --- end file chooser code ---  
                              

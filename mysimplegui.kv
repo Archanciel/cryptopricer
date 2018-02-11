@@ -28,8 +28,8 @@ MySimpleGui:
             foreground_color: 1,1,1,1
             focus: True
             multiline: False
-            #ENTER triggers root.submitCommand()
-            on_text_validate: root.submitCommand()
+            #ENTER triggers root.submitRequest()
+            on_text_validate: root.submitRequest()
 
     BoxLayout:
         size_hint_y: None
@@ -39,13 +39,13 @@ MySimpleGui:
             text: "History"
             size_hint_x: 15
             disabled:True
-            on_press: root.toggleCommandList()
+            on_press: root.toggleRequestList()
         Button:
             id: replayAllBtn
             text: "Replay All"
             size_hint_x: 15
             disabled: True
-            on_press: root.replayAllCommands()
+            on_press: root.replayAllRequests()
 
 
     # Define starting data and point to the ListItemButton
