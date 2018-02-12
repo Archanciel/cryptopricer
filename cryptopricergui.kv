@@ -20,7 +20,7 @@ CryptoPricerGUI:
     replayAllButton: replay_all_Button
     statusBar: status_bar
     clearResultOutputButton: clear_output_Button
-    #outputResultScrollView: scrlv
+    #outputResultScrollView: scrlv_out
     
     padding: 10
     spacing: 10
@@ -100,7 +100,7 @@ CryptoPricerGUI:
                 size: self.size
 
     ScrollView:
-        id: scrlv
+        id: scrlv_out
         size_hint: (1, 1)
         canvas.before:
             Color:
@@ -112,7 +112,7 @@ CryptoPricerGUI:
         TextInput:
             id: ro_output_TextInput
             size_hint: (1, None)
-            height: max(self.minimum_height, scrlv.height) #required to enable scrolling when list starts to grow
+            height: max(self.minimum_height, scrlv_out.height) #required to enable scrolling when output starts to grow
             readonly: True
             background_color: 0,0,0,0
             foreground_color: 1,1,1,1
@@ -129,12 +129,23 @@ CryptoPricerGUI:
 
         GridLayout:
             cols: 2
-            TextInput:
-                id: status_bar
-                background_color: 0,0,0,0
-                foreground_color: 1,1,1,1
-                readonly: True
-                multiline: False
+            ScrollView:
+                id: scrlv_status_bar
+                size_hint: (1, 1)
+                canvas.before:
+                    Color:
+                        rgb: [0,0,0]
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                effect_cls: ScrollEffect #prevents overscrolling
+                TextInput:
+                    id: status_bar
+                    background_color: 0,0,0,0
+                    foreground_color: 1,1,1,1
+                    height: max(self.minimum_height, scrlv_status_bar.height) #required to enable scrolling when scroll bar msg takes more than 1 line !
+                    readonly: True
+                    multiline: True #must be true so long status bar msg can be scrolled on smartphone !
             Button:
                 id: clear_output_Button
                 text: 'Clear'
