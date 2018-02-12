@@ -28,6 +28,7 @@ class TestConfigurationManager(unittest.TestCase):
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
+        self.assertEqual(self.configMgr.histoListVisibleSize, '3')
 
 
     def testConfigurationManagerInstanciationNoConfigFile(self):
@@ -43,6 +44,7 @@ class TestConfigurationManager(unittest.TestCase):
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
+        self.assertEqual(self.configMgr.histoListVisibleSize, '3')
 
 
     def testConfigurationManagerInstanciationEmptyConfigFile(self):
@@ -58,6 +60,7 @@ class TestConfigurationManager(unittest.TestCase):
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
+        self.assertEqual(self.configMgr.histoListVisibleSize, '3')
 
 
     def testConfigurationManagerInstanciationOneMissingKey(self):
@@ -80,6 +83,7 @@ class TestConfigurationManager(unittest.TestCase):
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
+        self.assertEqual(self.configMgr.histoListVisibleSize, '3')
 
 
 if __name__ == '__main__':

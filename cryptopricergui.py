@@ -92,6 +92,7 @@ class CryptoPricerGUI(BoxLayout):
         self.configMgr = ConfigurationManager(configPath)
         self.controller = Controller(GuiOutputFormater(self.configMgr))
         self.dataPath = self.configMgr.dataPath
+        self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
 
         #loading the load at start history file if defined
         pathFilename = self.configMgr.loadAtStartPathFilename
@@ -111,12 +112,13 @@ class CryptoPricerGUI(BoxLayout):
             self.disableRequestListItemButtons()
             self.showRequestList = False
         else:
+            listItemHeight = 90
+            listItemNumber = len(self.requestList.adapter.data)
             self.requestList.height = '100dp'
+            self.requestList.height = min(listItemNumber * listItemHeight, self.histoListMaxVisibleItems * listItemHeight)
             self.showRequestList = True
 
-            # Reset the ListView
-            self.requestList.adapter.data.extend([]) #improves list view display, but only after user scrolled manually !
-            self.resetListViewScrollToEnd(self.requestList)
+            self.resetListViewScrollToEnd(self.requestList, self.histoListMaxVisibleItems)
 
             self.refocusOnRequestInput()
 
@@ -151,7 +153,7 @@ class CryptoPricerGUI(BoxLayout):
                 self.requestList.adapter.data.extend([fullRequestStrWithSaveModeOptions])
 
             # Reset the ListView
-            self.resetListViewScrollToEnd(self.requestList)
+            self.resetListViewScrollToEnd(self.requestList, self.histoListMaxVisibleItems)
         elif fullRequestStr != '' and not fullRequestStr in self.requestList.adapter.data:
             # Add the full request to the ListView if not already in
             self.requestList.adapter.data.extend([fullRequestStr])
@@ -161,7 +163,7 @@ class CryptoPricerGUI(BoxLayout):
             # using the delete button !
 
             # Reset the ListView
-            self.resetListViewScrollToEnd(self.requestList)
+            self.resetListViewScrollToEnd(self.requestList, self.histoListMaxVisibleItems)
 
         self.manageStateOfRequestListButtons()
         self.requestInput.text = ''
@@ -197,10 +199,14 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOnRequestInput()
 
 
-    def resetListViewScrollToEnd(self, listView):
+    def resetListViewScrollToEnd(self, listView, maxVisibleItemNumber):
         listView._trigger_reset_populate()
-        listView.scroll_to(len(self.requestList.adapter.data) - 1)
+        listLength = len(self.requestList.adapter.data)
 
+        if listLength > maxVisibleItemNumber:
+            listView.scroll_to(listLength - maxVisibleItemNumber)
+        else:
+            listView.scroll_to(0)
 
     def manageStateOfRequestListButtons(self):
         '''
@@ -395,7 +401,7 @@ class CryptoPricerGUI(BoxLayout):
         self.requestList.adapter.data.extend(lines)
 
         # Reset the ListView
-        self.resetListViewScrollToEnd(self.requestList)
+        self.resetListViewScrollToEnd(self.requestList, self.histoListMaxVisibleItems)
 
         self.manageStateOfRequestListButtons()
         self.refocusOnRequestInput()
