@@ -220,5 +220,31 @@ class TestPriceRequester(unittest.TestCase):
         self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
 
 
+    def testGetCurrentPriceWrongCrypto(self):
+        crypto = 'BTa'
+        fiat = 'USD'
+        exchange = 'all'
+
+        resultData = self.priceRequester.getCurrentPrice(crypto, fiat, exchange)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - There is no data for the symbol BTa")
+        self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual(fiat, resultData.getValue(resultData.RESULT_KEY_FIAT))
+        self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+
+
+    def testGetCurrentPriceWrongFiat(self):
+        crypto = 'BTC'
+        fiat = 'USL'
+        exchange = 'all'
+
+        resultData = self.priceRequester.getCurrentPrice(crypto, fiat, exchange)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - There is no data for any of the toSymbols USL")
+        self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual(fiat, resultData.getValue(resultData.RESULT_KEY_FIAT))
+        self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+
+
 if __name__ == '__main__':
     unittest.main()

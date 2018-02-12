@@ -159,7 +159,7 @@ class PriceRequester:
 
     def _handleProviderError(self, dic, resultData, url):
         if 'Message' in dic.keys():
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'PROVIDER ERROR - ' + dic['Message'])
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'PROVIDER ERROR - ' + dic['Message'].rstrip(' .'))
         else:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
                                 'PROVIDER ERROR - ' + 'Request ' + url + ' did not return any data')
