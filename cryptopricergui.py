@@ -88,17 +88,52 @@ class CryptoPricerGUI(BoxLayout):
             configPath = '/sdcard/cryptopricer.ini'
         else:
             configPath = 'c:\\temp\\cryptopricer.ini'
+            self.toggleAppSizeButton.text = 'Half' # correct on Windows version !
 
         self.configMgr = ConfigurationManager(configPath)
         self.controller = Controller(GuiOutputFormater(self.configMgr))
         self.dataPath = self.configMgr.dataPath
         self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
 
+        self.appPosAndSize = self.configMgr.appPosSize
+        self.defaultAppPosAndSize = self.configMgr.appPosSize
+        self.applyAppPosAndSize()
+
         #loading the load at start history file if defined
         pathFilename = self.configMgr.loadAtStartPathFilename
         
         if pathFilename != '':
             self.loadPathFilename(pathFilename)
+
+
+    def toggleAppPosAndSize(self):
+        if self.appPosAndSize == self.configMgr.APP_POS_SIZE_HALF:
+            self.appPosAndSize = self.configMgr.APP_POS_SIZE_FULL
+            self.toggleAppSizeButton.text = 'Half'
+
+            if self.defaultAppPosAndSize == self.configMgr.APP_POS_SIZE_FULL:
+                # on the smartphone, we do not want to reposition the cursor ob
+                # the input field since this would display the keyboard !
+                self.refocusOnRequestInput()
+        else:
+            self.appPosAndSize = self.configMgr.APP_POS_SIZE_HALF
+            self.toggleAppSizeButton.text = 'Full'
+
+            # the case on the smartphone. Here, positioning the cursor on
+            # the input field after having pressed the 'half' button
+            # automatically displays the keyboard
+            self.refocusOnRequestInput()
+
+        self.applyAppPosAndSize()
+
+
+    def applyAppPosAndSize(self):
+        if self.appPosAndSize == self.configMgr.APP_POS_SIZE_HALF:
+            self.size_hint_y = 0.56
+            self.pos_hint = {'x': 0, 'y': 0.44}
+        else:
+            self.size_hint_y = 1
+            self.pos_hint = {'x': 0, 'y': 0}
 
 
     def toggleRequestList(self):
@@ -195,6 +230,7 @@ class CryptoPricerGUI(BoxLayout):
 
     def clearOutput(self):
         self.resultOutput.text = ''
+        self.statusBar.text = ''
         self.clearResultOutputButton.disabled = True
         self.refocusOnRequestInput()
 
@@ -243,10 +279,15 @@ class CryptoPricerGUI(BoxLayout):
         #refocus works in all situations. Leaving
         #it empty (== next frame) does not work
         #when pressing a button !
-        Clock.schedule_once(self.refocusTextInput, 0.1)       
+        Clock.schedule_once(self._refocusTextInput, 0.1)
 
 
-    def refocusTextInput(self, *args):
+    def _refocusTextInput(self, *args):
+        '''
+        This method is here to be used as callback by Clock and must not be called directly
+        :param args:
+        :return:
+        '''
         self.requestInput.focus = True
 
                                       

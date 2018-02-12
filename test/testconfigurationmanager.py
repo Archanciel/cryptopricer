@@ -29,6 +29,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
+        self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
 
 
     def testConfigurationManagerInstanciationNoConfigFile(self):
@@ -45,6 +46,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
+        self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
 
 
     def testConfigurationManagerInstanciationEmptyConfigFile(self):
@@ -61,6 +63,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
+        self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
 
 
     def testConfigurationManagerInstanciationOneMissingKey(self):

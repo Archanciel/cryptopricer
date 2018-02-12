@@ -23,6 +23,7 @@ CryptoPricerGUI:
     replayAllButton: replay_all_Button
     statusBar: status_bar
     clearResultOutputButton: clear_output_Button
+    toggleAppSizeButton: toggle_app_size_Button
     #outputResultScrollView: scrlv_out
     
     padding: 10
@@ -44,14 +45,22 @@ CryptoPricerGUI:
                 pos: self.pos
                 size: self.size
 
-        TextInput:
-            id: request_TextInput
-            background_color: 0,0,0,0
-            foreground_color: 1,1,1,1
-            focus: True
-            multiline: False
-            #ENTER triggers root.submitRequest()
-            on_text_validate: root.submitRequest()
+        GridLayout:
+            cols: 2
+            TextInput:
+                id: request_TextInput
+                background_color: 0,0,0,0
+                foreground_color: 1,1,1,1
+                focus: True
+                multiline: False
+                #ENTER triggers root.submitRequest()
+                on_text_validate: root.submitRequest()
+            Button:
+                id: toggle_app_size_Button
+                text: 'Full'
+                size_hint_x: None
+                width: 130
+                on_press: root.toggleAppPosAndSize()
 
     BoxLayout:
         size_hint_y: None

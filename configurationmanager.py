@@ -18,10 +18,17 @@ CONFIG_KEY_LOAD_AT_START_PATH_FILENAME = 'loadAtStartPathFilename'
 DEFAULT_LOAD_AT_START_PATH_FILENAME = ''
 
 CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE = 'histoListVisibleSize'
-DEFAULT_CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE = '3'
+DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE = '3'
+
+CONFIG_KEY_APP_POS_SIZE = 'defaultAppPosSize'
 
 
 class ConfigurationManager:
+    # those two constants are used outside of ConfigurationManager. For this reason,
+    # they are declared inside the class
+    APP_POS_SIZE_HALF = 'appPosSizeHalf'
+    APP_POS_SIZE_FULL = 'appPosSizeFull'
+
     def __init__(self, filename):
         self.config = ConfigObj(filename)
         self._updated = False
@@ -66,7 +73,13 @@ class ConfigurationManager:
         try:
             self.__histoListVisibleSize = self.config[CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE]
         except KeyError:
-            self.__histoListVisibleSize = DEFAULT_CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE
+            self.__histoListVisibleSize = DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE
+            self._updated = True
+
+        try:
+            self.__appPosSize = self.config[CONFIG_KEY_APP_POS_SIZE]
+        except KeyError:
+            self.__appPosSize = self.APP_POS_SIZE_HALF
             self._updated = True
 
         self.storeConfig() #will save config file in case one config key raised an exception
@@ -89,7 +102,8 @@ class ConfigurationManager:
             self.dataPath = DEFAULT_DATA_PATH_WINDOWS
 
         self.loadAtStartPathFilename = DEFAULT_LOAD_AT_START_PATH_FILENAME
-        self.histoListVisibleSize = DEFAULT_CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE
+        self.histoListVisibleSize = DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE
+        self.appPosSize = self.APP_POS_SIZE_HALF
         self._updated = True
 
         self.storeConfig()
@@ -155,6 +169,16 @@ class ConfigurationManager:
         self._updated = True
 
 
+    @property
+    def appPosSize(self):
+        return self.__appPosSize
+
+    @appPosSize.setter
+    def appPosSize(self, appPosSizeStr):
+        self.__appPosSize = appPosSizeStr
+        self._updated = True
+
+
     def storeConfig(self):
         if not self._updated:
             return
@@ -165,6 +189,7 @@ class ConfigurationManager:
         self.config[CONFIG_KEY_DATA_PATH] = self.dataPath
         self.config[CONFIG_KEY_LOAD_AT_START_PATH_FILENAME] = self.loadAtStartPathFilename
         self.config[CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE] = self.histoListVisibleSize
+        self.config[CONFIG_KEY_APP_POS_SIZE] = self.appPosSize
 
         self.config.write()
         
