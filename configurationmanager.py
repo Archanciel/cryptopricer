@@ -20,6 +20,9 @@ DEFAULT_LOAD_AT_START_PATH_FILENAME = ''
 CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE = 'histoListVisibleSize'
 DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE = '3'
 
+CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = 'histoListItemHeight'
+DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = '90'
+
 CONFIG_KEY_APP_POS_SIZE = 'defaultAppPosSize'
 
 
@@ -77,6 +80,12 @@ class ConfigurationManager:
             self._updated = True
 
         try:
+            self.__histoListItemHeight = self.config[CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT]
+        except KeyError:
+            self.__histoListItemHeight = DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT
+            self._updated = True
+
+        try:
             self.__appPosSize = self.config[CONFIG_KEY_APP_POS_SIZE]
         except KeyError:
             self.__appPosSize = self.APP_POS_SIZE_HALF
@@ -103,6 +112,7 @@ class ConfigurationManager:
 
         self.loadAtStartPathFilename = DEFAULT_LOAD_AT_START_PATH_FILENAME
         self.histoListVisibleSize = DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE
+        self.histoListItemHeight = DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT
         self.appPosSize = self.APP_POS_SIZE_HALF
         self._updated = True
 
@@ -170,6 +180,16 @@ class ConfigurationManager:
 
 
     @property
+    def histoListItemHeight(self):
+        return self.__histoListItemHeight
+
+    @histoListItemHeight.setter
+    def histoListItemHeight(self, histoListItemHeightStr):
+        self.__histoListItemHeight = histoListItemHeightStr
+        self._updated = True
+
+
+    @property
     def appPosSize(self):
         return self.__appPosSize
 
@@ -189,6 +209,7 @@ class ConfigurationManager:
         self.config[CONFIG_KEY_DATA_PATH] = self.dataPath
         self.config[CONFIG_KEY_LOAD_AT_START_PATH_FILENAME] = self.loadAtStartPathFilename
         self.config[CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE] = self.histoListVisibleSize
+        self.config[CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT] = self.histoListItemHeight
         self.config[CONFIG_KEY_APP_POS_SIZE] = self.appPosSize
 
         self.config.write()

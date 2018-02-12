@@ -29,6 +29,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
+        self.assertEqual(self.configMgr.histoListItemHeight, '90')
         self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
 
 
@@ -46,6 +47,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
+        self.assertEqual(self.configMgr.histoListItemHeight, '90')
         self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
 
 
@@ -63,6 +65,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
+        self.assertEqual(self.configMgr.histoListItemHeight, '90')
         self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
 
 

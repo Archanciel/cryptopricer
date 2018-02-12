@@ -100,7 +100,7 @@ CryptoPricerGUI:
     # in the Python code
     ListView:
         id: request_ListView
-        adapter: ListAdapter(data=[], cls=main.RequestListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected,'size_hint_y': None,'height': 90})
+        adapter: ListAdapter(data=[], cls=main.RequestListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected,'size_hint_y': None,'height': root.histoListItemHeight})
         height: '0dp'
         size_hint_y: None
         on_parent: self.container.parent.effect_cls = ScrollEffect #prevents overscrolling

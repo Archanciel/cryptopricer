@@ -93,7 +93,9 @@ class CryptoPricerGUI(BoxLayout):
         self.configMgr = ConfigurationManager(configPath)
         self.controller = Controller(GuiOutputFormater(self.configMgr))
         self.dataPath = self.configMgr.dataPath
+        self.histoListItemHeight = int(self.configMgr.histoListItemHeight)
         self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
+        self.maxHistoListHeight = self.histoListMaxVisibleItems * self.histoListItemHeight
 
         self.appPosAndSize = self.configMgr.appPosSize
         self.defaultAppPosAndSize = self.configMgr.appPosSize
@@ -147,10 +149,8 @@ class CryptoPricerGUI(BoxLayout):
             self.disableRequestListItemButtons()
             self.showRequestList = False
         else:
-            listItemHeight = 90
             listItemNumber = len(self.requestList.adapter.data)
-            self.requestList.height = '100dp'
-            self.requestList.height = min(listItemNumber * listItemHeight, self.histoListMaxVisibleItems * listItemHeight)
+            self.requestList.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
             self.showRequestList = True
 
             self.resetListViewScrollToEnd(self.requestList, self.histoListMaxVisibleItems)
