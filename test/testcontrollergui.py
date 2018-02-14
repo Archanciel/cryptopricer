@@ -1030,7 +1030,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForRealThenChengeTimeThenChangeCrypto(self):
+    def testGetPrintableResultForRealThenChangeTimeThenChangeCrypto(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -1604,7 +1604,6 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultWithInvalidDateCommandAfterInvalidTimeCommandFollowingRealTimeRequest(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowBegOfMonth = now.replace(day = 1)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1643,7 +1642,6 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultWithInvalidTimeCommandAfterInvalidDateCommandFollowingRealTimeRequest(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
-        nowBegOfMonth = now.replace(day = 1)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1740,7 +1738,6 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForInputscenarioWithValueCommandVAfterValueCommandVS(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
-        yesterday = now.shift(days=-2)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1787,6 +1784,105 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithOptions)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForRealThenAddVSCommandAndChangeExchangeTimeCryptoDate(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'btc usd 0 bitfinex'
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('btc usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        threeDaysBeforeArrowDate = now.shift(days=-3)
+
+        threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
+
+        requestHourStr = threeDaysBeforeHourStr
+        requestMinuteStr = threeDaysBeforeMinuteStr
+        requestDayStr = threeDaysBeforeDayStr
+        requestMonthStr = threeDaysBeforeMonthStr
+        requestYearStr = threeDaysBeforeYearStr
+
+        if DateTimeUtil.isDateOlderThan(threeDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = requestHourStr
+            minuteStr = requestMinuteStr
+            priceType = 'M'
+
+        inputStr = '-vs100usd -eall -t{}:{} -ceth -d{}/{}'.format(requestHourStr, requestMinuteStr, requestDayStr, requestMonthStr)
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+                                                               requestMinuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth usd {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+                                                               requestMinuteStr), fullCommandStr)
+        self.assertEqual('eth usd {}/{}/{} {}:{} all -vs100usd'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+                                                               requestMinuteStr), fullCommandStrWithSaveModeOptions)
+
+    def testGetPrintableResultForRealThenChangeFiatExchangeTimeAddVSCommandAndChangeCryptoDate(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+
+        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #first command: RT price command
+        inputStr = 'btc usd 0 bitfinex'
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('btc usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        threeDaysBeforeArrowDate = now.shift(days=-3)
+
+        threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
+
+        requestHourStr = threeDaysBeforeHourStr
+        requestMinuteStr = threeDaysBeforeMinuteStr
+        requestDayStr = threeDaysBeforeDayStr
+        requestMonthStr = threeDaysBeforeMonthStr
+        requestYearStr = threeDaysBeforeYearStr
+
+        if DateTimeUtil.isDateOlderThan(threeDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = requestHourStr
+            minuteStr = requestMinuteStr
+            priceType = 'M'
+
+        inputStr = '-fbtc -eall -t{}:{} -vs100eth -ceth -d{}/{}'.format(requestHourStr, requestMinuteStr, requestDayStr, requestMonthStr)
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+                                                               requestMinuteStr, priceType),
+            UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('eth btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+                                                               requestMinuteStr), fullCommandStr)
+        self.assertEqual('eth btc {}/{}/{} {}:{} all -vs100eth'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+                                                               requestMinuteStr), fullCommandStrWithSaveModeOptions)
 
 
 if __name__ == '__main__':
