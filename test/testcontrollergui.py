@@ -1885,5 +1885,77 @@ class TestControllerGui(unittest.TestCase):
                                                                requestMinuteStr), fullCommandStrWithSaveModeOptions)
 
 
+    def testGetPrintableResultForRealTimeWithMarketNotExistForCoinPairAndInvalidCommandCausingErrorAndWarning(self):
+        #first command: RT price command
+        inputStr = 'btc eth 0 binance -eall'
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported command -eall in request btc eth 0 binance -eall', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForHistoMinuteWithMarketNotExistForCoinPairAndInvalidCommandCausingErrorAndWarning(self):
+        #first command: RT price command
+        inputStr = 'btc eth 0 binance -eall'
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported command -eall in request btc eth 0 binance -eall', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        threeDaysBeforeArrowDate = now.shift(days=-3)
+
+        threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
+
+        requestDayStr = threeDaysBeforeDayStr
+        requestMonthStr = threeDaysBeforeMonthStr
+
+        #second command: histo price command
+        inputStr = 'btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr)
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'PROVIDER ERROR - e param is not valid the market does not exist for this coin pair\nWarning - unsupported command -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForHistoDayWithMarketNotExistForCoinPairAndInvalidCommandCausingErrorAndWarning(self):
+        #first command: RT price command
+        inputStr = 'btc eth 0 binance -eall'
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported command -eall in request btc eth 0 binance -eall', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        tenDaysBeforeArrowDate = now.shift(days=-10)
+
+        tenDaysBeforeYearStr, tenDaysBeforeMonthStr, tenDaysBeforeDayStr, tenDaysBeforeHourStr, tenDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(tenDaysBeforeArrowDate)
+
+        requestDayStr = tenDaysBeforeDayStr
+        requestMonthStr = tenDaysBeforeMonthStr
+
+        #second command: histo price command
+        inputStr = 'btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr)
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'PROVIDER ERROR - e param is not valid the market does not exist for this coin pair\nWarning - unsupported command -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
 if __name__ == '__main__':
     unittest.main()
