@@ -179,7 +179,27 @@ class TestPriceRequester(unittest.TestCase):
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - e param is not valid the market does not exist for this coin pair")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD)")
+        self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual(fiat, resultData.getValue(resultData.RESULT_KEY_FIAT))
+        self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+
+
+    def testGetHistoricalPriceAtUTCTimeStampMoreThanSevenDayWrongExchange(self):
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'unknown'
+
+        utcArrowDateTimeObj = DateTimeUtil.localNow('UTC')
+        utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-12)
+
+        #here, since histominute price is fetched, time stamp UTC no HHMM for histoDay wil not be used !
+        resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+                                                                             utcArrowDateTimeObj.timestamp,
+                                                                             utcArrowDateTimeObj.timestamp,
+                                                                             exchange)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(fiat, resultData.getValue(resultData.RESULT_KEY_FIAT))
         self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -201,7 +221,7 @@ class TestPriceRequester(unittest.TestCase):
                                                                            timeStampUtcNoHHMM,
                                                                            exchange)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - e param is not valid the market does not exist for this coin pair")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(fiat, resultData.getValue(resultData.RESULT_KEY_FIAT))
         self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))

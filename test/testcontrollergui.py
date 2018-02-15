@@ -1922,7 +1922,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'PROVIDER ERROR - e param is not valid the market does not exist for this coin pair\nWarning - unsupported command -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
+            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported command -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1952,7 +1952,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'PROVIDER ERROR - e param is not valid the market does not exist for this coin pair\nWarning - unsupported command -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
+            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported command -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 

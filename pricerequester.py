@@ -58,9 +58,9 @@ class PriceRequester:
             return self._getHistoMinutePriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, exchange, resultData)
         
         
-    def _getHistoMinutePriceAtUTCTimeStamp(self, coin, fiat, timeStampUTC, exchange, resultData):
+    def _getHistoMinutePriceAtUTCTimeStamp(self, crypto, fiat, timeStampUTC, exchange, resultData):
         timeStampUTCStr = str(timeStampUTC)
-        url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(coin, fiat, timeStampUTCStr, exchange)
+        url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, fiat, timeStampUTCStr, exchange)
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
 
         try:
@@ -85,7 +85,7 @@ class PriceRequester:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
                 resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
             else:
-                resultData = self._handleProviderError(dic, resultData, url)
+                resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
 
         return resultData
 
@@ -117,7 +117,7 @@ class PriceRequester:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
                 resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
             else:
-                resultData = self._handleProviderError(dic, resultData, url)
+                resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
 
         return resultData
 
@@ -153,18 +153,44 @@ class PriceRequester:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
                 resultData.setValue(ResultData.RESULT_KEY_PRICE, dic[fiat]) #current price is indexed by fiat symbol in returned dic
             else:
-                resultData = self._handleProviderError(dic, resultData, url)
+                resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=True)
 
         return resultData
 
-    def _handleProviderError(self, dic, resultData, url):
+    def _handleProviderError(self, dic, resultData, url, crypto, fiat, exchange, isRealTime):
         if 'Message' in dic.keys():
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'PROVIDER ERROR - ' + dic['Message'].rstrip(' .'))
+            errorMessage = dic['Message']
+
+            if not isRealTime:
+                errorMessage = self._uniformiseErorMessage(errorMessage, crypto, fiat, exchange)
+            else:
+                errorMessage = errorMessage.rstrip(' .')
+
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'PROVIDER ERROR - ' + errorMessage)
         else:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
                                 'PROVIDER ERROR - ' + 'Request ' + url + ' did not return any data')
 
         return resultData
+
+
+    def _uniformiseErorMessage(self, errorMessage, crypto, fiat, exchange):
+        '''
+        this method transform the provider errot msg returned by the historical price queries
+        (histo minute and histo day so they look identical to the error msg returned for the same
+        cause by the RT price request.
+
+        Histo error msg: e param is not valid the market does not exist for this coin pair
+        RT error msg ex: Binance market does not exist for this coin pair (BTC-ETH)
+
+        :param errorMessage:
+        :param crypto:
+        :param fiat:
+        :param exchange:
+        :return: transformed errorMessage
+        '''
+
+        return errorMessage.replace('e param is not valid the', exchange) + ' ({}-{})'.format(crypto, fiat)
 
 
 if __name__ == '__main__':
