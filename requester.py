@@ -442,7 +442,6 @@ class Requester:
             else:
                 # invalid full command format
                 self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST
-                self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.FULL_COMMAND_PRICE_FORMAT_INVALID_MSG
 
                 return self.commandError
 

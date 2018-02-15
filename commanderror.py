@@ -24,7 +24,7 @@ class CommandError(AbstractCommand):
 
     def initialiseParsedParmData(self):
         self.parsedParmData[self.COMMAND_ERROR_TYPE_KEY] = None
-        self.parsedParmData[self.COMMAND_ERROR_MSG_KEY] = None
+        self.parsedParmData[self.COMMAND_ERROR_MSG_KEY] = ''
 
 
     def execute(self):
@@ -32,9 +32,11 @@ class CommandError(AbstractCommand):
         errorDetails = self.parsedParmData[self.COMMAND_ERROR_MSG_KEY]
         errorType = self.parsedParmData[self.COMMAND_ERROR_TYPE_KEY]
         errorTypeLabelStr = ''
+        errorMsgTail = ''
 
         if errorType == self.COMMAND_ERROR_TYPE_FULL_REQUEST:
-            errorTypeLabelStr = 'invalid full request'
+            errorTypeLabelStr = 'full request'
+            errorMsgTail = ' violates format <crypto> <fiat> <date|time> <exchange> <opt commands>'
         elif errorType == self.COMMAND_ERROR_TYPE_PARTIAL_REQUEST:
             errorTypeLabelStr = 'invalid partial request'
         elif errorType == self.COMMAND_ERROR_TYPE_INVALID_COMMAND:
@@ -43,7 +45,7 @@ class CommandError(AbstractCommand):
         if errorDetails != '':
             errorDetails = ': ' + errorDetails
             
-        resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} {}{}".format(errorTypeLabelStr, self.requestInputString, errorDetails))
+        resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} {}{}{}".format(errorTypeLabelStr, self.requestInputString, errorDetails, errorMsgTail))
         
         return resultData
 

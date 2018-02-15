@@ -1473,7 +1473,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - invalid full request btc usd 0 -vs10btc bitfinex: full command price format invalid', printResult)
+            'ERROR - full request btc usd 0 -vs10btc bitfinex violates format <crypto> <fiat> <date|time> <exchange> <opt commands>', printResult)
         self.assertEqual('', fullCommandStr) #empty string since request caused an error !
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
