@@ -24,5 +24,5 @@ eth usd 12/2/18 12:43 bitfinex
 ![](screenshots/Screenshot_2018-02-16-21-36-07.jpg)
 
 Comment: 
-* M after the price means historical minute price. On cryptocompare, historical prices are available at a minute resolution for the last 7 days. Older prices are day prices
+* M after the price means historical Minute price. On cryptocompare, historical prices are available at a minute resolution for the last 7 days. Older prices are day prices (followed by D).
 
