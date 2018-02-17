@@ -75,8 +75,15 @@ Comment:
 * pressing the "Replay all" button replays all the requests in the history
 
 
+#### Here, the "Full" button was pressed to set the app in full screen mode. In partial mode, the room is left for the keyboard.
+![](screenshots/Screenshot_2018-02-16-21-43-06.jpg)
+
+Comment: 
+* the result of the "Replay all" button can be seen here with updated RT request times
+* pressing the "Clear" button erases all the input and output fields/zones
+
+
 ### Saving the history request list into a file for further replay
-#### Here, the "Full" button was first pressed to set the app in full screen mode. In partial mode, the room is left for the keyboard.
 ![](screenshots/Screenshot_2018-02-16-21-43-38.jpg)
 
 Comment: 
