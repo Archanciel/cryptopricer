@@ -32,11 +32,13 @@ Comment:
 
 Comment: 
 * -d is the partial request command for setting only the date
+* the status bar shows the modified full request
+
+Other partial request commands
 * -t --> time
 * -c --> cryptocurrency
 * -f --> fiat currency
 * -e --> exchange
-* the status bar shows the modified full request
 
 ### Changing the crypto, the fiat and the exchange of the previous request
 #### Partial request: -cxmr -feth -eall
@@ -46,8 +48,22 @@ Comment:
 * all means average of all exchanges (CCCAGG)
 
 ### Using the -v value command to obtain the counterparty value at the obtained price of the value command quantity of the crypto/fiat
-#### Partial request: -vs100xmr to obtain the counterparty value of 100xmr at the returned RT or historical price
+#### Partial request: -d0 -vs100xmr -fusd to obtain the counterparty value of 100xmr in usd at the returned RT xmr price
 ![](screenshots/Screenshot_2018-02-16-21-40-41.jpg)
 
 Comment: 
 * the s flag of -vS means the -vs command will be saved in the command history
+
+### Using the -v value command to obtain the counterparty value at the obtained price of the value command quantity of the crypto/fiat
+#### Partial request: -vs100usd to obtain the counterparty value of 100usd in xmr at the returned RT xmr price
+![](screenshots/Screenshot_2018-02-16-21-41-50.jpg)
+
+### Displaying the request (full and partial) history list using the Histo button
+#### 
+![](screenshots/Screenshot_2018-02-16-21-42-39.jpg)
+
+Comment: 
+* if a line is selected (shown in red, it can be deleted from the history or changed
+* pressing the Replay all button replays all the requests in the history
+
+
