@@ -12,7 +12,7 @@ real time price and volume information from more than 90 exchanges.
 ## Usage examples
 ### Requesting RT BTC/USD on Bitfinex
 btc usd 0 bitfinex
-![](screenshots/Screenshot_2018-02-16-21-33-53.jpg | width=100)
+![](screenshots/Screenshot_2018-02-16-21-33-53.jpg | width=50)
 
 Comment: 
 * 0 means real time
