@@ -11,7 +11,7 @@ real time price and volume information from more than 90 exchanges.
 
 ## Usage examples
 ### Requesting RT BTC/USD on Bitfinex
-btc usd 0 bitfinex
+#### btc usd 0 bitfinex
 ![](screenshots/Screenshot_2018-02-16-21-33-53.jpg)
 
 Comment: 
@@ -20,7 +20,7 @@ Comment:
 * R after the price means real time
 
 ### Requesting historical price ETH/USD on Binance
-eth usd 12/2/18 12:43 bitfinex
+#### eth usd 12/2/18 12:43 bitfinex
 ![](screenshots/Screenshot_2018-02-16-21-36-07.jpg)
 
 Comment: 
