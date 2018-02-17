@@ -58,12 +58,18 @@ Comment:
 #### Partial request: -vs100usd to obtain the counterparty value of 100usd in xmr at the returned RT xmr price
 ![](screenshots/Screenshot_2018-02-16-21-41-50.jpg)
 
-### Displaying the request (full and partial) history list using the Histo button
+### Displaying the request (full and partial) history list using the "History" button
 #### 
 ![](screenshots/Screenshot_2018-02-16-21-42-39.jpg)
 
 Comment: 
-* if a line is selected (shown in red, it can be deleted from the history or changed
-* pressing the Replay all button replays all the requests in the history
+* if a line is selected (shown in red here), it can be replayed, or deleted from the history or changed
+* pressing the "Replay all" button replays all the requests in the history
 
+### Saving the history request list into a file for further replay
+#### Here, the "Full" button was first pressed to set the app in full screen mode. In partial mode, the room is left for the keyboard.
+![](screenshots/Screenshot_2018-02-16-21-43-38.jpg)
+
+Comment: 
+* in the save dialog, an option is available to automatically reload the saved file at app launch
 
