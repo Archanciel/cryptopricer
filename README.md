@@ -26,7 +26,6 @@ Comment:
 Comment: 
 * M after the price means historical Minute price. On cryptocompare, historical prices are available at a minute resolution for the last 7 days. Older prices are day prices (followed by D).
 
-
 ### Changing only the date of the previous request
 #### Partial request: -d13/2
 ![](screenshots/Screenshot_2018-02-16-21-37-13.jpg)
@@ -38,3 +37,17 @@ Comment:
 * -f --> fiat currency
 * -e --> exchange
 * the status bar shows the modified full request
+
+### Changing the crypto, the fiat and the exchange of the previous request
+#### Partial request: -cxmr -feth -eall
+![](screenshots/Screenshot_2018-02-16-21-40-04.jpg)
+
+Comment: 
+* all means average of all exchanges (CCCAGG)
+
+### Using the -v value command to obtain the counterparty value at the obtained price of the value command quantity of the crypto/fiat
+#### Partial request: -vs100xmr to obtain the counterparty value of 100xmr at the returned RT or historical price
+![](screenshots/Screenshot_2018-02-16-21-40-41.jpg)
+
+Comment: 
+* the s flag of -vS means the -vs command will be saved in the command history
