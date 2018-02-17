@@ -1,7 +1,7 @@
 # CryptoPricer
 RT and historical crypto currencies price requester.
 
-![](screenshots/CryptoPricerWebp.net-gifmaker)
+![](screenshots/CryptoPricerWebp.net-gifmaker.gif)
 
 ## What does it do ?
 CryptoPricer runs on your smartphone (Android, and, later, IPhone). It accepts user requests
@@ -14,8 +14,9 @@ real time price and volume information from more than 90 exchanges.
 btc usd 0 bitfinex
 ![](screenshots/Screenshot_2018-02-16-21-33-53.jpg)
 
-Comment: 0 means real time
-         the request is displayed in the status bar
-		 R after the price means real time
+Comment: 
+* 0 means real time
+* the request is displayed in the status bar
+* R after the price means real time
 
 
