@@ -24,6 +24,8 @@ CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = 'histoListItemHeight'
 DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = '90'
 
 CONFIG_KEY_APP_POS_SIZE = 'defaultAppPosSize'
+CONFIG_KEY_APP_SIZE_HALF_PROPORTION = 'appSizeHalfProportion'
+DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION = '0.56'
 
 
 class ConfigurationManager:
@@ -91,6 +93,12 @@ class ConfigurationManager:
             self.__appPosSize = self.APP_POS_SIZE_HALF
             self._updated = True
 
+        try:
+            self.__appSizeHalfProportion = self.config[CONFIG_KEY_APP_SIZE_HALF_PROPORTION]
+        except KeyError:
+            self.__appSizeHalfProportion = DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION
+            self._updated = True
+
         self.storeConfig() #will save config file in case one config key raised an exception
 
 
@@ -114,6 +122,7 @@ class ConfigurationManager:
         self.histoListVisibleSize = DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE
         self.histoListItemHeight = DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT
         self.appPosSize = self.APP_POS_SIZE_HALF
+        self.appSizeHalfProportion = DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION
         self._updated = True
 
         self.storeConfig()
@@ -199,6 +208,16 @@ class ConfigurationManager:
         self._updated = True
 
 
+    @property
+    def appSizeHalfProportion(self):
+        return self.__appSizeHalfProportion
+
+    @appSizeHalfProportion.setter
+    def appSizeHalfProportion(self, appSizeHalfProportionStr):
+        self.__appSizeHalfProportion = appSizeHalfProportionStr
+        self._updated = True
+
+
     def storeConfig(self):
         if not self._updated:
             return
@@ -211,6 +230,7 @@ class ConfigurationManager:
         self.config[CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE] = self.histoListVisibleSize
         self.config[CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT] = self.histoListItemHeight
         self.config[CONFIG_KEY_APP_POS_SIZE] = self.appPosSize
+        self.config[CONFIG_KEY_APP_SIZE_HALF_PROPORTION] = self.appSizeHalfProportion
 
         self.config.write()
         

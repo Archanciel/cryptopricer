@@ -99,6 +99,7 @@ class CryptoPricerGUI(BoxLayout):
 
         self.appPosAndSize = self.configMgr.appPosSize
         self.defaultAppPosAndSize = self.configMgr.appPosSize
+        self.appSizeHalfProportion = self.configMgr.appSizeHalfProportion
         self.applyAppPosAndSize()
 
         #loading the load at start history file if defined
@@ -131,8 +132,9 @@ class CryptoPricerGUI(BoxLayout):
 
     def applyAppPosAndSize(self):
         if self.appPosAndSize == self.configMgr.APP_POS_SIZE_HALF:
-            self.size_hint_y = 0.56
-            self.pos_hint = {'x': 0, 'y': 0.44}
+            sizeHintY = float(self.appSizeHalfProportion)
+            self.size_hint_y = sizeHintY
+            self.pos_hint = {'x': 0, 'y': 1 - sizeHintY}
         else:
             self.size_hint_y = 1
             self.pos_hint = {'x': 0, 'y': 0}

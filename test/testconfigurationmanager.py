@@ -31,6 +31,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
         self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
+        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
 
 
     def testConfigurationManagerInstanciationNoConfigFile(self):
@@ -49,6 +50,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
         self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
+        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
 
 
     def testConfigurationManagerInstanciationEmptyConfigFile(self):
@@ -67,6 +69,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
         self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
+        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
 
 
     def testConfigurationManagerInstanciationOneMissingKey(self):
@@ -90,6 +93,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
+        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
 
 
 if __name__ == '__main__':
