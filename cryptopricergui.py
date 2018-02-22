@@ -491,8 +491,6 @@ class CryptoPricerGUIApp(App):
         return CryptoPricerGUI()
 
 
-    # code moved from CryptoPricerGUI to CryptoPricerGUIApp ! Now, works !
-
     def on_pause(self):
         # Here you can save data if needed
         return True
@@ -503,7 +501,35 @@ class CryptoPricerGUIApp(App):
         
           pass
 
-    # end of code moved from CryptoPricerGUI to CryptoPricerGUIApp ! Now, works !
+
+    def build_config(self, config):
+        config.setdefaults('General', {'default_app_size': "Half"})
+
+
+    def build_settings(self, settings):
+        self.use_kivy_settings = False
+        settings.add_json_panel("CryptoPricer settings", self.config, data="""
+            [
+                {"type": "options",
+                    "title": "Default app size",
+                    "section": "General",
+                    "key": "default_app_size",
+                    "options": ["Full", "Half"]
+                }
+            ]"""
+                                )
+
+
+    def on_config_change(self, config, section, key, value):
+        if config is self.config and key == "default_app_size":
+            appSize = config.getdefault("General", "default_app_size", "Half").upper()
+
+            if appSize == "HALF":
+                self.root.appPosAndSize = self.root.configMgr.APP_POS_SIZE_HALF
+            else:
+                self.root.appPosAndSize = self.root.configMgr.APP_POS_SIZE_FULL
+
+            self.root.applyAppPosAndSize()
 
 
 if __name__== '__main__':
