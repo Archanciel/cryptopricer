@@ -110,16 +110,16 @@ class CryptoPricerGUI(BoxLayout):
 
 
     def toggleAppPosAndSize(self):
-        if self.appPosAndSize == self.configMgr.APP_POS_SIZE_HALF:
-            self.appPosAndSize = self.configMgr.APP_POS_SIZE_FULL
+        if self.appPosAndSize == self.configMgr.APP_SIZE_HALF:
+            self.appPosAndSize = self.configMgr.APP_SIZE_FULL
             self.toggleAppSizeButton.text = 'Half'
 
-            if self.defaultAppPosAndSize == self.configMgr.APP_POS_SIZE_FULL:
+            if self.defaultAppPosAndSize == self.configMgr.APP_SIZE_FULL:
                 # on the smartphone, we do not want to reposition the cursor ob
                 # the input field since this would display the keyboard !
                 self.refocusOnRequestInput()
         else:
-            self.appPosAndSize = self.configMgr.APP_POS_SIZE_HALF
+            self.appPosAndSize = self.configMgr.APP_SIZE_HALF
             self.toggleAppSizeButton.text = 'Full'
 
             # the case on the smartphone. Here, positioning the cursor on
@@ -131,7 +131,7 @@ class CryptoPricerGUI(BoxLayout):
 
 
     def applyAppPosAndSize(self):
-        if self.appPosAndSize == self.configMgr.APP_POS_SIZE_HALF:
+        if self.appPosAndSize == self.configMgr.APP_SIZE_HALF:
             sizeHintY = float(self.appSizeHalfProportion)
             self.size_hint_y = sizeHintY
             self.pos_hint = {'x': 0, 'y': 1 - sizeHintY}
@@ -525,9 +525,9 @@ class CryptoPricerGUIApp(App):
             appSize = config.getdefault("General", "default_app_size", "Half").upper()
 
             if appSize == "HALF":
-                self.root.appPosAndSize = self.root.configMgr.APP_POS_SIZE_HALF
+                self.root.appPosAndSize = self.root.configMgr.APP_SIZE_HALF
             else:
-                self.root.appPosAndSize = self.root.configMgr.APP_POS_SIZE_FULL
+                self.root.appPosAndSize = self.root.configMgr.APP_SIZE_FULL
 
             self.root.applyAppPosAndSize()
 

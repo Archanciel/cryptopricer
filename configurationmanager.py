@@ -23,7 +23,7 @@ DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE = '3'
 CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = 'histoListItemHeight'
 DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = '90'
 
-CONFIG_KEY_APP_POS_SIZE = 'defaultAppPosSize'
+CONFIG_KEY_APP_SIZE = 'defaultAppPosSize'
 CONFIG_KEY_APP_SIZE_HALF_PROPORTION = 'appSizeHalfProportion'
 DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION = '0.56'
 
@@ -31,8 +31,8 @@ DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION = '0.56'
 class ConfigurationManager:
     # those two constants are used outside of ConfigurationManager. For this reason,
     # they are declared inside the class
-    APP_POS_SIZE_HALF = 'appPosSizeHalf'
-    APP_POS_SIZE_FULL = 'appPosSizeFull'
+    APP_SIZE_HALF = 'appPosSizeHalf'
+    APP_SIZE_FULL = 'appPosSizeFull'
 
     def __init__(self, filename):
         self.config = ConfigObj(filename)
@@ -88,9 +88,9 @@ class ConfigurationManager:
             self._updated = True
 
         try:
-            self.__appPosSize = self.config[CONFIG_KEY_APP_POS_SIZE]
+            self.__appPosSize = self.config[CONFIG_KEY_APP_SIZE]
         except KeyError:
-            self.__appPosSize = self.APP_POS_SIZE_HALF
+            self.__appPosSize = self.APP_SIZE_HALF
             self._updated = True
 
         try:
@@ -121,7 +121,7 @@ class ConfigurationManager:
         self.loadAtStartPathFilename = DEFAULT_LOAD_AT_START_PATH_FILENAME
         self.histoListVisibleSize = DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE
         self.histoListItemHeight = DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT
-        self.appPosSize = self.APP_POS_SIZE_HALF
+        self.appPosSize = self.APP_SIZE_HALF
         self.appSizeHalfProportion = DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION
         self._updated = True
 
@@ -229,7 +229,7 @@ class ConfigurationManager:
         self.config[CONFIG_KEY_LOAD_AT_START_PATH_FILENAME] = self.loadAtStartPathFilename
         self.config[CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE] = self.histoListVisibleSize
         self.config[CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT] = self.histoListItemHeight
-        self.config[CONFIG_KEY_APP_POS_SIZE] = self.appPosSize
+        self.config[CONFIG_KEY_APP_SIZE] = self.appPosSize
         self.config[CONFIG_KEY_APP_SIZE_HALF_PROPORTION] = self.appSizeHalfProportion
 
         self.config.write()
