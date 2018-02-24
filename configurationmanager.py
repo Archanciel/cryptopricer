@@ -4,35 +4,35 @@ from configobj import ConfigObj
 CONFIG_KEY_TIME_ZONE = 'timezone'
 DEFAULT_TIME_ZONE = 'Europe/Zurich'
 
-CONFIG_KEY_DATE_TIME_FORMAT = 'dateTimeFormat'
+CONFIG_KEY_DATE_TIME_FORMAT = 'datetimeformat'
 DEFAULT_DATE_TIME_FORMAT = 'DD/MM/YY HH:mm'
 
-CONFIG_KEY_DATE_ONLY_FORMAT = 'dateOnlyFormat'
+CONFIG_KEY_DATE_ONLY_FORMAT = 'dateOonlyformat'
 DEFAULT_DATE_ONLY_FORMAT = 'DD/MM/YY'
 
-CONFIG_KEY_DATA_PATH = 'dataPath'
+CONFIG_KEY_DATA_PATH = 'datapath'
 DEFAULT_DATA_PATH_ANDROID = '/sdcard/CryptoPricerData'
 DEFAULT_DATA_PATH_WINDOWS = 'c:\\temp'
 
-CONFIG_KEY_LOAD_AT_START_PATH_FILENAME = 'loadAtStartPathFilename'
+CONFIG_KEY_LOAD_AT_START_PATH_FILENAME = 'loadatstartpathfilename'
 DEFAULT_LOAD_AT_START_PATH_FILENAME = ''
 
-CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE = 'histoListVisibleSize'
+CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE = 'histolistvisiblesize'
 DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE = '3'
 
-CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = 'histoListItemHeight'
-DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = '90'
+CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = 'histolistitemheight'
+DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = '90' # value for Android. For Windows, 35
 
-CONFIG_KEY_APP_SIZE = 'defaultAppPosSize'
-CONFIG_KEY_APP_SIZE_HALF_PROPORTION = 'appSizeHalfProportion'
+CONFIG_KEY_APP_SIZE_HALF_PROPORTION = 'appsizehalfproportion'
 DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION = '0.56'
 
 
 class ConfigurationManager:
-    # those two constants are used outside of ConfigurationManager. For this reason,
+    # those constants are used outside of ConfigurationManager. For this reason,
     # they are declared inside the class
-    APP_SIZE_HALF = 'appPosSizeHalf'
-    APP_SIZE_FULL = 'appPosSizeFull'
+    CONFIG_KEY_APP_SIZE = 'defaultappsize'
+    APP_SIZE_HALF = 'Half'
+    APP_SIZE_FULL = 'Full'
 
     def __init__(self, filename):
         self.config = ConfigObj(filename)
@@ -42,25 +42,25 @@ class ConfigurationManager:
             self._setAndStoreDefaultConf()
 
         try:
-            self.__localTimeZone = self.config[CONFIG_KEY_TIME_ZONE]
+            self.__localTimeZone = self.config['General'][CONFIG_KEY_TIME_ZONE]
         except KeyError:
             self.__localTimeZone = DEFAULT_TIME_ZONE
             self._updated = True
 
         try:
-            self.__dateTimeFormat = self.config[CONFIG_KEY_DATE_TIME_FORMAT]
+            self.__dateTimeFormat = self.config['General'][CONFIG_KEY_DATE_TIME_FORMAT]
         except KeyError:
             self.__dateTimeFormat = DEFAULT_DATE_TIME_FORMAT
             self._updated = True
 
         try:
-            self.__dateOnlyFormat = self.config[CONFIG_KEY_DATE_ONLY_FORMAT]
+            self.__dateOnlyFormat = self.config['General'][CONFIG_KEY_DATE_ONLY_FORMAT]
         except KeyError:
             self.__dateOnlyFormat = DEFAULT_DATE_ONLY_FORMAT
             self._updated = True
 
         try:
-            self.__dataPath = self.config[CONFIG_KEY_DATA_PATH]
+            self.__dataPath = self.config['General'][CONFIG_KEY_DATA_PATH]
         except KeyError:
             if os.name == 'posix':
                 self.__dataPath = DEFAULT_DATA_PATH_ANDROID
@@ -70,31 +70,31 @@ class ConfigurationManager:
             self._updated = True
 
         try:
-            self.__loadAtStartPathFilename = self.config[CONFIG_KEY_LOAD_AT_START_PATH_FILENAME]
+            self.__loadAtStartPathFilename = self.config['General'][CONFIG_KEY_LOAD_AT_START_PATH_FILENAME]
         except KeyError:
             self.__loadAtStartPathFilename = DEFAULT_LOAD_AT_START_PATH_FILENAME
             self._updated = True
 
         try:
-            self.__histoListVisibleSize = self.config[CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE]
+            self.__histoListVisibleSize = self.config['General'][CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE]
         except KeyError:
             self.__histoListVisibleSize = DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE
             self._updated = True
 
         try:
-            self.__histoListItemHeight = self.config[CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT]
+            self.__histoListItemHeight = self.config['General'][CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT]
         except KeyError:
             self.__histoListItemHeight = DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT
             self._updated = True
 
         try:
-            self.__appPosSize = self.config[CONFIG_KEY_APP_SIZE]
+            self.__appPosSize = self.config['General'][self.CONFIG_KEY_APP_SIZE]
         except KeyError:
             self.__appPosSize = self.APP_SIZE_HALF
             self._updated = True
 
         try:
-            self.__appSizeHalfProportion = self.config[CONFIG_KEY_APP_SIZE_HALF_PROPORTION]
+            self.__appSizeHalfProportion = self.config['General'][CONFIG_KEY_APP_SIZE_HALF_PROPORTION]
         except KeyError:
             self.__appSizeHalfProportion = DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION
             self._updated = True
@@ -109,6 +109,7 @@ class ConfigurationManager:
         or updates the config file.
         :return: nothing
         '''
+        self.config['General'] = {}
         self.localTimeZone = DEFAULT_TIME_ZONE
         self.dateTimeFormat = DEFAULT_DATE_TIME_FORMAT
         self.dateOnlyFormat = DEFAULT_DATE_ONLY_FORMAT
@@ -221,16 +222,16 @@ class ConfigurationManager:
     def storeConfig(self):
         if not self._updated:
             return
-            
-        self.config[CONFIG_KEY_TIME_ZONE] = self.localTimeZone
-        self.config[CONFIG_KEY_DATE_TIME_FORMAT] = self.dateTimeFormat
-        self.config[CONFIG_KEY_DATE_ONLY_FORMAT] = self.dateOnlyFormat
-        self.config[CONFIG_KEY_DATA_PATH] = self.dataPath
-        self.config[CONFIG_KEY_LOAD_AT_START_PATH_FILENAME] = self.loadAtStartPathFilename
-        self.config[CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE] = self.histoListVisibleSize
-        self.config[CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT] = self.histoListItemHeight
-        self.config[CONFIG_KEY_APP_SIZE] = self.appPosSize
-        self.config[CONFIG_KEY_APP_SIZE_HALF_PROPORTION] = self.appSizeHalfProportion
+
+        self.config['General'][CONFIG_KEY_TIME_ZONE] = self.localTimeZone
+        self.config['General'][CONFIG_KEY_DATE_TIME_FORMAT] = self.dateTimeFormat
+        self.config['General'][CONFIG_KEY_DATE_ONLY_FORMAT] = self.dateOnlyFormat
+        self.config['General'][CONFIG_KEY_DATA_PATH] = self.dataPath
+        self.config['General'][CONFIG_KEY_LOAD_AT_START_PATH_FILENAME] = self.loadAtStartPathFilename
+        self.config['General'][CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE] = self.histoListVisibleSize
+        self.config['General'][CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT] = self.histoListItemHeight
+        self.config['General'][self.CONFIG_KEY_APP_SIZE] = self.appPosSize
+        self.config['General'][CONFIG_KEY_APP_SIZE_HALF_PROPORTION] = self.appSizeHalfProportion
 
         self.config.write()
         

@@ -30,7 +30,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
-        self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
+        self.assertEqual(self.configMgr.appPosSize, 'Half')
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
 
 
@@ -40,7 +40,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
         self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
-        
+
         if os.name == 'posix':
             self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
         else:
@@ -49,7 +49,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
-        self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
+        self.assertEqual(self.configMgr.appPosSize, 'Half')
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
 
 
@@ -59,7 +59,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
         self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
-        
+
         if os.name == 'posix':
             self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
         else:
@@ -68,24 +68,24 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
-        self.assertEqual(self.configMgr.appPosSize, 'appPosSizeHalf')
+        self.assertEqual(self.configMgr.appPosSize, 'Half')
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
 
 
     def testConfigurationManagerInstanciationOneMissingKey(self):
-        #removing first line in config file
+        #removing second line in config file
         with open(self.filePath, 'r') as configFile:
             lines = configFile.readlines()
-            lines = lines[1:]
 
         with open(self.filePath, 'w') as configFile:
-            configFile.write(''.join(lines))
+            # first line contains [General] section name !
+            configFile.write(''.join(lines[0:1] + lines[2:]))
 
         self.configMgr = ConfigurationManager(self.filePath)
         self.assertEqual(self.configMgr.localTimeZone, 'Europe/Zurich')
         self.assertEqual(self.configMgr.dateTimeFormat, 'DD/MM/YY HH:mm')
         self.assertEqual(self.configMgr.dateOnlyFormat, 'DD/MM/YY')
-        
+
         if os.name == 'posix':
             self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
         else:
