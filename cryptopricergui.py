@@ -100,7 +100,7 @@ class CryptoPricerGUI(BoxLayout):
 
         self.appSize = self.configMgr.appSize
         self.defaultAppPosAndSize = self.configMgr.appSize
-        self.appSizeHalfProportion = self.configMgr.appSizeHalfProportion
+        self.appSizeHalfProportion = float(self.configMgr.appSizeHalfProportion)
         self.applyAppPosAndSize()
 
         # loading the load at start history file if defined
@@ -488,24 +488,22 @@ class CryptoPricerGUIApp(App):
         :param config:
         :return:
         '''
-        config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL, {ConfigurationManager.CONFIG_KEY_APP_SIZE: "Half"})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {ConfigurationManager.CONFIG_KEY_APP_SIZE: "Half"})
         config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL, {ConfigurationManager.CONFIG_KEY_DATA_PATH: "c:/temp"})
         config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT: "90"})
         config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE: "3"})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION: "0.56"})
 
 
     def build_settings(self, settings):
         # removing kivy default settings page from the settings dialog
         self.use_kivy_settings = False
 
-        # trick used to insert a constant or variable value into a json data triple quote definition
-        appSizeKeyValue = """{}""".format(ConfigurationManager.CONFIG_KEY_APP_SIZE)
-
         settings.add_json_panel("CryptoPricer settings", self.config, data=("""
             [
                 {"type": "options",
                     "title": "Default app size",
-                    "section": "General",
+                    "section": "Layout",
                     "key": "defaultappsize",
                     "options": ["Full", "Half"]
                 },
@@ -523,6 +521,11 @@ class CryptoPricerGUIApp(App):
                     "title": "History list visible item number",
                     "section": "Layout",
                     "key": "histolistvisiblesize"
+                },
+                {"type": "numeric",
+                    "title": "Half size application proportion",
+                    "section": "Layout",
+                    "key": "appsizehalfproportion"
                 }
             ]""")
                                 )
@@ -531,7 +534,7 @@ class CryptoPricerGUIApp(App):
     def on_config_change(self, config, section, key, value):
         if config is self.config:
             if key == ConfigurationManager.CONFIG_KEY_APP_SIZE:
-                appSize = config.getdefault("General", ConfigurationManager.CONFIG_KEY_APP_SIZE, "Half").upper()
+                appSize = config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_APP_SIZE, "Half").upper()
 
                 if appSize == "HALF":
                     self.root.appSize = ConfigurationManager.APP_SIZE_HALF
@@ -540,9 +543,12 @@ class CryptoPricerGUIApp(App):
 
                 self.root.applyAppPosAndSize()
             elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT:
-                self.root.histoListItemHeight = int(config.getdefault("Layout", ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT, "90"))
+                self.root.histoListItemHeight = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT, "90"))
             elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE:
-                self.root.histoListMaxVisibleItems = int(config.getdefault("Layout", ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT, "90"))
+                self.root.histoListMaxVisibleItems = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE, "3"))
+            elif key == ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION:
+                self.root.appSizeHalfProportion = float(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION, "0.56"))
+                self.root.applyAppPosAndSize()
 
 
     def get_application_config(self, defaultpath="c:/temp/%(appname)s.ini"):

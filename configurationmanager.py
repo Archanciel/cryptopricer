@@ -21,7 +21,6 @@ DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE = '3'
 
 DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = '90' # 90 == value for Android. For Windows, 35
 
-CONFIG_KEY_APP_SIZE_HALF_PROPORTION = 'appsizehalfproportion'
 DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION = '0.56'
 
 
@@ -34,6 +33,7 @@ class ConfigurationManager:
     CONFIG_KEY_DATA_PATH = 'datapath'
     CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = 'histolistitemheight'
     CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE = 'histolistvisiblesize'
+    CONFIG_KEY_APP_SIZE_HALF_PROPORTION = 'appsizehalfproportion'
     APP_SIZE_HALF = 'Half'
     APP_SIZE_FULL = 'Full'
 
@@ -97,7 +97,7 @@ class ConfigurationManager:
             self._updated = True
 
         try:
-            self.__appSizeHalfProportion = self.config[self.CONFIG_SECTION_LAYOUT][CONFIG_KEY_APP_SIZE_HALF_PROPORTION]
+            self.__appSizeHalfProportion = self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_APP_SIZE_HALF_PROPORTION]
         except KeyError:
             self.__appSizeHalfProportion = DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION
             self._updated = True
@@ -235,7 +235,7 @@ class ConfigurationManager:
         self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE] = self.histoListVisibleSize
         self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT] = self.histoListItemHeight
         self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_APP_SIZE] = self.appSize
-        self.config[self.CONFIG_SECTION_LAYOUT][CONFIG_KEY_APP_SIZE_HALF_PROPORTION] = self.appSizeHalfProportion
+        self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_APP_SIZE_HALF_PROPORTION] = self.appSizeHalfProportion
 
         self.config.write()
         
