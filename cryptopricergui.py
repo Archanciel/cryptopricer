@@ -14,6 +14,8 @@ from guioutputformater import GuiOutputFormater
 from configurationmanager import ConfigurationManager
 import os
 
+# global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
+fromBuilt = False
 
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
@@ -28,52 +30,46 @@ class SaveDialog(FloatLayout):
     loadAtStartChkb = ObjectProperty(None)
     filePathName = ObjectProperty(None)
     owner = None
-    
 
     def toggleLoadAtStart(self, active):
         if active:
             self.owner.updateStatusBar('Load at start activated')
         else:
             self.owner.updateStatusBar('')
-    
-                
+
     def saveFileSelected(self, filePathName):
         self.filePathName.text = filePathName
-        
+
         if self.owner.isLoadAtStart(filePathName):
             self.loadAtStartChkb.active = True
             self.owner.updateStatusBar('Load at start active')
         else:
-            self.loadAtStartChkb.active = False        
+            self.loadAtStartChkb.active = False
             self.owner.updateStatusBar('')
-           
+
 
 class RequestListButton(ListItemButton):
     pass
-    
+
 
 class CustomDropDown(DropDown):
     saveButton = ObjectProperty(None)
-    
+
     def __init__(self, owner):
         super().__init__()
         self.owner = owner
 
-
     def showLoad(self):
         self.owner.openLoadHistoryFileChooser()
-        
 
     def showSave(self):
         self.owner.openSaveHistoryFileChooser()
-
 
     def help(self):
         self.owner.displayHelp()
 
 
 class CryptoPricerGUI(BoxLayout):
- 
     requestInput = ObjectProperty()
     requestList = ObjectProperty()
     resultOutput = ObjectProperty()
@@ -81,17 +77,22 @@ class CryptoPricerGUI(BoxLayout):
     showRequestList = False
 
     def __init__(self, **kwargs):
+        global fromBuilt
+
+        if not fromBuilt:
+            return
+
         super(CryptoPricerGUI, self).__init__(**kwargs)
-        self.dropDownMenu = CustomDropDown(owner = self)
+        self.dropDownMenu = CustomDropDown(owner=self)
 
         if os.name == 'posix':
             configPath = '/sdcard/cryptopricer.ini'
         else:
             configPath = 'c:\\temp\\cryptopricer.ini'
-            self.toggleAppSizeButton.text = 'Half' # correct on Windows version !
+            self.toggleAppSizeButton.text = 'Half'  # correct on Windows version !
 
         self.configMgr = ConfigurationManager(configPath)
-        self.controller = Controller(GuiOutputFormater(self.configMgr))
+        self.controller = Controller(GuiOutputFormater(self.configMgr), self.configMgr)
         self.dataPath = self.configMgr.dataPath
         self.histoListItemHeight = int(self.configMgr.histoListItemHeight)
         self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
@@ -102,17 +103,15 @@ class CryptoPricerGUI(BoxLayout):
         self.appSizeHalfProportion = self.configMgr.appSizeHalfProportion
         self.applyAppPosAndSize()
 
-        #loading the load at start history file if defined
+        # loading the load at start history file if defined
         pathFilename = self.configMgr.loadAtStartPathFilename
-        
+
         if pathFilename != '':
             self.loadPathFilename(pathFilename)
-
 
     def toggleAppPosAndSize(self):
         if self.appPosAndSize == self.configMgr.APP_SIZE_HALF:
             self.appPosAndSize = self.configMgr.APP_SIZE_FULL
-            self.toggleAppSizeButton.text = 'Half'
 
             if self.defaultAppPosAndSize == self.configMgr.APP_SIZE_FULL:
                 # on the smartphone, we do not want to reposition the cursor ob
@@ -120,7 +119,6 @@ class CryptoPricerGUI(BoxLayout):
                 self.refocusOnRequestInput()
         else:
             self.appPosAndSize = self.configMgr.APP_SIZE_HALF
-            self.toggleAppSizeButton.text = 'Full'
 
             # the case on the smartphone. Here, positioning the cursor on
             # the input field after having pressed the 'half' button
@@ -129,16 +127,16 @@ class CryptoPricerGUI(BoxLayout):
 
         self.applyAppPosAndSize()
 
-
     def applyAppPosAndSize(self):
         if self.appPosAndSize == self.configMgr.APP_SIZE_HALF:
             sizeHintY = float(self.appSizeHalfProportion)
             self.size_hint_y = sizeHintY
             self.pos_hint = {'x': 0, 'y': 1 - sizeHintY}
+            self.toggleAppSizeButton.text = 'Full'
         else:
             self.size_hint_y = 1
             self.pos_hint = {'x': 0, 'y': 0}
-
+            self.toggleAppSizeButton.text = 'Half'
 
     def toggleRequestList(self):
         '''
@@ -159,7 +157,6 @@ class CryptoPricerGUI(BoxLayout):
 
             self.refocusOnRequestInput()
 
-
     def submitRequest(self):
         '''
         Submit the request, output the result and add the request to the
@@ -175,15 +172,16 @@ class CryptoPricerGUI(BoxLayout):
         #   fullRequestStr - for the request history list
         #   fullRequestStrWithOptions - for the status bar
         #   fullRequestStrWithSaveModeOptions - for the request history list
-        outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(requestStr)
+        outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            requestStr)
 
         self.outputResult(outputResultStr)
 
         if fullRequestStrWithSaveModeOptions != None:
             if fullRequestStr in self.requestList.adapter.data:
-                #if the full request string corresponding to the full request string with options is already
-                #in the history list, it is removed before the full request string with options is added
-                #to the list. Otherwise, this would engender a duplicate !
+                # if the full request string corresponding to the full request string with options is already
+                # in the history list, it is removed before the full request string with options is added
+                # to the list. Otherwise, this would engender a duplicate !
                 self.requestList.adapter.data.remove(fullRequestStr)
 
             if not fullRequestStrWithSaveModeOptions in self.requestList.adapter.data:
@@ -205,7 +203,7 @@ class CryptoPricerGUI(BoxLayout):
         self.manageStateOfRequestListButtons()
         self.requestInput.text = ''
 
-        #displaying request and result in status bar
+        # displaying request and result in status bar
 
         if 'ERROR' in outputResultStr:
             if requestStr == '':
@@ -229,13 +227,11 @@ class CryptoPricerGUI(BoxLayout):
 
         self.refocusOnRequestInput()
 
-
     def clearOutput(self):
         self.resultOutput.text = ''
         self.statusBar.text = ''
         self.clearResultOutputButton.disabled = True
         self.refocusOnRequestInput()
-
 
     def resetListViewScrollToEnd(self):
         listView = self.requestList
@@ -256,7 +252,7 @@ class CryptoPricerGUI(BoxLayout):
         :return: 
         '''
         if len(self.requestList.adapter.data) == 0:
-            #request list is empty
+            # request list is empty
             self.toggleHistoButton.state = 'normal'
             self.toggleHistoButton.disabled = True
             self.replayAllButton.disabled = True
@@ -267,25 +263,22 @@ class CryptoPricerGUI(BoxLayout):
             self.replayAllButton.disabled = False
             self.dropDownMenu.saveButton.disabled = False
 
-
     def outputResult(self, resultStr):
         if len(self.resultOutput.text) == 0:
             self.resultOutput.text = resultStr
         else:
             self.resultOutput.text = self.resultOutput.text + '\n' + resultStr
-            #self.outputResultScrollView.scroll_to(100000)
-            #self.resultOutput.cursor = (10000,0)
+            # self.outputResultScrollView.scroll_to(100000)
+            # self.resultOutput.cursor = (10000,0)
 
         self.clearResultOutputButton.disabled = False
 
-
     def refocusOnRequestInput(self):
-        #defining a delay of 0.1 sec ensure the
-        #refocus works in all situations. Leaving
-        #it empty (== next frame) does not work
-        #when pressing a button !
+        # defining a delay of 0.1 sec ensure the
+        # refocus works in all situations. Leaving
+        # it empty (== next frame) does not work
+        # when pressing a button !
         Clock.schedule_once(self._refocusTextInput, 0.1)
-
 
     def _refocusTextInput(self, *args):
         '''
@@ -295,59 +288,55 @@ class CryptoPricerGUI(BoxLayout):
         '''
         self.requestInput.focus = True
 
-                                      
     def deleteRequest(self, *args):
         # If a list item is selected
         if self.requestList.adapter.selection:
- 
             # Get the text from the item selected
             selection = self.requestList.adapter.selection[0].text
- 
+
             # Remove the matching item
             self.requestList.adapter.data.remove(selection)
- 
+
             # Reset the ListView
             self.resetListViewScrollToEnd()
 
             self.requestInput.text = ''
             self.disableRequestListItemButtons()
-            
+
         self.manageStateOfRequestListButtons()
-                        
+
         self.refocusOnRequestInput()
 
-  
     def replaceRequest(self, *args):
         # If a list item is selected
         if self.requestList.adapter.selection:
- 
+
             # Get the text from the item selected
             selection = self.requestList.adapter.selection[0].text
- 
+
             # Remove the matching item
             self.requestList.adapter.data.remove(selection)
- 
+
             # Get the request from the TextInputs
             requestStr = self.requestInput.text
- 
+
             # Add the updated data to the list if not already in
             if not requestStr in self.requestList.adapter.data:
                 self.requestList.adapter.data.extend([requestStr])
- 
+
             # Reset the ListView
             self.requestList._trigger_reset_populate()
             self.requestInput.text = ''
             self.disableRequestListItemButtons()
-            
-        self.refocusOnRequestInput()
 
+        self.refocusOnRequestInput()
 
     def historyItemSelected(self, instance):
         requestStr = str(instance.text)
-        
-        #counter-intuitive, but test must be defined that way !
+
+        # counter-intuitive, but test must be defined that way !
         if instance.is_selected:
-            #disabling the 2 history request list item related buttons
+            # disabling the 2 history request list item related buttons
             self.disableRequestListItemButtons()
         else:
             self.enableRequestListItemButtons()
@@ -357,48 +346,41 @@ class CryptoPricerGUI(BoxLayout):
 
         self.dropDownMenu.saveButton.disabled = False
 
-
     def enableRequestListItemButtons(self):
         self.deleteButton.disabled = False
         self.replaceButton.disabled = False
-
 
     def disableRequestListItemButtons(self):
         self.deleteButton.disabled = True
         self.replaceButton.disabled = True
 
-
     def replayAllRequests(self):
-        #output blank line
+        # output blank line
         self.outputResult('')
 
         for request in self.requestList.adapter.data:
-             outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(request)
-             self.outputResult(outputResultStr)
+            outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+                request)
+            self.outputResult(outputResultStr)
 
-        #self.resultOutput.do_cursor_movement('cursor_pgdown')
+        # self.resultOutput.do_cursor_movement('cursor_pgdown')
         self.refocusOnRequestInput()
-                                              
 
     def openDropDownMenu(self, widget):
         self.dropDownMenu.open(widget)
-
 
     def displayHelp(self):
         self.dropDownMenu.dismiss()
         popup = Popup(title='CryptoPricer', content=Label(text='Version 2.1'), size_hint=(None, None), size=(400, 400))
         popup.open()
 
-
     def updateStatusBar(self, messageStr):
         self.statusBar.text = messageStr
 
-                        
     # --- file chooser code ---
     def getStartPath(self):
         return "D:\\Users\\Jean-Pierre"
 
-  
     def dismissPopup(self):
         '''
         Act as a call back function for the cancel button of the load and save dialog
@@ -407,44 +389,40 @@ class CryptoPricerGUI(BoxLayout):
         self.updateStatusBar('')
         self.popup.dismiss()
 
-
     def openLoadHistoryFileChooser(self):
         fileChooserDialog = LoadDialog(load=self.load, cancel=self.dismissPopup)
         fileChooserDialog.fileChooser.rootpath = self.dataPath
         self.popup = Popup(title="Load file", content=fileChooserDialog,
-                            size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
+                           size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
         self.popup.open()
         self.dropDownMenu.dismiss()
-
 
     def openSaveHistoryFileChooser(self):
         fileChooserDialog = SaveDialog(save=self.save, cancel=self.dismissPopup)
         fileChooserDialog.owner = self
         fileChooserDialog.fileChooser.rootpath = self.dataPath
         self.popup = Popup(title="Save file", content=fileChooserDialog,
-                            size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
+                           size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
         self.popup.open()
         self.dropDownMenu.dismiss()
 
-
     def load(self, path, filename):
         if not filename:
-            #no file selected. Load dialog remains open ..
+            # no file selected. Load dialog remains open ..
             return
-        
+
         pathFilename = os.path.join(path, filename[0])
         self.loadPathFilename(pathFilename)
         self.dismissPopup()
 
-
     def loadPathFilename(self, pathFilename):
-        #emptying the list
+        # emptying the list
         self.requestList.adapter.data[:] = []
 
         with open(pathFilename) as stream:
             lines = stream.readlines()
 
-        lines = list(map(lambda line : line.strip('\n'), lines))
+        lines = list(map(lambda line: line.strip('\n'), lines))
         self.requestList.adapter.data.extend(lines)
 
         # Reset the ListView
@@ -453,43 +431,43 @@ class CryptoPricerGUI(BoxLayout):
         self.manageStateOfRequestListButtons()
         self.refocusOnRequestInput()
 
-
     def save(self, path, filename, isLoadAtStart):
         if not filename:
-            #no file selected. Save dialog remains open ..
+            # no file selected. Save dialog remains open ..
             return
-            
-        pathFileName = os.path.join(path, filename)   
-        
+
+        pathFileName = os.path.join(path, filename)
+
         with open(pathFileName, 'w') as stream:
             for line in self.requestList.adapter.data:
                 line = line + '\n'
                 stream.write(line)
 
-        #saving in config file if the saved file
-        #is to be loaded at application start
+        # saving in config file if the saved file
+        # is to be loaded at application start
         if isLoadAtStart:
             self.configMgr.loadAtStartPathFilename = pathFileName
         else:
             if self.configMgr.loadAtStartPathFilename == pathFileName:
                 self.configMgr.loadAtStartPathFilename = ''
-            
+
         self.configMgr.storeConfig()
-        
+
         self.dismissPopup()
         self.refocusOnRequestInput()
 
-# --- end file chooser code ---  
-                             
+    # --- end file chooser code ---
 
     def isLoadAtStart(self, filePathName):
         return self.configMgr.loadAtStartPathFilename == filePathName
-                                           
+
 
 class CryptoPricerGUIApp(App):
     def build(self):
-        return CryptoPricerGUI()
+        global fromBuilt
+        fromBuilt = True
 
+        return CryptoPricerGUI()
 
     def on_pause(self):
         # Here you can save data if needed
@@ -497,43 +475,69 @@ class CryptoPricerGUIApp(App):
 
     def on_resume(self):
         # Here you can check if any data needs replacing (usually nothing)
-       
-        
-          pass
 
+        pass
 
     def build_config(self, config):
-        config.setdefaults('General', {'default_app_size': "Half"})
-
+        config.setdefaults('General', {ConfigurationManager.CONFIG_KEY_APP_SIZE: "Half"})
+        config.setdefaults('General', {'dataPath': "c:/temp"})
 
     def build_settings(self, settings):
+        # removing kivy default settings page from the settings dialog
         self.use_kivy_settings = False
-        settings.add_json_panel("CryptoPricer settings", self.config, data="""
+
+        # trick used to insert a constant or variable value into a json data triple quote definition
+        appSizeKeyValue = """{}""".format(ConfigurationManager.CONFIG_KEY_APP_SIZE)
+
+        settings.add_json_panel("CryptoPricer settings", self.config, data=("""
             [
                 {"type": "options",
                     "title": "Default app size",
                     "section": "General",
-                    "key": "default_app_size",
+                    "key": "%s",
                     "options": ["Full", "Half"]
+                },
+                {"type": "path",
+                    "title": "Data files location",
+                    "section": "General",
+                    "key": "dataPath"
                 }
-            ]"""
+            ]""" % appSizeKeyValue)
                                 )
 
-
     def on_config_change(self, config, section, key, value):
-        if config is self.config and key == "default_app_size":
-            appSize = config.getdefault("General", "default_app_size", "Half").upper()
+        if config is self.config and key == ConfigurationManager.CONFIG_KEY_APP_SIZE:
+            appSize = config.getdefault("General", ConfigurationManager.CONFIG_KEY_APP_SIZE, "Half").upper()
 
             if appSize == "HALF":
-                self.root.appPosAndSize = self.root.configMgr.APP_SIZE_HALF
+                self.root.appPosAndSize = ConfigurationManager.APP_SIZE_HALF
             else:
-                self.root.appPosAndSize = self.root.configMgr.APP_SIZE_FULL
+                self.root.appPosAndSize = ConfigurationManager.APP_SIZE_FULL
 
             self.root.applyAppPosAndSize()
 
+    def get_application_config(self, defaultpath="c:/temp/%(appname)s.ini"):
+        '''
+        Redefining super class method to control the name and location of the application
+        settings ini file
+        :param defaultpath: used under Windows
+        :return:
+        '''
+        from kivy.utils import platform
+        from os.path import sep, expanduser
 
-if __name__== '__main__':
+        if platform == 'android':
+            defaultpath = '/sdcard/.%(appname)s.ini'
+        elif platform == 'ios':
+            defaultpath = '~/Documents/%(appname)s.ini'
+        elif platform == 'win':
+            defaultpath = defaultpath.replace('/', sep)
+
+        return os.path.expanduser(defaultpath) % {
+            'appname': 'cryptopricer', 'appdir': self.directory}
+
+
+if __name__ == '__main__':
     dbApp = CryptoPricerGUIApp()
- 
-    dbApp.run() 
-     
+
+    dbApp.run()
