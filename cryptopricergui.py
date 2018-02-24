@@ -521,9 +521,9 @@ class CryptoPricerGUIApp(App):
             appSize = config.getdefault("General", ConfigurationManager.CONFIG_KEY_APP_SIZE, "Half").upper()
 
             if appSize == "HALF":
-                self.root.appPosAndSize = ConfigurationManager.APP_SIZE_HALF
+                self.root.appSize = ConfigurationManager.APP_SIZE_HALF
             else:
-                self.root.appPosAndSize = ConfigurationManager.APP_SIZE_FULL
+                self.root.appSize = ConfigurationManager.APP_SIZE_FULL
 
             self.root.applyAppPosAndSize()
 
