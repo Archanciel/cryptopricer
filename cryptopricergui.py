@@ -98,8 +98,8 @@ class CryptoPricerGUI(BoxLayout):
         self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
         self.maxHistoListHeight = self.histoListMaxVisibleItems * self.histoListItemHeight
 
-        self.appPosAndSize = self.configMgr.appPosSize
-        self.defaultAppPosAndSize = self.configMgr.appPosSize
+        self.appSize = self.configMgr.appSize
+        self.defaultAppPosAndSize = self.configMgr.appSize
         self.appSizeHalfProportion = self.configMgr.appSizeHalfProportion
         self.applyAppPosAndSize()
 
@@ -110,15 +110,15 @@ class CryptoPricerGUI(BoxLayout):
             self.loadPathFilename(pathFilename)
 
     def toggleAppPosAndSize(self):
-        if self.appPosAndSize == self.configMgr.APP_SIZE_HALF:
-            self.appPosAndSize = self.configMgr.APP_SIZE_FULL
+        if self.appSize == self.configMgr.APP_SIZE_HALF:
+            self.appSize = self.configMgr.APP_SIZE_FULL
 
             if self.defaultAppPosAndSize == self.configMgr.APP_SIZE_FULL:
                 # on the smartphone, we do not want to reposition the cursor ob
                 # the input field since this would display the keyboard !
                 self.refocusOnRequestInput()
         else:
-            self.appPosAndSize = self.configMgr.APP_SIZE_HALF
+            self.appSize = self.configMgr.APP_SIZE_HALF
 
             # the case on the smartphone. Here, positioning the cursor on
             # the input field after having pressed the 'half' button
@@ -128,7 +128,7 @@ class CryptoPricerGUI(BoxLayout):
         self.applyAppPosAndSize()
 
     def applyAppPosAndSize(self):
-        if self.appPosAndSize == self.configMgr.APP_SIZE_HALF:
+        if self.appSize == self.configMgr.APP_SIZE_HALF:
             sizeHintY = float(self.appSizeHalfProportion)
             self.size_hint_y = sizeHintY
             self.pos_hint = {'x': 0, 'y': 1 - sizeHintY}
@@ -482,8 +482,14 @@ class CryptoPricerGUIApp(App):
 
 
     def build_config(self, config):
+        '''
+        Defaults set in this method will be overwritten by the values obtained from the
+        app ini file.
+        :param config:
+        :return:
+        '''
         config.setdefaults('General', {ConfigurationManager.CONFIG_KEY_APP_SIZE: "Half"})
-        config.setdefaults('General', {'dataPath': "c:/temp"})
+        config.setdefaults('General', {ConfigurationManager.CONFIG_KEY_DATA_PATH: "c:/temp"})
 
 
     def build_settings(self, settings):

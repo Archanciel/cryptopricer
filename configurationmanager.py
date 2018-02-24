@@ -7,10 +7,9 @@ DEFAULT_TIME_ZONE = 'Europe/Zurich'
 CONFIG_KEY_DATE_TIME_FORMAT = 'datetimeformat'
 DEFAULT_DATE_TIME_FORMAT = 'DD/MM/YY HH:mm'
 
-CONFIG_KEY_DATE_ONLY_FORMAT = 'dateOonlyformat'
+CONFIG_KEY_DATE_ONLY_FORMAT = 'dateonlyformat'
 DEFAULT_DATE_ONLY_FORMAT = 'DD/MM/YY'
 
-CONFIG_KEY_DATA_PATH = 'datapath'
 DEFAULT_DATA_PATH_ANDROID = '/sdcard/CryptoPricerData'
 DEFAULT_DATA_PATH_WINDOWS = 'c:\\temp'
 
@@ -21,7 +20,7 @@ CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE = 'histolistvisiblesize'
 DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE = '3'
 
 CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = 'histolistitemheight'
-DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = '90' # value for Android. For Windows, 35
+DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT = '90' # 90 == value for Android. For Windows, 35
 
 CONFIG_KEY_APP_SIZE_HALF_PROPORTION = 'appsizehalfproportion'
 DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION = '0.56'
@@ -31,6 +30,7 @@ class ConfigurationManager:
     # those constants are used outside of ConfigurationManager. For this reason,
     # they are declared inside the class
     CONFIG_KEY_APP_SIZE = 'defaultappsize'
+    CONFIG_KEY_DATA_PATH = 'datapath'
     APP_SIZE_HALF = 'Half'
     APP_SIZE_FULL = 'Full'
 
@@ -60,7 +60,7 @@ class ConfigurationManager:
             self._updated = True
 
         try:
-            self.__dataPath = self.config['General'][CONFIG_KEY_DATA_PATH]
+            self.__dataPath = self.config['General'][self.CONFIG_KEY_DATA_PATH]
         except KeyError:
             if os.name == 'posix':
                 self.__dataPath = DEFAULT_DATA_PATH_ANDROID
@@ -88,9 +88,9 @@ class ConfigurationManager:
             self._updated = True
 
         try:
-            self.__appPosSize = self.config['General'][self.CONFIG_KEY_APP_SIZE]
+            self.__appSize = self.config['General'][self.CONFIG_KEY_APP_SIZE]
         except KeyError:
-            self.__appPosSize = self.APP_SIZE_HALF
+            self.__appSize = self.APP_SIZE_HALF
             self._updated = True
 
         try:
@@ -122,7 +122,7 @@ class ConfigurationManager:
         self.loadAtStartPathFilename = DEFAULT_LOAD_AT_START_PATH_FILENAME
         self.histoListVisibleSize = DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE
         self.histoListItemHeight = DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT
-        self.appPosSize = self.APP_SIZE_HALF
+        self.appSize = self.APP_SIZE_HALF
         self.appSizeHalfProportion = DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION
         self._updated = True
 
@@ -200,12 +200,12 @@ class ConfigurationManager:
 
 
     @property
-    def appPosSize(self):
-        return self.__appPosSize
+    def appSize(self):
+        return self.__appSize
 
-    @appPosSize.setter
-    def appPosSize(self, appPosSizeStr):
-        self.__appPosSize = appPosSizeStr
+    @appSize.setter
+    def appSize(self, appSizeStr):
+        self.__appSize = appSizeStr
         self._updated = True
 
 
@@ -226,11 +226,11 @@ class ConfigurationManager:
         self.config['General'][CONFIG_KEY_TIME_ZONE] = self.localTimeZone
         self.config['General'][CONFIG_KEY_DATE_TIME_FORMAT] = self.dateTimeFormat
         self.config['General'][CONFIG_KEY_DATE_ONLY_FORMAT] = self.dateOnlyFormat
-        self.config['General'][CONFIG_KEY_DATA_PATH] = self.dataPath
+        self.config['General'][self.CONFIG_KEY_DATA_PATH] = self.dataPath
         self.config['General'][CONFIG_KEY_LOAD_AT_START_PATH_FILENAME] = self.loadAtStartPathFilename
         self.config['General'][CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE] = self.histoListVisibleSize
         self.config['General'][CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT] = self.histoListItemHeight
-        self.config['General'][self.CONFIG_KEY_APP_SIZE] = self.appPosSize
+        self.config['General'][self.CONFIG_KEY_APP_SIZE] = self.appSize
         self.config['General'][CONFIG_KEY_APP_SIZE_HALF_PROPORTION] = self.appSizeHalfProportion
 
         self.config.write()
