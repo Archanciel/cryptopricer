@@ -488,8 +488,10 @@ class CryptoPricerGUIApp(App):
         :param config:
         :return:
         '''
-        config.setdefaults('General', {ConfigurationManager.CONFIG_KEY_APP_SIZE: "Half"})
-        config.setdefaults('General', {ConfigurationManager.CONFIG_KEY_DATA_PATH: "c:/temp"})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL, {ConfigurationManager.CONFIG_KEY_APP_SIZE: "Half"})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL, {ConfigurationManager.CONFIG_KEY_DATA_PATH: "c:/temp"})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT: "90"})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE: "3"})
 
 
     def build_settings(self, settings):
@@ -504,28 +506,43 @@ class CryptoPricerGUIApp(App):
                 {"type": "options",
                     "title": "Default app size",
                     "section": "General",
-                    "key": "%s",
+                    "key": "defaultappsize",
                     "options": ["Full", "Half"]
                 },
                 {"type": "path",
                     "title": "Data files location",
                     "section": "General",
                     "key": "dataPath"
+                },
+                {"type": "numeric",
+                    "title": "History list item height",
+                    "section": "Layout",
+                    "key": "histolistitemheight"
+                },
+                {"type": "numeric",
+                    "title": "History list visible item number",
+                    "section": "Layout",
+                    "key": "histolistvisiblesize"
                 }
-            ]""" % appSizeKeyValue)
+            ]""")
                                 )
 
 
     def on_config_change(self, config, section, key, value):
-        if config is self.config and key == ConfigurationManager.CONFIG_KEY_APP_SIZE:
-            appSize = config.getdefault("General", ConfigurationManager.CONFIG_KEY_APP_SIZE, "Half").upper()
+        if config is self.config:
+            if key == ConfigurationManager.CONFIG_KEY_APP_SIZE:
+                appSize = config.getdefault("General", ConfigurationManager.CONFIG_KEY_APP_SIZE, "Half").upper()
 
-            if appSize == "HALF":
-                self.root.appSize = ConfigurationManager.APP_SIZE_HALF
-            else:
-                self.root.appSize = ConfigurationManager.APP_SIZE_FULL
+                if appSize == "HALF":
+                    self.root.appSize = ConfigurationManager.APP_SIZE_HALF
+                else:
+                    self.root.appSize = ConfigurationManager.APP_SIZE_FULL
 
-            self.root.applyAppPosAndSize()
+                self.root.applyAppPosAndSize()
+            elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT:
+                self.root.histoListItemHeight = int(config.getdefault("Layout", ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT, "90"))
+            elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE:
+                self.root.histoListMaxVisibleItems = int(config.getdefault("Layout", ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT, "90"))
 
 
     def get_application_config(self, defaultpath="c:/temp/%(appname)s.ini"):
