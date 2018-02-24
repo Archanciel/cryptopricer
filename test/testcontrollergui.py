@@ -33,7 +33,7 @@ class TestControllerGui(unittest.TestCase):
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         configMgr = ConfigurationManager(FILE_PATH)
-        self.controller = Controller(GuiOutputFormater(configMgr))
+        self.controller = Controller(GuiOutputFormater(configMgr), configMgr)
 
 
     @unittest.skip

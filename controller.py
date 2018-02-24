@@ -18,13 +18,13 @@ class Controller:
     control the rep loop
     '''
     
-    def __init__(self, printer):
+    def __init__(self, printer, configMgr):
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptopricer.ini'
         else:
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
-        self.configMgr = ConfigurationManager(FILE_PATH)
+        self.configMgr = configMgr
         self.priceRequester = PriceRequester()
         self.crypCompTranslator = CrypCompExchanges()
         self.processor = Processor(self.configMgr, self.priceRequester, self.crypCompTranslator)

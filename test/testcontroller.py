@@ -14,6 +14,7 @@ sys.path.insert(0,currentdir) # this instruction is necessary for successful imp
 from controller import Controller
 from datetimeutil import DateTimeUtil
 from consoleoutputformater import ConsoleOutputFormater
+from configurationmanager import ConfigurationManager
 from utilityfortest import UtilityForTest
 
 
@@ -26,8 +27,15 @@ class TestController(unittest.TestCase):
     since ConsoleOutputFormaater runs on Android in QPython, but fails in Pydroid !
     '''
     def setUp(self):
+        if os.name == 'posix':
+            self.filePath = '/sdcard/cryptopricer_test.ini'
+        else:
+            self.filePath = 'c:\\temp\\cryptopricer_test.ini'
+
+        configMgr = ConfigurationManager(self.filePath)
+
         #print('---- Instanciating Controller with ConsoleOutputFormater ----')
-        self.controller = Controller(ConsoleOutputFormater())
+        self.controller = Controller(ConsoleOutputFormater(), configMgr)
 
 
     def testControllerHistoDayPrice(self):
