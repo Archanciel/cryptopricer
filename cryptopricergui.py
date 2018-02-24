@@ -469,18 +469,22 @@ class CryptoPricerGUIApp(App):
 
         return CryptoPricerGUI()
 
+
     def on_pause(self):
         # Here you can save data if needed
         return True
+
 
     def on_resume(self):
         # Here you can check if any data needs replacing (usually nothing)
 
         pass
 
+
     def build_config(self, config):
         config.setdefaults('General', {ConfigurationManager.CONFIG_KEY_APP_SIZE: "Half"})
         config.setdefaults('General', {'dataPath': "c:/temp"})
+
 
     def build_settings(self, settings):
         # removing kivy default settings page from the settings dialog
@@ -505,6 +509,7 @@ class CryptoPricerGUIApp(App):
             ]""" % appSizeKeyValue)
                                 )
 
+
     def on_config_change(self, config, section, key, value):
         if config is self.config and key == ConfigurationManager.CONFIG_KEY_APP_SIZE:
             appSize = config.getdefault("General", ConfigurationManager.CONFIG_KEY_APP_SIZE, "Half").upper()
@@ -515,6 +520,7 @@ class CryptoPricerGUIApp(App):
                 self.root.appPosAndSize = ConfigurationManager.APP_SIZE_FULL
 
             self.root.applyAppPosAndSize()
+
 
     def get_application_config(self, defaultpath="c:/temp/%(appname)s.ini"):
         '''
