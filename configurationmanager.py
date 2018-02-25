@@ -258,3 +258,5 @@ if __name__ == '__main__':
     print(cm.dateOnlyFormat)
     print(cm.dataPath)
     print("loadAtStartPathFilename: '" + cm.loadAtStartPathFilename + "'")
+    import pytz
+    print(sorted(pytz.all_timezones_set))

@@ -340,3 +340,21 @@ if __name__ == '__main__':
     print(separatorsList)
     print(dateTimeComponentValueList)
 
+    gmtPlusList = []
+    gmtMinusList = []
+
+    for i in range(24):
+        tz = 'GMT+' + str(i)
+        gmtPlusList.append(tz)
+        tzTime = DateTimeUtil.localNow(tz)
+        print("{}: {}".format(tz, tzTime))
+
+    for i in range(24):
+        tz = 'GMT-' + str(i)
+        gmtMinusList.append(tz)
+        tzTime = DateTimeUtil.localNow(tz)
+        print("{}: {}".format(tz, tzTime))
+
+    gmtPlusList.append(gmtMinusList)
+
+    print(gmtPlusList)

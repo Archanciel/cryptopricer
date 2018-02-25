@@ -10,6 +10,14 @@ from kivy.uix.label import Label
 from kivy.uix.listview import ListItemButton
 from kivy.uix.popup import Popup
 from kivy.uix.settings import SettingsWithSidebar
+from kivy.uix.settings import SettingOptions
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.widget import Widget
+from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.settings import SettingSpacer
+from kivy.uix.button import Button
+from kivy.metrics import dp
 
 from configurationmanager import ConfigurationManager
 from controller import Controller
@@ -17,6 +25,47 @@ from guioutputformater import GuiOutputFormater
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
 fromAppBuilt = False
+
+
+class SettingScrollOptions(SettingOptions):
+    '''
+    This class is used in the Kivy Settings dialog to display in a sccrollable way
+    the long list of time zones
+
+    Source URL: https://github.com/kivy/kivy/wiki/Scollable-Options-in-Settings-panel
+    '''
+
+    def _create_popup(self, instance):
+        # global oORCA
+        # create the popup
+
+        content = GridLayout(cols=1, spacing='5dp')
+        scrollview = ScrollView(do_scroll_x=False)
+        scrollcontent = GridLayout(cols=1, spacing='5dp', size_hint=(None, None))
+        scrollcontent.bind(minimum_height=scrollcontent.setter('height'))
+        self.popup = popup = Popup(content=content, title=self.title, size_hint=(0.5, 0.9), auto_dismiss=False)
+
+        # we need to open the popup first to get the metrics
+        popup.open()
+        # Add some space on top
+        content.add_widget(Widget(size_hint_y=None, height=dp(2)))
+        # add all the options
+        uid = str(self.uid)
+        for option in self.options:
+            state = 'down' if option == self.value else 'normal'
+            btn = ToggleButton(text=option, state=state, group=uid, size=(popup.width, dp(55)), size_hint=(None, None))
+            btn.bind(on_release=self._set_option)
+            scrollcontent.add_widget(btn)
+
+        # finally, add a cancel button to return on the previous panel
+        scrollview.add_widget(scrollcontent)
+        content.add_widget(scrollview)
+        content.add_widget(SettingSpacer())
+        # btn = Button(text='Cancel', size=((oORCA.iAppWidth/2)-sp(25), dp(50)),size_hint=(None, None))
+        btn = Button(text='Cancel', size=(popup.width, dp(50)), size_hint=(0.9, None))
+        btn.bind(on_release=popup.dismiss)
+        content.add_widget(btn)
+
 
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
@@ -528,21 +577,24 @@ class CryptoPricerGUIApp(App):
         # removing kivy default settings page from the settings dialog
         self.use_kivy_settings = False
 
+        settings.register_type('scrolloptions', SettingScrollOptions)
+
         # add 'General' settings pannel
+        TIME_ZONE_LIST = """["Europe/Amsterdam", "Europe/Andorra", "Europe/Astrakhan", "Europe/Athens", "Europe/Belfast", "Europe/Belgrade", "Europe/Berlin", "Europe/Bratislava", "Europe/Brussels", "Europe/Bucharest", "Europe/Budapest", "Europe/Busingen", "Europe/Chisinau", "Europe/Copenhagen", "Europe/Dublin", "Europe/Gibraltar", "Europe/Guernsey", "Europe/Helsinki", "Europe/Isle_of_Man", "Europe/Istanbul", "Europe/Jersey", "Europe/Kaliningrad", "Europe/Kiev", "Europe/Kirov", "Europe/Lisbon", "Europe/Ljubljana", "Europe/London", "Europe/Luxembourg", "Europe/Madrid", "Europe/Malta", "Europe/Mariehamn", "Europe/Minsk", "Europe/Monaco", "Europe/Moscow", "Europe/Nicosia", "Europe/Oslo", "Europe/Paris", "Europe/Podgorica", "Europe/Prague", "Europe/Riga", "Europe/Rome", "Europe/Samara", "Europe/San_Marino", "Europe/Sarajevo", "Europe/Saratov", "Europe/Simferopol", "Europe/Skopje", "Europe/Sofia", "Europe/Stockholm", "Europe/Tallinn", "Europe/Tirane", "Europe/Tiraspol", "Europe/Ulyanovsk", "Europe/Uzhgorod", "Europe/Vaduz", "Europe/Vatican", "Europe/Vienna", "Europe/Vilnius", "Europe/Volgograd", "Europe/Warsaw", "Europe/Zagreb", "Europe/Zaporozhye", "Europe/Zurich", "GMT", "GMT+1", "GMT+2", "GMT+3", "GMT+4", "GMT+5", "GMT+6", "GMT+7", "GMT+8", "GMT+9", "GMT+10", "GMT+11", "GMT+12", "GMT+13", "GMT+14", "GMT+15", "GMT+16", "GMT+17", "GMT+18", "GMT+19", "GMT+20", "GMT+21", "GMT+22", "GMT+23", "GMT-1", "GMT-2", "GMT-3", "GMT-4", "GMT-5", "GMT-6", "GMT-7", "GMT-8", "GMT-9", "GMT-10", "GMT-11", "GMT-12", "GMT-13", "GMT-14", "GMT-15", "GMT-16", "GMT-17", "GMT-18", "GMT-19", "GMT-20", "GMT-21", "GMT-22", "GMT-23"]"""
         settings.add_json_panel("General settings", self.config, data=("""
             [
-                {"type": "options",
+                {"type": "scrolloptions",
                     "title": "Local time zone",
                     "section": "General",
                     "key": "timezone",
-                    "options": ["Europe/Zurich", "Europe/London"]
+                    "options": %s
                 },
                 {"type": "path",
                     "title": "Data files location",
                     "section": "General",
                     "key": "dataPath"
                 }
-            ]""")
+            ]""" % TIME_ZONE_LIST)
                                 )
         # add 'Layout' settings pannel
         settings.add_json_panel("Layout settings", self.config, data=("""
