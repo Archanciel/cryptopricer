@@ -1,18 +1,18 @@
-from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ObjectProperty
-from kivy.uix.listview import ListItemButton
-from kivy.clock import Clock
-from kivy.uix.dropdown import DropDown
-from kivy.uix.popup import Popup
-from kivy.uix.label import Label
-from kivy.uix.floatlayout import FloatLayout
-from kivy.adapters.listadapter import ListAdapter
+import os
 
+from kivy.app import App
+from kivy.clock import Clock
+from kivy.properties import ObjectProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.dropdown import DropDown
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.label import Label
+from kivy.uix.listview import ListItemButton
+from kivy.uix.popup import Popup
+
+from configurationmanager import ConfigurationManager
 from controller import Controller
 from guioutputformater import GuiOutputFormater
-from configurationmanager import ConfigurationManager
-import os
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
 fromBuilt = False
@@ -559,7 +559,7 @@ class CryptoPricerGUIApp(App):
         :return:
         '''
         from kivy.utils import platform
-        from os.path import sep, expanduser
+        from os.path import sep
 
         if platform == 'android':
             defaultpath = '/sdcard/.%(appname)s.ini'
