@@ -9,13 +9,14 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.listview import ListItemButton
 from kivy.uix.popup import Popup
+from kivy.uix.settings import SettingsWithSidebar
 
 from configurationmanager import ConfigurationManager
 from controller import Controller
 from guioutputformater import GuiOutputFormater
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
-fromBuilt = False
+fromAppBuilt = False
 
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
@@ -77,9 +78,9 @@ class CryptoPricerGUI(BoxLayout):
     showRequestList = False
 
     def __init__(self, **kwargs):
-        global fromBuilt
+        global fromAppBuilt
 
-        if not fromBuilt:
+        if not fromAppBuilt:
             return
 
         super(CryptoPricerGUI, self).__init__(**kwargs)
@@ -463,9 +464,11 @@ class CryptoPricerGUI(BoxLayout):
 
 
 class CryptoPricerGUIApp(App):
+    settings_cls = SettingsWithSidebar
+
     def build(self):
-        global fromBuilt
-        fromBuilt = True
+        global fromAppBuilt
+        fromAppBuilt = True
 
         return CryptoPricerGUI()
 
@@ -488,29 +491,67 @@ class CryptoPricerGUIApp(App):
         :param config:
         :return:
         '''
-        config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {ConfigurationManager.CONFIG_KEY_APP_SIZE: "Half"})
-        config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL, {ConfigurationManager.CONFIG_KEY_DATA_PATH: "c:/temp"})
-        config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT: "90"})
-        config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE: "3"})
-        config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION: "0.56"})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL,
+                           {ConfigurationManager.CONFIG_KEY_TIME_ZONE: ConfigurationManager.DEFAULT_TIME_ZONE})
+
+        from kivy.utils import platform
+
+        if platform == 'android':
+            config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT,
+                               {ConfigurationManager.CONFIG_KEY_APP_SIZE: ConfigurationManager.APP_SIZE_HALF})
+            config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL, {
+                ConfigurationManager.CONFIG_KEY_DATA_PATH: ConfigurationManager.DEFAULT_DATA_PATH_ANDROID})
+            config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
+                ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT: ConfigurationManager.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_ANDROID})
+        elif platform == 'ios':
+            config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT,
+                               {ConfigurationManager.CONFIG_KEY_APP_SIZE: ConfigurationManager.APP_SIZE_HALF})
+            config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL, {
+                ConfigurationManager.CONFIG_KEY_DATA_PATH: ConfigurationManager.DEFAULT_DATA_PATH_IOS})
+            config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
+                ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT: ConfigurationManager.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_ANDROID})
+        elif platform == 'win':
+            config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT,
+                               {ConfigurationManager.CONFIG_KEY_APP_SIZE: ConfigurationManager.APP_SIZE_FULL})
+            config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL, {
+                ConfigurationManager.CONFIG_KEY_DATA_PATH: ConfigurationManager.DEFAULT_DATA_PATH_WINDOWS})
+            config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
+                ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT: ConfigurationManager.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_WINDOWS})
+
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
+            ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE: ConfigurationManager.DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
+            ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION: ConfigurationManager.DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION})
 
 
     def build_settings(self, settings):
         # removing kivy default settings page from the settings dialog
         self.use_kivy_settings = False
 
-        settings.add_json_panel("CryptoPricer settings", self.config, data=("""
+        # add 'General' settings pannel
+        settings.add_json_panel("General settings", self.config, data=("""
+            [
+                {"type": "options",
+                    "title": "Local time zone",
+                    "section": "General",
+                    "key": "timezone",
+                    "options": ["Europe/Zurich", "Europe/London"]
+                },
+                {"type": "path",
+                    "title": "Data files location",
+                    "section": "General",
+                    "key": "dataPath"
+                }
+            ]""")
+                                )
+        # add 'Layout' settings pannel
+        settings.add_json_panel("Layout settings", self.config, data=("""
             [
                 {"type": "options",
                     "title": "Default app size",
                     "section": "Layout",
                     "key": "defaultappsize",
                     "options": ["Full", "Half"]
-                },
-                {"type": "path",
-                    "title": "Data files location",
-                    "section": "General",
-                    "key": "dataPath"
                 },
                 {"type": "numeric",
                     "title": "History list item height",
@@ -549,6 +590,9 @@ class CryptoPricerGUIApp(App):
             elif key == ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION:
                 self.root.appSizeHalfProportion = float(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION, "0.56"))
                 self.root.applyAppPosAndSize()
+            elif key == ConfigurationManager.CONFIG_KEY_TIME_ZONE:
+                self.root.configMgr.localTimeZone = config.getdefault(ConfigurationManager.CONFIG_SECTION_GENERAL, ConfigurationManager.CONFIG_KEY_TIME_ZONE, 'Europe/Zurich')
+                self.root.configMgr.storeConfig()
 
 
     def get_application_config(self, defaultpath="c:/temp/%(appname)s.ini"):

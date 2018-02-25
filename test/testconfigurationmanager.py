@@ -49,7 +49,12 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
-        self.assertEqual(self.configMgr.appSize, 'Half')
+
+        if os.name == 'posix':
+            self.assertEqual(self.configMgr.appSize, 'Half')
+        else:
+            self.assertEqual(self.configMgr.appSize, 'Full')
+
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
 
 
@@ -68,7 +73,12 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
-        self.assertEqual(self.configMgr.appSize, 'Half')
+
+        if os.name == 'posix':
+            self.assertEqual(self.configMgr.appSize, 'Half')
+        else:
+            self.assertEqual(self.configMgr.appSize, 'Full')
+
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
 
 
