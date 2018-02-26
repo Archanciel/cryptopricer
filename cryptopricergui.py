@@ -9,7 +9,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.listview import ListItemButton
 from kivy.uix.popup import Popup
-from kivy.uix.settings import SettingsWithSidebar
+from kivy.uix.settings import SettingsWithTabbedPanel
 from kivy.uix.settings import SettingOptions
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
@@ -513,7 +513,7 @@ class CryptoPricerGUI(BoxLayout):
 
 
 class CryptoPricerGUIApp(App):
-    settings_cls = SettingsWithSidebar
+    settings_cls = SettingsWithTabbedPanel
 
     def build(self):
         global fromAppBuilt
@@ -581,7 +581,7 @@ class CryptoPricerGUIApp(App):
 
         # add 'General' settings pannel
         TIME_ZONE_LIST = """["Europe/Amsterdam", "Europe/Andorra", "Europe/Astrakhan", "Europe/Athens", "Europe/Belfast", "Europe/Belgrade", "Europe/Berlin", "Europe/Bratislava", "Europe/Brussels", "Europe/Bucharest", "Europe/Budapest", "Europe/Busingen", "Europe/Chisinau", "Europe/Copenhagen", "Europe/Dublin", "Europe/Gibraltar", "Europe/Guernsey", "Europe/Helsinki", "Europe/Isle_of_Man", "Europe/Istanbul", "Europe/Jersey", "Europe/Kaliningrad", "Europe/Kiev", "Europe/Kirov", "Europe/Lisbon", "Europe/Ljubljana", "Europe/London", "Europe/Luxembourg", "Europe/Madrid", "Europe/Malta", "Europe/Mariehamn", "Europe/Minsk", "Europe/Monaco", "Europe/Moscow", "Europe/Nicosia", "Europe/Oslo", "Europe/Paris", "Europe/Podgorica", "Europe/Prague", "Europe/Riga", "Europe/Rome", "Europe/Samara", "Europe/San_Marino", "Europe/Sarajevo", "Europe/Saratov", "Europe/Simferopol", "Europe/Skopje", "Europe/Sofia", "Europe/Stockholm", "Europe/Tallinn", "Europe/Tirane", "Europe/Tiraspol", "Europe/Ulyanovsk", "Europe/Uzhgorod", "Europe/Vaduz", "Europe/Vatican", "Europe/Vienna", "Europe/Vilnius", "Europe/Volgograd", "Europe/Warsaw", "Europe/Zagreb", "Europe/Zaporozhye", "Europe/Zurich", "GMT", "GMT+1", "GMT+2", "GMT+3", "GMT+4", "GMT+5", "GMT+6", "GMT+7", "GMT+8", "GMT+9", "GMT+10", "GMT+11", "GMT+12", "GMT+13", "GMT+14", "GMT+15", "GMT+16", "GMT+17", "GMT+18", "GMT+19", "GMT+20", "GMT+21", "GMT+22", "GMT+23", "GMT-1", "GMT-2", "GMT-3", "GMT-4", "GMT-5", "GMT-6", "GMT-7", "GMT-8", "GMT-9", "GMT-10", "GMT-11", "GMT-12", "GMT-13", "GMT-14", "GMT-15", "GMT-16", "GMT-17", "GMT-18", "GMT-19", "GMT-20", "GMT-21", "GMT-22", "GMT-23"]"""
-        settings.add_json_panel("General settings", self.config, data=("""
+        settings.add_json_panel("General", self.config, data=("""
             [
                 {"type": "scrolloptions",
                     "title": "Local time zone",
@@ -597,7 +597,7 @@ class CryptoPricerGUIApp(App):
             ]""" % TIME_ZONE_LIST)
                                 )
         # add 'Layout' settings pannel
-        settings.add_json_panel("Layout settings", self.config, data=("""
+        settings.add_json_panel("Layout", self.config, data=("""
             [
                 {"type": "options",
                     "title": "Default app size",
