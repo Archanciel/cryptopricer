@@ -25,13 +25,14 @@ class TestConfigurationManager(unittest.TestCase):
         if os.name == 'posix':
             self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
             self.assertEqual(self.configMgr.appSize, 'Half')
+            self.assertEqual(self.configMgr.histoListItemHeight, '35')
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
             self.assertEqual(self.configMgr.appSize, 'Full')
+            self.assertEqual(self.configMgr.histoListItemHeight, '90')
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
-        self.assertEqual(self.configMgr.histoListItemHeight, '90')
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
         self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
@@ -46,13 +47,14 @@ class TestConfigurationManager(unittest.TestCase):
         if os.name == 'posix':
             self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
             self.assertEqual(self.configMgr.appSize, 'Half')
+            self.assertEqual(self.configMgr.histoListItemHeight, '35')
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
             self.assertEqual(self.configMgr.appSize, 'Full')
+            self.assertEqual(self.configMgr.histoListItemHeight, '90')
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
-        self.assertEqual(self.configMgr.histoListItemHeight, '90')
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
         self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
@@ -67,13 +69,14 @@ class TestConfigurationManager(unittest.TestCase):
         if os.name == 'posix':
             self.assertEqual(self.configMgr.dataPath, '/sdcard/CryptoPricerData')
             self.assertEqual(self.configMgr.appSize, 'Half')
+            self.assertEqual(self.configMgr.histoListItemHeight, '35')
         else:
             self.assertEqual(self.configMgr.dataPath, 'c:\\temp')
             self.assertEqual(self.configMgr.appSize, 'Full')
+            self.assertEqual(self.configMgr.histoListItemHeight, '90')
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
-        self.assertEqual(self.configMgr.histoListItemHeight, '90')
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
         self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
