@@ -542,6 +542,10 @@ class CryptoPricerGUIApp(App):
         '''
         config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL,
                            {ConfigurationManager.CONFIG_KEY_TIME_ZONE: ConfigurationManager.DEFAULT_TIME_ZONE})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL,
+                           {ConfigurationManager.CONFIG_KEY_DATE_TIME_FORMAT: ConfigurationManager.DEFAULT_DATE_TIME_FORMAT})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL,
+                           {ConfigurationManager.CONFIG_KEY_DATE_ONLY_FORMAT: ConfigurationManager.DEFAULT_DATE_ONLY_FORMAT})
 
         from kivy.utils import platform
 
@@ -584,13 +588,29 @@ class CryptoPricerGUIApp(App):
         settings.add_json_panel("General", self.config, data=("""
             [
                 {"type": "scrolloptions",
-                    "title": "Local time zone",
+                    "title": "Time zone",
+                    "desc": "Set the local time zone",
                     "section": "General",
                     "key": "timezone",
                     "options": %s
                 },
+                {"type": "options",
+                    "title": "Date/time format",
+                    "desc": "Set the full date/time format",
+                    "section": "General",
+                    "key": "datetimeformat",
+                    "options": ["DD/MM/YY HH:mm", "DD/MM/YY HH.mm"]
+                },
+                {"type": "options",
+                    "title": "Date format",
+                    "desc": "Set the date only format",
+                    "section": "General",
+                    "key": "dateonlyformat",
+                    "options": ["DD/MM/YY", "DD/MM/YYYY"]
+                },
                 {"type": "path",
                     "title": "Data files location",
+                    "desc": "Set the directory where the app data files like history files are stored",
                     "section": "General",
                     "key": "dataPath"
                 }
@@ -601,22 +621,26 @@ class CryptoPricerGUIApp(App):
             [
                 {"type": "options",
                     "title": "Default app size",
+                    "desc": "Set the app size at start up",
                     "section": "Layout",
                     "key": "defaultappsize",
                     "options": ["Full", "Half"]
                 },
                 {"type": "numeric",
                     "title": "History list item height",
+                    "desc": "Set the height of each item in the history list",
                     "section": "Layout",
                     "key": "histolistitemheight"
                 },
                 {"type": "numeric",
                     "title": "History list visible item number",
+                    "desc": "Set the number of items displayed in the history list",
                     "section": "Layout",
                     "key": "histolistvisiblesize"
                 },
                 {"type": "numeric",
                     "title": "Half size application proportion",
+                    "desc": "Set the proportion of vertical screen size the app occupies so that the smartphone keyboard does not hide part of the application. Must be between 0 and 1",
                     "section": "Layout",
                     "key": "appsizehalfproportion"
                 }
@@ -636,14 +660,20 @@ class CryptoPricerGUIApp(App):
 
                 self.root.applyAppPosAndSize()
             elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT:
-                self.root.histoListItemHeight = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT, "90"))
+                self.root.histoListItemHeight = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT, ConfigurationManager.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_ANDROID))
             elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE:
-                self.root.histoListMaxVisibleItems = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE, "3"))
+                self.root.histoListMaxVisibleItems = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE, ConfigurationManager.DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE))
             elif key == ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION:
-                self.root.appSizeHalfProportion = float(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION, "0.56"))
+                self.root.appSizeHalfProportion = float(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION, ConfigurationManager.DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION))
                 self.root.applyAppPosAndSize()
             elif key == ConfigurationManager.CONFIG_KEY_TIME_ZONE:
-                self.root.configMgr.localTimeZone = config.getdefault(ConfigurationManager.CONFIG_SECTION_GENERAL, ConfigurationManager.CONFIG_KEY_TIME_ZONE, 'Europe/Zurich')
+                self.root.configMgr.localTimeZone = config.getdefault(ConfigurationManager.CONFIG_SECTION_GENERAL, ConfigurationManager.CONFIG_KEY_TIME_ZONE, ConfigurationManager.DEFAULT_TIME_ZONE)
+                self.root.configMgr.storeConfig()
+            elif key == ConfigurationManager.CONFIG_KEY_DATE_TIME_FORMAT:
+                self.root.configMgr.dateTimeFormat = config.getdefault(ConfigurationManager.CONFIG_SECTION_GENERAL, ConfigurationManager.CONFIG_KEY_DATE_TIME_FORMAT, ConfigurationManager.DEFAULT_DATE_TIME_FORMAT)
+                self.root.configMgr.storeConfig()
+            elif key == ConfigurationManager.CONFIG_KEY_DATE_ONLY_FORMAT:
+                self.root.configMgr.dateOnlyFormat = config.getdefault(ConfigurationManager.CONFIG_SECTION_GENERAL, ConfigurationManager.CONFIG_KEY_DATE_ONLY_FORMAT, ConfigurationManager.DEFAULT_DATE_ONLY_FORMAT)
                 self.root.configMgr.storeConfig()
 
 
