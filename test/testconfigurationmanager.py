@@ -33,6 +33,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
+        self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
 
     def testConfigurationManagerInstanciationNoConfigFile(self):
@@ -52,8 +53,8 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
-
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
+        self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
 
     def testConfigurationManagerInstanciationEmptyConfigFile(self):
@@ -73,8 +74,8 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.histoListItemHeight, '90')
-
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
+        self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
 
     def testConfigurationManagerInstanciationOneMissingKey(self):
@@ -99,6 +100,7 @@ class TestConfigurationManager(unittest.TestCase):
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
         self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
+        self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
 
 if __name__ == '__main__':

@@ -22,6 +22,9 @@ class ConfigurationManager:
     DEFAULT_DATA_PATH_IOS = '~/Documents'
     DEFAULT_DATA_PATH_WINDOWS = 'c:\\temp'
 
+    CONFIG_KEY_REFERENCE_CURRENCY = 'referencecurrency'
+    DEFAULT_REFERENCE_CURRENCY = 'USD'
+
     CONFIG_KEY_LOAD_AT_START_PATH_FILENAME = 'loadatstartpathfilename'
     DEFAULT_LOAD_AT_START_PATH_FILENAME = ''
 
@@ -89,7 +92,10 @@ class ConfigurationManager:
         try:
             self.__histoListItemHeight = self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT]
         except KeyError:
-            self.__histoListItemHeight = self.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT
+            if os.name == 'posix':
+                self.__histoListItemHeight = self.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_ANDROID
+            else:
+                self.__histoListItemHeight = self.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_WINDOWS
             self._updated = True
 
         try:
@@ -102,6 +108,12 @@ class ConfigurationManager:
             self.__appSizeHalfProportion = self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_APP_SIZE_HALF_PROPORTION]
         except KeyError:
             self.__appSizeHalfProportion = self.DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION
+            self._updated = True
+
+        try:
+            self.__referenceCurrency = self.config[self.CONFIG_SECTION_GENERAL][self.CONFIG_KEY_REFERENCE_CURRENCY]
+        except KeyError:
+            self.__referenceCurrency = self.DEFAULT_REFERENCE_CURRENCY
             self._updated = True
 
         self.storeConfig() #will save config file in case one config key raised an exception
@@ -132,6 +144,7 @@ class ConfigurationManager:
         self.loadAtStartPathFilename = self.DEFAULT_LOAD_AT_START_PATH_FILENAME
         self.histoListVisibleSize = self.DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE
         self.appSizeHalfProportion = self.DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION
+        self.referenceCurrency = self.DEFAULT_REFERENCE_CURRENCY
         self._updated = True
 
         self.storeConfig()
@@ -227,6 +240,16 @@ class ConfigurationManager:
         self._updated = True
 
 
+    @property
+    def referenceCurrency(self):
+        return self.__referenceCurrency
+
+    @referenceCurrency.setter
+    def referenceCurrency(self, referenceCurrencyStr):
+        self.__referenceCurrency = referenceCurrencyStr
+        self._updated = True
+
+
     def storeConfig(self):
         if not self._updated:
             return
@@ -240,6 +263,7 @@ class ConfigurationManager:
         self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT] = self.histoListItemHeight
         self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_APP_SIZE] = self.appSize
         self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_APP_SIZE_HALF_PROPORTION] = self.appSizeHalfProportion
+        self.config[self.CONFIG_SECTION_GENERAL][self.CONFIG_KEY_REFERENCE_CURRENCY] = self.referenceCurrency
 
         self.config.write()
         

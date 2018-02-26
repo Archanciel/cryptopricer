@@ -546,6 +546,8 @@ class CryptoPricerGUIApp(App):
                            {ConfigurationManager.CONFIG_KEY_DATE_TIME_FORMAT: ConfigurationManager.DEFAULT_DATE_TIME_FORMAT})
         config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL,
                            {ConfigurationManager.CONFIG_KEY_DATE_ONLY_FORMAT: ConfigurationManager.DEFAULT_DATE_ONLY_FORMAT})
+        config.setdefaults(ConfigurationManager.CONFIG_SECTION_GENERAL,
+                           {ConfigurationManager.CONFIG_KEY_REFERENCE_CURRENCY: ConfigurationManager.DEFAULT_REFERENCE_CURRENCY})
 
         from kivy.utils import platform
 
@@ -599,14 +601,21 @@ class CryptoPricerGUIApp(App):
                     "desc": "Set the full date/time format",
                     "section": "General",
                     "key": "datetimeformat",
-                    "options": ["DD/MM/YY HH:mm", "DD/MM/YY HH.mm"]
+                    "options": ["DD/MM/YY HH:mm"]
                 },
                 {"type": "options",
                     "title": "Date format",
                     "desc": "Set the date only format",
                     "section": "General",
                     "key": "dateonlyformat",
-                    "options": ["DD/MM/YY", "DD/MM/YYYY"]
+                    "options": ["DD/MM/YY"]
+                },
+                {"type": "options",
+                    "title": "Reference currency",
+                    "desc": "Set the reference currency in which all the returned crypto prices will be converted",
+                    "section": "General",
+                    "key": "referencecurrency",
+                    "options": ["USD", "EURO", "CHF", "GBP"]
                 },
                 {"type": "path",
                     "title": "Data files location",
@@ -674,6 +683,9 @@ class CryptoPricerGUIApp(App):
                 self.root.configMgr.storeConfig()
             elif key == ConfigurationManager.CONFIG_KEY_DATE_ONLY_FORMAT:
                 self.root.configMgr.dateOnlyFormat = config.getdefault(ConfigurationManager.CONFIG_SECTION_GENERAL, ConfigurationManager.CONFIG_KEY_DATE_ONLY_FORMAT, ConfigurationManager.DEFAULT_DATE_ONLY_FORMAT)
+                self.root.configMgr.storeConfig()
+            elif key == ConfigurationManager.CONFIG_KEY_REFERENCE_CURRENCY:
+                self.root.configMgr.referenceCurrency = config.getdefault(ConfigurationManager.CONFIG_SECTION_GENERAL, ConfigurationManager.CONFIG_KEY_REFERENCE_CURRENCY, ConfigurationManager.DEFAULT_REFERENCE_CURRENCY)
                 self.root.configMgr.storeConfig()
 
 
