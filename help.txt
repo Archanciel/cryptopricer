@@ -9,13 +9,20 @@ Full request
 <date time>:	0 for RT
 				21/12 or 21/12/17
 				21/12 8:34
-				Warning: specifying time only makes sense for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
+				8:34 --> here, the time only date/time specification is interpreted as time in current date
+				
+				WARNING: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
 
-Ex: btc usd 0 bittrex --> 
+Ex: we are the 16/12/17 at 22:10
+
+	btc usd 0 bittrex --> 
 	BTC/USD on BitTrex: 16/12/17 22:10R 19120
 
 	eth btc 16/12 13:45 bitfinex --> 
-	ETH/BTC on Bitfinex: 16/12/17M 0.03893
+	ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+
+	eth btc 13:45 bitfinex --> 
+	ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
 
 	eth btc 21/1 13:45 bitfinex --> 
 	ETH/BTC on Bitfinex: 21/01/17C 0.01185
