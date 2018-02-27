@@ -240,7 +240,7 @@ class CommandPrice(AbstractCommand):
         ['11', '10', None, None, None] # neo btc 11/10
         :param localNow:
         :return: True if date/time values stored in the parsedParmData dic are valid. If an
-                 error was detected, a new ResultData with a meaning full error msg is
+                 error was detected, a new ResultData with a meaningfull error msg is
                  returned.
         '''
 
@@ -262,10 +262,22 @@ class CommandPrice(AbstractCommand):
             monthStr == '0' and
             dayStr == '0'):
             # RT price asked
-            return resultData
+            return True
         else:
             # here, the three date components are not all equal to 0 !
-            if (yearStr == '0' or
+            if (yearStr == None and
+                monthStr == None and
+                dayStr == None and
+                hourStr != None and
+                minuteStr != None):
+                # here, only time was specified in the full request, which is now possible.
+                # Current day, month and year are fornatted into the parsed parm data
+                # and True is returned
+                self.parsedParmData[self.DAY] = localNow.format('DD')
+                self.parsedParmData[self.MONTH] = localNow.format('MM')
+                self.parsedParmData[self.YEAR] = localNow.format('YYYY')
+                return True
+            elif (yearStr == '0' or
                 # yearStr is None when only day/month specified -> valid !
                 monthStr == '0' or
                 monthStr == None or

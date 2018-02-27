@@ -307,7 +307,7 @@ class TestController(unittest.TestCase):
          #   self.assertEqual('NEO/BTC on Bitfinex: 11/10/17 00:00C 0.006228\n', contentList[1])
 
 
-    def testControllerBugSpecifyTimeAfterAskedRT001(self):
+    def testControllerBugSpecifyTimeAfterAskedRT0001(self):
         stdin = sys.stdin
 
         # The scenario below is not usable because if you run it between 0:01

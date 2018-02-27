@@ -1957,5 +1957,43 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
+    def testGetPrintableResultForTimeWithoutDateFullRequest(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        #second command: histo price command
+        inputStr = 'btc usd {}:{} bitfinex'.format(nowHourStr, nowMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForTimeWithOnLyDayDateFullRequest(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            now)
+
+        threeDaysBeforeArrowDate = now.shift(days=-10)
+
+        threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
+
+        # second command: histo price command
+        inputStr = 'btc usd {} {}:{} bitfinex'.format(threeDaysBeforeDayStr, nowHourStr, nowMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ERROR - date not valid', printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -295,7 +295,17 @@ class Requester:
 
         COMMAND_OR_OPTION = 'commandOrOption'
 
-        patternCommandDic = {r"\d+/\d+(?:/\d+)*|^0$" : CommandPrice.DAY_MONTH_YEAR,
+        # changed r"\d+/\d+(?:/\d+)*|^0$" into r"\d+/\d+(?:/\d+)*|^\d+$" was required so
+        # that a full request like btc usd 1 12:45 bitfinex does generate an ERROR - date not valid
+        # in CommandPrice. With the old versionk of th pattern, CommandPrice.DAY_MONTH_YEAR was none,
+        # which was considered like a valid full request with only the time providded, a feature which
+        # was not supported before !
+        #
+        # So, allowing the user to provide only the time in the full request implied that we are
+        # more permissive at the level of the Requester in order for CommandPrice to be able
+        # to correctly identify the invalid date/time full request component in the form of
+        # D HH:MM or DD HH:MM
+        patternCommandDic = {r"\d+/\d+(?:/\d+)*|^\d+$" : CommandPrice.DAY_MONTH_YEAR,
                              r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
                              r"[A-Za-z]+": CommandPrice.EXCHANGE,
                              r"(?:-[vV])([sS]?)([\w\d/:\.]+)": CommandPrice.PRICE_VALUE_DATA,

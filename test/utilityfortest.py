@@ -13,6 +13,12 @@ class UtilityForTest:
     '''
     @staticmethod
     def getFormattedDateTimeComponentsForArrowDateTimeObj(dateTimeObj):
+        '''
+        Return dateTimeObjYearStr, dateTimeObjMonthStr, dateTimeObjDayStr, dateTimeObjHourStr,
+        dateTimeObjMinuteStr corresponding to the passed Arrow date object
+        :param dateTimeObj: passed Arrow date object
+        :return:
+        '''
         dateTimeObjDayStr = dateTimeObj.format('DD')
         dateTimeObjMonthStr = dateTimeObj.format('MM')
         dateTimeObjYearStr = dateTimeObj.format('YY')
