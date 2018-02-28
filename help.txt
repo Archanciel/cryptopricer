@@ -25,6 +25,9 @@ Ex: we are the 16/12/17 at 22:10
 	eth btc 13:45 bitfinex --> 
 	ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
 
+	eth btc 15 8:45 bitfinex --> 
+	ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
+
 	eth btc 21/1 13:45 bitfinex --> 
 	ETH/BTC on Bitfinex: 21/01/17C 0.01185
 
@@ -47,7 +50,7 @@ The partial request parameters are specified using the parms
 -c<crypto>
 -f<fiat>
 -d<date>
-	<date> can be 0 for RT, dd/mm or dd/mm/yy or dd/mm/yyyy
+	<date> can be 0 for RT, dd (current month) or dd/mm (current year) or dd/mm/yy or dd/mm/yyyy
 -t<time>
 	<time> format: hh:mm
 -e<exchange>
