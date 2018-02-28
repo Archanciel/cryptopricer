@@ -1957,7 +1957,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForTimeWithoutDateFullRequest(self):
+    def testGetPrintableResultForTimeOnlyWithoutDateFullRequest(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1975,12 +1975,12 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForTimeWithOnLyDayDateFullRequest(self):
+    def testGetPrintableResultForTimeAndDayOnlyFullRequest_3daysBefore(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
 
-        threeDaysBeforeArrowDate = now.shift(days=-10)
+        threeDaysBeforeArrowDate = now.shift(days=-3)
 
         threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
 
@@ -1990,9 +1990,66 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'ERROR - date not valid', printResult)
-        self.assertEqual('', fullCommandStr)
+            'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'.format(threeDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(threeDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForTimeAndDayOnlyFullRequest_10daysBefore(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            now)
+
+        tenDaysBeforeArrowDate = now.shift(days=-10)
+
+        tenDaysBeforeYearStr, tenDaysBeforeMonthStr, tenDaysBeforeDayStr, tenDaysBeforeHourStr, tenDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(tenDaysBeforeArrowDate)
+
+        # second command: histo price command
+        inputStr = 'btc usd {} {}:{} bitfinex'.format(tenDaysBeforeDayStr, nowHourStr, nowMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'.format(tenDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(tenDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
+    def testGetPrintableResultForTimeAndDayOnlyFullRequest_3daysAfter(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            now)
+
+        oneDaysAfterArrowDate = now.shift(days=1)
+
+        oneDaysAfterYearStr, oneDaysAfterMonthStr, oneDaysAfterDayStr, oneDaysAfterHourStr, oneDaysAfterMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneDaysAfterArrowDate)
+
+        oneYearBeforeArrowDate = now.shift(years=-1)
+
+        oneYearBeforeYearStr, oneYearBeforeMonthStr, oneYearBeforeDayStr, oneYearBeforeHourStr, oneYearBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearBeforeArrowDate)
+
+        # second command: histo price command
+        inputStr = 'btc usd {} {}:{} bitfinex'.format(oneDaysAfterDayStr, oneDaysAfterHourStr, nowMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if nowMonthStr == oneDaysAfterMonthStr:
+            # this test can only be performed on a day which is not the last day of the mnnth.
+            # othervise, the test which assumes that we try a full request with only day and time
+            # specified, but with the day number set to tomorrow - in the future can not be
+            # run.
+            self.assertEqual(
+                'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, oneYearBeforeYearStr, oneDaysAfterDayStr, oneDaysAfterMonthStr, oneDaysAfterYearStr, nowHourStr, nowMinuteStr),
+                UtilityForTest.removePriceFromResult(printResult))
+            self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(oneDaysAfterDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                                   nowMinuteStr), fullCommandStr)
+            self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
 if __name__ == '__main__':

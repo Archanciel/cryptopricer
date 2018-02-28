@@ -8,8 +8,9 @@ Full request
 <crypto> <fiat> <date time> <exchange> <optional command>
 <date time>:	0 for RT
 				21/12 or 21/12/17
-				21/12 8:34
-				8:34 --> here, the time only date/time specification is interpreted as time in current date
+				21/12 8:34 --> current year assumed
+				21 8:34  --> here, only the day and time are provided as date/time specification. This is interpreted as the time at the specified day IN THE CURRENT MONTH
+				8:34 --> here, the time only date/time specification is interpreted as time IN THE CURRENT DATE
 				
 				WARNING: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
 

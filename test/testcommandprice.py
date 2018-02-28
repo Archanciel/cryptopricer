@@ -135,7 +135,7 @@ class TestCommandPrice(unittest.TestCase):
 
         nowYearStr = str(nowYear)
 
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - date not valid")
+        self.assertIsNone(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
 
 
     def testExecuteHistoricalPriceWrongExchange(self):

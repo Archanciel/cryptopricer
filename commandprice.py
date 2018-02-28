@@ -277,6 +277,17 @@ class CommandPrice(AbstractCommand):
                 self.parsedParmData[self.MONTH] = localNow.format('MM')
                 self.parsedParmData[self.YEAR] = localNow.format('YYYY')
                 return True
+            elif (yearStr == None and
+                  monthStr == None and
+                  dayStr != None and
+                  hourStr != None and
+                  minuteStr != None):
+                # here, only day and time wete specified in the full request, which is now possible.
+                # Current month and year are fornatted into the parsed parm data
+                # and True is returned
+                self.parsedParmData[self.MONTH] = localNow.format('MM')
+                self.parsedParmData[self.YEAR] = localNow.format('YYYY')
+                return True
             elif (yearStr == '0' or
                 # yearStr is None when only day/month specified -> valid !
                 monthStr == '0' or
