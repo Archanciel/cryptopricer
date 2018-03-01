@@ -1961,7 +1961,9 @@ class TestControllerGui(unittest.TestCase):
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
-        #second command: histo price command
+        #here, even if we request a price at now hour and now minute, the price returned is
+        #not a RT price, but a histo minute price. We may request a price at 12:55 and we are
+        #at 12:55:01 !
         inputStr = 'btc usd {}:{} bitfinex'.format(nowHourStr, nowMinuteStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -1984,7 +1986,6 @@ class TestControllerGui(unittest.TestCase):
 
         threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
 
-        # second command: histo price command
         inputStr = 'btc usd {} {}:{} bitfinex'.format(threeDaysBeforeDayStr, nowHourStr, nowMinuteStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -2012,7 +2013,6 @@ class TestControllerGui(unittest.TestCase):
 
         heightDaysBeforeYearStr, heightDaysBeforeMonthStr, heightDaysBeforeDayStr, heightDaysBeforeHourStr, heightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(heightDaysBeforeArrowDate)
 
-        # second command: histo price command
         inputStr = 'btc usd {} {}:{} bitfinex'.format(heightDaysBeforeDayStr, nowHourStr, nowMinuteStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -2044,7 +2044,6 @@ class TestControllerGui(unittest.TestCase):
 
         oneYearBeforeYearStr, oneYearBeforeMonthStr, oneYearBeforeDayStr, oneYearBeforeHourStr, oneYearBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearBeforeArrowDate)
 
-        # second command: histo price command
         inputStr = 'btc usd {} {}:{} bitfinex'.format(oneDaysAfterDayStr, oneDaysAfterHourStr, nowMinuteStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -2077,7 +2076,9 @@ class TestControllerGui(unittest.TestCase):
 
         threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
 
-        # second command: histo price command
+        #here, even if we request a price at now hour and now minute, the price returned is
+        #not a RT price, but a histo minute price. We may request a price at 12:55 and we are
+        #at 12:55:01 !
         inputStr = 'btc usd {} {}:{} bitfinex'.format(threeDaysBeforeDayStr, nowHourStr, nowMinuteStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -2105,7 +2106,6 @@ class TestControllerGui(unittest.TestCase):
 
         heightDaysBeforeYearStr, heightDaysBeforeMonthStr, heightDaysBeforeDayStr, heightDaysBeforeHourStr, heightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(heightDaysBeforeArrowDate)
 
-        # second command: histo price command
         inputStr = 'btc usd {} {}:{} bitfinex'.format(heightDaysBeforeDayStr, nowHourStr, nowMinuteStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -2137,7 +2137,6 @@ class TestControllerGui(unittest.TestCase):
 
         oneYearBeforeYearStr, oneYearBeforeMonthStr, oneYearBeforeDayStr, oneYearBeforeHourStr, oneYearBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearBeforeArrowDate)
 
-        # second command: histo price command
         inputStr = 'btc usd {} {}:{} bitfinex'.format(oneDaysAfterDayStr, oneDaysAfterHourStr, nowMinuteStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
