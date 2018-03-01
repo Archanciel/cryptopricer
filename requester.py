@@ -334,14 +334,10 @@ class Requester:
                         else:
                             #full command syntax error !
                             return None
-        # code to print a call stack to help buiding a sequence diagram using seqdiag
-        # to build the diagram, type seqdiag -Tsvg CPricerSequDiagr.txt in a command line window.
-        # This build a svg file which can be displayed in a browsxer.
-        #
-        # import traceback
-        #
-        # with open("c:\\temp\\stack.txt", "a") as f:
-        #     traceback.print_stack(file=f)
+
+
+        from callstackrecorder import CallStackRecorder
+        CallStackRecorder.storeCallStack()
 
         return optionalParsedParmDataDic
 

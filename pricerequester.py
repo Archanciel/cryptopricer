@@ -118,18 +118,9 @@ class PriceRequester:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
             else:
                 resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
-        import sys, traceback
 
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-
-        # code to print a call stack to help buiding a sequence diagram using seqdiag
-        # to build the diagram, type seqdiag -Tsvg CPricerSequDiagr.txt in a command line window.
-        # This build a svg file which can be displayed in a browsxer.
-        #
-        # import traceback
-        #
-        # with open("c:\\temp\\stack.txt", "a") as f:
-        #     traceback.print_stack(file=f)
+        from callstackrecorder import CallStackRecorder
+        CallStackRecorder.storeCallStack()
 
         return resultData
 
