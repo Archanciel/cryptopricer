@@ -1,0 +1,21 @@
+diagram {
+  GUI -> Controller [label = "getPrintableResultForInput(inputString)"];
+		Controller -> Requester [label = "getCommand(inputString)"];	
+			Requester -> Requester.self [label = "_parseAndFillCommandPrice(inputString)"];
+				Requester.self -> Requester.self [label = "_buildFullCommandPriceOptionalParmsDic()"];
+				Requester.self <-- Requester.self [label = "optionalParsedParmDataDic"];
+			Requester <-- Requester.self [label = "CommandPrice"];
+		Controller <-- Requester [label = "CommandPrice"];
+		Controller -> CommandPrice [label = "execute()"];	
+			CommandPrice -> Processor [label = "getCryptoPrice()"];
+				Processor -> PriceRequester [label = "getHistoricalPriceAtUTCTimeStamp()"];
+					PriceRequester -> PriceRequester [label = "_getHistoDayPriceAtUTCTimeStamp()"];
+				Processor <--PriceRequester [label = "ResultData"];
+			CommandPrice <-- Processor [label = "ResultData"];
+		Controller <-- CommandPrice [label = "ResultData"];
+		Controller -> Printer [label = "getPrintableData(ResultData)"];
+		Controller <-- Printer [label = "printResultString"];
+		Controller -> Printer [label = "getFullCommandString(ResultData)"];
+		Controller <-- Printer [label = "fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions"];
+  GUI <-- Controller [label = "printResultString, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions"];
+}

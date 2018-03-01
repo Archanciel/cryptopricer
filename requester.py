@@ -334,6 +334,14 @@ class Requester:
                         else:
                             #full command syntax error !
                             return None
+        # code to print a call stack to help buiding a sequence diagram using seqdiag
+        # to build the diagram, type seqdiag -Tsvg CPricerSequDiagr.txt in a command line window.
+        # This build a svg file which can be displayed in a browsxer.
+        #
+        # import traceback
+        #
+        # with open("c:\\temp\\stack.txt", "a") as f:
+        #     traceback.print_stack(file=f)
 
         return optionalParsedParmDataDic
 
@@ -802,13 +810,17 @@ class Requester:
 
 
 if __name__ == '__main__':
-    from test.testrequester import TestRequester
-    
-    testR = TestRequester()
-    testR.runTests()
-    
-    '''
-    r = Requester()
+    from configurationmanager import ConfigurationManager
+    import os
+
+    filePath = None
+
+    if os.name == 'posix':
+        filePath = '/sdcard/cryptopricer_test.ini'
+    else:
+        filePath = 'c:\\temp\\cryptopricer_test.ini'
+
+    r = Requester(ConfigurationManager(filePath))
     
     r.commandPrice = CommandPrice()
     inputStr = "btc usd Kraken 10/9/17 12:45"
@@ -816,5 +828,5 @@ if __name__ == '__main__':
 
 #    print(groupL)
 #    print(r._validateFullCommandPriceParsedGroupsOrder(groupL))
-    print(r._parseAndFillCommandPrice(inputStr))
-    '''
+    print(r.getCommand(inputStr))
+
