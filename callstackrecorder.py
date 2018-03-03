@@ -37,7 +37,7 @@ if __name__ == '__main__':
     import importlib
     module = importlib.import_module('controller')
     class_ = getattr(module, 'Controller')
-    print(class_.__doc__)
+#    print(class_.__doc__)
     instance = None
     noneStr = ''
 
@@ -52,5 +52,12 @@ if __name__ == '__main__':
                 noneStr += ', None'
 
     methods = inspect.getmembers(instance, predicate=inspect.ismethod)
-    print(instance.__class__)
+    for methodName, methodObj in methods:
+        methodDoc = methodObj.__doc__
+        if methodDoc:
+            match = re.search(r":seqdiag_return (.*)", methodDoc)
+            if match:
+                returnDoc = match.group(1)
+                print("{}: {}".format(methodName, returnDoc))
+#    print(instance.__class__)
 
