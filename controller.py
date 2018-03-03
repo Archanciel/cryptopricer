@@ -66,6 +66,7 @@ class Controller:
         command history list.
 
         :param inputStr:
+        :seqdiag_return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
         :return: 1/ printable request result
                  2/ full request command without any command option
                  3/ full request command with any non save command option
