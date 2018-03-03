@@ -1,6 +1,6 @@
 import traceback, re, ast, inspect
 
-class CallStackRecorder:
+class SeqDiagBuilder:
     '''
     This class contains a static utility methods used to store in a file the call stack. This information
     will be used to draw a sequence diagram of the calls hierchy.
