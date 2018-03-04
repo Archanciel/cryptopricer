@@ -1977,7 +1977,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForTimeAndDayOnlyFullRequest_3daysBefore(self):
+    def testGetPrintableResultForDayOnlyAndTimeFullRequest_3daysBefore(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
@@ -2004,34 +2004,34 @@ class TestControllerGui(unittest.TestCase):
             self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForTimeAndDayOnlyFullRequest_8daysBefore(self):
+    def testGetPrintableResultForDayOnlyAndTimeFullRequest_8daysBefore(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
 
-        heightDaysBeforeArrowDate = now.shift(days=-8)
+        eightDaysBeforeArrowDate = now.shift(days=-8)
 
-        heightDaysBeforeYearStr, heightDaysBeforeMonthStr, heightDaysBeforeDayStr, heightDaysBeforeHourStr, heightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(heightDaysBeforeArrowDate)
+        eightDaysBeforeYearStr, eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
 
-        inputStr = 'btc usd {} {}:{} bitfinex'.format(heightDaysBeforeDayStr, nowHourStr, nowMinuteStr)
+        inputStr = 'btc usd {} {}:{} bitfinex'.format(eightDaysBeforeDayStr, nowHourStr, nowMinuteStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        if nowMonthStr == heightDaysBeforeMonthStr:
+        if nowMonthStr == eightDaysBeforeMonthStr:
             # this test can only be performed after the 8th day of the mnnth,
             # othervise, the test which assumes that we try a full request with only day and time
             # specified, but with the day number set to 8 days before today - so, in the future
             # if we are between the 1st and the 8th since the month is not specified, can not be run.
             self.assertEqual(
-                'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'.format(heightDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'.format(eightDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                    nowMinuteStr),
                 UtilityForTest.removePriceFromResult(printResult))
-            self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(heightDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+            self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(eightDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                    nowMinuteStr), fullCommandStr)
             self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForTimeAndDayOnlyFullRequest_1daysAfter(self):
+    def testGetPrintableResultForDayOnlyAndTimeullRequest_1daysAfter(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
@@ -2067,7 +2067,7 @@ class TestControllerGui(unittest.TestCase):
 
 
 
-    def testGetPrintableResultForTimeAndDayOnlyPartialRequest_3daysBefore(self):
+    def testGetPrintableResultForDayOnlyAndTimePartialRequest_3daysBefore(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
@@ -2097,34 +2097,34 @@ class TestControllerGui(unittest.TestCase):
             self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForTimeAndDayOnlyPartialRequest_8daysBefore(self):
+    def testGetPrintableResultForDayOnlyAndTimePartialRequest_8daysBefore(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
 
-        heightDaysBeforeArrowDate = now.shift(days=-8)
+        eightDaysBeforeArrowDate = now.shift(days=-8)
 
-        heightDaysBeforeYearStr, heightDaysBeforeMonthStr, heightDaysBeforeDayStr, heightDaysBeforeHourStr, heightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(heightDaysBeforeArrowDate)
+        eightDaysBeforeYearStr, eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
 
-        inputStr = 'btc usd {} {}:{} bitfinex'.format(heightDaysBeforeDayStr, nowHourStr, nowMinuteStr)
+        inputStr = 'btc usd {} {}:{} bitfinex'.format(eightDaysBeforeDayStr, nowHourStr, nowMinuteStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        if nowMonthStr == heightDaysBeforeMonthStr:
+        if nowMonthStr == eightDaysBeforeMonthStr:
             # this test can only be performed after the 8th day of the mnnth,
             # othervise, the test which assumes that we try a full request with only day and time
             # specified, but with the day number set to 8 days before today - so, in the future
             # if we are between the 1st and the 8th since the month is not specified, can not be run.
             self.assertEqual(
-                'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'.format(heightDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'.format(eightDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                    nowMinuteStr),
                 UtilityForTest.removePriceFromResult(printResult))
-            self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(heightDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+            self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(eightDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                    nowMinuteStr), fullCommandStr)
             self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForTimeAndDayOnlyPartialRequest_1daysAfter(self):
+    def testGetPrintableResultForDayOnlyAndTimePartialRequest_1daysAfter(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
