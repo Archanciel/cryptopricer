@@ -18,8 +18,8 @@ class CommandError(AbstractCommand):
 
     COMMAND_ERROR_MSG_KEY = 'COMMAND_ERROR_MSG'
 
-    def __init__(self, receiver = None, rawParmData = '', parsedParmData = {}):
-        super().__init__(receiver, 'CommandError', rawParmData, parsedParmData)
+    def __init__(self, receiver = None):
+        super().__init__(receiver, 'CommandError')
 
 
     def initialiseParsedParmData(self):

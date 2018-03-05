@@ -12,10 +12,10 @@ class AbstractCommand(metaclass=ABCMeta):
     Ex: {CRYPTO:[]}
     '''
 
-    def __init__(self, receiver=None, name='', requestInputString='', parsedParmData={}):
+    def __init__(self, receiver=None, name=''):
         self.receiver = receiver
-        self.requestInputString = requestInputString
-        self.parsedParmData = parsedParmData
+        self.requestInputString = ''
+        self.parsedParmData = {}
         self.name = name # used as key in a AbstractCommand dictionary
         self.initialiseParsedParmData()
 

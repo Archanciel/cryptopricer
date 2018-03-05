@@ -1,8 +1,8 @@
 from abstractcommand import AbstractCommand
 
 class CommandQuit(AbstractCommand):
-    def __init__(self, receiver = None, rawParmData = '', parsedParmData = {}):
-        super().__init__(receiver, 'CommandQuit', rawParmData, parsedParmData)
+    def __init__(self, receiver = None):
+        super().__init__(receiver, 'CommandQuit')
 
 
     def initialiseParsedParmData(self):

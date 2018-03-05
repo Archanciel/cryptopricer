@@ -33,8 +33,8 @@ class CommandPrice(AbstractCommand):
     UNSUPPORTED_COMMAND = "UNSUPPORTED_COMMAND"             #store an unsupported command specification
     UNSUPPORTED_COMMAND_DATA = "UNSUPPORTED_COMMAND_DATA"   #store any unsupported command specification data
 
-    def __init__(self, receiver = None, configManager = None, rawParmData = '', parsedParmData = {}):
-        super().__init__(receiver, 'CommandPrice', rawParmData, parsedParmData)
+    def __init__(self, receiver = None, configManager = None):
+        super().__init__(receiver, 'CommandPrice')
         self.configManager = configManager
 
 
