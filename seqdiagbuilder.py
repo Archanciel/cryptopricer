@@ -17,6 +17,7 @@ class SeqDiagBuilder:
     '''
 
     sequDiagInformationList = []
+    isBuildMode = False
 
     @staticmethod
     def buildSeqDiag(maxDepth, startElemName, startMethName = None, outputFile ="c:\\temp\\stack.txt", maxSigArgNum = None, maxSigArgCharLen = None):
@@ -40,6 +41,9 @@ class SeqDiagBuilder:
         :param maxSigArgCharLen:    maximum length a method signature can occupy
         :return:
         '''
+        if not SeqDiagBuilder.isBuildMode:
+            return
+
         frameListLine = repr(traceback.extract_stack(limit = maxDepth + 1))
         frameList = re.findall(FRAME_PATTERN, frameListLine)
 

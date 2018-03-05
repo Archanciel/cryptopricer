@@ -40,6 +40,8 @@ class TestSeqDiagBuilder(unittest.TestCase):
         from guioutputformater import GuiOutputFormater
         from controller import Controller
 
+        SeqDiagBuilder.isBuildMode = True #activate sequence diagram building
+
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptopricer.ini'
         else:
