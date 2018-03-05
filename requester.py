@@ -174,6 +174,7 @@ class Requester:
         Parses the paased input string and return a Command concrete instance
         filled with the command specific data. May return a CommandError.
         :param inputStr: input string to parse
+        :seqdiag_return AbstractCommand
         :return: Command concrete instance
         '''
 
@@ -276,6 +277,7 @@ class Requester:
         and FIAT, this method differentiate them build an optional command price parm data dictionary
         with the right key. This dictionary will be added to the CommandPrice parmData dictionary.
 
+        :seqdiag_return optionalParsedParmDataDic
         :return optionalParsedParmDataDic or None in case of syntax error.
         '''
 
@@ -336,8 +338,8 @@ class Requester:
                             return None
 
 
-        from callstackrecorder import CallStackRecorder
-        CallStackRecorder.storeCallStack()
+        from seqdiagbuilder import SeqDiagBuilder
+        SeqDiagBuilder.buildSeqDiag(4, "GUI")
 
         return optionalParsedParmDataDic
 
@@ -385,6 +387,7 @@ class Requester:
         This method try parsing a full or a partial request.
 
         :param inputStr:
+        :seqdiag_return CommandPrice or CommandError
         :return: self.commandPrice or self.commandError or None, which will cause an error to be raised
         '''
         groupList = self._tryMatchFullPriceCommand(inputStr)

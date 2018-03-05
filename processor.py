@@ -67,6 +67,7 @@ class Processor:
         :param priceValueSaveFlag: used to refine warning if value command not applicable
         :param requestInputString): used for better error msg !
 
+        :seqdiag_return ResultData
         :return: a ResultData filled with result values
         '''
         if exchange == None:

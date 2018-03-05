@@ -45,6 +45,8 @@ class PriceRequester:
         When you go on the Cryptocompare site and you search for 
         historical prices, the close price for a given date is
         the same whatever the location of the user is !
+
+        :seqdiag_return ResultData
         '''
         resultData = ResultData()
 
@@ -91,6 +93,16 @@ class PriceRequester:
 
 
     def _getHistoDayPriceAtUTCTimeStamp(self, crypto, fiat, timeStampUTC, exchange, resultData):
+        '''
+
+        :param crypto:
+        :param fiat:
+        :param timeStampUTC:
+        :param exchange:
+        :param resultData:
+        :seqdiag_return ResultData
+        :return:
+        '''
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, fiat, timeStampUTCStr, exchange)
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
@@ -119,8 +131,8 @@ class PriceRequester:
             else:
                 resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
 
-        from callstackrecorder import CallStackRecorder
-        CallStackRecorder.storeCallStack()
+        from seqdiagbuilder import SeqDiagBuilder
+        SeqDiagBuilder.buildSeqDiag(4, "GUI")
 
         return resultData
 

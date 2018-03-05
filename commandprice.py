@@ -79,6 +79,11 @@ class CommandPrice(AbstractCommand):
 
 
     def execute(self):
+        '''
+
+        :seqdiag_return ResultData or False
+        :return:
+        '''
         resultPriceOrBoolean = self._validateMandatoryData()
 
         if resultPriceOrBoolean != True:
