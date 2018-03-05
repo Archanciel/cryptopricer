@@ -1,4 +1,5 @@
 import traceback, re, ast, importlib, inspect
+from inspect import signature
 
 SEQDIAG_RETURN_TAG_PATTERN = r":seqdiag_return (.*)"
 
@@ -57,25 +58,54 @@ class SeqDiagBuilder:
                     with open(pythonClassFilePath + pythonModuleName + '.py', "r") as sourceFile:
                         source = sourceFile.read()
                         parsedSource = ast.parse(source)
-                        classes = [node.name for node in ast.walk(parsedSource) if isinstance(node, ast.ClassDef)]
-                        pythonClassName = classes[0] # assumed only one class per module !
-                        instance = SeqDiagBuilder.instanciateClass(pythonClassName, pythonModuleName)
+                        moduleClassNameList = [node.name for node in ast.walk(parsedSource) if isinstance(node, ast.ClassDef)]
+                        pythonClassNameList = SeqDiagBuilder.getClassNameList(pythonModuleName, moduleClassNameList, methodName)
+                        pythonClassName = pythonClassNameList[0]
+                        methodReturnDoc, methodSignature = SeqDiagBuilder.getMethodSignatureAndReturnDoc(pythonClassName, pythonModuleName, methodName)
+                        if len(pythonClassNameList) > 1:
+                            SeqDiagBuilder.raiseWarning("More than one class {} found in module {} do support method {}{}. Class {} arbitrarily chosen for building the sequence diagram".format(str(pythonClassNameList), pythonModuleName, methodName, methodSignature, pythonClassName))
 
-                        if instance:
-                            methodReturnDoc = SeqDiagBuilder.getMethodReturnDoc(instance, methodName)
-                        else:
-                            methodReturnDoc = ''
-
-                        SeqDiagBuilder.sequDiagInformationList.append([pythonModuleName, pythonClassName, methodName, methodReturnDoc])
+                        SeqDiagBuilder.sequDiagInformationList.append([pythonModuleName, pythonClassName, methodName, methodSignature, methodReturnDoc])
 
 
-    def printSeqDiagCommands():
+    @staticmethod
+    def raiseWarning(warningStr):
+        print('************* WARNING - ' + warningStr + ' *************')
+
+
+    @staticmethod
+    def getClassNameList(moduleName, moduleClassNameList, methodName):
+        '''
+        Returns a list of class names which are located in moduleName, belong to the passed
+        moduleClassNameList and support the method methodName
+
+        :param moduleName:
+        :param moduleClassNameList:
+        :param methodName:
+        :return:
+        '''
+        classNameList = []
+
+        for className in moduleClassNameList:
+            instance = SeqDiagBuilder.instanciateClass(className, moduleName)
+            methodTupplesList = inspect.getmembers(instance, predicate=inspect.ismethod)
+
+            for methodTupple in methodTupplesList:
+                if methodName == methodTupple[0]:
+                    # methodName is a member of className
+                    classNameList.append(className)
+
+        return classNameList
+
+
+    @staticmethod
+    def printSeqDiagInstructions():
         for entry in SeqDiagBuilder.sequDiagInformationList:
-            lineStr = "{} {}.{} <-- {}".format(entry[0], entry[1], entry[2], entry[3])
+            lineStr = "{} {}.{}{} <-- {}".format(entry[0], entry[1], entry[2], entry[3], entry[4])
             print(lineStr)
 
     @staticmethod
-    def getMethodReturnDoc(instance, methodName):
+    def getMethodSignatureAndReturnDoc(className, moduleName, methodName):
         '''
         This method returns the string associated to the :seqdiag_return tag defined in
         the method documentation
@@ -85,18 +115,29 @@ class SeqDiagBuilder:
                            extracted
         :return:
         '''
+        instance = SeqDiagBuilder.instanciateClass(className, moduleName)
+
+        if not instance:
+            return ''
+
+        # get method return type from method doc
+
         methodTupplesList = inspect.getmembers(instance, predicate=inspect.ismethod)
         relevantMethodTupple = [x for x in methodTupplesList if x[0] == methodName][0]
         methodObj = relevantMethodTupple[1]
         methodDoc = methodObj.__doc__
-        methodReturnDoc = None
+        methodReturnDoc = ''
 
         if methodDoc:
             match = re.search(SEQDIAG_RETURN_TAG_PATTERN, methodDoc)
             if match:
                 methodReturnDoc = match.group(1)
 
-        return methodReturnDoc
+        # get method signature
+
+        signatureStr = str(signature(methodObj))
+
+        return methodReturnDoc, signatureStr
 
     @staticmethod
     def instanciateClass(className, moduleName):

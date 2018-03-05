@@ -12,9 +12,83 @@ from seqdiagbuilder import SeqDiagBuilder
 from controller import Controller
 from pricerequester import PriceRequester
 
+
+class Foo:
+    def f(self):
+        b = Bar()
+        e = Egg()
+
+        b.g()
+        e.h()
+
+
+class Bar:
+    def g(self):
+        lo = LeafOne()
+        lo.i()
+
+
+class Egg:
+    def h(self):
+        lt = LeafTwo()
+        lt.j()
+
+
+class LeafOne:
+    def i(self):
+        SeqDiagBuilder.buildSeqDiag(3, 'USER')
+
+
+class LeafTwo:
+    def j(self):
+        SeqDiagBuilder.buildSeqDiag(3, 'USER')
+
+
+class Client:
+    def do(self):
+        c1 = ChildOne()
+        c1.getCoordinate()
+
+
+class Parent:
+    def getCoordinate(self, location=''):
+        '''
+
+        :param location:
+        :seqdiag_return Coord
+        :return:
+        '''
+        pass
+
+
+class ChildOne(Parent):
+    def getCoordinate(self, location=''):
+        iso = IsolatedClass()
+        iso.analyse()
+
+    def m(self):
+        pass
+
+
+class ChildTwo(Parent):
+    def l(self):
+        pass
+
+
+class IsolatedClass:
+    def analyse(self):
+        '''
+
+        :seqdiag_return Analysis
+        :return:
+        '''
+        SeqDiagBuilder.buildSeqDiag(3, "START")
+
+
 class TestSeqDiagBuilder(unittest.TestCase):
     def setUp(self):
-        pass
+        SeqDiagBuilder.buildSeqDiag(3, 'USER')
+
 
     def testInstanciateClassInitTwoArgs(self):
         className = 'Controller'
@@ -24,6 +98,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
 
         self.assertIsInstance(instance, Controller)
 
+
     def testInstanciateClassInitNoArgs(self):
         className = 'PriceRequester'
         moduleName = 'pricerequester'
@@ -31,6 +106,17 @@ class TestSeqDiagBuilder(unittest.TestCase):
         instance = SeqDiagBuilder.instanciateClass(className, moduleName)
 
         self.assertIsInstance(instance, PriceRequester)
+
+
+    def testGetMethodSignatureAndReturnDoc(self):
+        className = 'Controller'
+        moduleName = 'controller'
+        methodName = 'getPrintableResultForInput'
+
+        returnDoc, methodSignature = SeqDiagBuilder.getMethodSignatureAndReturnDoc(className, moduleName, methodName)
+
+        self.assertEqual(returnDoc, 'printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions')
+        self.assertEqual(methodSignature, '(inputStr)')
 
 
     def testBuildSeqDiagOnFullRequestHistoDayPrice(self):
@@ -77,7 +163,56 @@ class TestSeqDiagBuilder(unittest.TestCase):
                                                         UtilityForTest.removePriceFromResult(printResult))
         self.assertEqual('mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
-        SeqDiagBuilder.printSeqDiagCommands()
+        SeqDiagBuilder.printSeqDiagInstructions()
+        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+
+
+    def testBuildSeqDiagOnSimpleClasses(self):
+        foo = Foo()
+
+        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
+        foo.f()
+        SeqDiagBuilder.printSeqDiagInstructions()
+        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+
+
+    def testBuildSeqDiagOnSimpleClassesWithMorethanOneClasssupportingMethod(self):
+        cl = Client()
+
+        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
+        cl.do()
+        SeqDiagBuilder.printSeqDiagInstructions()
+        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+
+
+    def testGetClassNameListMethodInClassHierarchyInMultipleClasses(self):
+        moduleName = 'testseqdiagbuilder'
+        moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
+        methodName = 'k'
+        classNameList = SeqDiagBuilder.getClassNameList(moduleName, moduleClassNameList, methodName)
+        self.assertEqual(len(classNameList), 3)
+        self.assertIn('Parent', classNameList)
+        self.assertIn('ChildOne', classNameList)
+        self.assertIn('ChildTwo', classNameList)
+
+
+    def testGetClassNameListMethodInClassHierarchyInOneClass(self):
+        moduleName = 'testseqdiagbuilder'
+        moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
+        methodName = 'm'
+        classNameList = SeqDiagBuilder.getClassNameList(moduleName, moduleClassNameList, methodName)
+        self.assertEqual(len(classNameList), 1)
+        self.assertIn('ChildOne', classNameList)
+
+
+    def testGetClassNameListMethodInOneClass(self):
+        moduleName = 'testseqdiagbuilder'
+        moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo',
+                               'TestSeqDiagBuilder', 'IsolatedClass']
+        methodName = 'n'
+        classNameList = SeqDiagBuilder.getClassNameList(moduleName, moduleClassNameList, methodName)
+        self.assertEqual(len(classNameList), 1)
+        self.assertIn('IsolatedClass', classNameList)
 
 
 if __name__ == '__main__':
