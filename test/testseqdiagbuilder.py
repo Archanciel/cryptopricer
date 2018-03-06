@@ -14,22 +14,33 @@ from pricerequester import PriceRequester
 
 
 class Foo:
-    def f(self):
+    def f(self, fParm):
+        '''
+
+        :param fParm:
+        :seqdiag_return fReturn
+        :return:
+        '''
         b = Bar()
         e = Egg()
 
         b.g()
-        e.h()
+        e.h(1, 2)
 
 
 class Bar:
     def g(self):
+        '''
+
+        :seqdiag_return gReturn
+        :return:
+        '''
         lo = LeafOne()
         lo.i()
 
 
 class Egg:
-    def h(self):
+    def h(self, hParm1, hParm2):
         lt = LeafTwo()
         lt.j()
 
@@ -171,8 +182,17 @@ class TestSeqDiagBuilder(unittest.TestCase):
         foo = Foo()
 
         SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
-        foo.f()
-        SeqDiagBuilder.printSeqDiagInstructions()
+        foo.f(1)
+        # SeqDiagBuilder.printSeqDiagInstructions()
+        # print('')
+        # print(SeqDiagBuilder.getSeqDiagInstructionsStr())
+        self.assertEqual('''testseqdiagbuilder Foo.f(fParm) <-- fReturn
+testseqdiagbuilder Bar.g() <-- gReturn
+testseqdiagbuilder LeafOne.i() <-- 
+testseqdiagbuilder Foo.f(fParm) <-- fReturn
+testseqdiagbuilder Egg.h(hParm1, hParm2) <-- 
+testseqdiagbuilder LeafTwo.j() <-- 
+''', SeqDiagBuilder.getSeqDiagInstructionsStr())
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
 
@@ -188,7 +208,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
     def testGetClassNameListMethodInClassHierarchyInMultipleClasses(self):
         moduleName = 'testseqdiagbuilder'
         moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
-        methodName = 'k'
+        methodName = 'getCoordinate'
         classNameList = SeqDiagBuilder.getClassNameList(moduleName, moduleClassNameList, methodName)
         self.assertEqual(len(classNameList), 3)
         self.assertIn('Parent', classNameList)
@@ -209,7 +229,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
         moduleName = 'testseqdiagbuilder'
         moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo',
                                'TestSeqDiagBuilder', 'IsolatedClass']
-        methodName = 'n'
+        methodName = 'analyse'
         classNameList = SeqDiagBuilder.getClassNameList(moduleName, moduleClassNameList, methodName)
         self.assertEqual(len(classNameList), 1)
         self.assertIn('IsolatedClass', classNameList)

@@ -63,13 +63,13 @@ class SeqDiagBuilder:
                         pythonClassName = pythonClassNameList[0]
                         methodReturnDoc, methodSignature = SeqDiagBuilder.getMethodSignatureAndReturnDoc(pythonClassName, pythonModuleName, methodName)
                         if len(pythonClassNameList) > 1:
-                            SeqDiagBuilder.raiseWarning("More than one class {} found in module {} do support method {}{}. Class {} arbitrarily chosen for building the sequence diagram".format(str(pythonClassNameList), pythonModuleName, methodName, methodSignature, pythonClassName))
+                            SeqDiagBuilder.issueWarning("More than one class {} found in module {} do support method {}{}. Class {} arbitrarily chosen for building the sequence diagram".format(str(pythonClassNameList), pythonModuleName, methodName, methodSignature, pythonClassName))
 
                         SeqDiagBuilder.sequDiagInformationList.append([pythonModuleName, pythonClassName, methodName, methodSignature, methodReturnDoc])
 
 
     @staticmethod
-    def raiseWarning(warningStr):
+    def issueWarning(warningStr):
         print('************* WARNING - ' + warningStr + ' *************')
 
 
@@ -103,6 +103,18 @@ class SeqDiagBuilder:
         for entry in SeqDiagBuilder.sequDiagInformationList:
             lineStr = "{} {}.{}{} <-- {}".format(entry[0], entry[1], entry[2], entry[3], entry[4])
             print(lineStr)
+
+
+    @staticmethod
+    def getSeqDiagInstructionsStr():
+        seqDiagInstructionsStr = ''
+
+        for entry in SeqDiagBuilder.sequDiagInformationList:
+            lineStr = "{} {}.{}{} <-- {}\n".format(entry[0], entry[1], entry[2], entry[3], entry[4])
+            seqDiagInstructionsStr += lineStr
+
+        return seqDiagInstructionsStr
+
 
     @staticmethod
     def getMethodSignatureAndReturnDoc(className, moduleName, methodName):
