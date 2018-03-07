@@ -61,12 +61,71 @@ class Client:
         c1.getCoordinate()
 
 
+    def make(self):
+        c1 = ChildOne()
+        c1.compute()
+
+
+    def perform(self):
+        c1 = ChildOne()
+        c1.computeTwo()
+
+
+    def doCall(self):
+        c1 = ChildOne()
+        c1.computeThree()
+
+
+    def doProcess(self):
+        c1 = ChildOfChildTwo()
+        c1.computeFour()
+
+
 class Parent:
     def getCoordinate(self, location=''):
         '''
 
         :param location:
         :seqdiag_return Coord
+        :return:
+        '''
+        pass
+
+
+    def compute(self, size = 0):
+        '''
+        This a dummy merhod.
+        :seqdiag_return Analysis
+        :return:
+        '''
+        pass
+
+
+    def computeTwo(self, size = 0):
+        '''
+        This a dummy merhod.
+        :seqdiag_select_method
+        :seqdiag_return Analysis
+        :return:
+        '''
+        pass
+
+
+    def computeThree(self, size = 0):
+        '''
+        This a dummy merhod.
+        :seqdiag_select_method
+        :seqdiag_return Analysis
+        :return:
+        '''
+        iso = IsolatedClass()
+        iso.analyse()
+
+
+    def computeFour(self, size = 0):
+        '''
+        This a dummy merhod.
+        :seqdiag_return Analysis
         :return:
         '''
         pass
@@ -81,9 +140,59 @@ class ChildOne(Parent):
         pass
 
 
+    def compute(self, size = 0):
+        '''
+        This a dummy merhod.
+        :seqdiag_select_method
+        :seqdiag_return Analysis
+        :return:
+        '''
+        super().compute(size)
+        iso = IsolatedClass()
+        iso.analyse()
+
+
+    def computeTwo(self, size = 0):
+        '''
+        This a dummy merhod.
+        :seqdiag_select_method
+        :seqdiag_return Analysis
+        :return:
+        '''
+        super().compute(size)
+        iso = IsolatedClass()
+        iso.analyse()
+
+
 class ChildTwo(Parent):
     def l(self):
         pass
+
+
+    def computeFour(self, size = 0):
+        '''
+        This a dummy merhod.
+        :seqdiag_select_method
+        :seqdiag_return Analysis
+        :return:
+        '''
+        iso = IsolatedClass()
+        iso.analyse()
+
+
+class ChildOfChildTwo(Parent):
+    def l(self):
+        pass
+
+
+    def computeFour(self, size = 0):
+        '''
+        This a dummy merhod.
+        :seqdiag_return Analysis
+        :return:
+        '''
+        iso = IsolatedClass()
+        iso.analyse()
 
 
 class IsolatedClass:
@@ -98,7 +207,7 @@ class IsolatedClass:
 
 class TestSeqDiagBuilder(unittest.TestCase):
     def setUp(self):
-        SeqDiagBuilder.buildSeqDiag(3, 'USER')
+        SeqDiagBuilder.reset()
 
 
     def testInstanciateClassInitTwoArgs(self):
@@ -124,8 +233,10 @@ class TestSeqDiagBuilder(unittest.TestCase):
         moduleName = 'controller'
         methodName = 'getPrintableResultForInput'
 
-        returnDoc, methodSignature = SeqDiagBuilder.getMethodSignatureAndReturnDoc(className, moduleName, methodName)
+        instanceList = [SeqDiagBuilder.instanciateClass(className, moduleName)]
+        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder.getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
 
+        self.assertEqual(len(filteredInstanceList), 1)
         self.assertEqual(returnDoc, 'printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions')
         self.assertEqual(methodSignature, '(inputStr)')
 
@@ -175,6 +286,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
         self.assertEqual('mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         SeqDiagBuilder.printSeqDiagInstructions()
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
 
@@ -193,15 +305,83 @@ testseqdiagbuilder Foo.f(fParm) <-- fReturn
 testseqdiagbuilder Egg.h(hParm1, hParm2) <-- 
 testseqdiagbuilder LeafTwo.j() <-- 
 ''', SeqDiagBuilder.getSeqDiagInstructionsStr())
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
 
-    def testBuildSeqDiagOnSimpleClassesWithMorethanOneClasssupportingMethod(self):
+    def testBuildSeqDiagOnSimpleClassesWithMorethanOneClassSupportingMethodOneUsingMethodSelectTag(self):
+        cl = Client()
+
+        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
+        cl.make()
+        SeqDiagBuilder.printSeqDiagInstructions()
+        self.assertEqual('''testseqdiagbuilder Client.make() <-- 
+testseqdiagbuilder ChildOne.compute(size=0) <-- Analysis
+testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
+''', SeqDiagBuilder.getSeqDiagInstructionsStr())
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+
+
+    def testBuildSeqDiagOnSimpleClassesWithMorethanOneClassSupportingMethodBothUsingMethodSelectTag(self):
+        cl = Client()
+
+        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
+        cl.perform()
+        SeqDiagBuilder.printSeqDiagInstructions()
+        # here, Parent and ChildOne support computeTwo with both methods having
+        # the :seqdiag_select_method tag. The first encountred class/method with
+        # the tag is selected !
+        self.assertEqual('''testseqdiagbuilder Client.perform() <-- 
+testseqdiagbuilder Parent.computeTwo(size=0) <-- Analysis
+testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
+''', SeqDiagBuilder.getSeqDiagInstructionsStr())
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+
+
+    def testBuildSeqDiagOnSimpleClassesWithOnlyParentClassSupportingMethod(self):
+        cl = Client()
+
+        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
+        cl.doCall()
+        SeqDiagBuilder.printSeqDiagInstructions()
+        # here, Parent only support computeThree without any :seqdiag_select_method tag.
+        # The Parent method is selected
+        self.assertEqual('''testseqdiagbuilder Client.doCall() <-- 
+testseqdiagbuilder Parent.computeThree(size=0) <-- Analysis
+testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
+''', SeqDiagBuilder.getSeqDiagInstructionsStr())
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+
+    def testBuildSeqDiagOnThreeLevelClasseHierarchyWithOnlyAllLevelsSupportingMethod(self):
+        cl = Client()
+
+        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
+        cl.doProcess()
+        SeqDiagBuilder.printSeqDiagInstructions()
+        # here, all three level, Parenr, ChildTwo and ChildOfChildTwo support
+        # computeFour, but only ChildTwo.computeFour is tagged with
+        # :seqdiag_select_method tag. So, the ChildTwo method is selected
+        self.assertEqual('''testseqdiagbuilder Client.doProcess() <-- 
+testseqdiagbuilder ChildTwo.computeFour(size=0) <-- Analysis
+testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
+''', SeqDiagBuilder.getSeqDiagInstructionsStr())
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+
+    def testBuildSeqDiagOnSimpleClassesWithMorethanOneClassSupportingMethod(self):
         cl = Client()
 
         SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
         cl.do()
         SeqDiagBuilder.printSeqDiagInstructions()
+        self.assertEqual('''testseqdiagbuilder Client.do() <-- 
+testseqdiagbuilder Parent.getCoordinate(location='') <-- Coord
+testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
+''', SeqDiagBuilder.getSeqDiagInstructionsStr())
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
 
@@ -209,20 +389,20 @@ testseqdiagbuilder LeafTwo.j() <--
         moduleName = 'testseqdiagbuilder'
         moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
         methodName = 'getCoordinate'
-        classNameList = SeqDiagBuilder.getClassNameList(moduleName, moduleClassNameList, methodName)
-        self.assertEqual(len(classNameList), 3)
-        self.assertIn('Parent', classNameList)
-        self.assertIn('ChildOne', classNameList)
-        self.assertIn('ChildTwo', classNameList)
+        instanceList = SeqDiagBuilder.getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
+        self.assertEqual(len(instanceList), 3)
+        self.assertEqual('Parent', instanceList[0].__class__.__name__)
+        self.assertEqual('ChildOne', instanceList[1].__class__.__name__)
+        self.assertEqual('ChildTwo', instanceList[2].__class__.__name__)
 
 
     def testGetClassNameListMethodInClassHierarchyInOneClass(self):
         moduleName = 'testseqdiagbuilder'
         moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
         methodName = 'm'
-        classNameList = SeqDiagBuilder.getClassNameList(moduleName, moduleClassNameList, methodName)
-        self.assertEqual(len(classNameList), 1)
-        self.assertIn('ChildOne', classNameList)
+        instanceList = SeqDiagBuilder.getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
+        self.assertEqual(len(instanceList), 1)
+        self.assertEqual('ChildOne', instanceList[0].__class__.__name__)
 
 
     def testGetClassNameListMethodInOneClass(self):
@@ -230,9 +410,9 @@ testseqdiagbuilder LeafTwo.j() <--
         moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo',
                                'TestSeqDiagBuilder', 'IsolatedClass']
         methodName = 'analyse'
-        classNameList = SeqDiagBuilder.getClassNameList(moduleName, moduleClassNameList, methodName)
-        self.assertEqual(len(classNameList), 1)
-        self.assertIn('IsolatedClass', classNameList)
+        instanceList = SeqDiagBuilder.getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
+        self.assertEqual(len(instanceList), 1)
+        self.assertEqual('IsolatedClass', instanceList[0].__class__.__name__)
 
 
 if __name__ == '__main__':

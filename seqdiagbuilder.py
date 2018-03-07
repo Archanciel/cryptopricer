@@ -1,10 +1,10 @@
 import traceback, re, ast, importlib, inspect
 from inspect import signature
 
+
 SEQDIAG_RETURN_TAG_PATTERN = r":seqdiag_return (.*)"
-
+SEQDIAG_SELECT_METHOD_TAG_PATTERN = r":seqdiag_select_method(.*)"
 PYTHON_FILE_AND_FUNC_PATTERN = r"([\w:\\]+\\)(\w+)\.py, line \d* in (.*)"
-
 FRAME_PATTERN = r"(?:<FrameSummary file ([\w:\\,._\s]+)(?:>, |>\]))"
 
 
@@ -18,6 +18,7 @@ class SeqDiagBuilder:
     '''
 
     sequDiagInformationList = []
+    sequDiagWarningList = []
     isBuildMode = False
 
     @staticmethod
@@ -53,38 +54,53 @@ class SeqDiagBuilder:
                 match = re.match(PYTHON_FILE_AND_FUNC_PATTERN, frame)
                 if match:
                     pythonClassFilePath = match.group(1)
-                    pythonModuleName =  match.group(2)
+                    moduleName =  match.group(2)
                     methodName = match.group(3)
-                    with open(pythonClassFilePath + pythonModuleName + '.py', "r") as sourceFile:
+                    with open(pythonClassFilePath + moduleName + '.py', "r") as sourceFile:
                         source = sourceFile.read()
                         parsedSource = ast.parse(source)
                         moduleClassNameList = [node.name for node in ast.walk(parsedSource) if isinstance(node, ast.ClassDef)]
-                        pythonClassNameList = SeqDiagBuilder.getClassNameList(pythonModuleName, moduleClassNameList, methodName)
-                        pythonClassName = pythonClassNameList[0]
-                        methodReturnDoc, methodSignature = SeqDiagBuilder.getMethodSignatureAndReturnDoc(pythonClassName, pythonModuleName, methodName)
-                        if len(pythonClassNameList) > 1:
-                            SeqDiagBuilder.issueWarning("More than one class {} found in module {} do support method {}{}. Class {} arbitrarily chosen for building the sequence diagram".format(str(pythonClassNameList), pythonModuleName, methodName, methodSignature, pythonClassName))
+                        instanceList = SeqDiagBuilder.getInstancesForClassSupportingMethod(methodName,
+                                                                                           moduleName,
+                                                                                           moduleClassNameList)
+                        filteredInstanceList, methodReturnDoc, methodSignature = SeqDiagBuilder.getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
+                        instance = filteredInstanceList[0]
+                        if len(filteredInstanceList) > 1:
+                            SeqDiagBuilder.issueWarning("More than one class {} found in module {} do support method {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag :seqdiag_select_method somewhere in the method documentation.".format(str(instanceList), moduleName, methodName, methodSignature, instance))
 
-                        SeqDiagBuilder.sequDiagInformationList.append([pythonModuleName, pythonClassName, methodName, methodSignature, methodReturnDoc])
+                        SeqDiagBuilder.sequDiagInformationList.append([moduleName, instance.__class__.__name__, methodName, methodSignature, methodReturnDoc])
 
 
     @staticmethod
     def issueWarning(warningStr):
+        SeqDiagBuilder.sequDiagWarningList.append(warningStr)
         print('************* WARNING - ' + warningStr + ' *************')
 
 
     @staticmethod
-    def getClassNameList(moduleName, moduleClassNameList, methodName):
+    def getWarningList():
+        return SeqDiagBuilder.sequDiagWarningList
+
+
+    @staticmethod
+    def getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList):
         '''
-        Returns a list of class names which are located in moduleName, belong to the passed
-        moduleClassNameList and support the method methodName
+        Returns a list of instances of classes located in moduleName which support the method methodName.
+        Normally, the returned list should contain only one instance. If more than one instance are
+        returned, which is the case if the module contains a class hierarchy with method methodName
+        defined in the base class (and so inherited or overridden by the subclasses) or if the module
+        contains two unrelated classes with the same method name, the first encountered class will be
+        selected by default, i.e. the first defined class in the module - the root class in case of
+        a hierarchy.
+
+        To override this choice, use the tag :seq_diag_select_method in the method documentation.
 
         :param moduleName:
         :param moduleClassNameList:
         :param methodName:
         :return:
         '''
-        classNameList = []
+        instanceList = []
 
         for className in moduleClassNameList:
             instance = SeqDiagBuilder.instanciateClass(className, moduleName)
@@ -93,9 +109,9 @@ class SeqDiagBuilder:
             for methodTupple in methodTupplesList:
                 if methodName == methodTupple[0]:
                     # methodName is a member of className
-                    classNameList.append(className)
+                    instanceList.append(instance)
 
-        return classNameList
+        return instanceList
 
 
     @staticmethod
@@ -117,39 +133,50 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def getMethodSignatureAndReturnDoc(className, moduleName, methodName):
+    def getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName):
         '''
-        This method returns the string associated to the :seqdiag_return tag defined in
-        the method documentation
+        This method returns the passed instance List filtered so that it only contains instances
+        supporting the passed methodName. The string associated to the :seqdiag_return tag defined in
+        the (selected) method documentation aswell as the (selected) method signature are returned.
 
-        :param instance:   instance of class containing the passed methodName
-        :param methodName: name of the method from which the :seqdiag_return tag value is
-                           extracted
-        :return:
+        :param instanceList:    list of instances of the classes defined in the module moduleName
+        :param moduleName:      name of module containing the class definitions of the passed instances
+        :param methodName:      name of the method from the doc of which the :seqdiag_return tag value
+                                is extracted and the :seqdiag_select_method tag is searched in
+        :return: filteredInstanceList, methodReturnDoc, signatureStr
         '''
-        instance = SeqDiagBuilder.instanciateClass(className, moduleName)
 
-        if not instance:
+        if not instanceList:
             return ''
 
-        # get method return type from method doc
-
-        methodTupplesList = inspect.getmembers(instance, predicate=inspect.ismethod)
-        relevantMethodTupple = [x for x in methodTupplesList if x[0] == methodName][0]
-        methodObj = relevantMethodTupple[1]
-        methodDoc = methodObj.__doc__
+        filteredInstanceList = []
         methodReturnDoc = ''
 
-        if methodDoc:
-            match = re.search(SEQDIAG_RETURN_TAG_PATTERN, methodDoc)
-            if match:
-                methodReturnDoc = match.group(1)
+        for instance in instanceList:
+            filteredInstanceList.append(instance)
+            methodTupplesList = inspect.getmembers(instance, predicate=inspect.ismethod)
+            relevantMethodTupple = [x for x in methodTupplesList if x[0] == methodName][0]
+            methodObj = relevantMethodTupple[1]
+            methodDoc = methodObj.__doc__
+
+            if methodDoc:
+                # get method return type from method doc
+                match = re.search(SEQDIAG_RETURN_TAG_PATTERN, methodDoc)
+                if match:
+                    methodReturnDoc = match.group(1)
+
+                # get method tagged by :seqdiag_select_method
+                match = re.search(SEQDIAG_SELECT_METHOD_TAG_PATTERN, methodDoc)
+                if match:
+                    filteredInstanceList = [instance]
+                    break
 
         # get method signature
 
         signatureStr = str(signature(methodObj))
 
-        return methodReturnDoc, signatureStr
+        return filteredInstanceList, methodReturnDoc, signatureStr
+
 
     @staticmethod
     def instanciateClass(className, moduleName):
@@ -183,6 +210,15 @@ class SeqDiagBuilder:
 
         return instance
 
+
+    @staticmethod
+    def reset():
+        '''
+        Reinitialise the class level seq diag information list and seq diag warning list
+        :return:
+        '''
+        SeqDiagBuilder.sequDiagInformationList = []
+        SeqDiagBuilder.sequDiagWarningList = []
 
 if __name__ == '__main__':
     pass
