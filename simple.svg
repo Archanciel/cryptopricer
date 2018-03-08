@@ -7,6 +7,9 @@
     </filter>
   </defs>
   <title>blockdiag</title>
+  <text x="0" y="16" fill="red" font-size="19" font-weight="bold">WARNING - More than one class ['Parent', 'ChildOne', 'ChildTwo', 'ChildOfChildTwo'] found in module testseqdiagbuilder do support method getCoordinate(location=''). Class ChildOfChildTwo chosen by default for building the sequence diagram.
+	<tspan x="110" y="32">To override this selection, put tag :seqdiag_select_method somewhere in the method documentation.</tspan>
+  </text>
   <desc>diagram {
   GUI -&gt; Controller [label = "getPrintableResultForInput(inputString)"];
 		Controller -&gt; Requester [label = "getCommand(inputString)"];	
