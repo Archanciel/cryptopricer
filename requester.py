@@ -339,7 +339,7 @@ class Requester:
 
 
         from seqdiagbuilder import SeqDiagBuilder
-        SeqDiagBuilder.buildSeqDiag(4, "GUI")
+        SeqDiagBuilder.recordFlow(4)
 
         return optionalParsedParmDataDic
 

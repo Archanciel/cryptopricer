@@ -47,12 +47,12 @@ class Egg:
 
 class LeafOne:
     def i(self):
-        SeqDiagBuilder.buildSeqDiag(3, 'USER')
+        SeqDiagBuilder.recordFlow(3)
 
 
 class LeafTwo:
     def j(self):
-        SeqDiagBuilder.buildSeqDiag(3, 'USER')
+        SeqDiagBuilder.recordFlow(3)
 
 
 class Client:
@@ -202,7 +202,7 @@ class IsolatedClass:
         :seqdiag_return Analysis
         :return:
         '''
-        SeqDiagBuilder.buildSeqDiag(3, "START")
+        SeqDiagBuilder.recordFlow(3)
 
 
 class TestSeqDiagBuilder(unittest.TestCase):
@@ -290,7 +290,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
 
-    def testBuildSeqDiagOnSimpleClasses(self):
+    def testGetSeqDiagInstructionsStrOnSimpleClasses(self):
         foo = Foo()
 
         SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
@@ -308,8 +308,25 @@ testseqdiagbuilder LeafTwo.j() <--
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
+    def testCreateSeqDiaqCommandsOnSimpleClasses(self):
+        foo = Foo()
 
-    def testBuildSeqDiagOnSimpleClassesWithMorethanOneClassSupportingMethodOneUsingMethodSelectTag(self):
+        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
+        foo.f(1)
+        # SeqDiagBuilder.printSeqDiagInstructions()
+        # print('')
+        # print(SeqDiagBuilder.getSeqDiagInstructionsStr())
+        self.assertEqual('''testseqdiagbuilder Foo.f(fParm) <-- fReturn
+testseqdiagbuilder Bar.g() <-- gReturn
+testseqdiagbuilder LeafOne.i() <-- 
+testseqdiagbuilder Foo.f(fParm) <-- fReturn
+testseqdiagbuilder Egg.h(hParm1, hParm2) <-- 
+testseqdiagbuilder LeafTwo.j() <-- 
+''', SeqDiagBuilder.createSeqDiaqCommands('GUI'))
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+
+    def testGetSeqDiagInstructionsStrOnSimpleClassesWithMorethanOneClassSupportingMethodOneUsingMethodSelectTag(self):
         cl = Client()
 
         SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
@@ -323,7 +340,7 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
 
-    def testBuildSeqDiagOnSimpleClassesWithMorethanOneClassSupportingMethodBothUsingMethodSelectTag(self):
+    def testGetSeqDiagInstructionsStrOnSimpleClassesWithMorethanOneClassSupportingMethodBothUsingMethodSelectTag(self):
         cl = Client()
 
         SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
@@ -340,7 +357,7 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
 
-    def testBuildSeqDiagOnSimpleClassesWithOnlyParentClassSupportingMethod(self):
+    def testGetSeqDiagInstructionsStrOnSimpleClassesWithOnlyParentClassSupportingMethod(self):
         cl = Client()
 
         SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
@@ -355,7 +372,7 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
-    def testBuildSeqDiagOnThreeLevelClasseHierarchyWithOnlyAllLevelsSupportingMethod(self):
+    def testGetSeqDiagInstructionsStrOnThreeLevelClasseHierarchyWithOnlyAllLevelsSupportingMethod(self):
         cl = Client()
 
         SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
@@ -371,7 +388,7 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
-    def testBuildSeqDiagOnSimpleClassesWithMorethanOneClassSupportingMethod(self):
+    def testGetSeqDiagInstructionsStrOnSimpleClassesWithMorethanOneClassSupportingMethod(self):
         cl = Client()
 
         SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building

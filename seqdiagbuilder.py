@@ -7,6 +7,13 @@ SEQDIAG_SELECT_METHOD_TAG_PATTERN = r":seqdiag_select_method(.*)"
 PYTHON_FILE_AND_FUNC_PATTERN = r"([\w:\\]+\\)(\w+)\.py, line \d* in (.*)"
 FRAME_PATTERN = r"(?:<FrameSummary file ([\w:\\,._\s]+)(?:>, |>\]))"
 
+INDEX_MODULE_NAME = 0
+INDEX_CLASS_NAME = 1
+INDEX_METHOD_NAME = 2
+INDEX_METHOD_SIGNATURE = 3
+INDEX_METHOD_RETURN_DOC = 4
+
+INDENT = '  '
 
 class SeqDiagBuilder:
     '''
@@ -21,23 +28,44 @@ class SeqDiagBuilder:
     sequDiagWarningList = []
     isBuildMode = False
 
+
     @staticmethod
-    def buildSeqDiag(maxDepth, startElemName, startMethName = None, outputFile ="c:\\temp\\stack.txt", maxSigArgNum = None, maxSigArgCharLen = None):
+    def createSeqDiaqCommands(startElemName, startMethName = None):
         '''
-        Writes in a file a seqdiag specification file.
         To build the diagram, type seqdiag -Tsvg stack.txt in a command line window.
         This build a svg file which can be displayed in a browsxer.
+
+        :param startElemName:
+        :param startMethName:
+        :return:
+        '''
+        seqDiagCommandsList = []
+        firstFlowEntry = SeqDiagBuilder.sequDiagInformationList[0]
+        # "diagram{\n{}{} -> {} [label = \"{}{}\"];\n"
+        seqDiagStartCommand = "diagram{\n" + "{}{} -> {} [label = \"{}{}\"];\n".format(INDENT,
+                                                                                       startElemName,
+                                                                                       firstFlowEntry[INDEX_CLASS_NAME],
+                                                                                       firstFlowEntry[INDEX_METHOD_NAME],
+                                                                                       firstFlowEntry[INDEX_METHOD_SIGNATURE]) + '}'
+        with open("c:\\temp\\ess.diag", 'w') as f:
+            f.write(seqDiagStartCommand)
+
+        seqDiagCommandsList = [seqDiagStartCommand]
+
+        for entry in SeqDiagBuilder.sequDiagInformationList[1:]:
+            lineStr = "{} {}.{}{} <-- {}".format(entry[INDEX_MODULE_NAME], entry[INDEX_CLASS_NAME], entry[INDEX_METHOD_NAME], entry[INDEX_METHOD_SIGNATURE], entry[INDEX_METHOD_RETURN_DOC])
+            print(lineStr)
+
+    @staticmethod
+    def recordFlow(maxDepth, maxSigArgNum=None, maxSigArgCharLen=None):
+        '''
+        Records in a class list the control flow information which will be used to build
+        the seqdiag creation commands.
 
         :param maxDepth:            max generarted stack depth calculated from the
                                     stack bottom.
                                     Ex: if f(g(h(i(j()))))), maxDepth of 3 draw a
                                     seq diagr starting at h for calls h --> i--> j
-        :param startElemName:       string indicating the element (class, module, actor)
-                                    name which constitutes the left most vertical diagram
-                                    element
-        :param startMethName:       optional string indicating the method name called
-                                    by startElemName
-        :param outputFile:          file receiving the sequence diagram
         :param maxSigArgNum:        maximum arguments number of a called method
                                     signature
         :param maxSigArgCharLen:    maximum length a method signature can occupy
@@ -120,7 +148,7 @@ class SeqDiagBuilder:
     @staticmethod
     def printSeqDiagInstructions():
         for entry in SeqDiagBuilder.sequDiagInformationList:
-            lineStr = "{} {}.{}{} <-- {}".format(entry[0], entry[1], entry[2], entry[3], entry[4])
+            lineStr = "{} {}.{}{} <-- {}".format(entry[INDEX_MODULE_NAME], entry[INDEX_CLASS_NAME], entry[INDEX_METHOD_NAME], entry[INDEX_METHOD_SIGNATURE], entry[INDEX_METHOD_RETURN_DOC])
             print(lineStr)
 
 
