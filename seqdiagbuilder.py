@@ -66,7 +66,10 @@ class SeqDiagBuilder:
                         filteredInstanceList, methodReturnDoc, methodSignature = SeqDiagBuilder.getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
                         instance = filteredInstanceList[0]
                         if len(filteredInstanceList) > 1:
-                            SeqDiagBuilder.issueWarning("More than one class {} found in module {} do support method {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag :seqdiag_select_method somewhere in the method documentation.".format(str(instanceList), moduleName, methodName, methodSignature, instance))
+                            filteredClassNameList = []
+                            for filteredInstance in filteredInstanceList:
+                                filteredClassNameList.append(filteredInstance.__class__.__name__)
+                            SeqDiagBuilder.issueWarning("More than one class {} found in module {} do support method {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag :seqdiag_select_method somewhere in the method documentation.".format(str(filteredClassNameList), moduleName, methodName, methodSignature, instance.__class__.__name__))
 
                         SeqDiagBuilder.sequDiagInformationList.append([moduleName, instance.__class__.__name__, methodName, methodSignature, methodReturnDoc])
 
