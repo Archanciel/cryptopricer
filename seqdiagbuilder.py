@@ -15,6 +15,75 @@ INDEX_METHOD_RETURN_DOC = 4
 
 INDENT = '  '
 
+class ClassMethodReturnStack:
+    '''
+    This stack stores the embeded calls used to build the sequence diagram commands. It is used to
+    build the return commands of the diagram.
+    '''
+    def __init__(self):
+        self.stack = []
+
+
+    def pop(self):
+        if self.is_empty():
+            return None
+        else:
+            return self.stack.pop()
+
+
+    def push(self, flowEntry):
+        '''
+        Push on the stack a 2 elements list, the first element being the couple <class name>.<method name>
+        and the second one being the string denoting the information returned to the caller by the method.
+        :param flowEntry:
+        :return:
+        '''
+        classMethodStr = self._buildClassMethodStr(flowEntry)
+        self.stack.append([classMethodStr, flowEntry[INDEX_METHOD_RETURN_DOC]])
+
+        return self.stack
+
+
+    def _buildClassMethodStr(self, flowEntry):
+        '''
+        Build the class method string which is the first element of the list pushed in
+        the ClassMethodReturnStack.
+        :param flowEntry:
+        :return:
+        '''
+        return "{}.{}".format(flowEntry[INDEX_CLASS_NAME], flowEntry[INDEX_METHOD_NAME])
+
+
+    def peak(self):
+        if self.is_empty():
+            return None
+        else:
+            return self.stack[-1]
+
+
+    def size(self):
+        return len(self.stack)
+
+
+    def is_empty(self):
+        return self.size() == 0
+
+
+    def contains(self, flowEntry):
+        '''
+        Return True if the passed flow entry is in the ClassMethodReturnStack.
+        :param flowEntry:
+        :return:
+        '''
+        classMethodStr = self._buildClassMethodStr(flowEntry)
+
+        for entry in self.stack:
+            if entry[0] == classMethodStr:
+                return True
+
+        return False
+
+
 class SeqDiagBuilder:
     '''
     This class contains a static utility methods used to build a sequence diagram from the
@@ -40,20 +109,26 @@ class SeqDiagBuilder:
         :return:
         '''
         seqDiagCommandsList = []
+        classMethodReturnStack = ClassMethodReturnStack()
+
         firstFlowEntry = SeqDiagBuilder.sequDiagInformationList[0]
-        # "diagram{\n{}{} -> {} [label = \"{}{}\"];\n"
+        classMethodReturnStack.push(firstFlowEntry)
         seqDiagStartCommand = "diagram{\n" + "{}{} -> {} [label = \"{}{}\"];\n".format(INDENT,
                                                                                        startElemName,
                                                                                        firstFlowEntry[INDEX_CLASS_NAME],
                                                                                        firstFlowEntry[INDEX_METHOD_NAME],
-                                                                                       firstFlowEntry[INDEX_METHOD_SIGNATURE]) + '}'
-        with open("c:\\temp\\ess.diag", 'w') as f:
-            f.write(seqDiagStartCommand)
+                                                                                       firstFlowEntry[INDEX_METHOD_SIGNATURE])
+#        with open("c:\\temp\\ess.diag", 'w') as f:
+#            f.write(seqDiagStartCommand)
 
         seqDiagCommandsList = [seqDiagStartCommand]
 
-        for entry in SeqDiagBuilder.sequDiagInformationList[1:]:
-            lineStr = "{} {}.{}{} <-- {}".format(entry[INDEX_MODULE_NAME], entry[INDEX_CLASS_NAME], entry[INDEX_METHOD_NAME], entry[INDEX_METHOD_SIGNATURE], entry[INDEX_METHOD_RETURN_DOC])
+        for flowEntry in SeqDiagBuilder.sequDiagInformationList[1:]:
+            if not classMethodReturnStack.contains(flowEntry):
+                classMethodReturnStack.push(flowEntry)
+            else:
+                returnEntry = classMethodReturnStack.pop()
+            lineStr = "{} {}.{}{} <-- {}".format(flowEntry[INDEX_MODULE_NAME], flowEntry[INDEX_CLASS_NAME], flowEntry[INDEX_METHOD_NAME], flowEntry[INDEX_METHOD_SIGNATURE], flowEntry[INDEX_METHOD_RETURN_DOC])
             print(lineStr)
 
     @staticmethod
