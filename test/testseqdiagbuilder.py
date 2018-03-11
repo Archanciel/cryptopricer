@@ -205,6 +205,45 @@ class IsolatedClass:
         SeqDiagBuilder.recordFlow(3)
 
 
+class ClassA:
+    def doWork(self):
+        self.internalCall()
+
+
+    def internalCall(self):
+        pr = self.internalInnerCall()
+        b = ClassB()
+        res = b.createRequest(1, 2)
+
+
+    def internalInnerCall(self):
+        '''
+        @seqdiaf_return ResultPrice
+        :return:
+        '''
+        b = ClassB()
+        res = b.createInnerRequest(1)
+
+
+class ClassB:
+    def createInnerRequest(self, parm1):
+        '''
+        @seqdiaf_return Bool
+        :param parm1:
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
+
+
+    def createRequest(self, parm1, parm2):
+        '''
+        @seqdiaf_return Bool
+        :param parm1:
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
+
+
 class TestSeqDiagBuilder(unittest.TestCase):
     def setUp(self):
         SeqDiagBuilder.reset()
@@ -240,7 +279,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
         self.assertEqual(returnDoc, 'printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions')
         self.assertEqual(methodSignature, '(inputStr)')
 
-
+    @unittest.skip
     def testBuildSeqDiagOnFullRequestHistoDayPrice(self):
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
@@ -289,25 +328,23 @@ class TestSeqDiagBuilder(unittest.TestCase):
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
-
-    def testGetSeqDiagInstructionsStrOnSimpleClasses(self):
-        foo = Foo()
+    def testGetSeqDiagInstructionsStrOnClassesWithEmbededSelfCalls(self):
+        entryPoint = ClassA()
 
         SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
-        foo.f(1)
-        # SeqDiagBuilder.printSeqDiagInstructions()
-        # print('')
-        # print(SeqDiagBuilder.getSeqDiagInstructionsStr())
-        self.assertEqual('''testseqdiagbuilder Foo.f(fParm) <-- fReturn
-testseqdiagbuilder Bar.g() <-- gReturn
-testseqdiagbuilder LeafOne.i() <-- 
-testseqdiagbuilder Foo.f(fParm) <-- fReturn
-testseqdiagbuilder Egg.h(hParm1, hParm2) <-- 
-testseqdiagbuilder LeafTwo.j() <-- 
-''', SeqDiagBuilder.getSeqDiagInstructionsStr())
+        SeqDiagBuilder.maxDepth = 4
+        entryPoint.doWork()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+        print(commands)
+
+        with open("c:\\temp\\ess.txt","w") as f:
+            f.write(commands)
+
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
+    @unittest.skip
     def testCreateSeqDiaqCommandsOnSimpleClasses(self):
         foo = Foo()
 
@@ -326,6 +363,7 @@ testseqdiagbuilder LeafTwo.j() <--
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
+    @unittest.skip
     def testGetSeqDiagInstructionsStrOnSimpleClassesWithMorethanOneClassSupportingMethodOneUsingMethodSelectTag(self):
         cl = Client()
 
@@ -340,6 +378,7 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
 
+    @unittest.skip
     def testGetSeqDiagInstructionsStrOnSimpleClassesWithMorethanOneClassSupportingMethodBothUsingMethodSelectTag(self):
         cl = Client()
 
@@ -357,6 +396,7 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
 
+    @unittest.skip
     def testGetSeqDiagInstructionsStrOnSimpleClassesWithOnlyParentClassSupportingMethod(self):
         cl = Client()
 
@@ -372,6 +412,7 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
+    @unittest.skip
     def testGetSeqDiagInstructionsStrOnThreeLevelClasseHierarchyWithOnlyAllLevelsSupportingMethod(self):
         cl = Client()
 
@@ -388,6 +429,7 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
 
+    @unittest.skip
     def testGetSeqDiagInstructionsStrOnSimpleClassesWithMorethanOneClassSupportingMethod(self):
         cl = Client()
 

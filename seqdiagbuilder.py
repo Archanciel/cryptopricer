@@ -20,6 +20,8 @@ class ClassMethodReturnStack:
     This stack stores the embeded calls used to build the sequence diagram commands. It is used to
     build the return commands of the diagram.
     '''
+
+
     def __init__(self):
         self.stack = []
 
@@ -97,50 +99,80 @@ class SeqDiagBuilder:
     sequDiagWarningList = []
     isBuildMode = False
 
+    # max generarted stack depth calculated from the stack bottom.
+    # Ex: if f(g(h(i(j()))))), maxDepth of 3 draw a seq diagr starting at h
+    # for calls h --> i--> j
+    maxDepth = 0   # 0 by default !
 
     @staticmethod
-    def createSeqDiaqCommands(startElemName, startMethName = None):
+    def buildCommandFileHeaderSection():
         '''
-        To build the diagram, type seqdiag -Tsvg stack.txt in a command line window.
-        This build a svg file which can be displayed in a browsxer.
-
-        :param startElemName:
-        :param startMethName:
+        This method write the first line of the PlantUML command file,
+        adding a header section in case of warnings.
         :return:
         '''
-        seqDiagCommandsList = []
-        classMethodReturnStack = ClassMethodReturnStack()
+        commandFileHeaderSectionStr = "@startuml\n"
 
-        firstFlowEntry = SeqDiagBuilder.sequDiagInformationList[0]
-        classMethodReturnStack.push(firstFlowEntry)
-        seqDiagStartCommand = "diagram{\n" + "{}{} -> {} [label = \"{}{}\"];\n".format(INDENT,
-                                                                                       startElemName,
-                                                                                       firstFlowEntry[INDEX_CLASS_NAME],
-                                                                                       firstFlowEntry[INDEX_METHOD_NAME],
-                                                                                       firstFlowEntry[INDEX_METHOD_SIGNATURE])
-#        with open("c:\\temp\\ess.diag", 'w') as f:
-#            f.write(seqDiagStartCommand)
+        if len(SeqDiagBuilder.sequDiagWarningList) > 0:
+            # building a header containing the warnings
+            commandFileHeaderSectionStr += "left header\n<b><font color=red >Warnings</font></b>\n"
 
-        seqDiagCommandsList = [seqDiagStartCommand]
+            for warning in SeqDiagBuilder.sequDiagWarningList:
+                commandFileHeaderSectionStr += "<font color=red>{}</font>\n".format(warning)
 
-        for flowEntry in SeqDiagBuilder.sequDiagInformationList[1:]:
-            if not classMethodReturnStack.contains(flowEntry):
-                classMethodReturnStack.push(flowEntry)
-            else:
-                returnEntry = classMethodReturnStack.pop()
-            lineStr = "{} {}.{}{} <-- {}".format(flowEntry[INDEX_MODULE_NAME], flowEntry[INDEX_CLASS_NAME], flowEntry[INDEX_METHOD_NAME], flowEntry[INDEX_METHOD_SIGNATURE], flowEntry[INDEX_METHOD_RETURN_DOC])
-            print(lineStr)
+            commandFileHeaderSectionStr += "endheader\n\n"
+
+        return commandFileHeaderSectionStr
+
 
     @staticmethod
-    def recordFlow(maxDepth, maxSigArgNum=None, maxSigArgCharLen=None):
+    def createSeqDiaqCommands(actorName):
+        '''
+        To build the diagram, type java -jar plantuml.jar -tsvg seqdiagcommands.txt in a
+        command line window. This build a svg file which can be displayed in a browsxer.
+
+        :param actorName:
+        :return:
+        '''
+        noData = False
+
+        if len(SeqDiagBuilder.sequDiagInformationList) == 0:
+            SeqDiagBuilder.issueWarning("No control flow recorded. MaxDepth was {} and isBuildMode was {}".format(SeqDiagBuilder.maxDepth, SeqDiagBuilder.isBuildMode))
+            noData = True
+
+        seqDiagCommandStr = SeqDiagBuilder.buildCommandFileHeaderSection()
+
+        if not noData:
+            classMethodReturnStack = ClassMethodReturnStack()
+            seqDiagCommandStr += "\nactor {}\n{} -> ".format(actorName, actorName)
+
+            firstFlowEntry = SeqDiagBuilder.sequDiagInformationList[0]
+            classMethodReturnStack.push(firstFlowEntry)
+            seqDiagCommandStr += "{}: {}{}\n".format(firstFlowEntry[INDEX_CLASS_NAME],
+                                               firstFlowEntry[INDEX_METHOD_NAME],
+                                               firstFlowEntry[INDEX_METHOD_SIGNATURE])
+    #        with open("c:\\temp\\ess.diag", 'w') as f:
+    #            f.write(seqDiagStartCommand)
+
+            # for flowEntry in SeqDiagBuilder.sequDiagInformationList[1:]:
+            #     if not classMethodReturnStack.contains(flowEntry):
+            #         classMethodReturnStack.push(flowEntry)
+            #     else:
+            #         returnEntry = classMethodReturnStack.pop()
+            #     lineStr = "{} {}.{}{} <-- {}".format(flowEntry[INDEX_MODULE_NAME], flowEntry[INDEX_CLASS_NAME], flowEntry[INDEX_METHOD_NAME], flowEntry[INDEX_METHOD_SIGNATURE], flowEntry[INDEX_METHOD_RETURN_DOC])
+            #     print(lineStr)
+
+        seqDiagCommandStr += "@enduml"
+#        print(seqDiagCommandStr)
+
+        return seqDiagCommandStr
+
+    @staticmethod
+    def recordFlow(maxSigArgNum=None, maxSigArgCharLen=None):
         '''
         Records in a class list the control flow information which will be used to build
         the seqdiag creation commands.
 
-        :param maxDepth:            max generarted stack depth calculated from the
-                                    stack bottom.
-                                    Ex: if f(g(h(i(j()))))), maxDepth of 3 draw a
-                                    seq diagr starting at h for calls h --> i--> j
         :param maxSigArgNum:        maximum arguments number of a called method
                                     signature
         :param maxSigArgCharLen:    maximum length a method signature can occupy
@@ -149,7 +181,7 @@ class SeqDiagBuilder:
         if not SeqDiagBuilder.isBuildMode:
             return
 
-        frameListLine = repr(traceback.extract_stack(limit = maxDepth + 1))
+        frameListLine = repr(traceback.extract_stack(limit = SeqDiagBuilder.maxDepth + 1))
         frameList = re.findall(FRAME_PATTERN, frameListLine)
 
         if frameList:
@@ -252,11 +284,12 @@ class SeqDiagBuilder:
         :return: filteredInstanceList, methodReturnDoc, signatureStr
         '''
 
-        if not instanceList:
-            return ''
-
         filteredInstanceList = []
         methodReturnDoc = ''
+        signatureStr = ''
+
+        if not instanceList:
+            return filteredInstanceList, methodReturnDoc, signatureStr
 
         for instance in instanceList:
             filteredInstanceList.append(instance)
