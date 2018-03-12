@@ -13,7 +13,7 @@ INDEX_METHOD_NAME = 2
 INDEX_METHOD_SIGNATURE = 3
 INDEX_METHOD_RETURN_DOC = 4
 
-INDENT = '  '
+INDENT = '\t'
 
 class ClassMethodReturnStack:
     '''
@@ -98,11 +98,8 @@ class SeqDiagBuilder:
     sequDiagInformationList = []
     sequDiagWarningList = []
     isBuildMode = False
-
-    # max generarted stack depth calculated from the stack bottom.
-    # Ex: if f(g(h(i(j()))))), maxDepth of 3 draw a seq diagr starting at h
-    # for calls h --> i--> j
-    maxDepth = 0   # 0 by default !
+    seqDiagEntryClass = 'ClassA'
+    seqDiagEntryMethod = 'doWork'
 
     @staticmethod
     def buildCommandFileHeaderSection():
@@ -134,38 +131,69 @@ class SeqDiagBuilder:
         :param actorName:
         :return:
         '''
-        noData = False
+        isStackDataAvailable = True
 
         if len(SeqDiagBuilder.sequDiagInformationList) == 0:
             SeqDiagBuilder.issueWarning("No control flow recorded. MaxDepth was {} and isBuildMode was {}".format(SeqDiagBuilder.maxDepth, SeqDiagBuilder.isBuildMode))
-            noData = True
+            isStackDataAvailable = False
 
+        indentStr = ''
         seqDiagCommandStr = SeqDiagBuilder.buildCommandFileHeaderSection()
 
-        if not noData:
+        if isStackDataAvailable:
             classMethodReturnStack = ClassMethodReturnStack()
-            seqDiagCommandStr += "\nactor {}\n{} -> ".format(actorName, actorName)
+            seqDiagCommandStr += "\nactor {}\n".format(actorName)
 
             firstFlowEntry = SeqDiagBuilder.sequDiagInformationList[0]
             classMethodReturnStack.push(firstFlowEntry)
-            seqDiagCommandStr += "{}: {}{}\n".format(firstFlowEntry[INDEX_CLASS_NAME],
-                                               firstFlowEntry[INDEX_METHOD_NAME],
-                                               firstFlowEntry[INDEX_METHOD_SIGNATURE])
-    #        with open("c:\\temp\\ess.diag", 'w') as f:
-    #            f.write(seqDiagStartCommand)
+            fromClass = actorName
+            toClass = firstFlowEntry[INDEX_CLASS_NAME]
+            method = firstFlowEntry[INDEX_METHOD_NAME]
+            signature = firstFlowEntry[INDEX_METHOD_SIGNATURE]
+            seqDiagCommandStr += SeqDiagBuilder.addMessage(fromClass, toClass, method, signature, indentStr)
 
-            # for flowEntry in SeqDiagBuilder.sequDiagInformationList[1:]:
-            #     if not classMethodReturnStack.contains(flowEntry):
-            #         classMethodReturnStack.push(flowEntry)
-            #     else:
-            #         returnEntry = classMethodReturnStack.pop()
-            #     lineStr = "{} {}.{}{} <-- {}".format(flowEntry[INDEX_MODULE_NAME], flowEntry[INDEX_CLASS_NAME], flowEntry[INDEX_METHOD_NAME], flowEntry[INDEX_METHOD_SIGNATURE], flowEntry[INDEX_METHOD_RETURN_DOC])
-            #     print(lineStr)
+            for flowEntry in SeqDiagBuilder.sequDiagInformationList[1:]:
+                if not classMethodReturnStack.contains(flowEntry):
+                    classMethodReturnStack.push(flowEntry)
+                    fromClass = toClass
+                    toClass = flowEntry[INDEX_CLASS_NAME]
+                    method = flowEntry[INDEX_METHOD_NAME]
+                    signature = flowEntry[INDEX_METHOD_SIGNATURE]
+                    indentStr += INDENT
+                    seqDiagCommandStr += SeqDiagBuilder.addMessage(fromClass, toClass, method, signature, indentStr)
+                else:
+                    returnEntry = classMethodReturnStack.pop()
+                    fromClass = toClass
+                    toClass = returnEntry[INDEX_CLASS_NAME]
+                    method = returnEntry[INDEX_METHOD_RETURN_DOC]
+                    indentStr -= INDENT
+                    seqDiagCommandStr += SeqDiagBuilder.addMessage(fromClass, toClass, method, signature, indentStr)
 
+        with open("c:\\temp\\ess.diag", 'w') as f:
+            f.write(seqDiagCommandStr)
         seqDiagCommandStr += "@enduml"
 #        print(seqDiagCommandStr)
 
         return seqDiagCommandStr
+
+
+    @staticmethod
+    def addMessage(fromClass, toClass, method, signature, indentStr):
+        return "{}{} -> {}: {}{}\n{}activate {}\n".format(indentStr,
+                                                        fromClass,
+                                                        toClass,
+                                                        method,
+                                                        signature,
+                                                        indentStr + INDENT,
+                                                        toClass)
+
+
+    @staticmethod
+    def addReturnMessage(fromClass, toClass, method, indentStr):
+        return "{}{} -> {}: {}{}\n{}\n".format(indentStr,
+                                                        fromClass,
+                                                        toClass,
+                                                        method)
 
     @staticmethod
     def recordFlow(maxSigArgNum=None, maxSigArgCharLen=None):
@@ -181,10 +209,11 @@ class SeqDiagBuilder:
         if not SeqDiagBuilder.isBuildMode:
             return
 
-        frameListLine = repr(traceback.extract_stack(limit = SeqDiagBuilder.maxDepth + 1))
+        frameListLine = repr(traceback.extract_stack())
         frameList = re.findall(FRAME_PATTERN, frameListLine)
 
         if frameList:
+            localSequDiagInformationList = []
             for frame in frameList[:-1]: #last line in frameList is the call to this method !
                 match = re.match(PYTHON_FILE_AND_FUNC_PATTERN, frame)
                 if match:
@@ -198,6 +227,8 @@ class SeqDiagBuilder:
                         instanceList = SeqDiagBuilder.getInstancesForClassSupportingMethod(methodName,
                                                                                            moduleName,
                                                                                            moduleClassNameList)
+                        if instanceList == []:
+                            continue
                         filteredInstanceList, methodReturnDoc, methodSignature = SeqDiagBuilder.getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
                         instance = filteredInstanceList[0]
                         if len(filteredInstanceList) > 1:
@@ -206,7 +237,29 @@ class SeqDiagBuilder:
                                 filteredClassNameList.append(filteredInstance.__class__.__name__)
                             SeqDiagBuilder.issueWarning("More than one class {} found in module {} do support method {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag :seqdiag_select_method somewhere in the method documentation.".format(str(filteredClassNameList), moduleName, methodName, methodSignature, instance.__class__.__name__))
 
-                        SeqDiagBuilder.sequDiagInformationList.append([moduleName, instance.__class__.__name__, methodName, methodSignature, methodReturnDoc])
+                        localSequDiagInformationList.append([moduleName, instance.__class__.__name__, methodName, methodSignature, methodReturnDoc])
+
+            localSequDiagInformationList = SeqDiagBuilder.stripInformationList(localSequDiagInformationList)
+            SeqDiagBuilder.sequDiagInformationList += localSequDiagInformationList
+
+
+    @staticmethod
+    def stripInformationList(sequDiagInformationList):
+        '''
+        This methods strip from the passed sequDiagInformationList all the calls preceeding the sequence diagram entry point
+        :param sequDiagInformationList:
+        :return:
+        '''
+        index = 0
+
+        for entry in sequDiagInformationList:
+            if entry[INDEX_CLASS_NAME] == SeqDiagBuilder.seqDiagEntryClass and entry[INDEX_METHOD_NAME] == SeqDiagBuilder.seqDiagEntryMethod:
+                break
+            else:
+                index += 1
+
+        return sequDiagInformationList[index:]
+
 
 
     @staticmethod

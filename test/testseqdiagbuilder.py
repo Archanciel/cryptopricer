@@ -332,7 +332,6 @@ class TestSeqDiagBuilder(unittest.TestCase):
         entryPoint = ClassA()
 
         SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
-        SeqDiagBuilder.maxDepth = 4
         entryPoint.doWork()
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
