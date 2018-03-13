@@ -1,9 +1,11 @@
 import traceback, re, ast, importlib, inspect
 from inspect import signature
 
+SEQDIAG_RETURN_TAG = ":seqdiag_return"
+SEQDIAG_SELECT_METHOD_TAG = ":seqdiag_select_method"
 
-SEQDIAG_RETURN_TAG_PATTERN = r":seqdiag_return (.*)"
-SEQDIAG_SELECT_METHOD_TAG_PATTERN = r":seqdiag_select_method(.*)"
+SEQDIAG_RETURN_TAG_PATTERN = r"%s (.*)" % SEQDIAG_RETURN_TAG
+SEQDIAG_SELECT_METHOD_TAG_PATTERN = r"%s(.*)" % SEQDIAG_SELECT_METHOD_TAG
 PYTHON_FILE_AND_FUNC_PATTERN = r"([\w:\\]+\\)(\w+)\.py, line \d* in (.*)"
 FRAME_PATTERN = r"(?:<FrameSummary file ([\w:\\,._\s]+)(?:>, |>\]))"
 
@@ -15,10 +17,39 @@ INDEX_METHOD_RETURN_DOC = 4
 
 INDENT = '\t'
 
+
+class FlowEntry:
+    def __init__(self):
+
+
+class ExecFlowList:
+    def __init__(self):
+        self.flowList = []
+
+
+    def append(self, flowEntry):
+        self.flowList.append(flowEntry)
+
+
+    def dequeue(self):
+        if self.is_empty():
+            return None
+        else:
+            return self.flowList.pop()
+
+
+    def size(self):
+        return len(self.flowList)
+
+
+    def is_empty(self):
+        return self.size() == 0
+
+
 class ClassMethodReturnStack:
     '''
-    This stack stores the embeded calls used to build the sequence diagram commands. It is used to
-    build the return commands of the diagram.
+    This stack stores the embeded calls used to build the sequence diagram commands. It is
+    used to build the return commands of the diagram.
     '''
 
 
@@ -56,7 +87,7 @@ class ClassMethodReturnStack:
         return "{}.{}".format(flowEntry[INDEX_CLASS_NAME], flowEntry[INDEX_METHOD_NAME])
 
 
-    def peak(self):
+    def peek(self):
         if self.is_empty():
             return None
         else:
@@ -235,7 +266,9 @@ class SeqDiagBuilder:
                             filteredClassNameList = []
                             for filteredInstance in filteredInstanceList:
                                 filteredClassNameList.append(filteredInstance.__class__.__name__)
-                            SeqDiagBuilder.issueWarning("More than one class {} found in module {} do support method {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag :seqdiag_select_method somewhere in the method documentation.".format(str(filteredClassNameList), moduleName, methodName, methodSignature, instance.__class__.__name__))
+                            SeqDiagBuilder.issueWarning(
+                                "More than one class {} found in module {} do support method {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the method documentation.".format(str(filteredClassNameList), moduleName, methodName, methodSignature, instance.__class__.__name__,
+                                                                                                                                                                                                                                                       SEQDIAG_SELECT_METHOD_TAG))
 
                         localSequDiagInformationList.append([moduleName, instance.__class__.__name__, methodName, methodSignature, methodReturnDoc])
 
@@ -246,7 +279,8 @@ class SeqDiagBuilder:
     @staticmethod
     def stripInformationList(sequDiagInformationList):
         '''
-        This methods strip from the passed sequDiagInformationList all the calls preceeding the sequence diagram entry point
+        This methods strip from the passed sequDiagInformationList all the calls preceeding
+        the sequence diagram entry point.
         :param sequDiagInformationList:
         :return:
         '''
@@ -327,15 +361,15 @@ class SeqDiagBuilder:
     def getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName):
         '''
         This method returns the passed instance List filtered so that it only contains instances
-        supporting the passed methodName. The string associated to the :seqdiag_return tag defined in
+        supporting the passed methodName. The string associated to the %s tag defined in
         the (selected) method documentation aswell as the (selected) method signature are returned.
 
         :param instanceList:    list of instances of the classes defined in the module moduleName
         :param moduleName:      name of module containing the class definitions of the passed instances
         :param methodName:      name of the method from the doc of which the :seqdiag_return tag value
-                                is extracted and the :seqdiag_select_method tag is searched in
+                                is extracted and the %s tag is searched in
         :return: filteredInstanceList, methodReturnDoc, signatureStr
-        '''
+        ''' % (SEQDIAG_RETURN_TAG, SEQDIAG_SELECT_METHOD_TAG)
 
         filteredInstanceList = []
         methodReturnDoc = ''

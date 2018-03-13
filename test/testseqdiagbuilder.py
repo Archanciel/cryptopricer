@@ -218,7 +218,7 @@ class ClassA:
 
     def internalInnerCall(self):
         '''
-        @seqdiaf_return ResultPrice
+        :seqdiag_return ResultPrice
         :return:
         '''
         b = ClassB()
@@ -228,7 +228,7 @@ class ClassA:
 class ClassB:
     def createInnerRequest(self, parm1):
         '''
-        @seqdiaf_return Bool
+        :seqdiag_return Bool
         :param parm1:
         :return:
         '''
@@ -237,7 +237,7 @@ class ClassB:
 
     def createRequest(self, parm1, parm2):
         '''
-        @seqdiaf_return Bool
+        :seqdiag_return Bool
         :param parm1:
         :return:
         '''
