@@ -19,36 +19,103 @@ INDENT = '\t'
 
 
 class FlowEntry:
+    def __init__(self, fromClass='', toClass='', method='', signature='', returnType=''):
+        self.fromClass = fromClass
+        self.toClass = toClass
+        self.method = method
+        self.signature = signature
+        self.returnType = returnType
+
+
+    def __eq__(self, other):
+        return self.fromClass == other.fromClass and \
+               self.toClass == other.toClass and \
+               self.method == other.method and \
+               self.signature == other.signature and \
+               self.returnType == other.returnType
+
+
+    def match(self, targetClass, method):
+        '''
+        Returns True if the passed class/method are equal to the toClass and method of
+        the flow entry.
+
+        :param targetClass:
+        :param method:
+        :return:
+        '''
+        return self.toClass == targetClass and \
+               self.method == method
+
+
+    def __str__(self):
+        return "{}, {}, {}, {}, {}".format(self.fromClass, self.toClass, self.method, self.signature, self.returnType)
+
+
+class RecordedFlowPath:
     def __init__(self):
+        self.list = []
 
 
-class ExecFlowList:
-    def __init__(self):
-        self.flowList = []
+    def addIfNotIn(self, newFlowEntry):
+        if self.list == []:
+            self.list.append(newFlowEntry)
+            return
+
+        for flowEntry in self.list:
+            if flowEntry == newFlowEntry:
+                return
+
+        self.list.append(newFlowEntry)
 
 
-    def append(self, flowEntry):
-        self.flowList.append(flowEntry)
+    def stripFlowBeforeEntryPoint(self, entryClass, entryMethod):
+        '''
+        This method removes from the recorded flow path all flow entries which are
+        before the sequence diagram entry point, defined by the passed entry class name
+        and entry method. In case the passed entry point is not in the recorded flow
+        path, nothing is stripped.
 
+        IMPORTANT: the passed entryClass is matched against the toClass of the flow entries !
 
-    def dequeue(self):
-        if self.is_empty():
-            return None
-        else:
-            return self.flowList.pop()
+        :param entryClass:
+        :param entryMethod:
+        :return:
+        '''
+        index = 0
+        entryPointFound = False
+
+        for flowEntry in self.list:
+            if flowEntry.match(entryClass, entryMethod):
+                entryPointFound = True
+                break
+            else:
+                index += 1
+
+        if entryPointFound:
+            self.list = self.list[index:]
 
 
     def size(self):
-        return len(self.flowList)
+        return len(self.list)
 
 
     def is_empty(self):
         return self.size() == 0
 
 
-class ClassMethodReturnStack:
+    def __str__(self):
+        outStr = ''
+
+        for flowEntry in self.list:
+            outStr += str(flowEntry) + '\n'
+
+        return outStr
+
+
+class SeqDiagCommandStack:
     '''
-    This stack stores the embeded calls used to build the sequence diagram commands. It is
+    This list stores the embeded calls used to build the sequence diagram commands. It is
     used to build the return commands of the diagram.
     '''
 
@@ -66,7 +133,7 @@ class ClassMethodReturnStack:
 
     def push(self, flowEntry):
         '''
-        Push on the stack a 2 elements list, the first element being the couple <class name>.<method name>
+        Push on the list a 2 elements list, the first element being the couple <class name>.<method name>
         and the second one being the string denoting the information returned to the caller by the method.
         :param flowEntry:
         :return:
@@ -80,7 +147,7 @@ class ClassMethodReturnStack:
     def _buildClassMethodStr(self, flowEntry):
         '''
         Build the class method string which is the first element of the list pushed in
-        the ClassMethodReturnStack.
+        the SeqDiagCommandStack.
         :param flowEntry:
         :return:
         '''
@@ -104,7 +171,7 @@ class ClassMethodReturnStack:
 
     def contains(self, flowEntry):
         '''
-        Return True if the passed flow entry is in the ClassMethodReturnStack.
+        Return True if the passed flow entry is in the SeqDiagCommandStack.
         :param flowEntry:
         :return:
         '''
@@ -120,13 +187,13 @@ class ClassMethodReturnStack:
 class SeqDiagBuilder:
     '''
     This class contains a static utility methods used to build a sequence diagram from the
-    call stack as at the point in the python code were it is called.
+    call list as at the point in the python code were it is called.
 
-    To build the diagram, type seqdiag -Tsvg stack.txt in a command line window.
+    To build the diagram, type seqdiag -Tsvg list.txt in a command line window.
     This build a svg file which can be displayed in a browsxer.
     '''
 
-    sequDiagInformationList = []
+    recordedFlowPath = RecordedFlowPath()
     sequDiagWarningList = []
     isBuildMode = False
     seqDiagEntryClass = 'ClassA'
@@ -164,18 +231,18 @@ class SeqDiagBuilder:
         '''
         isStackDataAvailable = True
 
-        if len(SeqDiagBuilder.sequDiagInformationList) == 0:
-            SeqDiagBuilder.issueWarning("No control flow recorded. MaxDepth was {} and isBuildMode was {}".format(SeqDiagBuilder.maxDepth, SeqDiagBuilder.isBuildMode))
+        if len(SeqDiagBuilder.recordedFlowPath) == 0:
+            SeqDiagBuilder.issueWarning("No control flow recorded. Seq diag entry point was {}.{}() and isBuildMode was {}".format(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod, SeqDiagBuilder.isBuildMode))
             isStackDataAvailable = False
 
         indentStr = ''
         seqDiagCommandStr = SeqDiagBuilder.buildCommandFileHeaderSection()
 
         if isStackDataAvailable:
-            classMethodReturnStack = ClassMethodReturnStack()
+            classMethodReturnStack = SeqDiagCommandStack()
             seqDiagCommandStr += "\nactor {}\n".format(actorName)
 
-            firstFlowEntry = SeqDiagBuilder.sequDiagInformationList[0]
+            firstFlowEntry = SeqDiagBuilder.recordedFlowPath[0]
             classMethodReturnStack.push(firstFlowEntry)
             fromClass = actorName
             toClass = firstFlowEntry[INDEX_CLASS_NAME]
@@ -183,7 +250,7 @@ class SeqDiagBuilder:
             signature = firstFlowEntry[INDEX_METHOD_SIGNATURE]
             seqDiagCommandStr += SeqDiagBuilder.addMessage(fromClass, toClass, method, signature, indentStr)
 
-            for flowEntry in SeqDiagBuilder.sequDiagInformationList[1:]:
+            for flowEntry in SeqDiagBuilder.recordedFlowPath[1:]:
                 if not classMethodReturnStack.contains(flowEntry):
                     classMethodReturnStack.push(flowEntry)
                     fromClass = toClass
@@ -244,7 +311,7 @@ class SeqDiagBuilder:
         frameList = re.findall(FRAME_PATTERN, frameListLine)
 
         if frameList:
-            localSequDiagInformationList = []
+            fromClass = ''
             for frame in frameList[:-1]: #last line in frameList is the call to this method !
                 match = re.match(PYTHON_FILE_AND_FUNC_PATTERN, frame)
                 if match:
@@ -270,16 +337,18 @@ class SeqDiagBuilder:
                                 "More than one class {} found in module {} do support method {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the method documentation.".format(str(filteredClassNameList), moduleName, methodName, methodSignature, instance.__class__.__name__,
                                                                                                                                                                                                                                                        SEQDIAG_SELECT_METHOD_TAG))
 
-                        localSequDiagInformationList.append([moduleName, instance.__class__.__name__, methodName, methodSignature, methodReturnDoc])
-
-            localSequDiagInformationList = SeqDiagBuilder.stripInformationList(localSequDiagInformationList)
-            SeqDiagBuilder.sequDiagInformationList += localSequDiagInformationList
+                        toClass = instance.__class__.__name__
+                        flowEntry = FlowEntry(fromClass, toClass, methodName, methodSignature, methodReturnDoc)
+                        fromClass = toClass
+                        SeqDiagBuilder.recordedFlowPath.addIfNotIn(flowEntry)
+            SeqDiagBuilder.recordedFlowPath.stripFlowBeforeEntryPoint(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod)
+            print(SeqDiagBuilder.recordedFlowPath)
 
 
     @staticmethod
     def stripInformationList(sequDiagInformationList):
         '''
-        This methods strip from the passed sequDiagInformationList all the calls preceeding
+        This methods strip from the passed recordedFlowPath all the calls preceeding
         the sequence diagram entry point.
         :param sequDiagInformationList:
         :return:
@@ -341,7 +410,7 @@ class SeqDiagBuilder:
 
     @staticmethod
     def printSeqDiagInstructions():
-        for entry in SeqDiagBuilder.sequDiagInformationList:
+        for entry in SeqDiagBuilder.recordedFlowPath:
             lineStr = "{} {}.{}{} <-- {}".format(entry[INDEX_MODULE_NAME], entry[INDEX_CLASS_NAME], entry[INDEX_METHOD_NAME], entry[INDEX_METHOD_SIGNATURE], entry[INDEX_METHOD_RETURN_DOC])
             print(lineStr)
 
@@ -350,7 +419,7 @@ class SeqDiagBuilder:
     def getSeqDiagInstructionsStr():
         seqDiagInstructionsStr = ''
 
-        for entry in SeqDiagBuilder.sequDiagInformationList:
+        for entry in SeqDiagBuilder.recordedFlowPath:
             lineStr = "{} {}.{}{} <-- {}\n".format(entry[0], entry[1], entry[2], entry[3], entry[4])
             seqDiagInstructionsStr += lineStr
 
@@ -443,7 +512,7 @@ class SeqDiagBuilder:
         Reinitialise the class level seq diag information list and seq diag warning list
         :return:
         '''
-        SeqDiagBuilder.sequDiagInformationList = []
+        SeqDiagBuilder.recordedFlowPath = RecordedFlowPath()
         SeqDiagBuilder.sequDiagWarningList = []
 
 if __name__ == '__main__':

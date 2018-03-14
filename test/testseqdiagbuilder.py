@@ -9,6 +9,8 @@ sys.path.insert(0,currentdir) # this instruction is necessary for successful imp
                               # the test is executed standalone
 
 from seqdiagbuilder import SeqDiagBuilder
+from seqdiagbuilder import FlowEntry
+from seqdiagbuilder import RecordedFlowPath
 from controller import Controller
 from pricerequester import PriceRequester
 
@@ -471,6 +473,90 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         instanceList = SeqDiagBuilder.getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
         self.assertEqual(len(instanceList), 1)
         self.assertEqual('IsolatedClass', instanceList[0].__class__.__name__)
+
+
+    def testFlowEntryEq(self):
+        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        fe2 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'B', 'f', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('A', 'B', 'g', '(a, b)', 'RetClass')
+        fe6 = FlowEntry('A', 'B', 'f', '(a, w)', 'RetClass')
+        fe7 = FlowEntry('A', 'B', 'f', '(a, b)', '')
+
+        self.assertTrue(fe1 == fe2)
+        self.assertFalse(fe1 == fe3)
+        self.assertFalse(fe1 == fe4)
+        self.assertFalse(fe1 == fe5)
+        self.assertFalse(fe1 == fe6)
+        self.assertFalse(fe1 == fe7)
+
+
+    def testFlowEntryToString(self):
+        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        self.assertEqual('A, B, f, (a, b), RetClass', str(fe1))
+
+
+    def testRecordedFlowPathToString(self):
+        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'B', 'f', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('A', 'B', 'g', '(a, b)', 'RetClass')
+        fe6 = FlowEntry('A', 'B', 'f', '(a, w)', 'RetClass')
+        fe7 = FlowEntry('A', 'B', 'f', '(a, b)', '')
+
+        rfp = RecordedFlowPath()
+        rfp.addIfNotIn(fe1)
+        rfp.addIfNotIn(fe3)
+        rfp.addIfNotIn(fe4)
+        self.assertEqual('A, B, f, (a, b), RetClass\nA, C, f, (a, b), RetClass\nC, B, f, (a, b), RetClass\n',str(rfp))
+
+
+    def testStripFlowBeforeEntryPoint(self):
+        fe1 = FlowEntry('dummy1', 'dem', 'g', '(a, b)', 'RetClass')
+        fe2 = FlowEntry('SEW', 'HH', 'fff', '(a, w)', 'RetClass')
+        fe3 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('B', 'C', 'f', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('C', 'D', 'g', '(a, b)', 'RetClass')
+
+        rfp = RecordedFlowPath()
+        rfp.addIfNotIn(fe1)
+        rfp.addIfNotIn(fe2)
+        rfp.addIfNotIn(fe3)
+        rfp.addIfNotIn(fe4)
+        rfp.addIfNotIn(fe5)
+        self.assertEqual('dummy1, dem, g, (a, b), RetClass\nSEW, HH, fff, (a, w), RetClass\nA, B, f, (a, b), RetClass\nB, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
+
+        rfp.stripFlowBeforeEntryPoint('B','f')
+        self.assertEqual('A, B, f, (a, b), RetClass\nB, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
+
+
+    def testStripFlowBeforeEntryPointNoEntriesBefore(self):
+        fe3 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('B', 'C', 'f', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('C', 'D', 'g', '(a, b)', 'RetClass')
+
+        rfp = RecordedFlowPath()
+        rfp.addIfNotIn(fe3)
+        rfp.addIfNotIn(fe4)
+        rfp.addIfNotIn(fe5)
+        self.assertEqual('A, B, f, (a, b), RetClass\nB, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
+
+        rfp.stripFlowBeforeEntryPoint('B','f')
+        self.assertEqual('A, B, f, (a, b), RetClass\nB, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
+
+
+    def testStripFlowBeforeEntryPointEntryPointNotInFlowPath(self):
+        fe4 = FlowEntry('B', 'C', 'f', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('C', 'D', 'g', '(a, b)', 'RetClass')
+
+        rfp = RecordedFlowPath()
+        rfp.addIfNotIn(fe4)
+        rfp.addIfNotIn(fe5)
+        self.assertEqual('B, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
+
+        rfp.stripFlowBeforeEntryPoint('B','f')
+        self.assertEqual('B, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
 
 
 if __name__ == '__main__':
