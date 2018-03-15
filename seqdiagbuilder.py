@@ -53,12 +53,33 @@ class FlowEntry:
 
 
 class RecordedFlowPath:
-    def __init__(self):
+    def __init__(self, entryClass, entryMethod):
+        self.entryClass = entryClass
+        self.entryMethod = entryMethod
+        self.entryPointReached = False
         self.list = []
 
 
     def addIfNotIn(self, newFlowEntry):
+        '''
+        This method adds an flow entry to the internal list if the internal list does already
+        contains the entry point and procvided this flow entry is not alreay in the list.
+
+        But the addition is only possible if the entry point was reached. For example, if
+        we have TestClass.testCaseMethod() --> A.f() --> A.g() --> B.h() and the entry class
+        and method is A.f(), flow entries will be added only once A.f() was added to the list
+        :param newFlowEntry:
+        :return:
+        '''
+        if newFlowEntry.match(self.entryClass, self.entryMethod):
+            self.entryPointReached = True
+
+        if not self.entryPointReached:
+            # flow entries preceeding entry point are ignored
+            return
+
         if self.list == []:
+            # first encountered occurrence of entry point is added
             self.list.append(newFlowEntry)
             return
 
@@ -69,38 +90,11 @@ class RecordedFlowPath:
         self.list.append(newFlowEntry)
 
 
-    def stripFlowBeforeEntryPoint(self, entryClass, entryMethod):
-        '''
-        This method removes from the recorded flow path all flow entries which are
-        before the sequence diagram entry point, defined by the passed entry class name
-        and entry method. In case the passed entry point is not in the recorded flow
-        path, nothing is stripped.
-
-        IMPORTANT: the passed entryClass is matched against the toClass of the flow entries !
-
-        :param entryClass:
-        :param entryMethod:
-        :return:
-        '''
-        index = 0
-        entryPointFound = False
-
-        for flowEntry in self.list:
-            if flowEntry.match(entryClass, entryMethod):
-                entryPointFound = True
-                break
-            else:
-                index += 1
-
-        if entryPointFound:
-            self.list = self.list[index:]
-
-
     def size(self):
         return len(self.list)
 
 
-    def is_empty(self):
+    def isEmpty(self):
         return self.size() == 0
 
 
@@ -125,7 +119,7 @@ class SeqDiagCommandStack:
 
 
     def pop(self):
-        if self.is_empty():
+        if self.isEmpty():
             return None
         else:
             return self.stack.pop()
@@ -155,7 +149,7 @@ class SeqDiagCommandStack:
 
 
     def peek(self):
-        if self.is_empty():
+        if self.isEmpty():
             return None
         else:
             return self.stack[-1]
@@ -165,7 +159,7 @@ class SeqDiagCommandStack:
         return len(self.stack)
 
 
-    def is_empty(self):
+    def isEmpty(self):
         return self.size() == 0
 
 
@@ -193,11 +187,20 @@ class SeqDiagBuilder:
     This build a svg file which can be displayed in a browsxer.
     '''
 
-    recordedFlowPath = RecordedFlowPath()
     sequDiagWarningList = []
     isBuildMode = False
-    seqDiagEntryClass = 'ClassA'
-    seqDiagEntryMethod = 'doWork'
+    seqDiagEntryClass = None
+    seqDiagEntryMethod = None
+    recordedFlowPath = None
+
+
+    @staticmethod
+    def activate(entryClass, entryMethod):
+        SeqDiagBuilder.seqDiagEntryClass = entryClass
+        SeqDiagBuilder.seqDiagEntryMethod = entryMethod
+        SeqDiagBuilder.recordedFlowPath = RecordedFlowPath(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod)
+        SeqDiagBuilder.isBuildMode = True
+
 
     @staticmethod
     def buildCommandFileHeaderSection():
@@ -231,7 +234,7 @@ class SeqDiagBuilder:
         '''
         isStackDataAvailable = True
 
-        if len(SeqDiagBuilder.recordedFlowPath) == 0:
+        if SeqDiagBuilder.recordedFlowPath.isEmpty():
             SeqDiagBuilder.issueWarning("No control flow recorded. Seq diag entry point was {}.{}() and isBuildMode was {}".format(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod, SeqDiagBuilder.isBuildMode))
             isStackDataAvailable = False
 
@@ -307,6 +310,8 @@ class SeqDiagBuilder:
         if not SeqDiagBuilder.isBuildMode:
             return
 
+        SeqDiagBuilder.recordedFlowPath.entryPointReached = False
+
         frameListLine = repr(traceback.extract_stack())
         frameList = re.findall(FRAME_PATTERN, frameListLine)
 
@@ -341,7 +346,7 @@ class SeqDiagBuilder:
                         flowEntry = FlowEntry(fromClass, toClass, methodName, methodSignature, methodReturnDoc)
                         fromClass = toClass
                         SeqDiagBuilder.recordedFlowPath.addIfNotIn(flowEntry)
-            SeqDiagBuilder.recordedFlowPath.stripFlowBeforeEntryPoint(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod)
+#            SeqDiagBuilder.recordedFlowPath.stripFlowBeforeEntryPoint(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod)
             print(SeqDiagBuilder.recordedFlowPath)
 
 
@@ -512,7 +517,7 @@ class SeqDiagBuilder:
         Reinitialise the class level seq diag information list and seq diag warning list
         :return:
         '''
-        SeqDiagBuilder.recordedFlowPath = RecordedFlowPath()
+        SeqDiagBuilder.recordedFlowPath = RecordedFlowPath(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod)
         SeqDiagBuilder.sequDiagWarningList = []
 
 if __name__ == '__main__':

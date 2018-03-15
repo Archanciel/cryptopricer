@@ -333,7 +333,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
     def testGetSeqDiagInstructionsStrOnClassesWithEmbededSelfCalls(self):
         entryPoint = ClassA()
 
-        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
+        SeqDiagBuilder.activate('ClassA', 'doWork')  # activate sequence diagram building
         entryPoint.doWork()
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -497,66 +497,82 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         self.assertEqual('A, B, f, (a, b), RetClass', str(fe1))
 
 
-    def testRecordedFlowPathToString(self):
+    def testAddIfNotInNoCallBeforeEntryPoint(self):
         fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
         fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
         fe4 = FlowEntry('C', 'B', 'f', '(a, b)', 'RetClass')
-        fe5 = FlowEntry('A', 'B', 'g', '(a, b)', 'RetClass')
-        fe6 = FlowEntry('A', 'B', 'f', '(a, w)', 'RetClass')
-        fe7 = FlowEntry('A', 'B', 'f', '(a, b)', '')
 
-        rfp = RecordedFlowPath()
+        rfp = RecordedFlowPath('B', 'f')
         rfp.addIfNotIn(fe1)
         rfp.addIfNotIn(fe3)
         rfp.addIfNotIn(fe4)
         self.assertEqual('A, B, f, (a, b), RetClass\nA, C, f, (a, b), RetClass\nC, B, f, (a, b), RetClass\n',str(rfp))
 
 
-    def testStripFlowBeforeEntryPoint(self):
-        fe1 = FlowEntry('dummy1', 'dem', 'g', '(a, b)', 'RetClass')
-        fe2 = FlowEntry('SEW', 'HH', 'fff', '(a, w)', 'RetClass')
-        fe3 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('B', 'C', 'f', '(a, b)', 'RetClass')
-        fe5 = FlowEntry('C', 'D', 'g', '(a, b)', 'RetClass')
+    def testAddIfNotInOneCallBeforeEntryPoint(self):
+        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'B', 'f', '(a, b)', 'RetClass')
 
-        rfp = RecordedFlowPath()
+        rfp = RecordedFlowPath('C', 'f')
         rfp.addIfNotIn(fe1)
-        rfp.addIfNotIn(fe2)
+        rfp.addIfNotIn(fe3)
+        rfp.addIfNotIn(fe4)
+        self.assertEqual('A, C, f, (a, b), RetClass\nC, B, f, (a, b), RetClass\n',str(rfp))
+
+
+    def testAddIfNotInNCallsBeforeEntryPoint(self):
+        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
+
+        rfp = RecordedFlowPath('B', 'j')
+        rfp.addIfNotIn(fe1)
+        rfp.addIfNotIn(fe3)
+        rfp.addIfNotIn(fe4)
+        self.assertEqual('C, B, j, (a, b), RetClass\n',str(rfp))
+
+
+    def testAddIfNotInNCallsBeforeEntryPointEntryPointAddedTwice(self):
+        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
+
+        rfp = RecordedFlowPath('B', 'j')
+        rfp.addIfNotIn(fe1)
         rfp.addIfNotIn(fe3)
         rfp.addIfNotIn(fe4)
         rfp.addIfNotIn(fe5)
-        self.assertEqual('dummy1, dem, g, (a, b), RetClass\nSEW, HH, fff, (a, w), RetClass\nA, B, f, (a, b), RetClass\nB, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
-
-        rfp.stripFlowBeforeEntryPoint('B','f')
-        self.assertEqual('A, B, f, (a, b), RetClass\nB, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
+        self.assertEqual('C, B, j, (a, b), RetClass\n',str(rfp))
 
 
-    def testStripFlowBeforeEntryPointNoEntriesBefore(self):
-        fe3 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('B', 'C', 'f', '(a, b)', 'RetClass')
-        fe5 = FlowEntry('C', 'D', 'g', '(a, b)', 'RetClass')
+    def testAddIfNotInNCallsBeforeEntryPointEntryPointAddedTwiceWithSubsequentEntries(self):
+        fe4 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
 
-        rfp = RecordedFlowPath()
+        rfp = RecordedFlowPath('B', 'j')
+        rfp.addIfNotIn(fe1) # before entry point: will not be added
+        rfp.addIfNotIn(fe3) # before entry point: will not be added
+        rfp.addIfNotIn(fe4)
+        rfp.addIfNotIn(fe5)
+        rfp.addIfNotIn(fe1) # after entry point: will  be added
+        rfp.addIfNotIn(fe3) # after entry point: will  be added
+        self.assertEqual('C, B, j, (a, b), RetClass\nA, B, f, (a, b), RetClass\nA, C, f, (a, b), RetClass\n',str(rfp))
+
+
+    def testAddIfNotInEntryPointNeverReached(self):
+        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
+
+        rfp = RecordedFlowPath('A', 'a')
+        rfp.addIfNotIn(fe1)
         rfp.addIfNotIn(fe3)
         rfp.addIfNotIn(fe4)
-        rfp.addIfNotIn(fe5)
-        self.assertEqual('A, B, f, (a, b), RetClass\nB, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
-
-        rfp.stripFlowBeforeEntryPoint('B','f')
-        self.assertEqual('A, B, f, (a, b), RetClass\nB, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
-
-
-    def testStripFlowBeforeEntryPointEntryPointNotInFlowPath(self):
-        fe4 = FlowEntry('B', 'C', 'f', '(a, b)', 'RetClass')
-        fe5 = FlowEntry('C', 'D', 'g', '(a, b)', 'RetClass')
-
-        rfp = RecordedFlowPath()
-        rfp.addIfNotIn(fe4)
-        rfp.addIfNotIn(fe5)
-        self.assertEqual('B, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
-
-        rfp.stripFlowBeforeEntryPoint('B','f')
-        self.assertEqual('B, C, f, (a, b), RetClass\nC, D, g, (a, b), RetClass\n',str(rfp))
+        self.assertEqual('',str(rfp))
 
 
 if __name__ == '__main__':
