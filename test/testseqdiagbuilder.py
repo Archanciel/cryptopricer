@@ -259,7 +259,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
         className = 'Controller'
         moduleName = 'controller'
 
-        instance = SeqDiagBuilder.instanciateClass(className, moduleName)
+        instance = SeqDiagBuilder._instanciateClass(className, moduleName)
 
         self.assertIsInstance(instance, Controller)
 
@@ -268,7 +268,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
         className = 'PriceRequester'
         moduleName = 'pricerequester'
 
-        instance = SeqDiagBuilder.instanciateClass(className, moduleName)
+        instance = SeqDiagBuilder._instanciateClass(className, moduleName)
 
         self.assertIsInstance(instance, PriceRequester)
 
@@ -278,8 +278,8 @@ class TestSeqDiagBuilder(unittest.TestCase):
         moduleName = 'controller'
         methodName = 'getPrintableResultForInput'
 
-        instanceList = [SeqDiagBuilder.instanciateClass(className, moduleName)]
-        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder.getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
+        instanceList = [SeqDiagBuilder._instanciateClass(className, moduleName)]
+        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
 
         self.assertEqual(len(filteredInstanceList), 1)
         self.assertEqual(returnDoc, 'printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions')
@@ -336,7 +336,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
 
         with open("c:\\temp\\ess.txt","w") as f:
             f.write(commands)
-        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+        SeqDiagBuilder.deactivate()
 
 
     def testGetSeqDiagInstructionsStrOnClassesWithEmbededSelfCalls(self):
@@ -373,8 +373,6 @@ USER -> ClassA: doWork()
 	deactivate ClassA
 @enduml''', commands)
 
-        print(commands)
-
         with open("c:\\temp\\ess.txt","w") as f:
             f.write(commands)
 
@@ -391,14 +389,14 @@ USER -> ClassA: doWork()
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
 
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
-        self.assertEqual('No control flow recorded. Seq diag entry point was None.None() and isBuildMode was False', SeqDiagBuilder.getWarningList()[0])
+        self.assertEqual('No control flow recorded. Seq diag entry point was None.None() and _isBuildMode was False', SeqDiagBuilder.getWarningList()[0])
 
 
     def testGetClassNameListMethodInClassHierarchyInMultipleClasses(self):
         moduleName = 'testseqdiagbuilder'
         moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
         methodName = 'getCoordinate'
-        instanceList = SeqDiagBuilder.getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
+        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
         self.assertEqual(len(instanceList), 3)
         self.assertEqual('Parent', instanceList[0].__class__.__name__)
         self.assertEqual('ChildOne', instanceList[1].__class__.__name__)
@@ -409,7 +407,7 @@ USER -> ClassA: doWork()
         moduleName = 'testseqdiagbuilder'
         moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
         methodName = 'm'
-        instanceList = SeqDiagBuilder.getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
+        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
         self.assertEqual(len(instanceList), 1)
         self.assertEqual('ChildOne', instanceList[0].__class__.__name__)
 
@@ -419,7 +417,7 @@ USER -> ClassA: doWork()
         moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo',
                                'TestSeqDiagBuilder', 'IsolatedClass']
         methodName = 'analyse'
-        instanceList = SeqDiagBuilder.getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
+        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
         self.assertEqual(len(instanceList), 1)
         self.assertEqual('IsolatedClass', instanceList[0].__class__.__name__)
 
