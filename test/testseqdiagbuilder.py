@@ -213,6 +213,10 @@ class ClassA:
 
 
     def internalCall(self):
+        '''
+        :seqdiag_return ResultPrice
+        :return:
+        '''
         pr = self.internalInnerCall()
         b = ClassB()
         res = b.createRequest(1, 2)
@@ -248,7 +252,7 @@ class ClassB:
 
 class TestSeqDiagBuilder(unittest.TestCase):
     def setUp(self):
-        SeqDiagBuilder.reset()
+        SeqDiagBuilder.deactivate()
 
 
     def testInstanciateClassInitTwoArgs(self):
@@ -281,7 +285,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
         self.assertEqual(returnDoc, 'printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions')
         self.assertEqual(methodSignature, '(inputStr)')
 
-    @unittest.skip
+
     def testBuildSeqDiagOnFullRequestHistoDayPrice(self):
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
@@ -289,7 +293,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
         from guioutputformater import GuiOutputFormater
         from controller import Controller
 
-        SeqDiagBuilder.isBuildMode = True #activate sequence diagram building
+        SeqDiagBuilder.activate('Controller', 'getPrintableResultForInput')  # activate sequence diagram building
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptopricer.ini'
@@ -326,9 +330,14 @@ class TestSeqDiagBuilder(unittest.TestCase):
                                                         UtilityForTest.removePriceFromResult(printResult))
         self.assertEqual('mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
-        SeqDiagBuilder.printSeqDiagInstructions()
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+        commands = SeqDiagBuilder.createSeqDiaqCommands('GUI')
+        print(commands)
+
+        with open("c:\\temp\\ess.txt","w") as f:
+            f.write(commands)
         SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+
 
     def testGetSeqDiagInstructionsStrOnClassesWithEmbededSelfCalls(self):
         entryPoint = ClassA()
@@ -337,112 +346,52 @@ class TestSeqDiagBuilder(unittest.TestCase):
         entryPoint.doWork()
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+USER -> ClassA: doWork()
+	activate ClassA
+	ClassA -> ClassA: internalCall()
+		activate ClassA
+		ClassA -> ClassA: internalInnerCall()
+			activate ClassA
+			ClassA -> ClassB: createInnerRequest(parm1)
+				activate ClassB
+				ClassA <-- ClassB: return Bool
+				deactivate ClassB
+			ClassA <-- ClassA: return ResultPrice
+			deactivate ClassA
+		ClassA -> ClassB: createRequest(parm1, parm2)
+			activate ClassB
+			ClassA <-- ClassB: return Bool
+			deactivate ClassB
+		ClassA <-- ClassA: return ResultPrice
+		deactivate ClassA
+	USER <-- ClassA: 
+	deactivate ClassA
+@enduml''', commands)
+
         print(commands)
 
         with open("c:\\temp\\ess.txt","w") as f:
             f.write(commands)
 
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
-        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
-
-    @unittest.skip
-    def testCreateSeqDiaqCommandsOnSimpleClasses(self):
-        foo = Foo()
-
-        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
-        foo.f(1)
-        # SeqDiagBuilder.printSeqDiagInstructions()
-        # print('')
-        # print(SeqDiagBuilder.getSeqDiagInstructionsStr())
-        self.assertEqual('''testseqdiagbuilder Foo.f(fParm) <-- fReturn
-testseqdiagbuilder Bar.g() <-- gReturn
-testseqdiagbuilder LeafOne.i() <-- 
-testseqdiagbuilder Foo.f(fParm) <-- fReturn
-testseqdiagbuilder Egg.h(hParm1, hParm2) <-- 
-testseqdiagbuilder LeafTwo.j() <-- 
-''', SeqDiagBuilder.createSeqDiaqCommands('GUI'))
-        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
-        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
-
-    @unittest.skip
-    def testGetSeqDiagInstructionsStrOnSimpleClassesWithMorethanOneClassSupportingMethodOneUsingMethodSelectTag(self):
-        cl = Client()
-
-        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
-        cl.make()
-        SeqDiagBuilder.printSeqDiagInstructions()
-        self.assertEqual('''testseqdiagbuilder Client.make() <-- 
-testseqdiagbuilder ChildOne.compute(size=0) <-- Analysis
-testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
-''', SeqDiagBuilder.getSeqDiagInstructionsStr())
-        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
-        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
 
-    @unittest.skip
-    def testGetSeqDiagInstructionsStrOnSimpleClassesWithMorethanOneClassSupportingMethodBothUsingMethodSelectTag(self):
-        cl = Client()
+    def testGetSeqDiagInstructionsStrWithoutActivatingSeqDiagBuilder(self):
+        entryPoint = ClassA()
 
-        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
-        cl.perform()
-        SeqDiagBuilder.printSeqDiagInstructions()
-        # here, Parent and ChildOne support computeTwo with both methods having
-        # the :seqdiag_select_method tag. The first encountred class/method with
-        # the tag is selected !
-        self.assertEqual('''testseqdiagbuilder Client.perform() <-- 
-testseqdiagbuilder Parent.computeTwo(size=0) <-- Analysis
-testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
-''', SeqDiagBuilder.getSeqDiagInstructionsStr())
-        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
-        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+        entryPoint.doWork()
 
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
 
-    @unittest.skip
-    def testGetSeqDiagInstructionsStrOnSimpleClassesWithOnlyParentClassSupportingMethod(self):
-        cl = Client()
-
-        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
-        cl.doCall()
-        SeqDiagBuilder.printSeqDiagInstructions()
-        # here, Parent only support computeThree without any :seqdiag_select_method tag.
-        # The Parent method is selected
-        self.assertEqual('''testseqdiagbuilder Client.doCall() <-- 
-testseqdiagbuilder Parent.computeThree(size=0) <-- Analysis
-testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
-''', SeqDiagBuilder.getSeqDiagInstructionsStr())
-        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
-        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
-
-    @unittest.skip
-    def testGetSeqDiagInstructionsStrOnThreeLevelClasseHierarchyWithOnlyAllLevelsSupportingMethod(self):
-        cl = Client()
-
-        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
-        cl.doProcess()
-        SeqDiagBuilder.printSeqDiagInstructions()
-        # here, all three level, Parenr, ChildTwo and ChildOfChildTwo support
-        # computeFour, but only ChildTwo.computeFour is tagged with
-        # :seqdiag_select_method tag. So, the ChildTwo method is selected
-        self.assertEqual('''testseqdiagbuilder Client.doProcess() <-- 
-testseqdiagbuilder ChildTwo.computeFour(size=0) <-- Analysis
-testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
-''', SeqDiagBuilder.getSeqDiagInstructionsStr())
-        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
-        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
-
-    @unittest.skip
-    def testGetSeqDiagInstructionsStrOnSimpleClassesWithMorethanOneClassSupportingMethod(self):
-        cl = Client()
-
-        SeqDiagBuilder.isBuildMode = True  # activate sequence diagram building
-        cl.do()
-        SeqDiagBuilder.printSeqDiagInstructions()
-        self.assertEqual('''testseqdiagbuilder Client.do() <-- 
-testseqdiagbuilder Parent.getCoordinate(location='') <-- Coord
-testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
-''', SeqDiagBuilder.getSeqDiagInstructionsStr())
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
-        SeqDiagBuilder.isBuildMode = False  # deactivate sequence diagram building
+        self.assertEqual('No control flow recorded. Seq diag entry point was None.None() and isBuildMode was False', SeqDiagBuilder.getWarningList()[0])
 
 
     def testGetClassNameListMethodInClassHierarchyInMultipleClasses(self):
@@ -476,13 +425,13 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
 
 
     def testFlowEntryEq(self):
-        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        fe2 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'B', 'f', '(a, b)', 'RetClass')
-        fe5 = FlowEntry('A', 'B', 'g', '(a, b)', 'RetClass')
-        fe6 = FlowEntry('A', 'B', 'f', '(a, w)', 'RetClass')
-        fe7 = FlowEntry('A', 'B', 'f', '(a, b)', '')
+        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
+        fe2 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'B', 'f', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('A', 'e', 'B', 'g', '(a, b)', 'RetClass')
+        fe6 = FlowEntry('A', 'e', 'B', 'f', '(a, w)', 'RetClass')
+        fe7 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', '')
 
         self.assertTrue(fe1 == fe2)
         self.assertFalse(fe1 == fe3)
@@ -493,65 +442,65 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
 
 
     def testFlowEntryToString(self):
-        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        self.assertEqual('A, B, f, (a, b), RetClass', str(fe1))
+        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
+        self.assertEqual('A.e, B.f, (a, b), RetClass', str(fe1))
 
 
     def testAddIfNotInNoCallBeforeEntryPoint(self):
-        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'B', 'f', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'B', 'f', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('B', 'f')
         rfp.addIfNotIn(fe1)
         rfp.addIfNotIn(fe3)
         rfp.addIfNotIn(fe4)
-        self.assertEqual('A, B, f, (a, b), RetClass\nA, C, f, (a, b), RetClass\nC, B, f, (a, b), RetClass\n',str(rfp))
+        self.assertEqual('A.e, B.f, (a, b), RetClass\nA.e, C.f, (a, b), RetClass\nC.f, B.f, (a, b), RetClass\n',str(rfp))
 
 
     def testAddIfNotInOneCallBeforeEntryPoint(self):
-        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'B', 'f', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'B', 'f', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('C', 'f')
         rfp.addIfNotIn(fe1)
         rfp.addIfNotIn(fe3)
         rfp.addIfNotIn(fe4)
-        self.assertEqual('A, C, f, (a, b), RetClass\nC, B, f, (a, b), RetClass\n',str(rfp))
+        self.assertEqual('A.e, C.f, (a, b), RetClass\nC.f, B.f, (a, b), RetClass\n',str(rfp))
 
 
     def testAddIfNotInNCallsBeforeEntryPoint(self):
-        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('B', 'j')
         rfp.addIfNotIn(fe1)
         rfp.addIfNotIn(fe3)
         rfp.addIfNotIn(fe4)
-        self.assertEqual('C, B, j, (a, b), RetClass\n',str(rfp))
+        self.assertEqual('C.f, B.j, (a, b), RetClass\n',str(rfp))
 
 
     def testAddIfNotInNCallsBeforeEntryPointEntryPointAddedTwice(self):
-        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
-        fe5 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('B', 'j')
         rfp.addIfNotIn(fe1)
         rfp.addIfNotIn(fe3)
         rfp.addIfNotIn(fe4)
         rfp.addIfNotIn(fe5)
-        self.assertEqual('C, B, j, (a, b), RetClass\n',str(rfp))
+        self.assertEqual('C.f, B.j, (a, b), RetClass\n',str(rfp))
 
 
     def testAddIfNotInNCallsBeforeEntryPointEntryPointAddedTwiceWithSubsequentEntries(self):
-        fe4 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
-        fe5 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
-        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('B', 'j')
         rfp.addIfNotIn(fe1) # before entry point: will not be added
@@ -560,13 +509,13 @@ testseqdiagbuilder IsolatedClass.analyse() <-- Analysis
         rfp.addIfNotIn(fe5)
         rfp.addIfNotIn(fe1) # after entry point: will  be added
         rfp.addIfNotIn(fe3) # after entry point: will  be added
-        self.assertEqual('C, B, j, (a, b), RetClass\nA, B, f, (a, b), RetClass\nA, C, f, (a, b), RetClass\n',str(rfp))
+        self.assertEqual('C.f, B.j, (a, b), RetClass\nA.e, B.f, (a, b), RetClass\nA.e, C.f, (a, b), RetClass\n',str(rfp))
 
 
     def testAddIfNotInEntryPointNeverReached(self):
-        fe1 = FlowEntry('A', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'B', 'j', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('A', 'a')
         rfp.addIfNotIn(fe1)
