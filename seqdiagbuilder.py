@@ -14,14 +14,14 @@ TAB_CHAR = '\t'
 
 
 class FlowEntry:
-    def __init__(self, fromClass='', fromMethod='', fromReturnType='', toClass='', toMethod='', signature='', returnType=''):
+    def __init__(self, fromClass='', fromMethod='', fromReturnType='', toClass='', toMethod='', toSignature='', toReturnType=''):
         self.fromClass = fromClass
         self.fromMethod = fromMethod
         self.fromReturnType = fromReturnType
         self.toClass = toClass
         self.toMethod = toMethod
-        self.signature = signature
-        self.returnType = returnType
+        self.toSignature = toSignature
+        self.toReturnType = toReturnType
 
 
     def __eq__(self, other):
@@ -30,8 +30,8 @@ class FlowEntry:
                self.fromReturnType == other.fromReturnType and \
                self.toClass == other.toClass and \
                self.toMethod == other.toMethod and \
-               self.signature == other.signature and \
-               self.returnType == other.returnType
+               self.toSignature == other.toSignature and \
+               self.toReturnType == other.toReturnType
 
 
     def isEntryPoint(self, targetClass, targetMethod):
@@ -53,7 +53,7 @@ class FlowEntry:
 
 
     def __str__(self):
-        return "{}.{}, {}, {}.{}, {}, {}".format(self.fromClass, self.fromMethod, self.fromReturnType, self.toClass, self.toMethod, self.signature, self.returnType)
+        return "{}.{}, {}, {}.{}, {}, {}".format(self.fromClass, self.fromMethod, self.fromReturnType, self.toClass, self.toMethod, self.toSignature, self.toReturnType)
 
 
 class RecordedFlowPath:
@@ -179,7 +179,8 @@ class SeqDiagBuilder:
     '''
 
     sequDiagWarningList = []
-    _isBuildMode = False
+    _isActive = False
+    _recordFlowCalled = False
     seqDiagEntryClass = None
     seqDiagEntryMethod = None
     recordedFlowPath = None
@@ -190,7 +191,7 @@ class SeqDiagBuilder:
         SeqDiagBuilder.seqDiagEntryClass = entryClass
         SeqDiagBuilder.seqDiagEntryMethod = entryMethod
         SeqDiagBuilder.recordedFlowPath = RecordedFlowPath(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod)
-        SeqDiagBuilder._isBuildMode = True
+        SeqDiagBuilder._isActive = True
 
 
     @staticmethod
@@ -204,7 +205,8 @@ class SeqDiagBuilder:
         SeqDiagBuilder.seqDiagEntryMethod = None
         SeqDiagBuilder.recordedFlowPath = None
         SeqDiagBuilder.sequDiagWarningList = []
-        SeqDiagBuilder._isBuildMode = False
+        SeqDiagBuilder._isActive = False
+        SeqDiagBuilder._recordFlowCalled = False
 
 
     @staticmethod
@@ -243,7 +245,7 @@ class SeqDiagBuilder:
         isFlowRecorded = True
 
         if SeqDiagBuilder.recordedFlowPath == None or SeqDiagBuilder.recordedFlowPath.isEmpty():
-            SeqDiagBuilder._issueWarning("No control flow recorded. Seq diag entry point was {}.{}() and _isBuildMode was {}".format(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod, SeqDiagBuilder._isBuildMode))
+            SeqDiagBuilder._issueWarning("No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{}.".format(SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod))
             isFlowRecorded = False
 
         indentStr = ''
@@ -259,15 +261,17 @@ class SeqDiagBuilder:
             fromClass = firstFlowEntry.fromClass
             toClass = firstFlowEntry.toClass
             toMethod = firstFlowEntry.toMethod
-            signature = firstFlowEntry.signature
-            seqDiagCommandStr += SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, signature, indentStr)
+            toSignature = firstFlowEntry.toSignature
+            seqDiagCommandStr += SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
+            fromClass = toClass
 
             for flowEntry in SeqDiagBuilder.recordedFlowPath.list[1:]:
                 if not classMethodReturnStack.containsFromCall(flowEntry):
-                    commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(toClass, flowEntry,
+                    commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry,
                                                                                                 indentStr,
                                                                                                 classMethodReturnStack)
                     seqDiagCommandStr += commandStr
+                    fromClass = flowEntry.toClass
                     deepestReached = True
                 else:
                     while classMethodReturnStack.containsFromCall(flowEntry):
@@ -276,8 +280,7 @@ class SeqDiagBuilder:
                             # handle deepest or leaf return message, the one which did not
                             # generate an entry in the classMethodReturnStack
                             indentStr += TAB_CHAR
-                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(commandStr, indentStr,
-                                                                                            returnEntry)
+                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
                             seqDiagCommandStr += commandStr
 
                             # handle return message for the method which called the
@@ -285,29 +288,28 @@ class SeqDiagBuilder:
                             # classMethodReturnStack
                             returnEntry = classMethodReturnStack.pop()
                             indentStr = indentStr[:-1]
-                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(commandStr, indentStr,
-                                                                                            returnEntry)
+                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
                             seqDiagCommandStr += commandStr
 
                             deepestReached = False
                         else:
                             returnEntry = classMethodReturnStack.pop()
                             indentStr = indentStr[:-1]
-                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(commandStr, indentStr,
-                                                                                            returnEntry)
+                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
                             seqDiagCommandStr += commandStr
+                        fromClass = returnEntry.fromClass
                     indentStr = indentStr[:-2]
-                    commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(toClass, flowEntry,
+                    commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry,
                                                                                                 indentStr,
                                                                                                 classMethodReturnStack)
                     seqDiagCommandStr += commandStr
+                    # fromClass = flowEntry.toClass this assignation has no utility !
                     deepestReached = True
             indentStr += TAB_CHAR
 
             while not classMethodReturnStack.isEmpty():
                 returnEntry = classMethodReturnStack.pop()
-                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(commandStr, indentStr,
-                                                                                returnEntry)
+                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
                 seqDiagCommandStr += commandStr
                 indentStr = indentStr[:-1]
 
@@ -317,23 +319,22 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def _handleSeqDiagReturnMesssageCommand(commandStr, indentStr, returnEntry):
+    def _handleSeqDiagReturnMesssageCommand(indentStr, returnEntry):
         fromClass = returnEntry.toClass
         toClass = returnEntry.fromClass
-        returnType = returnEntry.returnType
-        commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, returnType, indentStr)
+        toReturnType = returnEntry.toReturnType
+        commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, toReturnType, indentStr)
 
         return commandStr
 
     @staticmethod
-    def _handleSeqDiagForwardMesssageCommand(toClass, flowEntry, indentStr, classMethodReturnStack):
+    def _handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, indentStr, classMethodReturnStack):
         classMethodReturnStack.push(flowEntry)
-        fromClass = toClass
         toClass = flowEntry.toClass
         toMethod = flowEntry.toMethod
-        signature = flowEntry.signature
+        toSignature = flowEntry.toSignature
         indentStr += TAB_CHAR
-        commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, signature, indentStr)
+        commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
 
         return commandStr, indentStr
 
@@ -369,11 +370,12 @@ class SeqDiagBuilder:
         the seqdiag creation commands.
 
         :param maxSigArgNum:        maximum arguments number of a called toMethod
-                                    signature
-        :param maxSigArgCharLen:    maximum length a toMethod signature can occupy
+                                    toSignature
+        :param maxSigArgCharLen:    maximum length a toMethod toSignature can occupy
         :return:
         '''
-        if not SeqDiagBuilder._isBuildMode:
+        SeqDiagBuilder._recordFlowCalled = True
+        if not SeqDiagBuilder._isActive:
             return
 
         SeqDiagBuilder.recordedFlowPath.entryPointReached = False
@@ -423,7 +425,6 @@ class SeqDiagBuilder:
     @staticmethod
     def _issueWarning(warningStr):
         SeqDiagBuilder.sequDiagWarningList.append(warningStr)
-        print('************* WARNING - ' + warningStr + ' *************')
 
 
     @staticmethod
@@ -468,7 +469,7 @@ class SeqDiagBuilder:
         '''
         This toMethod returns the passed instance List filtered so that it only contains instances
         supporting the passed methodName. The string associated to the %s tag defined in
-        the (selected) toMethod documentation aswell as the (selected) toMethod signature are returned.
+        the (selected) toMethod documentation aswell as the (selected) toMethod toSignature are returned.
 
         :param instanceList:    list of instances of the classes defined in the module moduleName
         :param moduleName:      name of module containing the class definitions of the passed instances
@@ -503,7 +504,7 @@ class SeqDiagBuilder:
                     filteredInstanceList = [instance]
                     break
 
-        # get toMethod signature
+        # get toMethod toSignature
 
         signatureStr = str(signature(methodObj))
 
