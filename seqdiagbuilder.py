@@ -178,19 +178,21 @@ class SeqDiagBuilder:
     This build a svg file which can be displayed in a browsxer.
     '''
 
-    sequDiagWarningList = []
+    seqDiagWarningList = []
     _isActive = False
     _recordFlowCalled = False
     seqDiagEntryClass = None
     seqDiagEntryMethod = None
-    recordedFlowPath = None
+    recordedFlowPathList = None
+    recordFlowIndex = -1
 
 
     @staticmethod
     def activate(entryClass, entryMethod):
         SeqDiagBuilder.seqDiagEntryClass = entryClass
         SeqDiagBuilder.seqDiagEntryMethod = entryMethod
-        SeqDiagBuilder.recordedFlowPath = RecordedFlowPath(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod)
+        SeqDiagBuilder.recordedFlowPathList = []
+        SeqDiagBuilder.recordFlowIndex = -1
         SeqDiagBuilder._isActive = True
 
 
@@ -203,31 +205,32 @@ class SeqDiagBuilder:
         '''
         SeqDiagBuilder.seqDiagEntryClass = None
         SeqDiagBuilder.seqDiagEntryMethod = None
-        SeqDiagBuilder.recordedFlowPath = None
-        SeqDiagBuilder.sequDiagWarningList = []
+        SeqDiagBuilder.recordedFlowPathList = []
+        SeqDiagBuilder.seqDiagWarningList = []
         SeqDiagBuilder._isActive = False
         SeqDiagBuilder._recordFlowCalled = False
+        SeqDiagBuilder.recordFlowIndex = 0
 
 
     @staticmethod
-    def _buildCommandFileHeaderSection():
+    def _buildCommandFileHeaderSectionList():
         '''
-        This toMethod create the first line of the PlantUML command file,
+        This method create a list containing the first lines of the PlantUML command file,
         adding a header section in case of warnings.
         :return:
         '''
-        commandFileHeaderSectionStr = "@startuml\n"
+        commandFileHeaderSectionList = ["@startuml\n"]
 
-        if len(SeqDiagBuilder.sequDiagWarningList) > 0:
+        if len(SeqDiagBuilder.seqDiagWarningList) > 0:
             # building a header containing the warnings
-            commandFileHeaderSectionStr += "left header\n<b><font color=red >Warnings</font></b>\n"
+            commandFileHeaderSectionList.append("left header\n<b><font color=red >Warnings</font></b>\n")
 
-            for warning in SeqDiagBuilder.sequDiagWarningList:
-                commandFileHeaderSectionStr += "<font color=red>{}</font>\n".format(warning)
+            for warning in SeqDiagBuilder.seqDiagWarningList:
+                commandFileHeaderSectionList.append("<font color=red>{}</font>\n".format(warning))
 
-            commandFileHeaderSectionStr += "endheader\n\n"
+            commandFileHeaderSectionList.append("endheader\n\n")
 
-        return commandFileHeaderSectionStr
+        return commandFileHeaderSectionList
 
 
     @staticmethod
@@ -244,78 +247,91 @@ class SeqDiagBuilder:
         '''
         isFlowRecorded = True
 
-        if SeqDiagBuilder.recordedFlowPath == None or SeqDiagBuilder.recordedFlowPath.isEmpty():
+        if SeqDiagBuilder.recordedFlowPathList == []:
             SeqDiagBuilder._issueWarning("No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{}.".format(SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod))
             isFlowRecorded = False
 
         indentStr = ''
-        seqDiagCommandStr = SeqDiagBuilder._buildCommandFileHeaderSection()
+        seqDiagCommandList = SeqDiagBuilder._buildCommandFileHeaderSectionList()
+        listOfFlowCommandList = []
 
         if isFlowRecorded:
-            classMethodReturnStack = SeqDiagCommandStack()
-            seqDiagCommandStr += "\nactor {}\n".format(actorName)
+            for recordedFlowPath in SeqDiagBuilder.recordedFlowPathList:
+                individualflowCommandList = []
+                listOfFlowCommandList.append(individualflowCommandList)
+                classMethodReturnStack = SeqDiagCommandStack()
+                individualflowCommandList.append("\nactor {}\n".format(actorName))
 
-            firstFlowEntry = SeqDiagBuilder.recordedFlowPath.list[0]
-            firstFlowEntry.fromClass = actorName
-            classMethodReturnStack.push(firstFlowEntry)
-            fromClass = firstFlowEntry.fromClass
-            toClass = firstFlowEntry.toClass
-            toMethod = firstFlowEntry.toMethod
-            toSignature = firstFlowEntry.toSignature
-            seqDiagCommandStr += SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
-            fromClass = toClass
+                firstFlowEntry = recordedFlowPath.list[0]
+                firstFlowEntry.fromClass = actorName
+                classMethodReturnStack.push(firstFlowEntry)
+                fromClass = firstFlowEntry.fromClass
+                toClass = firstFlowEntry.toClass
+                toMethod = firstFlowEntry.toMethod
+                toSignature = firstFlowEntry.toSignature
+                individualflowCommandList.append(SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr))
+                fromClass = toClass
 
-            for flowEntry in SeqDiagBuilder.recordedFlowPath.list[1:]:
-                if not classMethodReturnStack.containsFromCall(flowEntry):
-                    commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry,
-                                                                                                indentStr,
-                                                                                                classMethodReturnStack)
-                    seqDiagCommandStr += commandStr
-                    fromClass = flowEntry.toClass
-                    deepestReached = True
-                else:
-                    while classMethodReturnStack.containsFromCall(flowEntry):
-                        returnEntry = classMethodReturnStack.pop()
-                        if deepestReached:
-                            # handle deepest or leaf return message, the one which did not
-                            # generate an entry in the classMethodReturnStack
-                            indentStr += TAB_CHAR
-                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
-                            seqDiagCommandStr += commandStr
-
-                            # handle return message for the method which called the
-                            # deepest or leaf method and which generated an entry in the
-                            # classMethodReturnStack
+                for flowEntry in recordedFlowPath.list[1:]:
+                    if not classMethodReturnStack.containsFromCall(flowEntry):
+                        commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry,
+                                                                                                    indentStr,
+                                                                                                    classMethodReturnStack)
+                        individualflowCommandList.append(commandStr)
+                        fromClass = flowEntry.toClass
+                        deepestReached = True
+                    else:
+                        while classMethodReturnStack.containsFromCall(flowEntry):
                             returnEntry = classMethodReturnStack.pop()
-                            indentStr = indentStr[:-1]
-                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
-                            seqDiagCommandStr += commandStr
+                            if deepestReached:
+                                # handle deepest or leaf return message, the one which did not
+                                # generate an entry in the classMethodReturnStack
+                                indentStr += TAB_CHAR
+                                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
+                                individualflowCommandList.append(commandStr)
 
-                            deepestReached = False
-                        else:
-                            returnEntry = classMethodReturnStack.pop()
-                            indentStr = indentStr[:-1]
-                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
-                            seqDiagCommandStr += commandStr
-                        fromClass = returnEntry.fromClass
-                    indentStr = indentStr[:-2]
-                    commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry,
-                                                                                                indentStr,
-                                                                                                classMethodReturnStack)
-                    seqDiagCommandStr += commandStr
-                    # fromClass = flowEntry.toClass this assignation has no utility !
-                    deepestReached = True
-            indentStr += TAB_CHAR
+                                # handle return message for the method which called the
+                                # deepest or leaf method and which generated an entry in the
+                                # classMethodReturnStack
+                                returnEntry = classMethodReturnStack.pop()
+                                indentStr = indentStr[:-1]
+                                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
+                                individualflowCommandList.append(commandStr)
 
-            while not classMethodReturnStack.isEmpty():
-                returnEntry = classMethodReturnStack.pop()
-                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
-                seqDiagCommandStr += commandStr
-                indentStr = indentStr[:-1]
+                                deepestReached = False
+                            else:
+                                returnEntry = classMethodReturnStack.pop()
+                                indentStr = indentStr[:-1]
+                                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
+                                individualflowCommandList.append(commandStr)
+                            fromClass = returnEntry.fromClass
+                        indentStr = indentStr[:-2]
+                        commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry,
+                                                                                                    indentStr,
+                                                                                                    classMethodReturnStack)
+                        individualflowCommandList.append(commandStr)
+                        # fromClass = flowEntry.toClass this assignation has no utility !
+                        deepestReached = True
+                indentStr += TAB_CHAR
 
-        seqDiagCommandStr += "@enduml"
+                while not classMethodReturnStack.isEmpty():
+                    returnEntry = classMethodReturnStack.pop()
+                    commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
+                    individualflowCommandList.append(commandStr)
+                    indentStr = indentStr[:-1]
 
-        return seqDiagCommandStr
+        seqDiagCommandList += SeqDiagBuilder.combineFlowCommandList(listOfFlowCommandList)
+        seqDiagCommandList.append("@enduml")
+
+        return ''.join(seqDiagCommandList)
+
+
+    @staticmethod
+    def combineFlowCommandList(listOfFlowCommandList):
+        if len(listOfFlowCommandList) == 0:
+            return []
+        
+        return listOfFlowCommandList[0]
 
 
     @staticmethod
@@ -366,8 +382,9 @@ class SeqDiagBuilder:
     @staticmethod
     def recordFlow(maxSigArgNum=None, maxSigArgCharLen=None):
         '''
-        Records in a class list the control flow information which will be used to build
-        the seqdiag creation commands.
+        Records in an instance of RecordFlowPath the control flow information which
+        will be used to build the seqdiag creation commands. Each control flow is recorded
+        in a separate RecordFlowPath.
 
         :param maxSigArgNum:        maximum arguments number of a called toMethod
                                     toSignature
@@ -375,10 +392,17 @@ class SeqDiagBuilder:
         :return:
         '''
         SeqDiagBuilder._recordFlowCalled = True
+
         if not SeqDiagBuilder._isActive:
+            # if SeqDiagBuilder.activate method was not called, recordFlow does nothing
             return
 
-        SeqDiagBuilder.recordedFlowPath.entryPointReached = False
+        SeqDiagBuilder.recordFlowIndex += 1
+
+        if len(SeqDiagBuilder.recordedFlowPathList) < SeqDiagBuilder.recordFlowIndex + 1:
+            SeqDiagBuilder.recordedFlowPathList.append(RecordedFlowPath(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod))
+
+        SeqDiagBuilder.recordedFlowPathList[SeqDiagBuilder.recordFlowIndex].entryPointReached = False
 
         frameListLine = repr(traceback.extract_stack())
         frameList = re.findall(FRAME_PATTERN, frameListLine)
@@ -418,18 +442,18 @@ class SeqDiagBuilder:
                         fromClass = toClass
                         fromMethod = toMethod
                         fromMethodReturnDoc = toMethodReturnDoc
-                        SeqDiagBuilder.recordedFlowPath.addIfNotIn(flowEntry)
-#            print(SeqDiagBuilder.recordedFlowPath)
+                        SeqDiagBuilder.recordedFlowPathList[SeqDiagBuilder.recordFlowIndex].addIfNotIn(flowEntry)
+#            print(SeqDiagBuilder.recordedFlowPathList[SeqDiagBuilder.recordFlowIndex])
 
 
     @staticmethod
     def _issueWarning(warningStr):
-        SeqDiagBuilder.sequDiagWarningList.append(warningStr)
+        SeqDiagBuilder.seqDiagWarningList.append(warningStr)
 
 
     @staticmethod
     def getWarningList():
-        return SeqDiagBuilder.sequDiagWarningList
+        return SeqDiagBuilder.seqDiagWarningList
 
 
     @staticmethod
