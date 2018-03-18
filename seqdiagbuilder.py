@@ -6,7 +6,7 @@ SEQDIAG_SELECT_METHOD_TAG = ":seqdiag_select_method"
 
 SEQDIAG_RETURN_TAG_PATTERN = r"%s (.*)" % SEQDIAG_RETURN_TAG
 SEQDIAG_SELECT_METHOD_TAG_PATTERN = r"%s(.*)" % SEQDIAG_SELECT_METHOD_TAG
-PYTHON_FILE_AND_FUNC_PATTERN = r"([\w:\\]+\\)(\w+)\.py, line \d* in (.*)"
+PYTHON_FILE_AND_FUNC_PATTERN = r"([\w:\\]+\\)(\w+)\.py, line (\d*) in (.*)"
 FRAME_PATTERN = r"(?:<FrameSummary file ([\w:\\,._\s]+)(?:>, |>\]))"
 
 
@@ -14,12 +14,13 @@ TAB_CHAR = '\t'
 
 
 class FlowEntry:
-    def __init__(self, fromClass='', fromMethod='', fromReturnType='', toClass='', toMethod='', toSignature='', toReturnType=''):
+    def __init__(self, fromClass='', fromMethod='', fromReturnType='', toClass='', toMethod='', toMethodCallLineNumber = '', toSignature='', toReturnType=''):
         self.fromClass = fromClass
         self.fromMethod = fromMethod
         self.fromReturnType = fromReturnType
         self.toClass = toClass
         self.toMethod = toMethod
+        self.toMethodCallLineNumber = toMethodCallLineNumber
         self.toSignature = toSignature
         self.toReturnType = toReturnType
 
@@ -30,6 +31,7 @@ class FlowEntry:
                self.fromReturnType == other.fromReturnType and \
                self.toClass == other.toClass and \
                self.toMethod == other.toMethod and \
+               self.toMethodCallLineNumber == other.toMethodCallLineNumber and \
                self.toSignature == other.toSignature and \
                self.toReturnType == other.toReturnType
 
@@ -53,7 +55,7 @@ class FlowEntry:
 
 
     def __str__(self):
-        return "{}.{}, {}, {}.{}, {}, {}".format(self.fromClass, self.fromMethod, self.fromReturnType, self.toClass, self.toMethod, self.toSignature, self.toReturnType)
+        return "{}.{}, {}, {}.{}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.fromReturnType, self.toClass, self.toMethod, self.toMethodCallLineNumber, self.toSignature, self.toReturnType)
 
 
 class RecordedFlowPath:
@@ -269,16 +271,19 @@ class SeqDiagBuilder:
                 toClass = firstFlowEntry.toClass
                 toMethod = firstFlowEntry.toMethod
                 toSignature = firstFlowEntry.toSignature
-                individualflowCommandList.append(SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr))
+                individualflowCommandList.append(SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, '0', toSignature, indentStr))
                 fromClass = toClass
+                fromMethodCallLineNumber = firstFlowEntry.toMethodCallLineNumber
 
                 for flowEntry in recordedFlowPath.list[1:]:
                     if not classMethodReturnStack.containsFromCall(flowEntry):
-                        commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry,
+                        commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, fromMethodCallLineNumber, flowEntry,
                                                                                                     indentStr,
                                                                                                     classMethodReturnStack)
                         individualflowCommandList.append(commandStr)
                         fromClass = flowEntry.toClass
+                        previousMethodCallLineNumber = fromMethodCallLineNumber
+                        fromMethodCallLineNumber = flowEntry.toMethodCallLineNumber
                         deepestReached = True
                     else:
                         while classMethodReturnStack.containsFromCall(flowEntry):
@@ -287,7 +292,7 @@ class SeqDiagBuilder:
                                 # handle deepest or leaf return message, the one which did not
                                 # generate an entry in the classMethodReturnStack
                                 indentStr += TAB_CHAR
-                                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
+                                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, previousMethodCallLineNumber, returnEntry)
                                 individualflowCommandList.append(commandStr)
 
                                 # handle return message for the method which called the
@@ -295,14 +300,14 @@ class SeqDiagBuilder:
                                 # classMethodReturnStack
                                 returnEntry = classMethodReturnStack.pop()
                                 indentStr = indentStr[:-1]
-                                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
+                                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, '0', returnEntry)
                                 individualflowCommandList.append(commandStr)
 
                                 deepestReached = False
                             else:
                                 returnEntry = classMethodReturnStack.pop()
                                 indentStr = indentStr[:-1]
-                                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
+                                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, previousMethodCallLineNumber, returnEntry)
                                 individualflowCommandList.append(commandStr)
                             fromClass = returnEntry.fromClass
                         indentStr = indentStr[:-2]
@@ -316,8 +321,9 @@ class SeqDiagBuilder:
 
                 while not classMethodReturnStack.isEmpty():
                     returnEntry = classMethodReturnStack.pop()
-                    commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
+                    commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, previousMethodCallLineNumber, returnEntry)
                     individualflowCommandList.append(commandStr)
+                    previousMethodCallLineNumber = returnEntry.toMethodCallLineNumber
                     indentStr = indentStr[:-1]
 
         seqDiagCommandList += SeqDiagBuilder.combineFlowCommandList(listOfFlowCommandList)
@@ -330,54 +336,56 @@ class SeqDiagBuilder:
     def combineFlowCommandList(listOfFlowCommandList):
         if len(listOfFlowCommandList) == 0:
             return []
-        
+
         return listOfFlowCommandList[0]
 
 
     @staticmethod
-    def _handleSeqDiagReturnMesssageCommand(indentStr, returnEntry):
+    def _handleSeqDiagReturnMesssageCommand(indentStr, fromMethodCallLineNumber, returnEntry):
         fromClass = returnEntry.toClass
         toClass = returnEntry.fromClass
         toReturnType = returnEntry.toReturnType
-        commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, toReturnType, indentStr)
+        commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, fromMethodCallLineNumber, toReturnType, indentStr)
 
         return commandStr
 
     @staticmethod
-    def _handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, indentStr, classMethodReturnStack):
+    def _handleSeqDiagForwardMesssageCommand(fromClass, fromMethodCallLineNumber, flowEntry, indentStr, classMethodReturnStack):
         classMethodReturnStack.push(flowEntry)
         toClass = flowEntry.toClass
         toMethod = flowEntry.toMethod
         toSignature = flowEntry.toSignature
         indentStr += TAB_CHAR
-        commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
+        commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, fromMethodCallLineNumber, toSignature, indentStr)
 
         return commandStr, indentStr
 
     @staticmethod
-    def _addForwardSeqDiagCommand(fromClass, toClass, method, signature, indentStr):
-        return "{}{} -> {}: {}{}\n{}activate {}\n".format(indentStr,
-                                                          fromClass,
-                                                          toClass,
-                                                          method,
-                                                          signature,
-                                                          indentStr + TAB_CHAR,
-                                                          toClass)
+    def _addForwardSeqDiagCommand(fromClass, toClass, toMethod, toMethodCallLineNumber, signature, indentStr):
+        return "{}{} -> {}: {}{}@{}\n{}activate {}\n".format(indentStr,
+                                                             fromClass,
+                                                             toClass,
+                                                             toMethod,
+                                                             signature,
+                                                             toMethodCallLineNumber,
+                                                             indentStr + TAB_CHAR,
+                                                             toClass)
 
 
     @staticmethod
-    def _addReturnSeqDiagCommand(fromClass, toClass, returnType, indentStr):
+    def _addReturnSeqDiagCommand(fromClass, toClass, toMethodCallLineNumber, returnType, indentStr):
         returnMessage = ''
 
         if returnType != '':
             returnMessage = 'return {}'.format(returnType)
 
-        return "{}{} <-- {}: {}\n{}deactivate {}\n".format(indentStr,
-                                                         toClass,
-                                                         fromClass,
-                                                         returnMessage,
-                                                           indentStr,
-                                                         fromClass)
+        return "{}{} <-- {}: {}@{}\n{}deactivate {}\n".format(indentStr,
+                                                              toClass,
+                                                              fromClass,
+                                                              returnMessage,
+                                                              toMethodCallLineNumber,
+                                                              indentStr,
+                                                              fromClass)
 
     @staticmethod
     def recordFlow(maxSigArgNum=None, maxSigArgCharLen=None):
@@ -415,8 +423,9 @@ class SeqDiagBuilder:
                 match = re.match(PYTHON_FILE_AND_FUNC_PATTERN, frame)
                 if match:
                     pythonClassFilePath = match.group(1)
-                    moduleName =  match.group(2)
-                    methodName = match.group(3)
+                    moduleName = match.group(2)
+                    methodCallLineNumber = match.group(3)
+                    methodName = match.group(4)
                     with open(pythonClassFilePath + moduleName + '.py', "r") as sourceFile:
                         source = sourceFile.read()
                         parsedSource = ast.parse(source)
@@ -437,8 +446,9 @@ class SeqDiagBuilder:
                                                                                                                                                                                                                                                        SEQDIAG_SELECT_METHOD_TAG))
 
                         toClass = instance.__class__.__name__
+                        toMethodCallLineNumber = methodCallLineNumber
                         toMethod = methodName
-                        flowEntry = FlowEntry(fromClass, fromMethod, fromMethodReturnDoc, toClass, toMethod, methodSignature, toMethodReturnDoc)
+                        flowEntry = FlowEntry(fromClass, fromMethod, fromMethodReturnDoc, toClass, toMethod, toMethodCallLineNumber, methodSignature, toMethodReturnDoc)
                         fromClass = toClass
                         fromMethod = toMethod
                         fromMethodReturnDoc = toMethodReturnDoc

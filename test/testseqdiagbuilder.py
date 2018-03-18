@@ -702,8 +702,8 @@ USER -> ClassA: doWork()
 
 
     def testFlowEntryToString(self):
-        fe1 = FlowEntry('A', 'e', 'e_RetType', 'B', 'f', '(a, b)', 'f_RetType')
-        self.assertEqual('A.e, e_RetType, B.f, (a, b), f_RetType', str(fe1))
+        fe1 = FlowEntry('A', 'e', 'e_RetType', 'B', 'f', '95', '(a, b)', 'f_RetType')
+        self.assertEqual('A.e, e_RetType, B.f, 95, (a, b), f_RetType', str(fe1))
 
 
     @unittest.skip
