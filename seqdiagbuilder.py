@@ -14,13 +14,25 @@ TAB_CHAR = '\t'
 
 
 class FlowEntry:
-    def __init__(self, fromClass='', fromMethod='', fromReturnType='', toClass='', toMethod='', toMethodCallLineNumber = '', toSignature='', toReturnType=''):
+    def __init__(self, fromClass='', fromMethod='', fromReturnType='', toClass='', toMethod='', toMethodCalledFromLineNumber ='', toSignature='', toReturnType=''):
+        '''
+
+        :param fromClass:                       class containing the fromMethod
+        :param fromMethod:                      method calling the toMethod
+        :param fromReturnType:                  return type of the fromMethod (not shure is used !)
+        :param toClass:                         class containing the toMethod
+        :param toMethod:                        method called from the fromMethod
+        :param toMethodCalledFromLineNumber:    line number in the fromMethod from which
+                                                the toMethod was called
+        :param toSignature:                     toMethod signature
+        :param toReturnType:                    return type of the toMethod
+        '''
         self.fromClass = fromClass
         self.fromMethod = fromMethod
         self.fromReturnType = fromReturnType
         self.toClass = toClass
         self.toMethod = toMethod
-        self.toMethodCallLineNumber = toMethodCallLineNumber
+        self.toMethodCalledFromLineNumber = toMethodCalledFromLineNumber
         self.toSignature = toSignature
         self.toReturnType = toReturnType
 
@@ -31,7 +43,7 @@ class FlowEntry:
                self.fromReturnType == other.fromReturnType and \
                self.toClass == other.toClass and \
                self.toMethod == other.toMethod and \
-               self.toMethodCallLineNumber == other.toMethodCallLineNumber and \
+               self.toMethodCalledFromLineNumber == other.toMethodCalledFromLineNumber and \
                self.toSignature == other.toSignature and \
                self.toReturnType == other.toReturnType
 
@@ -54,8 +66,18 @@ class FlowEntry:
         return self.fromClass == entry.fromClass and self.fromMethod == entry.fromMethod
 
 
+    def differByLineNumberOnly(self, entry):
+        '''
+        Return True if entry and self denote the same class.method but called from a
+        different location
+        :param entry:
+        :return:
+        '''
+        return self.equalFrom(entry) and self.toMethodCalledFromLineNumber != entry.toMethodCalledFromLineNumber
+
+
     def __str__(self):
-        return "{}.{}, {}, {}.{}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.fromReturnType, self.toClass, self.toMethod, self.toMethodCallLineNumber, self.toSignature, self.toReturnType)
+        return "{}.{}, {}, {}.{}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.fromReturnType, self.toClass, self.toMethod, self.toMethodCalledFromLineNumber, self.toSignature, self.toReturnType)
 
 
 class RecordedFlowPath:
@@ -276,7 +298,8 @@ class SeqDiagBuilder:
                     fromClass = flowEntry.toClass
                     deepestReached = True
                 else:
-                    while classMethodReturnStack.containsFromCall(flowEntry):
+                    stopUnfolding = False
+                    while not stopUnfolding and classMethodReturnStack.containsFromCall(flowEntry):
                         returnEntry = classMethodReturnStack.pop()
                         if deepestReached:
                             # handle deepest or leaf return message, the one which did not
@@ -288,6 +311,10 @@ class SeqDiagBuilder:
                             # handle return message for the method which called the
                             # deepest or leaf method and which generated an entry in the
                             # classMethodReturnStack
+                            if flowEntry.differByLineNumberOnly(returnEntry):
+                                stopUnfolding = True
+                                fromClass = flowEntry.fromClass
+                                continue
                             returnEntry = classMethodReturnStack.pop()
                             indentStr = indentStr[:-1]
                             commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
@@ -377,6 +404,7 @@ class SeqDiagBuilder:
         :return:
         '''
         SeqDiagBuilder._recordFlowCalled = True
+
         if not SeqDiagBuilder._isActive:
             return
 
@@ -388,6 +416,8 @@ class SeqDiagBuilder:
         if frameList:
             fromClass = ''
             fromMethod = ''
+            toMethodCalledFromLineNumber = ''   # line number in the calling method from
+                                                # which the current method was called
             fromMethodReturnDoc = ''
             for frame in frameList[:-1]: #last line in frameList is the call to this toMethod !
                 match = re.match(PYTHON_FILE_AND_FUNC_PATTERN, frame)
@@ -416,11 +446,11 @@ class SeqDiagBuilder:
                                                                                                                                                                                                                                                        SEQDIAG_SELECT_METHOD_TAG))
 
                         toClass = instance.__class__.__name__
-                        toMethodCallLineNumber = methodCallLineNumber
                         toMethod = methodName
-                        flowEntry = FlowEntry(fromClass, fromMethod, fromMethodReturnDoc, toClass, toMethod, toMethodCallLineNumber, methodSignature, toMethodReturnDoc)
+                        flowEntry = FlowEntry(fromClass, fromMethod, fromMethodReturnDoc, toClass, toMethod, toMethodCalledFromLineNumber, methodSignature, toMethodReturnDoc)
                         fromClass = toClass
                         fromMethod = toMethod
+                        toMethodCalledFromLineNumber = methodCallLineNumber
                         fromMethodReturnDoc = toMethodReturnDoc
                         SeqDiagBuilder.recordedFlowPath.addIfNotIn(flowEntry)
 #            print(SeqDiagBuilder.recordedFlowPath)
