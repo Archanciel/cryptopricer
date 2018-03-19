@@ -279,13 +279,12 @@ class SeqDiagBuilder:
 
             firstFlowEntry = SeqDiagBuilder.recordedFlowPath.list[0]
             firstFlowEntry.fromClass = actorName
-            classMethodReturnStack.push(firstFlowEntry)
             fromClass = firstFlowEntry.fromClass
-            toClass = firstFlowEntry.toClass
-            toMethod = firstFlowEntry.toMethod
-            toSignature = firstFlowEntry.toSignature
-            seqDiagCommandStr += SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
-            fromClass = toClass
+            commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, firstFlowEntry,
+                                                                                        indentStr,
+                                                                                        classMethodReturnStack)
+            seqDiagCommandStr += commandStr
+            fromClass = firstFlowEntry.toClass
 
             for flowEntry in SeqDiagBuilder.recordedFlowPath.list[1:]:
                 if not classMethodReturnStack.containsFromCall(flowEntry):

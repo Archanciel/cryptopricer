@@ -209,6 +209,10 @@ class IsolatedClass:
 
 class ClassA:
     def doWork(self):
+        '''
+        :seqdiag_return ClassAdoWorkRes
+        :return:
+        '''
         self.internalCall()
 
 
@@ -387,19 +391,19 @@ endheader
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
 
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         self.assertEqual(
 '''@startuml
 
 actor USER
-USER -> A: a1(a1_p1, a1_p2)
-	activate A
-	USER <-- A: return Aa1Return
-	deactivate A
+	USER -> A: a1(a1_p1, a1_p2)
+		activate A
+		USER <-- A: return Aa1Return
+		deactivate A
 @enduml''', commands)
-
-        with open("c:\\temp\\ess.txt", "w") as f:
-            f.write(commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
@@ -421,14 +425,14 @@ USER -> A: a1(a1_p1, a1_p2)
 '''@startuml
 
 actor USER
-USER -> A: a2(a2_p1)
-	activate A
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	USER <-- A: return Aa2Return
-	deactivate A
+	USER -> A: a2(a2_p1)
+		activate A
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		USER <-- A: return Aa2Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -485,18 +489,18 @@ USER -> A: a6(a6_p1)
 '''@startuml
 
 actor USER
-USER -> A: a4(a4_p1)
-	activate A
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	USER <-- A: return Aa4Return
-	deactivate A
+	USER -> A: a4(a4_p1)
+		activate A
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		USER <-- A: return Aa4Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -519,22 +523,22 @@ USER -> A: a4(a4_p1)
 '''@startuml
 
 actor USER
-USER -> A: a5(a5_p1)
-	activate A
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	USER <-- A: return Aa5Return
-	deactivate A
+	USER -> A: a5(a5_p1)
+		activate A
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		USER <-- A: return Aa5Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -553,18 +557,18 @@ USER -> A: a5(a5_p1)
 '''@startuml
 
 actor USER
-USER -> A: a3(a3_p1)
-	activate A
-	A -> B: b2(b2_p1)
-		activate B
-		B -> C: c1(c1_p1)
-			activate C
-			B <-- C: return Cc1Return
-			deactivate C
-		A <-- B: return Bb2Return
-		deactivate B
-	USER <-- A: return Aa3Return
-	deactivate A
+	USER -> A: a3(a3_p1)
+		activate A
+		A -> B: b2(b2_p1)
+			activate B
+			B -> C: c1(c1_p1)
+				activate C
+				B <-- C: return Cc1Return
+				deactivate C
+			A <-- B: return Bb2Return
+			deactivate B
+		USER <-- A: return Aa3Return
+		deactivate A
 @enduml''', commands)
 
         with open("c:\\temp\\ess.txt", "w") as f:
@@ -702,34 +706,34 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
 
+        with open("c:\\temp\\ess.txt","w") as f:
+            f.write(commands)
+
         self.assertEqual(
 '''@startuml
 
 actor USER
-USER -> ClassA: doWork()
-	activate ClassA
-	ClassA -> ClassA: internalCall()
+	USER -> ClassA: doWork()
 		activate ClassA
-		ClassA -> ClassA: internalInnerCall()
+		ClassA -> ClassA: internalCall()
 			activate ClassA
-			ClassA -> ClassB: createInnerRequest(parm1)
+			ClassA -> ClassA: internalInnerCall()
+				activate ClassA
+				ClassA -> ClassB: createInnerRequest(parm1)
+					activate ClassB
+					ClassA <-- ClassB: return Bool
+					deactivate ClassB
+				ClassA <-- ClassA: return ResultPrice
+				deactivate ClassA
+			ClassA -> ClassB: createRequest(parm1, parm2)
 				activate ClassB
 				ClassA <-- ClassB: return Bool
 				deactivate ClassB
 			ClassA <-- ClassA: return ResultPrice
 			deactivate ClassA
-		ClassA -> ClassB: createRequest(parm1, parm2)
-			activate ClassB
-			ClassA <-- ClassB: return Bool
-			deactivate ClassB
-		ClassA <-- ClassA: return ResultPrice
+		USER <-- ClassA: return ClassAdoWorkRes
 		deactivate ClassA
-	USER <-- ClassA: 
-	deactivate ClassA
 @enduml''', commands)
-
-        with open("c:\\temp\\ess.txt","w") as f:
-            f.write(commands)
 
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
