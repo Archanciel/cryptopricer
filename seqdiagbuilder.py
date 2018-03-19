@@ -14,12 +14,12 @@ TAB_CHAR = '\t'
 
 
 class FlowEntry:
-    def __init__(self, fromClass='', fromMethod='', fromReturnType='', toClass='', toMethod='', toMethodCalledFromLineNumber ='', toSignature='', toReturnType=''):
+    def __init__(self, fromClass='', fromMethod='', toClass='', toMethod='', toMethodCalledFromLineNumber='',
+                 toSignature='', toReturnType=''):
         '''
 
         :param fromClass:                       class containing the fromMethod
         :param fromMethod:                      method calling the toMethod
-        :param fromReturnType:                  return type of the fromMethod (not shure is used !)
         :param toClass:                         class containing the toMethod
         :param toMethod:                        method called from the fromMethod
         :param toMethodCalledFromLineNumber:    line number in the fromMethod from which
@@ -29,7 +29,6 @@ class FlowEntry:
         '''
         self.fromClass = fromClass
         self.fromMethod = fromMethod
-        self.fromReturnType = fromReturnType
         self.toClass = toClass
         self.toMethod = toMethod
         self.toMethodCalledFromLineNumber = toMethodCalledFromLineNumber
@@ -40,7 +39,6 @@ class FlowEntry:
     def __eq__(self, other):
         return self.fromClass == other.fromClass and \
                self.fromMethod == other.fromMethod and \
-               self.fromReturnType == other.fromReturnType and \
                self.toClass == other.toClass and \
                self.toMethod == other.toMethod and \
                self.toMethodCalledFromLineNumber == other.toMethodCalledFromLineNumber and \
@@ -77,7 +75,7 @@ class FlowEntry:
 
 
     def __str__(self):
-        return "{}.{}, {}, {}.{}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.fromReturnType, self.toClass, self.toMethod, self.toMethodCalledFromLineNumber, self.toSignature, self.toReturnType)
+        return "{}.{}, {}.{}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.toClass, self.toMethod, self.toMethodCalledFromLineNumber, self.toSignature, self.toReturnType)
 
 
 class RecordedFlowPath:
@@ -447,7 +445,8 @@ class SeqDiagBuilder:
 
                         toClass = instance.__class__.__name__
                         toMethod = methodName
-                        flowEntry = FlowEntry(fromClass, fromMethod, fromMethodReturnDoc, toClass, toMethod, toMethodCalledFromLineNumber, methodSignature, toMethodReturnDoc)
+                        flowEntry = FlowEntry(fromClass, fromMethod, toClass, toMethod, toMethodCalledFromLineNumber,
+                                              methodSignature, toMethodReturnDoc)
                         fromClass = toClass
                         fromMethod = toMethod
                         toMethodCalledFromLineNumber = methodCallLineNumber

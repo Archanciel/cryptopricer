@@ -322,13 +322,32 @@ class A:
         b.b2(1)
     def a4(self, a4_p1):
         '''
-        :param a2_p1:
+        :param a4_p1:
         :seqdiag_return Aa4Return
         :return:
         '''
         b = B()
         b.b1(1)
         b.b1(1)
+    def a5(self, a5_p1):
+        '''
+        :param a5_p1:
+        :seqdiag_return Aa5Return
+        :return:
+        '''
+        b = B()
+        b.b1(1)
+        b.b1(1)
+        b.b1(1)
+    def a6(self, a6_p1):
+        '''
+        :param a6_p1:
+        :seqdiag_return Aa6Return
+        :return:
+        '''
+        b = B()
+        b.b2(1)
+        b.b2(1)
 
 
 class TestSeqDiagBuilder(unittest.TestCase):
@@ -414,6 +433,41 @@ USER -> A: a2(a2_p1)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
+
+    def testCreateSeqDiaqCommandsOnThreeLevelCallingMidMethodTwice(self):
+        entryPoint = A()
+
+        SeqDiagBuilder.activate('A', 'a6')  # activate sequence diagram building
+        entryPoint.a6(1)
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+USER -> A: a6(a6_p1)
+	activate A
+	A -> B: b2(b2_p1)
+		activate B
+	    B -> C: c1(c1_p1)
+		    activate C
+		    B <-- C: return Cc1Return
+    		deactivate C
+		A <-- B: return Bb2Return
+		deactivate B
+	USER <-- A: return Aa6Return
+	deactivate A
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+
     def testCreateSeqDiaqCommandsOnTwoLevelCallCallingMethodTwice(self):
         entryPoint = A()
 
@@ -446,6 +500,45 @@ USER -> A: a4(a4_p1)
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+
+    def testCreateSeqDiaqCommandsOnTwoLevelCallCallingMethodThreeTimes(self):
+        entryPoint = A()
+
+        SeqDiagBuilder.activate('A', 'a5')  # activate sequence diagram building
+        entryPoint.a5(1)
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+USER -> A: a5(a5_p1)
+	activate A
+	A -> B: b1(b1_p1)
+		activate B
+		A <-- B: return Bb1Return
+		deactivate B
+	A -> B: b1(b1_p1)
+		activate B
+		A <-- B: return Bb1Return
+		deactivate B
+	A -> B: b1(b1_p1)
+		activate B
+		A <-- B: return Bb1Return
+		deactivate B
+	USER <-- A: return Aa5Return
+	deactivate A
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
 
     def testCreateSeqDiaqCommandsOnThreeLevelCall(self):
         entryPoint = A()
@@ -685,16 +778,16 @@ USER -> ClassA: doWork()
 
 
     def testFlowEntryEq(self):
-        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
-        fe2 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'f', 'B', 'f', '(a, b)', 'RetClass')
-        fe5 = FlowEntry('A', 'e', 'B', 'g', '(a, b)', 'RetClass')
-        fe6 = FlowEntry('A', 'e', 'B', 'f', '(a, w)', 'RetClass')
-        fe7 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', '')
+        fe1 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe2 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'f', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('A', 'e', 'g', '(a, b)', 'RetClass')
+        fe6 = FlowEntry('A', 'e', 'f', '(a, w)', 'RetClass')
+        fe7 = FlowEntry('A', 'e', 'f', '(a, b)', '')
 
         self.assertTrue(fe1 == fe2)
-        self.assertFalse(fe1 == fe3)
+        self.assertTrue(fe1 == fe3)
         self.assertFalse(fe1 == fe4)
         self.assertFalse(fe1 == fe5)
         self.assertFalse(fe1 == fe6)
@@ -702,15 +795,15 @@ USER -> ClassA: doWork()
 
 
     def testFlowEntryToString(self):
-        fe1 = FlowEntry('A', 'e', 'e_RetType', 'B', 'f', '95', '(a, b)', 'f_RetType')
-        self.assertEqual('A.e, e_RetType, B.f, 95, (a, b), f_RetType', str(fe1))
+        fe1 = FlowEntry('A', 'e', 'B', 'f', '95', '(a, b)', 'f_RetType')
+        self.assertEqual('A.e, B.f, 95, (a, b), f_RetType', str(fe1))
 
 
     @unittest.skip
     def testAddIfNotInNoCallBeforeEntryPoint(self):
-        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'f', 'B', 'f', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'f', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('B', 'f')
         rfp.addIfNotIn(fe1)
@@ -721,9 +814,9 @@ USER -> ClassA: doWork()
 
     @unittest.skip
     def testAddIfNotInOneCallBeforeEntryPoint(self):
-        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'f', 'B', 'f', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'f', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('C', 'f')
         rfp.addIfNotIn(fe1)
@@ -734,9 +827,9 @@ USER -> ClassA: doWork()
 
     @unittest.skip
     def testAddIfNotInNCallsBeforeEntryPoint(self):
-        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'j', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('B', 'j')
         rfp.addIfNotIn(fe1)
@@ -747,10 +840,10 @@ USER -> ClassA: doWork()
 
     @unittest.skip
     def testAddIfNotInNCallsBeforeEntryPointEntryPointAddedTwice(self):
-        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
-        fe5 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'j', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('C', 'f', 'j', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('B', 'j')
         rfp.addIfNotIn(fe1)
@@ -762,10 +855,10 @@ USER -> ClassA: doWork()
 
     @unittest.skip
     def testAddIfNotInNCallsBeforeEntryPointEntryPointAddedTwiceWithSubsequentEntries(self):
-        fe4 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
-        fe5 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
-        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'j', '(a, b)', 'RetClass')
+        fe5 = FlowEntry('C', 'f', 'j', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('B', 'j')
         rfp.addIfNotIn(fe1) # before entry point: will not be added
@@ -779,9 +872,9 @@ USER -> ClassA: doWork()
 
     @unittest.skip
     def testAddIfNotInEntryPointNeverReached(self):
-        fe1 = FlowEntry('A', 'e', 'B', 'f', '(a, b)', 'RetClass')
-        fe3 = FlowEntry('A', 'e', 'C', 'f', '(a, b)', 'RetClass')
-        fe4 = FlowEntry('C', 'f', 'B', 'j', '(a, b)', 'RetClass')
+        fe1 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe3 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')
+        fe4 = FlowEntry('C', 'f', 'j', '(a, b)', 'RetClass')
 
         rfp = RecordedFlowPath('A', 'a')
         rfp.addIfNotIn(fe1)
