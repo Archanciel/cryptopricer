@@ -473,18 +473,26 @@ actor USER
 '''@startuml
 
 actor USER
-USER -> A: a6(a6_p1)
-	activate A
-	A -> B: b2(b2_p1)
-		activate B
-	    B -> C: c1(c1_p1)
-		    activate C
-		    B <-- C: return Cc1Return
-    		deactivate C
-		A <-- B: return Bb2Return
-		deactivate B
-	USER <-- A: return Aa6Return
-	deactivate A
+	USER -> A: a6(a6_p1)
+		activate A
+		A -> B: b2(b2_p1)
+			activate B
+			B -> C: c1(c1_p1)
+				activate C
+				B <-- C: return Cc1Return
+				deactivate C
+			A <-- B: return Bb2Return
+			deactivate B
+		A -> B: b2(b2_p1)
+			activate B
+			B -> C: c1(c1_p1)
+				activate C
+				B <-- C: return Cc1Return
+				deactivate C
+			A <-- B: return Bb2Return
+			deactivate B
+		USER <-- A: return Aa6Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -721,38 +729,36 @@ actor USER
 '''@startuml
 
 actor GUI
-GUI -> Controller: getPrintableResultForInput(inputStr)
-	activate Controller
-	Controller -> Requester: getCommand(inputStr)
-		activate Requester
-		Requester -> Requester: _parseAndFillCommandPrice(inputStr)
+	GUI -> Controller: getPrintableResultForInput(inputStr)
+		activate Controller
+		Controller -> Requester: getCommand(inputStr)
 			activate Requester
-			Requester -> Requester: _buildFullCommandPriceOptionalParmsDic(optionalParmList)
+			Requester -> Requester: _parseAndFillCommandPrice(inputStr)
 				activate Requester
-				Requester <-- Requester: return optionalParsedParmDataDic
+				Requester -> Requester: _buildFullCommandPriceOptionalParmsDic(optionalParmList)
+					activate Requester
+					Requester <-- Requester: return optionalParsedParmDataDic
+					deactivate Requester
+				Requester <-- Requester: return CommandPrice or CommandError
 				deactivate Requester
-			Requester <-- Requester: return CommandPrice or CommandError
-			deactivate Requester
-		Controller <-- Requester: return CommandPrice or CommandError
-		deactivate Requester
-	Controller -> CommandPrice: execute()
-		activate CommandPrice
-		CommandPrice -> Processor: getCryptoPrice(crypto, fiat, exchange, day, month, year, hour, minute, priceValueSymbol=None, priceValueAmount=None, priceValueSaveFlag=None, requestInputString='')
-			activate Processor
-			Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange)
-				activate PriceRequester
-				PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, fiat, timeStampUTC, exchange, resultData)
+		Controller -> CommandPrice: execute()
+			activate CommandPrice
+			CommandPrice -> Processor: getCryptoPrice(crypto, fiat, exchange, day, month, year, hour, minute, priceValueSymbol=None, priceValueAmount=None, priceValueSaveFlag=None, requestInputString='')
+				activate Processor
+				Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange)
 					activate PriceRequester
-					PriceRequester <-- PriceRequester: return ResultData
+					PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, fiat, timeStampUTC, exchange, resultData)
+						activate PriceRequester
+						PriceRequester <-- PriceRequester: return ResultData
+						deactivate PriceRequester
+					Processor <-- PriceRequester: return ResultData
 					deactivate PriceRequester
-				Processor <-- PriceRequester: return ResultData
-				deactivate PriceRequester
-			CommandPrice <-- Processor: return ResultData
-			deactivate Processor
-		Controller <-- CommandPrice: return ResultData or False
-		deactivate CommandPrice
-	GUI <-- Controller: return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
-	deactivate Controller
+				CommandPrice <-- Processor: return ResultData
+				deactivate Processor
+			Controller <-- CommandPrice: return ResultData or False
+			deactivate CommandPrice
+		GUI <-- Controller: return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+		deactivate Controller
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()
