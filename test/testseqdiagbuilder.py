@@ -284,11 +284,21 @@ class B:
     def b2(self, b2_p1):
         '''
 
-        :param b1_p1:
+        :param b2_p1:
         :seqdiag_return Bb2Return
         :return:
         '''
         c = C()
+        c.c1(1)
+    def b3(self, b3_p1):
+        '''
+
+        :param b3_p1:
+        :seqdiag_return Bb3Return
+        :return:
+        '''
+        c = C()
+        c.c1(1)
         c.c1(1)
 
 class A:
@@ -352,6 +362,14 @@ class A:
         b = B()
         b.b2(1)
         b.b2(1)
+    def a7(self, a7_p1):
+        '''
+        :param a7_p1:
+        :seqdiag_return Aa6Return
+        :return:
+        '''
+        b = B()
+        b.b3(1)
 
 
 class TestSeqDiagBuilder(unittest.TestCase):
@@ -438,7 +456,7 @@ actor USER
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
 
-    def testCreateSeqDiaqCommandsOnThreeLevelCallingMidMethodTwice(self):
+    def testCreateSeqDiaqCommandsOnThreeLevelCallingMidLevelMethodTwice(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a6')  # activate sequence diagram building
@@ -467,6 +485,48 @@ USER -> A: a6(a6_p1)
 		deactivate B
 	USER <-- A: return Aa6Return
 	deactivate A
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+
+    def testCreateSeqDiaqCommandsOnThreeLevelCallingLastLevelMethodTwice(self):
+        '''
+        Calling two level deep method which calls last Level method twice
+        :return:
+        '''
+        entryPoint = A()
+
+        SeqDiagBuilder.activate('A', 'a7')  # activate sequence diagram building
+        entryPoint.a7(1)
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+	USER -> A: a7(a7_p1)
+		activate A
+		A -> B: b3(b3_p1)
+			activate B
+			B -> C: c1(c1_p1)
+				activate C
+				B <-- C: return Cc1Return
+				deactivate C
+			B -> C: c1(c1_p1)
+				activate C
+				B <-- C: return Cc1Return
+				deactivate C
+			A <-- B: return Bb3Return
+			deactivate B
+		USER <-- A: return Aa6Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
