@@ -300,6 +300,22 @@ class B:
         c = C()
         c.c1(1)
         c.c1(1)
+    def b4(self, b4_p1):
+        '''
+
+        :param b4_p1:
+        :seqdiag_return Bb4Return
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
+    def b5(self, b5_p1):
+        '''
+
+        :param b5_p1:
+        :seqdiag_return Bb5Return
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
 
 class A:
     def a0(self, a1_p1, a1_p2):
@@ -370,6 +386,30 @@ class A:
         '''
         b = B()
         b.b3(1)
+    def a8(self, a8_p1, a8_p2):
+        '''
+        :param a8_p1:
+        :param a8_p2:
+        :seqdiag_return Aa8Return
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
+    def a9(self, a9_p1):
+        '''
+        :param a9_p1:
+        :seqdiag_return Aa9Return
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
+    def a10(self, a10_p1):
+        '''
+        :param a10_p1:
+        :seqdiag_return Aa10Return
+        :return:
+        '''
+        b = B()
+        b.b4(1)
+        b.b5(1)
 
 
 class TestSeqDiagBuilder(unittest.TestCase):
@@ -425,6 +465,37 @@ actor USER
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
+    def testCreateSeqDiaqCommandsTwoLevelCallTwoDiffMethods(self):
+        entryPoint = A()
+
+        SeqDiagBuilder.activate('A', 'a10')  # activate sequence diagram building
+        entryPoint.a10(1)
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+        self.assertEqual(
+'''@startuml
+
+actor USER
+	USER -> A: a10(a10_p1)
+		activate A
+		A -> B: b4(b4_p1)
+			activate B
+			A <-- B: return Bb4Return
+			deactivate B
+		A -> B: b5(b5_p1)
+			activate B
+			A <-- B: return Bb5Return
+			deactivate B
+		USER <-- A: return Aa10Return
+		deactivate A
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
     def testCreateSeqDiaqCommandsOnTwoLevelCall(self):
         entryPoint = A()
