@@ -254,6 +254,16 @@ class ClassB:
         SeqDiagBuilder.recordFlow()
 
 
+class D:
+    def d1(self, d1_p1):
+        '''
+
+        :param d1_p1:
+        :seqdiag_return Dd1Return
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
+
 class C:
     def c1(self, c1_p1):
         '''
@@ -263,6 +273,15 @@ class C:
         :return:
         '''
         SeqDiagBuilder.recordFlow()
+    def c2(self, c2_p1):
+        '''
+
+        :param c2_p1:
+        :seqdiag_return Cc2Return
+        :return:
+        '''
+        d = D()
+        d.d1(1)
 
 class B:
     def b0(self, b1_p1):
@@ -316,6 +335,15 @@ class B:
         :return:
         '''
         SeqDiagBuilder.recordFlow()
+    def b6(self, b6_p1):
+        '''
+
+        :param b6_p1:
+        :seqdiag_return Bb6Return
+        :return:
+        '''
+        c = C()
+        c.c2(1)
 
 class A:
     def a0(self, a1_p1, a1_p2):
@@ -410,6 +438,15 @@ class A:
         b = B()
         b.b4(1)
         b.b5(1)
+    def a11(self, a11_p1):
+        '''
+        :param a11_p1:
+        :seqdiag_return Aa11Return
+        :return:
+        '''
+        b = B()
+        b.b6(1)
+        b.b6(1)
 
 
 class TestSeqDiagBuilder(unittest.TestCase):
@@ -563,6 +600,56 @@ actor USER
 			A <-- B: return Bb2Return
 			deactivate B
 		USER <-- A: return Aa6Return
+		deactivate A
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+
+    def testCreateSeqDiaqCommandsOnFiveLevelCallingSecondLevelMethodTwice(self):
+        entryPoint = A()
+
+        SeqDiagBuilder.activate('A', 'a11')  # activate sequence diagram building
+        entryPoint.a11(1)
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+	USER -> A: a11(a11_p1)
+		activate A
+		A -> B: b6(b6_p1)
+			activate B
+			B -> C: c2(c2_p1)
+				activate C
+				C -> D: d1(d1_p1)
+					activate D
+					C <-- D: return Dd1Return
+					deactivate D
+				B <-- C: return Cc2Return
+				deactivate C
+			A <-- B: return Bb6Return
+			deactivate B
+		A -> B: b6(b6_p1)
+			activate B
+			B -> C: c2(c2_p1)
+				activate C
+				C -> D: d1(d1_p1)
+					activate D
+					C <-- D: return Dd1Return
+					deactivate D
+				B <-- C: return Cc2Return
+				deactivate C
+			A <-- B: return Bb6Return
+			deactivate B
+		USER <-- A: return Aa11Return
 		deactivate A
 @enduml''', commands)
 

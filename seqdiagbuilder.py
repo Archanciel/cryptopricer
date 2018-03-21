@@ -316,8 +316,9 @@ class SeqDiagBuilder:
                             indentStr = indentStr[:-1]
                             commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
                             seqDiagCommandStr += commandStr
+                            indentStr = indentStr[:-2]
 
-                            deepestReached = False
+#                            deepestReached = False
                         else:
                             returnEntry = classMethodReturnStack.pop()
                             indentStr = indentStr[:-1]
@@ -337,6 +338,7 @@ class SeqDiagBuilder:
                 returnEntry = classMethodReturnStack.pop()
                 commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
                 seqDiagCommandStr += commandStr
+#                fromClass = returnEntry.fromClass not usefull !
                 indentStr = indentStr[:-1]
 
         seqDiagCommandStr += "@enduml"
