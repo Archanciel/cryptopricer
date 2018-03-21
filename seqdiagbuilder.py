@@ -329,7 +329,7 @@ class SeqDiagBuilder:
                                                                                                 indentStr,
                                                                                                 classMethodReturnStack)
                     seqDiagCommandStr += commandStr
-                    # fromClass = flowEntry.toClass this assignation has no utility !
+                    fromClass = flowEntry.toClass
                     deepestReached = True
             indentStr += TAB_CHAR
 
@@ -413,8 +413,9 @@ class SeqDiagBuilder:
         if frameList:
             fromClass = ''
             fromMethod = ''
-            toMethodCalledFromLineNumber = ''   # line number in the calling method from
-                                                # which the current method was called
+            toMethodCalledFromLineNumber = '0'  # line numbers list string through which
+                                                # the control flow passed to reach the
+                                                # current method
             fromMethodReturnDoc = ''
             for frame in frameList[:-1]: #last line in frameList is the call to this toMethod !
                 match = re.match(PYTHON_FILE_AND_FUNC_PATTERN, frame)
@@ -448,7 +449,7 @@ class SeqDiagBuilder:
                                               methodSignature, toMethodReturnDoc)
                         fromClass = toClass
                         fromMethod = toMethod
-                        toMethodCalledFromLineNumber = methodCallLineNumber
+                        toMethodCalledFromLineNumber = "{}-{}".format(toMethodCalledFromLineNumber, methodCallLineNumber)
                         fromMethodReturnDoc = toMethodReturnDoc
                         SeqDiagBuilder.recordedFlowPath.addIfNotIn(flowEntry)
 #            print(SeqDiagBuilder.recordedFlowPath)
