@@ -270,7 +270,6 @@ class SeqDiagBuilder:
             SeqDiagBuilder._issueWarning("No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{}.".format(SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod))
             isFlowRecorded = False
 
-        indentStr = ''
         seqDiagCommandStr = SeqDiagBuilder._buildCommandFileHeaderSection()
 
         if isFlowRecorded:
@@ -280,66 +279,44 @@ class SeqDiagBuilder:
             firstFlowEntry = SeqDiagBuilder.recordedFlowPath.list[0]
             firstFlowEntry.fromClass = actorName
             fromClass = firstFlowEntry.fromClass
-            commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, firstFlowEntry,
-                                                                                        indentStr,
-                                                                                        classMethodReturnStack)
+            commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, firstFlowEntry, classMethodReturnStack)
             seqDiagCommandStr += commandStr
             fromClass = firstFlowEntry.toClass
 
             for flowEntry in SeqDiagBuilder.recordedFlowPath.list[1:]:
                 if not classMethodReturnStack.containsFromCall(flowEntry):
-                    commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry,
-                                                                                                indentStr,
-                                                                                                classMethodReturnStack)
+                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack)
                     seqDiagCommandStr += commandStr
                     fromClass = flowEntry.toClass
-                    deepestReached = True
                 else:
                     stopUnfolding = False
                     while not stopUnfolding and classMethodReturnStack.containsFromCall(flowEntry):
                         returnEntry = classMethodReturnStack.pop()
-                        if deepestReached:
-                            # handle deepest or leaf return message, the one which did not
-                            # generate an entry in the classMethodReturnStack
-                            indentStr += TAB_CHAR
-                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
-                            seqDiagCommandStr += commandStr
+                        # handle deepest or leaf return message, the one which did not
+                        # generate an entry in the classMethodReturnStack
+                        commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry)
+                        seqDiagCommandStr += commandStr
 
-                            # handle return message for the method which called the
-                            # deepest or leaf method and which generated an entry in the
-                            # classMethodReturnStack
-                            if flowEntry.differByLineNumberOnly(returnEntry):
-                                stopUnfolding = True
-                                fromClass = flowEntry.fromClass
-                                continue
-                            returnEntry = classMethodReturnStack.pop()
-                            indentStr = indentStr[:-1]
-                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
-                            seqDiagCommandStr += commandStr
-                            indentStr = indentStr[:-2]
-
-#                            deepestReached = False
-                        else:
-                            returnEntry = classMethodReturnStack.pop()
-                            indentStr = indentStr[:-1]
-                            commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
-                            seqDiagCommandStr += commandStr
+                        # handle return message for the method which called the
+                        # deepest or leaf method and which generated an entry in the
+                        # classMethodReturnStack
+                        if flowEntry.differByLineNumberOnly(returnEntry):
+                            stopUnfolding = True
+                            fromClass = flowEntry.fromClass
+                            continue
+                        returnEntry = classMethodReturnStack.pop()
+                        commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry)
+                        seqDiagCommandStr += commandStr
                         fromClass = returnEntry.fromClass
-                    indentStr = indentStr[:-2]
-                    commandStr, indentStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry,
-                                                                                                indentStr,
-                                                                                                classMethodReturnStack)
+                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack)
                     seqDiagCommandStr += commandStr
                     fromClass = flowEntry.toClass
                     deepestReached = True
-            indentStr += TAB_CHAR
 
             while not classMethodReturnStack.isEmpty():
                 returnEntry = classMethodReturnStack.pop()
-                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(indentStr, returnEntry)
+                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry)
                 seqDiagCommandStr += commandStr
-#                fromClass = returnEntry.fromClass not usefull !
-                indentStr = indentStr[:-1]
 
         seqDiagCommandStr += "@enduml"
 
@@ -347,24 +324,43 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def _handleSeqDiagReturnMesssageCommand(indentStr, returnEntry):
+    def _handleSeqDiagReturnMesssageCommand(returnEntry):
         fromClass = returnEntry.toClass
         toClass = returnEntry.fromClass
         toReturnType = returnEntry.toReturnType
+        indentStr = SeqDiagBuilder.getReturnIndent(returnEntry.toMethodCalledFromLineNumber)
         commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, toReturnType, indentStr)
 
         return commandStr
 
     @staticmethod
-    def _handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, indentStr, classMethodReturnStack):
+    def _handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack):
         classMethodReturnStack.push(flowEntry)
         toClass = flowEntry.toClass
         toMethod = flowEntry.toMethod
         toSignature = flowEntry.toSignature
-        indentStr += TAB_CHAR
+        indentStr = SeqDiagBuilder.getForwardIndent(flowEntry.toMethodCalledFromLineNumber)
         commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
 
-        return commandStr, indentStr
+        return commandStr
+
+    @staticmethod
+    def getForwardIndent(toMethodCalledFromLineNumberStr):
+        '''
+        Returns the forward ident string calculated from the passed toMethodCalledFromLineNumberStr
+        :param toMethodCalledFromLineNumberStr:
+        :return:
+        '''
+        return (toMethodCalledFromLineNumberStr.count('-') - 1) * TAB_CHAR
+
+    @staticmethod
+    def getReturnIndent(toMethodCalledFromLineNumberStr):
+        '''
+        Returns the return ident string calculated from the passed toMethodCalledFromLineNumberStr
+        :param toMethodCalledFromLineNumberStr:
+        :return:
+        '''
+        return (toMethodCalledFromLineNumberStr.count('-')) * TAB_CHAR
 
     @staticmethod
     def _addForwardSeqDiagCommand(fromClass, toClass, method, signature, indentStr):

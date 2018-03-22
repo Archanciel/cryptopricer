@@ -494,10 +494,10 @@ endheader
 '''@startuml
 
 actor USER
-	USER -> A: a1(a1_p1, a1_p2)
-		activate A
-		USER <-- A: return Aa1Return
-		deactivate A
+USER -> A: a1(a1_p1, a1_p2)
+	activate A
+	USER <-- A: return Aa1Return
+	deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -518,18 +518,18 @@ actor USER
 '''@startuml
 
 actor USER
-	USER -> A: a10(a10_p1)
-		activate A
-		A -> B: b4(b4_p1)
-			activate B
-			A <-- B: return Bb4Return
-			deactivate B
-		A -> B: b5(b5_p1)
-			activate B
-			A <-- B: return Bb5Return
-			deactivate B
-		USER <-- A: return Aa10Return
-		deactivate A
+USER -> A: a10(a10_p1)
+	activate A
+	A -> B: b4(b4_p1)
+		activate B
+		A <-- B: return Bb4Return
+		deactivate B
+	A -> B: b5(b5_p1)
+		activate B
+		A <-- B: return Bb5Return
+		deactivate B
+	USER <-- A: return Aa10Return
+	deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -551,14 +551,14 @@ actor USER
 '''@startuml
 
 actor USER
-	USER -> A: a2(a2_p1)
-		activate A
-		A -> B: b1(b1_p1)
-			activate B
-			A <-- B: return Bb1Return
-			deactivate B
-		USER <-- A: return Aa2Return
-		deactivate A
+USER -> A: a2(a2_p1)
+	activate A
+	A -> B: b1(b1_p1)
+		activate B
+		A <-- B: return Bb1Return
+		deactivate B
+	USER <-- A: return Aa2Return
+	deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -581,26 +581,26 @@ actor USER
 '''@startuml
 
 actor USER
-	USER -> A: a6(a6_p1)
-		activate A
-		A -> B: b2(b2_p1)
-			activate B
-			B -> C: c1(c1_p1)
-				activate C
-				B <-- C: return Cc1Return
-				deactivate C
-			A <-- B: return Bb2Return
-			deactivate B
-		A -> B: b2(b2_p1)
-			activate B
-			B -> C: c1(c1_p1)
-				activate C
-				B <-- C: return Cc1Return
-				deactivate C
-			A <-- B: return Bb2Return
-			deactivate B
-		USER <-- A: return Aa6Return
-		deactivate A
+USER -> A: a6(a6_p1)
+	activate A
+	A -> B: b2(b2_p1)
+		activate B
+		B -> C: c1(c1_p1)
+			activate C
+			B <-- C: return Cc1Return
+			deactivate C
+		A <-- B: return Bb2Return
+		deactivate B
+	A -> B: b2(b2_p1)
+		activate B
+		B -> C: c1(c1_p1)
+			activate C
+			B <-- C: return Cc1Return
+			deactivate C
+		A <-- B: return Bb2Return
+		deactivate B
+	USER <-- A: return Aa6Return
+	deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -623,34 +623,34 @@ actor USER
 '''@startuml
 
 actor USER
-	USER -> A: a11(a11_p1)
-		activate A
-		A -> B: b6(b6_p1)
-			activate B
-			B -> C: c2(c2_p1)
-				activate C
-				C -> D: d1(d1_p1)
-					activate D
-					C <-- D: return Dd1Return
-					deactivate D
-				B <-- C: return Cc2Return
-				deactivate C
-			A <-- B: return Bb6Return
-			deactivate B
-		A -> B: b6(b6_p1)
-			activate B
-			B -> C: c2(c2_p1)
-				activate C
-				C -> D: d1(d1_p1)
-					activate D
-					C <-- D: return Dd1Return
-					deactivate D
-				B <-- C: return Cc2Return
-				deactivate C
-			A <-- B: return Bb6Return
-			deactivate B
-		USER <-- A: return Aa11Return
-		deactivate A
+USER -> A: a11(a11_p1)
+	activate A
+	A -> B: b6(b6_p1)
+		activate B
+		B -> C: c2(c2_p1)
+			activate C
+			C -> D: d1(d1_p1)
+				activate D
+				C <-- D: return Dd1Return
+				deactivate D
+			B <-- C: return Cc2Return
+			deactivate C
+		A <-- B: return Bb6Return
+		deactivate B
+	A -> B: b6(b6_p1)
+		activate B
+		B -> C: c2(c2_p1)
+			activate C
+			C -> D: d1(d1_p1)
+				activate D
+				C <-- D: return Dd1Return
+				deactivate D
+			B <-- C: return Cc2Return
+			deactivate C
+		A <-- B: return Bb6Return
+		deactivate B
+	USER <-- A: return Aa11Return
+	deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -677,22 +677,22 @@ actor USER
 '''@startuml
 
 actor USER
-	USER -> A: a7(a7_p1)
-		activate A
-		A -> B: b3(b3_p1)
-			activate B
-			B -> C: c1(c1_p1)
-				activate C
-				B <-- C: return Cc1Return
-				deactivate C
-			B -> C: c1(c1_p1)
-				activate C
-				B <-- C: return Cc1Return
-				deactivate C
-			A <-- B: return Bb3Return
-			deactivate B
-		USER <-- A: return Aa6Return
-		deactivate A
+USER -> A: a7(a7_p1)
+	activate A
+	A -> B: b3(b3_p1)
+		activate B
+		B -> C: c1(c1_p1)
+			activate C
+			B <-- C: return Cc1Return
+			deactivate C
+		B -> C: c1(c1_p1)
+			activate C
+			B <-- C: return Cc1Return
+			deactivate C
+		A <-- B: return Bb3Return
+		deactivate B
+	USER <-- A: return Aa6Return
+	deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -715,18 +715,18 @@ actor USER
 '''@startuml
 
 actor USER
-	USER -> A: a4(a4_p1)
-		activate A
-		A -> B: b1(b1_p1)
-			activate B
-			A <-- B: return Bb1Return
-			deactivate B
-		A -> B: b1(b1_p1)
-			activate B
-			A <-- B: return Bb1Return
-			deactivate B
-		USER <-- A: return Aa4Return
-		deactivate A
+USER -> A: a4(a4_p1)
+	activate A
+	A -> B: b1(b1_p1)
+		activate B
+		A <-- B: return Bb1Return
+		deactivate B
+	A -> B: b1(b1_p1)
+		activate B
+		A <-- B: return Bb1Return
+		deactivate B
+	USER <-- A: return Aa4Return
+	deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -749,22 +749,22 @@ actor USER
 '''@startuml
 
 actor USER
-	USER -> A: a5(a5_p1)
-		activate A
-		A -> B: b1(b1_p1)
-			activate B
-			A <-- B: return Bb1Return
-			deactivate B
-		A -> B: b1(b1_p1)
-			activate B
-			A <-- B: return Bb1Return
-			deactivate B
-		A -> B: b1(b1_p1)
-			activate B
-			A <-- B: return Bb1Return
-			deactivate B
-		USER <-- A: return Aa5Return
-		deactivate A
+USER -> A: a5(a5_p1)
+	activate A
+	A -> B: b1(b1_p1)
+		activate B
+		A <-- B: return Bb1Return
+		deactivate B
+	A -> B: b1(b1_p1)
+		activate B
+		A <-- B: return Bb1Return
+		deactivate B
+	A -> B: b1(b1_p1)
+		activate B
+		A <-- B: return Bb1Return
+		deactivate B
+	USER <-- A: return Aa5Return
+	deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -778,27 +778,27 @@ actor USER
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
 
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         self.assertEqual(
 '''@startuml
 
 actor USER
-	USER -> A: a3(a3_p1)
-		activate A
-		A -> B: b2(b2_p1)
-			activate B
-			B -> C: c1(c1_p1)
-				activate C
-				B <-- C: return Cc1Return
-				deactivate C
-			A <-- B: return Bb2Return
-			deactivate B
-		USER <-- A: return Aa3Return
-		deactivate A
+USER -> A: a3(a3_p1)
+	activate A
+	A -> B: b2(b2_p1)
+		activate B
+		B -> C: c1(c1_p1)
+			activate C
+			B <-- C: return Cc1Return
+			deactivate C
+		A <-- B: return Bb2Return
+		deactivate B
+	USER <-- A: return Aa3Return
+	deactivate A
 @enduml''', commands)
-
-        with open("c:\\temp\\ess.txt", "w") as f:
-            f.write(commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
@@ -887,36 +887,38 @@ actor USER
 '''@startuml
 
 actor GUI
-	GUI -> Controller: getPrintableResultForInput(inputStr)
-		activate Controller
-		Controller -> Requester: getCommand(inputStr)
+GUI -> Controller: getPrintableResultForInput(inputStr)
+	activate Controller
+	Controller -> Requester: getCommand(inputStr)
+		activate Requester
+		Requester -> Requester: _parseAndFillCommandPrice(inputStr)
 			activate Requester
-			Requester -> Requester: _parseAndFillCommandPrice(inputStr)
+			Requester -> Requester: _buildFullCommandPriceOptionalParmsDic(optionalParmList)
 				activate Requester
-				Requester -> Requester: _buildFullCommandPriceOptionalParmsDic(optionalParmList)
-					activate Requester
-					Requester <-- Requester: return optionalParsedParmDataDic
-					deactivate Requester
-				Requester <-- Requester: return CommandPrice or CommandError
+				Requester <-- Requester: return optionalParsedParmDataDic
 				deactivate Requester
-		Controller -> CommandPrice: execute()
-			activate CommandPrice
-			CommandPrice -> Processor: getCryptoPrice(crypto, fiat, exchange, day, month, year, hour, minute, priceValueSymbol=None, priceValueAmount=None, priceValueSaveFlag=None, requestInputString='')
-				activate Processor
-				Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange)
+			Requester <-- Requester: return CommandPrice or CommandError
+			deactivate Requester
+		Controller <-- Requester: return AbstractCommand
+		deactivate Requester
+	Controller -> CommandPrice: execute()
+		activate CommandPrice
+		CommandPrice -> Processor: getCryptoPrice(crypto, fiat, exchange, day, month, year, hour, minute, priceValueSymbol=None, priceValueAmount=None, priceValueSaveFlag=None, requestInputString='')
+			activate Processor
+			Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange)
+				activate PriceRequester
+				PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, fiat, timeStampUTC, exchange, resultData)
 					activate PriceRequester
-					PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, fiat, timeStampUTC, exchange, resultData)
-						activate PriceRequester
-						PriceRequester <-- PriceRequester: return ResultData
-						deactivate PriceRequester
-					Processor <-- PriceRequester: return ResultData
+					PriceRequester <-- PriceRequester: return ResultData
 					deactivate PriceRequester
-				CommandPrice <-- Processor: return ResultData
-				deactivate Processor
-			Controller <-- CommandPrice: return ResultData or False
-			deactivate CommandPrice
-		GUI <-- Controller: return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
-		deactivate Controller
+				Processor <-- PriceRequester: return ResultData
+				deactivate PriceRequester
+			CommandPrice <-- Processor: return ResultData
+			deactivate Processor
+		Controller <-- CommandPrice: return ResultData or False
+		deactivate CommandPrice
+	GUI <-- Controller: return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+	deactivate Controller
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()
@@ -937,26 +939,26 @@ actor GUI
 '''@startuml
 
 actor USER
-	USER -> ClassA: doWork()
+USER -> ClassA: doWork()
+	activate ClassA
+	ClassA -> ClassA: internalCall()
 		activate ClassA
-		ClassA -> ClassA: internalCall()
+		ClassA -> ClassA: internalInnerCall()
 			activate ClassA
-			ClassA -> ClassA: internalInnerCall()
-				activate ClassA
-				ClassA -> ClassB: createInnerRequest(parm1)
-					activate ClassB
-					ClassA <-- ClassB: return Bool
-					deactivate ClassB
-				ClassA <-- ClassA: return ResultPrice
-				deactivate ClassA
-			ClassA -> ClassB: createRequest(parm1, parm2)
+			ClassA -> ClassB: createInnerRequest(parm1)
 				activate ClassB
 				ClassA <-- ClassB: return Bool
 				deactivate ClassB
 			ClassA <-- ClassA: return ResultPrice
 			deactivate ClassA
-		USER <-- ClassA: return ClassAdoWorkRes
+		ClassA -> ClassB: createRequest(parm1, parm2)
+			activate ClassB
+			ClassA <-- ClassB: return Bool
+			deactivate ClassB
+		ClassA <-- ClassA: return ResultPrice
 		deactivate ClassA
+	USER <-- ClassA: return ClassAdoWorkRes
+	deactivate ClassA
 @enduml''', commands)
 
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
