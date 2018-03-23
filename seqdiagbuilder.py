@@ -74,6 +74,15 @@ class FlowEntry:
         return self.equalFrom(entry) and self.toMethodCalledFromLineNumber != entry.toMethodCalledFromLineNumber
 
 
+    def getIndentNumber(self):
+        '''
+        Calculate the number of time the Plant UML command must be indented in function
+        of the call depth level of the FlowEntry
+        :return:
+        '''
+        return self.toMethodCalledFromLineNumber.count('-')
+
+
     def __str__(self):
         return "{}.{}, {}.{}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.toClass, self.toMethod, self.toMethodCalledFromLineNumber, self.toSignature, self.toReturnType)
 
@@ -328,7 +337,7 @@ class SeqDiagBuilder:
         fromClass = returnEntry.toClass
         toClass = returnEntry.fromClass
         toReturnType = returnEntry.toReturnType
-        indentStr = SeqDiagBuilder.getReturnIndent(returnEntry.toMethodCalledFromLineNumber)
+        indentStr = SeqDiagBuilder.getReturnIndent(returnEntry)
         commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, toReturnType, indentStr)
 
         return commandStr
@@ -339,28 +348,28 @@ class SeqDiagBuilder:
         toClass = flowEntry.toClass
         toMethod = flowEntry.toMethod
         toSignature = flowEntry.toSignature
-        indentStr = SeqDiagBuilder.getForwardIndent(flowEntry.toMethodCalledFromLineNumber)
+        indentStr = SeqDiagBuilder.getForwardIndent(flowEntry)
         commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
 
         return commandStr
 
     @staticmethod
-    def getForwardIndent(toMethodCalledFromLineNumberStr):
+    def getForwardIndent(flowEntry):
         '''
-        Returns the forward ident string calculated from the passed toMethodCalledFromLineNumberStr
-        :param toMethodCalledFromLineNumberStr:
+        Returns the forward ident string.
+        :param flowEntry:
         :return:
         '''
-        return (toMethodCalledFromLineNumberStr.count('-') - 1) * TAB_CHAR
+        return (flowEntry.getIndentNumber() - 1) * TAB_CHAR
 
     @staticmethod
-    def getReturnIndent(toMethodCalledFromLineNumberStr):
+    def getReturnIndent(returnEntry):
         '''
-        Returns the return ident string calculated from the passed toMethodCalledFromLineNumberStr
-        :param toMethodCalledFromLineNumberStr:
+        Returns the return ident string .
+        :param returnEntry:
         :return:
         '''
-        return (toMethodCalledFromLineNumberStr.count('-')) * TAB_CHAR
+        return returnEntry.getIndentNumber() * TAB_CHAR
 
     @staticmethod
     def _addForwardSeqDiagCommand(fromClass, toClass, method, signature, indentStr):
