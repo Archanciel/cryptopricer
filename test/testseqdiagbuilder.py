@@ -1029,6 +1029,41 @@ USER -> ClassA: doWork()
         self.assertEqual('A.e, B.f, 95, (a, b), f_RetType', str(fe1))
 
 
+    def testFlowEntryCreateSignatureVaryingMaxSigArgNum(self):
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '(a, b, c, d)', 'f_RetType')
+        self.assertEqual(fe.createSignature(None, None), '(a, b, c, d)')
+        self.assertEqual(fe.createSignature(4, None), '(a, b, c, d)')
+        self.assertEqual(fe.createSignature(5, None), '(a, b, c, d)')
+        self.assertEqual(fe.createSignature(3, None), '(a, b, c, ...)')
+        self.assertEqual(fe.createSignature(1, None), '(a, ...)')
+        self.assertEqual(fe.createSignature(0, None), '(...)')
+
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '()', 'f_RetType')
+        self.assertEqual(fe.createSignature(0, None), '()')
+        self.assertEqual(fe.createSignature(1, None), '()')
+        self.assertEqual(fe.createSignature(2, None), '()')
+
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '(a)', 'f_RetType')
+        self.assertEqual(fe.createSignature(0, None), '(...)')
+        self.assertEqual(fe.createSignature(1, None), '(a)')
+        self.assertEqual(fe.createSignature(2, None), '(a)')
+
+
+    def testFlowEntryCreateSignatureVaryingMaxSigCharLen(self):
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '(aaa, bbb, ccc, ddd)', 'f_RetType')
+        self.assertEqual(fe.createSignature(None, 100), '(aaa, bbb, ccc, ddd)')
+        self.assertEqual(fe.createSignature(None, 0), '(...)')
+        self.assertEqual(fe.createSignature(None, 10), '(aaa, ...)')
+        self.assertNotEqual(fe.createSignature(None, 9), '(aaa, ...)')
+        self.assertEqual(fe.createSignature(None, 15), '(aaa, bbb, ...)')
+        self.assertNotEqual(fe.createSignature(None, 14), '(aaa, bbb, ...)')
+
+
+    def testFlowEntryCreateSignatureVaryingMaxSigArgNumAndMaxSigCharLen(self):
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '(aaa, bbb, ccc, ddd)', 'f_RetType')
+        self.assertEqual(fe.createSignature(None, 100), '(aaa, bbb, ccc, ddd)')
+
+
     @unittest.skip
     def testAddIfNotInNoCallBeforeEntryPoint(self):
         fe1 = FlowEntry('A', 'e', 'f', '(a, b)', 'RetClass')

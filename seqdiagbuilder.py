@@ -83,6 +83,72 @@ class FlowEntry:
         return self.toMethodCalledFromLineNumber.count('-')
 
 
+    def createSignature(self, maxSigArgNum, maxSigCharLen):
+        '''
+        Return a signature which has no more arguments than maxSigArgNum and is not
+        longer than maxSigCharLen.
+
+        :param maxSigArgNum:
+        :param maxSigCharLen:
+        :return:
+        '''
+
+        # applying first the max signature arg number constraint
+
+        if self.toSignature == '()':
+            return self.toSignature
+        else:
+            returnedSignature = self.toSignature
+            if maxSigArgNum != None:
+                if maxSigArgNum == 0:
+                    return '(...)'
+
+                tentativeSigArgNum = self.toSignature.count(',') + 1
+
+                if maxSigArgNum < tentativeSigArgNum:
+                    # here, the signature must be reduced to maxSigArgNum arguments
+                    returnedSignature = returnedSignature[1:-1] # removing parenthesis
+                    sigArgList = returnedSignature.split(',')
+                    returnedSignature = ','.join(sigArgList[:maxSigArgNum])
+                    returnedSignature = '(' + returnedSignature + ', ...)'
+
+        # applying then the max signature length number constraint
+
+        if maxSigCharLen != None:
+            if returnedSignature == '(...)' or len(returnedSignature) <= maxSigCharLen:
+                return returnedSignature
+
+            if '...' in returnedSignature:
+                returnedSignature = returnedSignature[1:-6]  # removing parenthesis and , ...
+            else:
+                returnedSignature = returnedSignature[1:-1]  # removing parenthesis
+
+            sigArgList = returnedSignature.split(', ')
+            returnedSignature = '(...)'
+            tentativeSignature = ''
+            tentativeSigArgNum = 0
+
+            for arg in sigArgList:
+                if tentativeSigArgNum == 0:
+                    tentativeSignature += arg
+                else:
+                    tentativeSignature = tentativeSignature + ', ' + arg
+
+                tentativeSignature = '(' + tentativeSignature + ', ...)'
+                sigLen = len(tentativeSignature)
+
+                if sigLen > maxSigCharLen:
+                    return returnedSignature
+                elif sigLen == maxSigCharLen:
+                    return tentativeSignature
+                else:
+                    returnedSignature = tentativeSignature
+                    tentativeSignature = returnedSignature[1:-6]
+                    tentativeSigArgNum += 1
+
+        return returnedSignature
+
+
     def __str__(self):
         return "{}.{}, {}.{}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.toClass, self.toMethod, self.toMethodCalledFromLineNumber, self.toSignature, self.toReturnType)
 
@@ -262,15 +328,18 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def createSeqDiaqCommands(actorName):
+    def createSeqDiaqCommands(actorName, maxSigArgNum=None, maxSigCharLen=None):
         '''
         This method use the control flow data collected during execution to create
-        the commands Plantuml will use to draw a sequence diagram.
+        the commands Plantuml will use to draw the sequence diagram.
 
         To build the diagram itself, type java -jar plantuml.jar -tsvg seqdiagcommands.txt
         in a command line window. This build a svg file which can be displayed in a browser.
 
         :param actorName:
+        :param maxSigArgNum:        maximum arguments number of a called toMethod
+                                    toSignature
+        :param maxSigCharLen:    maximum length a toMethod toSignature can occupy
         :return:
         '''
         isFlowRecorded = True
@@ -288,13 +357,13 @@ class SeqDiagBuilder:
             firstFlowEntry = SeqDiagBuilder.recordedFlowPath.list[0]
             firstFlowEntry.fromClass = actorName
             fromClass = firstFlowEntry.fromClass
-            commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, firstFlowEntry, classMethodReturnStack)
+            commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, firstFlowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen)
             seqDiagCommandStr += commandStr
             fromClass = firstFlowEntry.toClass
 
             for flowEntry in SeqDiagBuilder.recordedFlowPath.list[1:]:
                 if not classMethodReturnStack.containsFromCall(flowEntry):
-                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack)
+                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen)
                     seqDiagCommandStr += commandStr
                     fromClass = flowEntry.toClass
                 else:
@@ -317,7 +386,7 @@ class SeqDiagBuilder:
                         commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry)
                         seqDiagCommandStr += commandStr
                         fromClass = returnEntry.fromClass
-                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack)
+                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen)
                     seqDiagCommandStr += commandStr
                     fromClass = flowEntry.toClass
                     deepestReached = True
@@ -337,24 +406,33 @@ class SeqDiagBuilder:
         fromClass = returnEntry.toClass
         toClass = returnEntry.fromClass
         toReturnType = returnEntry.toReturnType
-        indentStr = SeqDiagBuilder.getReturnIndent(returnEntry)
+        indentStr = SeqDiagBuilder._getReturnIndent(returnEntry)
         commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, toReturnType, indentStr)
 
         return commandStr
 
     @staticmethod
-    def _handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack):
+    def _handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen):
+        '''
+        Controls the creation of the Plant UML call commands.
+        :param fromClass:
+        :param flowEntry:
+        :param classMethodReturnStack:
+        :param maxSigArgNum:
+        :param maxSigCharLen:
+        :return:
+        '''
         classMethodReturnStack.push(flowEntry)
         toClass = flowEntry.toClass
         toMethod = flowEntry.toMethod
-        toSignature = flowEntry.toSignature
-        indentStr = SeqDiagBuilder.getForwardIndent(flowEntry)
+        toSignature = flowEntry.createSignature(maxSigArgNum, maxSigCharLen)
+        indentStr = SeqDiagBuilder._getForwardIndent(flowEntry)
         commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
 
         return commandStr
 
     @staticmethod
-    def getForwardIndent(flowEntry):
+    def _getForwardIndent(flowEntry):
         '''
         Returns the forward ident string.
         :param flowEntry:
@@ -363,7 +441,7 @@ class SeqDiagBuilder:
         return (flowEntry.getIndentNumber() - 1) * TAB_CHAR
 
     @staticmethod
-    def getReturnIndent(returnEntry):
+    def _getReturnIndent(returnEntry):
         '''
         Returns the return ident string .
         :param returnEntry:
@@ -397,14 +475,11 @@ class SeqDiagBuilder:
                                                          fromClass)
 
     @staticmethod
-    def recordFlow(maxSigArgNum=None, maxSigArgCharLen=None):
+    def recordFlow():
         '''
         Records in a class list the control flow information which will be used to build
         the seqdiag creation commands.
 
-        :param maxSigArgNum:        maximum arguments number of a called toMethod
-                                    toSignature
-        :param maxSigArgCharLen:    maximum length a toMethod toSignature can occupy
         :return:
         '''
         SeqDiagBuilder._recordFlowCalled = True
