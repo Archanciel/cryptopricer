@@ -923,6 +923,100 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 
         SeqDiagBuilder.deactivate()
 
+    def testCreateSeqDiaqCommandsOnFullRequestHistoDayPriceWithSignatureLimitation(self):
+        from datetimeutil import DateTimeUtil
+        from utilityfortest import UtilityForTest
+        from configurationmanager import ConfigurationManager
+        from guioutputformater import GuiOutputFormater
+        from controller import Controller
+
+        SeqDiagBuilder.activate('Controller', 'getPrintableResultForInput')  # activate sequence diagram building
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptopricer.ini'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptopricer.ini'
+
+        configMgr = ConfigurationManager(FILE_PATH)
+        self.controller = Controller(GuiOutputFormater(configMgr), configMgr)
+
+        timezoneStr = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(timezoneStr)
+        eightDaysBeforeArrowDate = now.shift(days=-8)
+
+        eightDaysBeforeYearStr, eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            eightDaysBeforeArrowDate)
+
+        requestYearStr = eightDaysBeforeYearStr
+        requestDayStr = eightDaysBeforeDayStr
+        requestMonthStr = eightDaysBeforeMonthStr
+        inputStr = 'mcap btc {}/{} all'.format(requestDayStr, requestMonthStr)
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        if DateTimeUtil.isDateOlderThan(eightDaysBeforeArrowDate, 7):
+            hourStr = '00'
+            minuteStr = '00'
+            priceType = 'C'
+        else:
+            hourStr = eightDaysBeforeHourStr
+            minuteStr = eightDaysBeforeMinuteStr
+            priceType = 'M'
+
+        self.assertEqual(
+            'MCAP/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr,
+                                                               hourStr, minuteStr, priceType),
+            UtilityForTest.removePriceFromResult(printResult))
+        self.assertEqual(
+            'mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr,
+                                                 minuteStr), fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+        commands = SeqDiagBuilder.createSeqDiaqCommands('GUI', None, 20)
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor GUI
+GUI -> Controller: getPrintableResultForInput(inputStr)
+	activate Controller
+	Controller -> Requester: getCommand(inputStr)
+		activate Requester
+		Requester -> Requester: _parseAndFillCommandPrice(inputStr)
+			activate Requester
+			Requester -> Requester: _buildFullCommandPriceOptionalParmsDic(optionalParmList)
+				activate Requester
+				Requester <-- Requester: return optionalParsedParmDataDic
+				deactivate Requester
+			Requester <-- Requester: return CommandPrice or CommandError
+			deactivate Requester
+		Controller <-- Requester: return AbstractCommand
+		deactivate Requester
+	Controller -> CommandPrice: execute()
+		activate CommandPrice
+		CommandPrice -> Processor: getCryptoPrice(crypto, fiat, ...)
+			activate Processor
+			Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, fiat, ...)
+				activate PriceRequester
+				PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, fiat, ...)
+					activate PriceRequester
+					PriceRequester <-- PriceRequester: return ResultData
+					deactivate PriceRequester
+				Processor <-- PriceRequester: return ResultData
+				deactivate PriceRequester
+			CommandPrice <-- Processor: return ResultData
+			deactivate Processor
+		Controller <-- CommandPrice: return ResultData or False
+		deactivate CommandPrice
+	GUI <-- Controller: return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+	deactivate Controller
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()
+
 
     def testCreateSeqDiaqCommandsOnClassesWithEmbededSelfCalls(self):
         entryPoint = ClassA()
@@ -1060,8 +1154,16 @@ USER -> ClassA: doWork()
 
 
     def testFlowEntryCreateSignatureVaryingMaxSigArgNumAndMaxSigCharLen(self):
-        fe = FlowEntry('A', 'e', 'B', 'f', '95', '(aaa, bbb, ccc, ddd)', 'f_RetType')
-        self.assertEqual(fe.createSignature(None, 100), '(aaa, bbb, ccc, ddd)')
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '(aaaa, bbbb, cccc)', 'f_RetType')
+        self.assertEqual(fe.createSignature(2, 16), '(aaaa, ...)')
+        self.assertEqual(fe.createSignature(2, 17), '(aaaa, bbbb, ...)')
+        self.assertEqual(fe.createSignature(2, 18), '(aaaa, bbbb, ...)')
+        self.assertEqual(fe.createSignature(3, 17), '(aaaa, bbbb, ...)')
+        self.assertEqual(fe.createSignature(3, 18), '(aaaa, bbbb, cccc)')
+        self.assertEqual(fe.createSignature(3, 19), '(aaaa, bbbb, cccc)')
+        self.assertEqual(fe.createSignature(4, 17), '(aaaa, bbbb, ...)')
+        self.assertEqual(fe.createSignature(4, 18), '(aaaa, bbbb, cccc)')
+        self.assertEqual(fe.createSignature(4, 19), '(aaaa, bbbb, cccc)')
 
 
     @unittest.skip
