@@ -83,6 +83,69 @@ class FlowEntry:
         return self.toMethodCalledFromLineNumber.count('-')
 
 
+    def createReturnType(self, maxArgNum, maxReturnTypeCharLen):
+        '''
+        Return a return type string which has no more arguments than maxArgNum and is not
+        longer than maxReturnTypeCharLen.
+
+        :param maxArgNum:
+        :param maxReturnTypeCharLen:
+        :return:
+        '''
+
+        # applying first the max return type arg number constraint
+
+        if self.toReturnType == '':
+            return self.toReturnType
+        else:
+            returnTypeStr = self.toReturnType
+            if maxArgNum != None:
+                if maxArgNum == 0:
+                    return '...'
+
+                tentativeReturnTypeArgNum = self.toReturnType.count(',') + 1
+
+                if maxArgNum < tentativeReturnTypeArgNum:
+                    # here, the return type must be reduced to maxArgNum arguments
+                    returnTypeArgList = returnTypeStr.split(',')
+                    returnTypeStr = ','.join(returnTypeArgList[:maxArgNum])
+                    returnTypeStr = returnTypeStr + ', ...'
+
+        # applying then the max return type length number constraint
+
+        if maxReturnTypeCharLen != None:
+            if returnTypeStr == '...' or len(returnTypeStr) <= maxReturnTypeCharLen:
+                return returnTypeStr
+
+            if '...' in returnTypeStr:
+                returnTypeStr = returnTypeStr[:-5]  # removing , ...
+
+            returnTypeArgList = returnTypeStr.split(', ')
+            returnTypeStr = '...'
+            tentativeReturnType = ''
+            tentativeReturnTypeArgNum = 0
+
+            for arg in returnTypeArgList:
+                if tentativeReturnTypeArgNum == 0:
+                    tentativeReturnType += arg
+                else:
+                    tentativeReturnType = tentativeReturnType + ', ' + arg
+
+                tentativeReturnType = tentativeReturnType + ', ...'
+                rtLen = len(tentativeReturnType)
+
+                if rtLen > maxReturnTypeCharLen:
+                    return returnTypeStr
+                elif rtLen == maxReturnTypeCharLen:
+                    return tentativeReturnType
+                else:
+                    returnTypeStr = tentativeReturnType
+                    tentativeReturnType = returnTypeStr[:-5]
+                    tentativeReturnTypeArgNum += 1
+
+        return returnTypeStr
+
+
     def createSignature(self, maxSigArgNum, maxSigCharLen):
         '''
         Return a signature which has no more arguments than maxSigArgNum and is not
@@ -337,9 +400,10 @@ class SeqDiagBuilder:
         in a command line window. This build a svg file which can be displayed in a browser.
 
         :param actorName:
-        :param maxSigArgNum:        maximum arguments number of a called toMethod
-                                    toSignature
-        :param maxSigCharLen:    maximum length a toMethod toSignature can occupy
+        :param maxSigArgNum:    maximum arguments number of a called toMethod
+                                toSignature. Applies to return type aswell.
+        :param maxSigCharLen:   maximum length a toMethod toSignature can occupy.
+                                Applies to return type aswell.
         :return:
         '''
         isFlowRecorded = True
@@ -372,7 +436,7 @@ class SeqDiagBuilder:
                         returnEntry = classMethodReturnStack.pop()
                         # handle deepest or leaf return message, the one which did not
                         # generate an entry in the classMethodReturnStack
-                        commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry)
+                        commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry, maxSigArgNum, maxSigCharLen)
                         seqDiagCommandStr += commandStr
 
                         # handle return message for the method which called the
@@ -383,7 +447,7 @@ class SeqDiagBuilder:
                             fromClass = flowEntry.fromClass
                             continue
                         returnEntry = classMethodReturnStack.pop()
-                        commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry)
+                        commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry, maxSigArgNum, maxSigCharLen)
                         seqDiagCommandStr += commandStr
                         fromClass = returnEntry.fromClass
                     commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen)
@@ -393,7 +457,7 @@ class SeqDiagBuilder:
 
             while not classMethodReturnStack.isEmpty():
                 returnEntry = classMethodReturnStack.pop()
-                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry)
+                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry, maxSigArgNum, maxSigCharLen)
                 seqDiagCommandStr += commandStr
 
         seqDiagCommandStr += "@enduml"
@@ -402,10 +466,10 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def _handleSeqDiagReturnMesssageCommand(returnEntry):
+    def _handleSeqDiagReturnMesssageCommand(returnEntry, maxArgNum, maxReturnTypeCharLen):
         fromClass = returnEntry.toClass
         toClass = returnEntry.fromClass
-        toReturnType = returnEntry.toReturnType
+        toReturnType = returnEntry.createReturnType(maxArgNum, maxReturnTypeCharLen)
         indentStr = SeqDiagBuilder._getReturnIndent(returnEntry)
         commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, toReturnType, indentStr)
 

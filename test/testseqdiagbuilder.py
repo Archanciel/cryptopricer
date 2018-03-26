@@ -989,9 +989,9 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 			activate Requester
 			Requester -> Requester: _buildFullCommandPriceOptionalParmsDic(optionalParmList)
 				activate Requester
-				Requester <-- Requester: return optionalParsedParmDataDic
+				Requester <-- Requester: return ...
 				deactivate Requester
-			Requester <-- Requester: return CommandPrice or CommandError
+			Requester <-- Requester: return ...
 			deactivate Requester
 		Controller <-- Requester: return AbstractCommand
 		deactivate Requester
@@ -1011,7 +1011,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 			deactivate Processor
 		Controller <-- CommandPrice: return ResultData or False
 		deactivate CommandPrice
-	GUI <-- Controller: return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+	GUI <-- Controller: return printResult, ...
 	deactivate Controller
 @enduml''', commands)
 
@@ -1123,6 +1123,28 @@ USER -> ClassA: doWork()
         self.assertEqual('A.e, B.f, 95, (a, b), f_RetType', str(fe1))
 
 
+    def testFlowEntryCreateReturnTypeVaryingMaxArgNum(self):
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '()', 'a, b, c, d')
+        self.assertEqual(fe.createReturnType(None, None), 'a, b, c, d')
+        self.assertEqual(fe.createReturnType(4, None), 'a, b, c, d')
+        self.assertEqual(fe.createReturnType(5, None), 'a, b, c, d')
+        self.assertEqual(fe.createReturnType(3, None), 'a, b, c, ...')
+        self.assertEqual(fe.createReturnType(1, None), 'a, ...')
+        self.assertEqual(fe.createReturnType(0, None), '...')
+
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '()', '')
+        self.assertEqual(fe.createReturnType(None, None), '')
+        self.assertEqual(fe.createReturnType(0, None), '')
+        self.assertEqual(fe.createReturnType(1, None), '')
+        self.assertEqual(fe.createReturnType(2, None), '')
+
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '()', 'a')
+        self.assertEqual(fe.createReturnType(None, None), 'a')
+        self.assertEqual(fe.createReturnType(0, None), '...')
+        self.assertEqual(fe.createReturnType(1, None), 'a')
+        self.assertEqual(fe.createReturnType(2, None), 'a')
+
+
     def testFlowEntryCreateSignatureVaryingMaxSigArgNum(self):
         fe = FlowEntry('A', 'e', 'B', 'f', '95', '(a, b, c, d)', 'f_RetType')
         self.assertEqual(fe.createSignature(None, None), '(a, b, c, d)')
@@ -1133,24 +1155,61 @@ USER -> ClassA: doWork()
         self.assertEqual(fe.createSignature(0, None), '(...)')
 
         fe = FlowEntry('A', 'e', 'B', 'f', '95', '()', 'f_RetType')
+        self.assertEqual(fe.createSignature(None, None), '()')
         self.assertEqual(fe.createSignature(0, None), '()')
         self.assertEqual(fe.createSignature(1, None), '()')
         self.assertEqual(fe.createSignature(2, None), '()')
 
         fe = FlowEntry('A', 'e', 'B', 'f', '95', '(a)', 'f_RetType')
+        self.assertEqual(fe.createSignature(None, None), '(a)')
         self.assertEqual(fe.createSignature(0, None), '(...)')
         self.assertEqual(fe.createSignature(1, None), '(a)')
         self.assertEqual(fe.createSignature(2, None), '(a)')
 
 
+    def testFlowEntryCreateReturnTypeVaryingMaxReturnTypeCharLen(self):
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '()', 'aaa, bbb, ccc, ddd')
+        self.assertEqual(fe.createReturnType(None, None), 'aaa, bbb, ccc, ddd')
+        self.assertEqual(fe.createReturnType(None, 100), 'aaa, bbb, ccc, ddd')
+        self.assertEqual(fe.createReturnType(None, 0), '...')
+        self.assertEqual(fe.createReturnType(None, 8), 'aaa, ...')
+        self.assertEqual(fe.createReturnType(None, 7), '...')
+        self.assertEqual(fe.createReturnType(None, 13), 'aaa, bbb, ...')
+        self.assertEqual(fe.createReturnType(None, 12), 'aaa, ...')
+
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '', '')
+        self.assertEqual(fe.createReturnType(None, None), '')
+        self.assertEqual(fe.createReturnType(None, 100), '')
+        self.assertEqual(fe.createReturnType(None, 0), '')
+
+
     def testFlowEntryCreateSignatureVaryingMaxSigCharLen(self):
         fe = FlowEntry('A', 'e', 'B', 'f', '95', '(aaa, bbb, ccc, ddd)', 'f_RetType')
+        self.assertEqual(fe.createSignature(None, None), '(aaa, bbb, ccc, ddd)')
         self.assertEqual(fe.createSignature(None, 100), '(aaa, bbb, ccc, ddd)')
         self.assertEqual(fe.createSignature(None, 0), '(...)')
         self.assertEqual(fe.createSignature(None, 10), '(aaa, ...)')
-        self.assertNotEqual(fe.createSignature(None, 9), '(aaa, ...)')
+        self.assertEqual(fe.createSignature(None, 9), '(...)')
         self.assertEqual(fe.createSignature(None, 15), '(aaa, bbb, ...)')
-        self.assertNotEqual(fe.createSignature(None, 14), '(aaa, bbb, ...)')
+        self.assertEqual(fe.createSignature(None, 14), '(aaa, ...)')
+
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '()', 'f_RetType')
+        self.assertEqual(fe.createSignature(None, None), '()')
+        self.assertEqual(fe.createSignature(None, 100), '()')
+        self.assertEqual(fe.createSignature(None, 0), '()')
+
+
+    def testFlowEntryReturnTypeVaryingMaxArgNumAndMaxReturnTypeCharLen(self):
+        fe = FlowEntry('A', 'e', 'B', 'f', '95', '()', 'aaaa, bbbb, cccc')
+        self.assertEqual(fe.createReturnType(2, 14), 'aaaa, ...')
+        self.assertEqual(fe.createReturnType(2, 15), 'aaaa, bbbb, ...')
+        self.assertEqual(fe.createReturnType(2, 16), 'aaaa, bbbb, ...')
+        self.assertEqual(fe.createReturnType(3, 15), 'aaaa, bbbb, ...')
+        self.assertEqual(fe.createReturnType(3, 16), 'aaaa, bbbb, cccc')
+        self.assertEqual(fe.createReturnType(3, 17), 'aaaa, bbbb, cccc')
+        self.assertEqual(fe.createReturnType(4, 15), 'aaaa, bbbb, ...')
+        self.assertEqual(fe.createReturnType(4, 16), 'aaaa, bbbb, cccc')
+        self.assertEqual(fe.createReturnType(4, 17), 'aaaa, bbbb, cccc')
 
 
     def testFlowEntryCreateSignatureVaryingMaxSigArgNumAndMaxSigCharLen(self):
