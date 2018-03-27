@@ -170,6 +170,9 @@ class PriceRequester:
             else:
                 resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=True)
 
+        from seqdiagbuilder import SeqDiagBuilder
+        SeqDiagBuilder.recordFlow()
+
         return resultData
 
     def _handleProviderError(self, dic, resultData, url, crypto, fiat, exchange, isRealTime):
