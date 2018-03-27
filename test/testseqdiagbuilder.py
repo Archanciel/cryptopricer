@@ -923,6 +923,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 
         SeqDiagBuilder.deactivate()
 
+
     def testCreateSeqDiaqCommandsOnFullRequestHistoDayPriceWithSignatureLimitation(self):
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
@@ -1307,6 +1308,30 @@ USER -> ClassA: doWork()
         rfp.addIfNotIn(fe3)
         rfp.addIfNotIn(fe4)
         self.assertEqual('',str(rfp))
+
+
+    def test(self):
+        from datetimeutil import DateTimeUtil
+        from configurationmanager import ConfigurationManager
+        from guioutputformater import GuiOutputFormater
+        from controller import Controller
+        import os
+
+        SeqDiagBuilder.activate('Controller', 'getPrintableResultForInput')  # activate sequence diagram building
+
+        if os.name == 'posix':
+            FILE_PATH = '/sdcard/cryptopricer.ini'
+        else:
+            FILE_PATH = 'c:\\temp\\cryptopricer.ini'
+
+        configMgr = ConfigurationManager(FILE_PATH)
+        controller = Controller(GuiOutputFormater(configMgr), configMgr)
+
+        inputStr = 'mcap btc 0 all'
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = controller.getPrintableResultForInput(
+            inputStr)
+
+        SeqDiagBuilder.createDiagram('c:\\temp\\getPrintableResultForInput.txt', 'GUI', None, 20)
 
 
 if __name__ == '__main__':

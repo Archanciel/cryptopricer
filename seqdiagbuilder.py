@@ -1,4 +1,6 @@
 import traceback, re, ast, importlib, inspect
+import webbrowser
+import os
 from inspect import signature
 
 SEQDIAG_RETURN_TAG = ":seqdiag_return"
@@ -388,6 +390,19 @@ class SeqDiagBuilder:
             commandFileHeaderSectionStr += "endheader\n\n"
 
         return commandFileHeaderSectionStr
+
+
+    @staticmethod
+    def createDiagram(filePathName, actorName, maxSigArgNum=None, maxSigCharLen=None):
+        seqDiagCommands = SeqDiagBuilder.createSeqDiaqCommands(actorName, maxSigArgNum, maxSigCharLen)
+
+        with open(filePathName, "w") as f:
+            f.write(seqDiagCommands)
+
+        print(os.getcwd())
+        os.chdir('c:/temp/')
+        os.system('java -jar plantuml.jar -tsvg ' + 'getPrintableResultForInput.txt')
+ #       webbrowser.open("file:///" + filePathName)
 
 
     @staticmethod
