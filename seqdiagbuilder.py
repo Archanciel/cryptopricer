@@ -393,16 +393,36 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def createDiagram(filePathName, actorName, maxSigArgNum=None, maxSigCharLen=None):
-        seqDiagCommands = SeqDiagBuilder.createSeqDiaqCommands(actorName, maxSigArgNum, maxSigCharLen)
+    def createDiagram(targetDriveDirName, actorName, maxSigArgNum=None, maxSigCharLen=None):
+        '''
+        This method create a Plant UML command file, launch Plant UML on it and open the
+        created sequence diagram svg file in a browser.
 
-        with open(filePathName, "w") as f:
+        :param targetDriveDirName:  folder in which the generated command file and svg diagram
+                                    are saved. Ex: c:/temp.
+        :param actorName:           name of the sequence diagram actor.
+        :param maxSigArgNum:        maximum arguments number of a called toMethod
+                                    toSignature. Applies to return type aswell.
+        :param maxSigCharLen:       maximum length a toMethod toSignature can occupy.
+                                    Applies to return type aswell.
+        :return:                    nothing.
+        '''
+        seqDiagCommands = SeqDiagBuilder.createSeqDiaqCommands(actorName, maxSigArgNum, maxSigCharLen)
+        targetCommandFileName = SeqDiagBuilder.seqDiagEntryMethod + '.txt'
+        targetDriveDirName = targetDriveDirName.replace('\\','/')
+
+        if targetDriveDirName[-1] != '/':
+            targetDriveDirName = targetDriveDirName + '/'
+
+        targetCommandFilePathName = '{}{}'.format(targetDriveDirName, targetCommandFileName)
+
+        with open(targetCommandFilePathName, "w") as f:
             f.write(seqDiagCommands)
 
-        print(os.getcwd())
-        os.chdir('c:/temp/')
-        os.system('java -jar plantuml.jar -tsvg ' + 'getPrintableResultForInput.txt')
- #       webbrowser.open("file:///" + filePathName)
+        os.chdir(targetDriveDirName)
+
+        os.system('java -jar plantuml.jar -tsvg ' + targetCommandFileName)
+        webbrowser.open("file:///{}{}.svg".format(targetDriveDirName, SeqDiagBuilder.seqDiagEntryMethod))
 
 
     @staticmethod
@@ -414,12 +434,12 @@ class SeqDiagBuilder:
         To build the diagram itself, type java -jar plantuml.jar -tsvg seqdiagcommands.txt
         in a command line window. This build a svg file which can be displayed in a browser.
 
-        :param actorName:
+        :param actorName:       name of the sequence diagram actor.
         :param maxSigArgNum:    maximum arguments number of a called toMethod
                                 toSignature. Applies to return type aswell.
         :param maxSigCharLen:   maximum length a toMethod toSignature can occupy.
                                 Applies to return type aswell.
-        :return:
+        :return:                nothing.
         '''
         isFlowRecorded = True
 
