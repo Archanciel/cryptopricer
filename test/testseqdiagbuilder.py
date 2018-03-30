@@ -917,6 +917,14 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 			deactivate Processor
 		Controller <-- CommandPrice: return ResultData or False
 		deactivate CommandPrice
+	Controller -> GuiOutputFormater: getFullCommandString(resultData)
+		activate GuiOutputFormater
+		GuiOutputFormater -> GuiOutputFormater: _buildFullDateAndTimeStrings(commandDic, timezoneStr)
+			activate GuiOutputFormater
+			GuiOutputFormater <-- GuiOutputFormater: return requestDateDMY, requestDateHM
+			deactivate GuiOutputFormater
+		Controller <-- GuiOutputFormater: return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+		deactivate GuiOutputFormater
 	GUI <-- Controller: return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
 	deactivate Controller
 @enduml''', commands)
@@ -1012,6 +1020,14 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 			deactivate Processor
 		Controller <-- CommandPrice: return ResultData or False
 		deactivate CommandPrice
+	Controller -> GuiOutputFormater: getFullCommandString(resultData)
+		activate GuiOutputFormater
+		GuiOutputFormater -> GuiOutputFormater: _buildFullDateAndTimeStrings(commandDic, ...)
+			activate GuiOutputFormater
+			GuiOutputFormater <-- GuiOutputFormater: return requestDateDMY, ...
+			deactivate GuiOutputFormater
+		Controller <-- GuiOutputFormater: return printResult, ...
+		deactivate GuiOutputFormater
 	GUI <-- Controller: return printResult, ...
 	deactivate Controller
 @enduml''', commands)

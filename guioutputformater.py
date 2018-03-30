@@ -46,6 +46,7 @@ class GuiOutputFormater(AbstractOutputFormater):
         is in effect (no option or -v for example), then None is returned as second return value.
 
         :param resultData: result of the last full or partial request
+        :seqdiag_return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
         :return: 1/ full command string with no command option corresponding to a full or partial price request
                     entered by the user or empty string if the command generated an error msg.
                  2/ full request command with any non save command option
@@ -99,6 +100,9 @@ class GuiOutputFormater(AbstractOutputFormater):
                 #even in case the value command generated a warning, it will be displayed in the status bar !
                 fullCommandStrWithOptions = fullCommandStr + ' -v' + valueCommandAmountStr + valueCommandSymbolStr
 
+        from seqdiagbuilder import SeqDiagBuilder
+        SeqDiagBuilder.recordFlow()
+
         return fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
 
 
@@ -117,6 +121,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 
         :param commandDic:
         :param timezoneStr:
+        :seqdiag_return requestDateDMY, requestDateHM
         :return:
         '''
         dayInt = int(commandDic[CommandPrice.DAY])
@@ -149,6 +154,9 @@ class GuiOutputFormater(AbstractOutputFormater):
         requestDateDMY = dateTimeComponentValueList[0] + dateSeparator + dateTimeComponentValueList[1] + dateSeparator + \
                          dateTimeComponentValueList[2]
         requestDateHM = dateTimeComponentValueList[3] + timeSeparator + dateTimeComponentValueList[4]
+
+        from seqdiagbuilder import SeqDiagBuilder
+        SeqDiagBuilder.recordFlow()
 
         return requestDateDMY, requestDateHM
 
