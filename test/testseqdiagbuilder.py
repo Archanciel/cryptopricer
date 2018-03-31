@@ -263,6 +263,22 @@ class D:
         :return:
         '''
         SeqDiagBuilder.recordFlow()
+    def d2(self, d2_p1):
+        '''
+
+        :param d2_p1:
+        :seqdiag_return Dd2Return
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
+    def d3(self, d3_p1):
+        '''
+
+        :param d3_p1:
+        :seqdiag_return Dd3Return
+        :return:
+        '''
+        return 'Dd3Return'
 
 class C:
     def c1(self, c1_p1):
@@ -282,6 +298,48 @@ class C:
         '''
         d = D()
         d.d1(1)
+    def c3(self, c3_p1):
+        '''
+
+        :param c3_p1:
+        :seqdiag_return Cc3Return
+        :return:
+        '''
+        d = D()
+        d.d2(1)
+        SeqDiagBuilder.recordFlow()
+        self.c4(1)
+    def c4(self, c4_p1):
+        '''
+
+        :param c4_p1:
+        :seqdiag_return Cc4Return
+        :return:
+        '''
+        d = D()
+        d.d2(1)
+        SeqDiagBuilder.recordFlow()
+    def c5(self, c5_p1):
+        '''
+
+        :param c5_p1:
+        :seqdiag_return Cc5Return
+        :return:
+        '''
+        d = D()
+        d.d3(1)
+    def fibonaci(self, number):
+        '''
+
+        :param number:
+        :seqdiag_return CfibonaciReturn
+        :return:
+        '''
+        if number == 1:
+            SeqDiagBuilder.recordFlow()
+            return 1
+        else:
+            return number + self.fibonaci(number - 1)
 
 class B:
     def b0(self, b1_p1):
@@ -344,6 +402,29 @@ class B:
         '''
         c = C()
         c.c2(1)
+    def b7(self, b7_p1):
+        '''
+
+        :param b7_p1:
+        :seqdiag_return Bb7Return
+        :return:
+        '''
+        c = C()
+        c.c3(1)
+        SeqDiagBuilder.recordFlow()
+        d = D()
+        d.d2(1)
+    def b8(self, b8_p1):
+        '''
+
+        :param b8_p1:
+        :seqdiag_return Bb8Return
+        :return:
+        '''
+        c = C()
+        c.c5(1)
+        d = D()
+        d.d2(1)
 
 class A:
     def a0(self, a1_p1, a1_p2):
@@ -447,6 +528,25 @@ class A:
         b = B()
         b.b6(1)
         b.b6(1)
+    def a12(self, a12_p1):
+        '''
+        :param a12_p1:
+        :seqdiag_return Aa12Return
+        :return:
+        '''
+        b = B()
+        b.b7(1)
+        b.b7(1)
+        SeqDiagBuilder.recordFlow()
+    def a13(self, a13_p1):
+        '''
+        :param a13_p1:
+        :seqdiag_return Aa13Return
+        :return:
+        '''
+        b = B()
+        b.b8(1)
+        b.b8(1)
 
 
 class TestSeqDiagBuilder(unittest.TestCase):
@@ -650,6 +750,120 @@ USER -> A: a11(a11_p1)
 		A <-- B: return Bb6Return
 		deactivate B
 	USER <-- A: return Aa11Return
+	deactivate A
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+    def testCreateSeqDiaqCommandsOnFiveLevelCallingSecondLevelMethodTwiceWithRecordFlowInEveryMethod(self):
+        entryPoint = A()
+
+        SeqDiagBuilder.activate('A', 'a12')  # activate sequence diagram building
+        entryPoint.a12(1)
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+USER -> A: a12(a12_p1)
+	activate A
+	A -> B: b7(b7_p1)
+		activate B
+		B -> C: c3(c3_p1)
+			activate C
+			C -> D: d2(d2_p1)
+				activate D
+				C <-- D: return Dd2Return
+				deactivate D
+			C -> C: c4(c4_p1)
+				activate C
+				C -> D: d2(d2_p1)
+					activate D
+					C <-- D: return Dd2Return
+					deactivate D
+				C <-- C: return Cc4Return
+				deactivate C
+			B <-- C: return Cc3Return
+			deactivate C
+		B -> D: d2(d2_p1)
+			activate D
+			B <-- D: return Dd2Return
+			deactivate D
+		A <-- B: return Bb7Return
+		deactivate B
+	A -> B: b7(b7_p1)
+		activate B
+		B -> C: c3(c3_p1)
+			activate C
+			C -> D: d2(d2_p1)
+				activate D
+				C <-- D: return Dd2Return
+				deactivate D
+			C -> C: c4(c4_p1)
+				activate C
+				C -> D: d2(d2_p1)
+					activate D
+					C <-- D: return Dd2Return
+					deactivate D
+				C <-- C: return Cc4Return
+				deactivate C
+			B <-- C: return Cc3Return
+			deactivate C
+		B -> D: d2(d2_p1)
+			activate D
+			B <-- D: return Dd2Return
+			deactivate D
+		A <-- B: return Bb7Return
+		deactivate B
+	USER <-- A: return Aa12Return
+	deactivate A
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+    def testCreateSeqDiaqCommandsOnFiveLevelCallingSecondLevelMethodTwiceWithRecordFlowInOnePlaceOnly(self):
+        entryPoint = A()
+
+        SeqDiagBuilder.activate('A', 'a13')  # activate sequence diagram building
+        entryPoint.a13(1)
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+USER -> A: a13(a13_p1)
+	activate A
+	A -> B: b8(b8_p1)
+		activate B
+		B -> D: d2(d2_p1)
+			activate D
+			B <-- D: return Dd2Return
+			deactivate D
+		A <-- B: return Bb8Return
+		deactivate B
+	A -> B: b8(b8_p1)
+		activate B
+		B -> D: d2(d2_p1)
+			activate D
+			B <-- D: return Dd2Return
+			deactivate D
+		A <-- B: return Bb8Return
+		deactivate B
+	USER <-- A: return Aa13Return
 	deactivate A
 @enduml''', commands)
 
