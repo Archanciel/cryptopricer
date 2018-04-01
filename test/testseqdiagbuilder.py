@@ -94,6 +94,16 @@ class Parent:
         SeqDiagBuilder.recordFlow()
 
 
+    def getCoordinateNoneSelected(self, location=''):
+        '''
+
+        :param location:
+        :seqdiag_return Coord
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
+
+
     def compute(self, size = 0):
         '''
         This a dummy merhod.
@@ -135,6 +145,10 @@ class Parent:
 
 class ChildOne(Parent):
     def getCoordinate(self, location=''):
+        iso = IsolatedClass()
+        iso.analyse()
+
+    def getCoordinateNoneSelected(self, location=''):
         iso = IsolatedClass()
         iso.analyse()
 
@@ -180,6 +194,10 @@ class ChildTwo(Parent):
         '''
         iso = IsolatedClass()
         iso.analyse()
+
+
+    def getCoordinateNoneSelected(self, location=''):
+        SeqDiagBuilder.recordFlow()
 
 
 class ChildThree(Parent):
@@ -1106,7 +1124,8 @@ USER -> ChildThree: getCoordinate(location='')
 
         SeqDiagBuilder.deactivate()
 
-    def testRecordFlowWhereMulitpleClassesSupportSameMethodAndNoneIsSelected(self):
+
+    def testRecordFlowWhereMulitpleClassesSupportSameMethodAndOneIsSelectedInOtherClass(self):
         entryPoint = ChildTwo()
 
         SeqDiagBuilder.activate('ChildTwo', 'getCoordinate')  # activate sequence diagram building
@@ -1125,6 +1144,30 @@ USER -> ChildThree: getCoordinate(location='')
 	activate ChildTwo
 	USER <-- ChildTwo: return Coord
 	deactivate ChildThree
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()
+
+
+    def testRecordFlowWhereMulitpleClassesSupportSameMethodAndNoneIsSelected(self):
+        entryPoint = ChildTwo()
+
+        SeqDiagBuilder.activate('ChildTwo', 'getCoordinateNoneSelected')  # activate sequence diagram building
+        entryPoint.getCoordinateNoneSelected()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+USER -> ChildThree: getCoordinateNoneSelected(location='')
+    activate ChildTwo
+    USER <-- ChildTwo: return Coord
+    deactivate ChildThree
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()
