@@ -91,7 +91,7 @@ class Parent:
         :seqdiag_return Coord
         :return:
         '''
-        pass
+        SeqDiagBuilder.recordFlow()
 
 
     def compute(self, size = 0):
@@ -180,6 +180,18 @@ class ChildTwo(Parent):
         '''
         iso = IsolatedClass()
         iso.analyse()
+
+
+class ChildThree(Parent):
+    def getCoordinate(self, location=''):
+        '''
+
+        :param location:
+        :seqdiag_return CoordSel
+        :seqdiag_select_method
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
 
 
 class ChildOfChildTwo(Parent):
@@ -1045,6 +1057,77 @@ USER -> A: a3(a3_p1)
         self.assertEqual(len(filteredInstanceList), 1)
         self.assertEqual(returnDoc, 'printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions')
         self.assertEqual(methodSignature, '(inputStr)')
+
+
+    def test_getFilteredInstanceListAndMethodSignatureAndReturnDocWhereMulitpleClassesSupportSameMethod(self):
+        moduleName = 'testseqdiagbuilder'
+        moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
+        methodName = 'getCoordinate'
+        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
+        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
+
+        self.assertEqual(len(filteredInstanceList), 3)
+        self.assertEqual(returnDoc, 'Coord')
+        self.assertEqual(methodSignature, "(location='')")
+
+
+    def test_getFilteredInstanceListAndMethodSignatureAndReturnDocWhereMulitpleClassesSupportSameMethodAndOneIsSelected(self):
+        moduleName = 'testseqdiagbuilder'
+        moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'ChildThree', 'TestSeqDiagBuilder', 'IsolatedClass']
+        methodName = 'getCoordinate'
+        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
+        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
+
+        self.assertEqual(len(filteredInstanceList), 1)
+        self.assertEqual(returnDoc, 'CoordSel')
+        self.assertEqual(methodSignature, "(location='')")
+
+
+    def testRecordFlowWhereMulitpleClassesSupportSameMethodAndOneIsSelected(self):
+        entryPoint = ChildThree()
+
+        SeqDiagBuilder.activate('ChildThree', 'getCoordinate')  # activate sequence diagram building
+        entryPoint.getCoordinate()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+USER -> ChildThree: getCoordinate(location='')
+	activate ChildThree
+	USER <-- ChildThree: return CoordSel
+	deactivate ChildThree
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()
+
+    def testRecordFlowWhereMulitpleClassesSupportSameMethodAndNoneIsSelected(self):
+        entryPoint = ChildTwo()
+
+        SeqDiagBuilder.activate('ChildTwo', 'getCoordinate')  # activate sequence diagram building
+        entryPoint.getCoordinate()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+USER -> ChildThree: getCoordinate(location='')
+	activate ChildTwo
+	USER <-- ChildTwo: return Coord
+	deactivate ChildThree
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()
 
 
     def testCreateSeqDiaqCommandsOnFullRequestHistoDayPrice(self):

@@ -681,14 +681,17 @@ class SeqDiagBuilder:
     @staticmethod
     def _getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName):
         '''
-        This toMethod returns the passed instance List filtered so that it only contains instances
+        This method returns the passed instance List filtered so that it only contains instances
         supporting the passed methodName. The string associated to the %s tag defined in
-        the (selected) toMethod documentation aswell as the (selected) toMethod toSignature are returned.
+        the (selected) method documentation aswell as the (selected) method signature are returned.
 
         :param instanceList:    list of instances of the classes defined in the module moduleName
         :param moduleName:      name of module containing the class definitions of the passed instances
-        :param methodName:      name of the toMethod from the doc of which the :seqdiag_return tag value
-                                is extracted and the %s tag is searched in
+        :param methodName:      name of the method whose doc is searched for the :seqdiag_return tag so
+                                the associated value can be returned as the method return value.
+                                In case the method doc contains the :seqdiag_select_method tag,
+                                the instance corresponding instance is the unique one to be
+                                returned in the filteredInstanceList.
         :return: filteredInstanceList, methodReturnDoc, signatureStr
         '''
 
@@ -707,18 +710,21 @@ class SeqDiagBuilder:
             methodDoc = methodObj.__doc__
 
             if methodDoc:
-                # get toMethod return type from toMethod doc
+                # get method return type from toMethod doc
                 match = re.search(SEQDIAG_RETURN_TAG_PATTERN, methodDoc)
                 if match:
                     methodReturnDoc = match.group(1)
 
-                # get toMethod tagged by :seqdiag_select_method
+                # chech if method doc contains :seqdiag_select_method tag
                 match = re.search(SEQDIAG_SELECT_METHOD_TAG_PATTERN, methodDoc)
                 if match:
+                    # in case several instances do support methodName, the first one containing
+                    # the method whose doc is tagged with :seqdiag_select_method is returned in
+                    # the filteredInstanceList and all the other instances are ignored.
                     filteredInstanceList = [instance]
                     break
 
-        # get toMethod toSignature
+        # get method signature
 
         signatureStr = str(signature(methodObj))
 
