@@ -219,45 +219,59 @@ class FlowEntry:
 
 
 class RecordedFlowPath:
+    '''
+    This class stores in a flowEntryList of FlowEntry the succession of embedded method calls whic occurred
+    until the point in a leaf method containing the SeqDiagBuilder.recordFlow() instruction.
+    '''
     def __init__(self, entryClass, entryMethod):
+        '''
+
+        :param entryClass:  class containing the entry method
+        :param entryMethod: method from which the embedded method calls are recorded in the
+                            RecordedFlowPath. entryClass.entryMethod are labelled as entry point
+                            and are stored as a FlowEntry in the internal RecordedFlowPath flowEntryList.
+        '''
         self.entryClass = entryClass
         self.entryMethod = entryMethod
         self.entryPointReached = False
-        self.list = []
+        self.flowEntryList = []
 
 
     def addIfNotIn(self, newFlowEntry):
         '''
-        This method adds an flow entry to the internal list if the internal list does already
-        contains the entry point and procvided this flow entry is not alreay in the list.
+        This method adds a flow entry to the internal flowEntryList if the internal flowEntryList
+        already contains the entry point and provided this flow entry is not alreay in the
+        flowEntryList.
 
-        But the addition is only possible if the entry point was reached. For example, if
+        The addition is only possible if the entry point was reached. For example, if
         we have TestClass.testCaseMethod() --> A.f() --> A.g() --> B.h() and the entry class
-        and toMethod is A.f(), flow entries will be added only once A.f() was added to the list
+        and entry method is A.f(), flow entries will be added only once A.f() was reached and was
+        added to the flowEntryList.
         :param newFlowEntry:
         :return:
         '''
-        if newFlowEntry.isEntryPoint(self.entryClass, self.entryMethod):
-            self.entryPointReached = True
-
         if not self.entryPointReached:
-            # flow entries preceeding entry point are ignored
+            if newFlowEntry.isEntryPoint(self.entryClass, self.entryMethod):
+                self.entryPointReached = True
+            else:
+                # exiting the method ignores flow entries preceeding the entry point
+                return
+
+        if self.flowEntryList == []:
+            # the first encountered occurrence of entry point is added
+            self.flowEntryList.append(newFlowEntry)
             return
 
-        if self.list == []:
-            # first encountered occurrence of entry point is added
-            self.list.append(newFlowEntry)
-            return
-
-        for flowEntry in self.list:
+        # exiting the method if the current flow entry is already in the flowEntryList
+        for flowEntry in self.flowEntryList:
             if flowEntry == newFlowEntry:
                 return
 
-        self.list.append(newFlowEntry)
+        self.flowEntryList.append(newFlowEntry)
 
 
     def size(self):
-        return len(self.list)
+        return len(self.flowEntryList)
 
 
     def isEmpty(self):
@@ -267,7 +281,7 @@ class RecordedFlowPath:
     def __str__(self):
         outStr = ''
 
-        for flowEntry in self.list:
+        for flowEntry in self.flowEntryList:
             outStr += str(flowEntry) + '\n'
 
         return outStr
@@ -275,7 +289,7 @@ class RecordedFlowPath:
 
 class SeqDiagCommandStack:
     '''
-    This list stores the embeded calls used to build the sequence diagram commands. It is
+    This flowEntryList stores the embedded calls used to build the sequence diagram commands. It is
     used to build the return commands of the diagram.
     '''
 
@@ -293,7 +307,7 @@ class SeqDiagCommandStack:
 
     def push(self, flowEntry):
         '''
-        Push on the list a 2 elements list, the first element being the couple <class name>.<toMethod name>
+        Push on the flowEntryList a 2 elements flowEntryList, the first element being the couple <class name>.<toMethod name>
         and the second one being the string denoting the information returned to the caller by the toMethod.
         :param flowEntry:
         :return:
@@ -334,9 +348,9 @@ class SeqDiagCommandStack:
 class SeqDiagBuilder:
     '''
     This class contains a static utility methods used to build a sequence diagram from the
-    call list as at the point in the python code were it is called.
+    call flowEntryList as at the point in the python code were it is called.
 
-    To build the diagram, type seqdiag -Tsvg list.txt in a command line window.
+    To build the diagram, type seqdiag -Tsvg flowEntryList.txt in a command line window.
     This build a svg file which can be displayed in a browsxer.
     '''
 
@@ -453,14 +467,14 @@ class SeqDiagBuilder:
             classMethodReturnStack = SeqDiagCommandStack()
             seqDiagCommandStr += "\nactor {}\n".format(actorName)
 
-            firstFlowEntry = SeqDiagBuilder.recordedFlowPath.list[0]
+            firstFlowEntry = SeqDiagBuilder.recordedFlowPath.flowEntryList[0]
             firstFlowEntry.fromClass = actorName
             fromClass = firstFlowEntry.fromClass
             commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, firstFlowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen)
             seqDiagCommandStr += commandStr
             fromClass = firstFlowEntry.toClass
 
-            for flowEntry in SeqDiagBuilder.recordedFlowPath.list[1:]:
+            for flowEntry in SeqDiagBuilder.recordedFlowPath.flowEntryList[1:]:
                 if not classMethodReturnStack.containsFromCall(flowEntry):
                     commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen)
                     seqDiagCommandStr += commandStr
@@ -576,8 +590,9 @@ class SeqDiagBuilder:
     @staticmethod
     def recordFlow():
         '''
-        Records in a class list the control flow information which will be used to build
-        the seqdiag creation commands.
+        Records in a FlowEntry list the control flow information which will be used later to build
+        the Plantuml sequence diagram creation commands. Information is recorded only if the
+        SeqDiagBuilder was activated.
 
         :return:
         '''
@@ -588,50 +603,58 @@ class SeqDiagBuilder:
 
         SeqDiagBuilder.recordedFlowPath.entryPointReached = False
 
+        # get the stack trace at this point of execution
         frameListLine = repr(traceback.extract_stack())
+
+        # convert the stack trace to a list ...
         frameList = re.findall(FRAME_PATTERN, frameListLine)
 
         if frameList:
-            fromClass = ''
-            fromMethod = ''
-            toMethodCalledFromLineNumber = '0'  # line numbers list string through which
-                                                # the control flow passed to reach the
-                                                # current method
-            fromMethodReturnDoc = ''
-            for frame in frameList[:-1]: #last line in frameList is the call to this toMethod !
+            fromClassName = ''              # class containing the method calling the toMethod
+            fromMethodName = ''             # method calling the toMethod
+            toMethodCallLineNumber = '0'    # line number in the fromMethod of the toMethod call
+            fromMethodReturn = ''           # fromMethod returned result as tagged by the :seqdiag_return
+                                            # tag in the fromMethod documentation
+            for frame in frameList[:-1]: #last line in frameList is the call to the recordFlow() method !
                 match = re.match(PYTHON_FILE_AND_FUNC_PATTERN, frame)
                 if match:
                     pythonClassFilePath = match.group(1)
                     moduleName = match.group(2)
                     methodCallLineNumber = match.group(3)
-                    methodName = match.group(4)
+                    currentMethodName = match.group(4)
+
+                    # now the current module is opened and its source code is parsed. Then, the classes
+                    # it contains are instanciated in order to select the one supporting the current
+                    # method methodName. The purpose is to be able to access to various informations
+                    # used later to build the sequence diagram, like the method signature and tagged
+                    # informations potentially contained in the method documentation.
                     with open(pythonClassFilePath + moduleName + '.py', "r") as sourceFile:
                         source = sourceFile.read()
                         parsedSource = ast.parse(source)
                         moduleClassNameList = [node.name for node in ast.walk(parsedSource) if isinstance(node, ast.ClassDef)]
-                        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName,
+                        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(currentMethodName,
                                                                                             moduleName,
                                                                                             moduleClassNameList)
                         if instanceList == []:
                             continue
-                        filteredInstanceList, toMethodReturnDoc, methodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
+                        filteredInstanceList, toMethodReturn, toMethodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, currentMethodName)
                         instance = filteredInstanceList[0]
                         if len(filteredInstanceList) > 1:
                             filteredClassNameList = []
                             for filteredInstance in filteredInstanceList:
                                 filteredClassNameList.append(filteredInstance.__class__.__name__)
                             SeqDiagBuilder._issueWarning(
-                                "More than one class {} found in module {} do support toMethod {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the toMethod documentation.".format(str(filteredClassNameList), moduleName, methodName, methodSignature, instance.__class__.__name__,
+                                "More than one class {} found in module {} do support toMethod {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the toMethod documentation.".format(str(filteredClassNameList), moduleName, currentMethodName, toMethodSignature, instance.__class__.__name__,
                                                                                                                                                                                                                                                        SEQDIAG_SELECT_METHOD_TAG))
 
                         toClass = instance.__class__.__name__
-                        toMethod = methodName
-                        flowEntry = FlowEntry(fromClass, fromMethod, toClass, toMethod, toMethodCalledFromLineNumber,
-                                              methodSignature, toMethodReturnDoc)
-                        fromClass = toClass
-                        fromMethod = toMethod
-                        toMethodCalledFromLineNumber = "{}-{}".format(toMethodCalledFromLineNumber, methodCallLineNumber)
-                        fromMethodReturnDoc = toMethodReturnDoc
+                        toMethodName = currentMethodName
+                        flowEntry = FlowEntry(fromClassName, fromMethodName, toClass, toMethodName, toMethodCallLineNumber,
+                                              toMethodSignature, toMethodReturn)
+                        fromClassName = toClass
+                        fromMethodName = toMethodName
+                        toMethodCallLineNumber = "{}-{}".format(toMethodCallLineNumber, methodCallLineNumber)
+                        fromMethodReturn = toMethodReturn
                         SeqDiagBuilder.recordedFlowPath.addIfNotIn(flowEntry)
 #            print(SeqDiagBuilder.recordedFlowPath)
 
@@ -649,18 +672,17 @@ class SeqDiagBuilder:
     @staticmethod
     def _getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList):
         '''
-        Returns a list of instances of classes located in moduleName which support the toMethod methodName.
-        Normally, the returned list should contain only one instance. If more than one instance are
-        returned, which is the case if the module contains a class hierarchy with toMethod methodName
-        defined in the base class (and so inherited or overridden by the subclasses) or if the module
-        contains two unrelated classes with the same toMethod name, the first encountered class will be
-        selected by default, i.e. the first defined class in the module - the root class in case of
-        a hierarchy.
+        Returns a list containing one instance for every class located in moduleName (their names are contained
+        in moduleClassNameList) which supports the method methodName.
 
-        To override this choice, use the tag :seq_diag_select_method in the toMethod documentation.
+        Normally, the returned list should contain only one instance. If more than one instance are
+        returned, this indicates that the module contains a class hierarchy with method methodName
+        defined in the base class (and so inherited or overridden by its subclasses). More than one
+        instance are returned aswell if the module contains two or more unrelated classes with the same
+        method methodName.
 
         :param moduleName:
-        :param moduleClassNameList:
+        :param moduleClassNameList: contains the names of all the classes defined in module moduleName
         :param methodName:
         :return:
         '''
@@ -672,7 +694,7 @@ class SeqDiagBuilder:
 
             for methodTupple in methodTupplesList:
                 if methodName == methodTupple[0]:
-                    # methodName is a member of className
+                    # here, methodName is a member of className
                     instanceList.append(instance)
 
         return instanceList
@@ -685,22 +707,29 @@ class SeqDiagBuilder:
         supporting the passed methodName. The string associated to the %s tag defined in
         the (selected) method documentation aswell as the (selected) method signature are returned.
 
-        :param instanceList:    list of instances of the classes defined in the module moduleName
+
+        the first encountered class will be
+        selected by default, i.e. the first defined class in the module - the root class in case of
+        a hierarchy.
+
+        To override this choice, use the tag :seq_diag_select_method in the method documentation.
+
+        :param instanceList:    flowEntryList of instances of the classes defined in the module moduleName
         :param moduleName:      name of module containing the class definitions of the passed instances
         :param methodName:      name of the method whose doc is searched for the :seqdiag_return tag so
                                 the associated value can be returned as the method return value.
                                 In case the method doc contains the :seqdiag_select_method tag,
                                 the instance corresponding instance is the unique one to be
                                 returned in the filteredInstanceList.
-        :return: filteredInstanceList, methodReturnDoc, signatureStr
+        :return: filteredInstanceList, methodReturn, methodSignature
         '''
 
         filteredInstanceList = []
-        methodReturnDoc = ''
-        signatureStr = ''
+        methodReturn = ''
+        methodSignature = ''
 
         if not instanceList:
-            return filteredInstanceList, methodReturnDoc, signatureStr
+            return filteredInstanceList, methodReturn, methodSignature
 
         for instance in instanceList:
             filteredInstanceList.append(instance)
@@ -713,7 +742,7 @@ class SeqDiagBuilder:
                 # get method return type from toMethod doc
                 match = re.search(SEQDIAG_RETURN_TAG_PATTERN, methodDoc)
                 if match:
-                    methodReturnDoc = match.group(1)
+                    methodReturn = match.group(1)
 
                 # chech if method doc contains :seqdiag_select_method tag
                 match = re.search(SEQDIAG_SELECT_METHOD_TAG_PATTERN, methodDoc)
@@ -726,9 +755,9 @@ class SeqDiagBuilder:
 
         # get method signature
 
-        signatureStr = str(signature(methodObj))
+        methodSignature = str(signature(methodObj))
 
-        return filteredInstanceList, methodReturnDoc, signatureStr
+        return filteredInstanceList, methodReturn, methodSignature
 
 
     @staticmethod
