@@ -159,7 +159,14 @@ class CommandPrice(AbstractCommand):
             # use in next request
             self._storeDateTimeDataForNextPartialRequest(localNow)
         else:
-            localRequestDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute, 0, localTimezone)
+            try:
+                localRequestDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute, 0, localTimezone)
+            except ValueError as e:
+                result = ResultData()
+                result.setValue(ResultData.RESULT_KEY_ERROR_MSG,
+                                     "ERROR - {}: day {}, month {}".format(str(e), day, month))
+                return result
+
             if DateTimeUtil.isAfter(localRequestDateTime, localNow):
                 # request date is in the future ---> invalid. This happens for example in case
                 # btc usd 31/12 bittrex entered sometime before 31/12. Then the request year is
@@ -269,13 +276,13 @@ class CommandPrice(AbstractCommand):
             # RT price asked
             return True
         else:
-            # here, the three date components are not all equal to 0 !
+            # Here, the three date components are not all equal to 0 !
             if (yearStr == None and
                 monthStr == None and
                 dayStr == None and
                 hourStr != None and
                 minuteStr != None):
-                # here, only time was specified in the full request, which is now possible.
+                # Here, only time was specified in the full request, which is now possible.
                 # Current day, month and year are fornatted into the parsed parm data
                 # and True is returned
                 self.parsedParmData[self.DAY] = localNow.format('DD')
@@ -287,7 +294,7 @@ class CommandPrice(AbstractCommand):
                   dayStr != None and
                   hourStr != None and
                   minuteStr != None):
-                # here, only day and time wete specified in the full request, which is now possible.
+                # Here, only day and time were specified in the full request, which is now possible.
                 # Current month and year are fornatted into the parsed parm data
                 # and True is returned
                 self.parsedParmData[self.MONTH] = localNow.format('MM')

@@ -2004,6 +2004,30 @@ class TestControllerGui(unittest.TestCase):
             self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
+    def testGetPrintableResultForDayOnlyAndTimeFullRequestOn31st(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            now)
+
+        threeDaysBeforeArrowDate = now.shift(days=-3)
+
+        threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
+
+        inputStr = 'btc usd {} {}:{} bitfinex'.format(threeDaysBeforeDayStr, nowHourStr, nowMinuteStr)
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+#        if nowMonthStr == threeDaysBeforeMonthStr:
+            # this test can only be performed after the 3rd day of the mnnth,
+            # othervise, the test which assumes that we try a full request with only day and time
+            # specified, but with the day number set to 3 days before today - so, in the future
+            # if we are between the 1st and the 3rd since the month is not specified, can not be run.
+        self.assertEqual(
+            'ERROR - day is out of range for month: day 31, month {}'.format(now.month), printResult)
+        self.assertEqual('', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+
     def testGetPrintableResultForDayOnlyAndTimeFullRequest_8daysBefore(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
