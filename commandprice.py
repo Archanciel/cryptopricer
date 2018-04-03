@@ -162,6 +162,8 @@ class CommandPrice(AbstractCommand):
             try:
                 localRequestDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute, 0, localTimezone)
             except ValueError as e:
+                # is the when the user specify only the day if he enters 31 and the current month
+                # has no 31st or if he enters 30 or 29 and we are on February
                 result = ResultData()
                 result.setValue(ResultData.RESULT_KEY_ERROR_MSG,
                                      "ERROR - {}: day {}, month {}".format(str(e), day, month))
