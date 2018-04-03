@@ -569,5 +569,21 @@ class TestCommandPrice(unittest.TestCase):
                          "ERROR - invalid value: o5 violates format for minute (HH:mm)")
 
 
+    def testExecuteRealTimePriceInvalidFiat(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd6'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = 'o5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - fiat missing or invalid")
+
+
 if __name__ == '__main__':
     unittest.main()
