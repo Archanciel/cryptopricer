@@ -2,6 +2,8 @@ import unittest
 import os,sys,inspect
 from io import StringIO
 
+LOCAL_TIME_ZONE = 'Europe/Zurich'
+
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
@@ -59,7 +61,7 @@ class TestControllerGui(unittest.TestCase):
         sys.stdin = stdin
         sys.stdout = stdout
 
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         with open(FILE_PATH, 'r') as inFile:
@@ -69,7 +71,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInputscenarioWithValueCommand(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -142,7 +144,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInputscenarioWithValueCommandV0InFullCommand(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         yesterday = now.shift(days=-2)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -173,7 +175,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInputscenarioWithValueSaveCommandWipedOutByFullCommand(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         yesterday = now.shift(days=-2)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -203,7 +205,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInputscenarioWithValueCommandAndError(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -255,7 +257,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testControllerBugSpecifyDateBegOfYear(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -285,7 +287,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testControllerBugSpecifyValueCommandAfterAskHistoDay(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         eightDaysBeforeArrowDate = now.shift(days=-8)
 
@@ -325,7 +327,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testControllerBugSpecifySaveValueCommandAfterAskHistoDay(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         eightDaysBeforeArrowDate = now.shift(days=-8)
 
@@ -365,7 +367,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testControllerBugSpecifyValueCommandAfterAskHistoMinute(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -407,7 +409,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testControllerBugSpecifySaveValueCommandAfterAskHistoMinute(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -449,7 +451,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testControllerBugSpecifyValueCommandAfterAskHistoMinuteYearSupplied(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -491,7 +493,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testControllerBugSpecifySaveValueCommandAfterAskHistoMinuteYearSupplied(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -533,7 +535,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForReplayRealTime(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -563,7 +565,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForReplayHistoDay(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         eightDaysBeforeArrowDate = now.shift(days=-8)
 
@@ -604,7 +606,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForReplayHistoMinute(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -646,7 +648,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForReplayRealTimeThenValueCommand(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -765,7 +767,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForReplayHistoMinuteThenValueCommand(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -898,7 +900,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForReplayHistoDayThenValueCommand(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         eightDaysBeforeArrowDate = now.shift(days=-8)
 
@@ -1031,7 +1033,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForRealThenChangeTimeThenChangeCrypto(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1091,7 +1093,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInvalidDayFormatAfterHistoMinute(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -1132,7 +1134,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInvalidMonthFormatAfterHistoMinute(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -1173,7 +1175,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInvalidYearFormatAfterHistoMinute(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -1214,7 +1216,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInvalidMinuteFormatAfterHistoMinute(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -1255,7 +1257,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInvalidMinuteValueAfterHistoMinute(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -1296,7 +1298,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInvalidHourFormatAfterHistoMinute(self):
-        timezoneStr = 'Europe/Zurich'
+        timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
 
@@ -1337,7 +1339,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForReplayRealTimeThenOneDigitDateSpec(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowBegOfMonth = now.replace(day = 1, hours = 0)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -1379,7 +1381,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForReplayRealTimeThenTwoPartDateSpec(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowBegOfMonth = now.replace(day = 1, month = 1)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -1421,7 +1423,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForReplayRealTimeThenThreePartDateSpec(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowBegOfMonthLastYear = now.replace(day = 1, month = 1, year = now.year - 1)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -1463,7 +1465,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInputscenarioWithInvalidValueCommand(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1479,7 +1481,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInputscenarioWithInvalidCommand(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1505,7 +1507,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInputscenarioWithValueCommandAndInvalidCommand(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1521,7 +1523,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInputscenarioWithSaveValueCommandAndWarning(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1577,7 +1579,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInputscenarioWithInvalidCommandInFullAndPartialRequests(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1603,7 +1605,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultWithInvalidDateCommandAfterInvalidTimeCommandFollowingRealTimeRequest(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1641,7 +1643,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultWithInvalidTimeCommandAfterInvalidDateCommandFollowingRealTimeRequest(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1689,7 +1691,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultWithInvalidDateAndTimePartialRequestCommandsFollowingRealTimeRequest(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1737,7 +1739,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForInputscenarioWithValueCommandVAfterValueCommandVS(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1787,7 +1789,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForRealThenAddVSCommandAndChangeExchangeTimeCryptoDate(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1836,7 +1838,7 @@ class TestControllerGui(unittest.TestCase):
                                                                requestMinuteStr), fullCommandStrWithSaveModeOptions)
 
     def testGetPrintableResultForRealThenChangeFiatExchangeTimeAddVSCommandAndChangeCryptoDate(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
@@ -1908,7 +1910,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         threeDaysBeforeArrowDate = now.shift(days=-3)
 
         threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
@@ -1938,7 +1940,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         tenDaysBeforeArrowDate = now.shift(days=-10)
 
         tenDaysBeforeYearStr, tenDaysBeforeMonthStr, tenDaysBeforeDayStr, tenDaysBeforeHourStr, tenDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(tenDaysBeforeArrowDate)
@@ -1958,7 +1960,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForTimeOnlyWithoutDateFullRequest(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         #here, even if we request a price at now hour and now minute, the price returned is
@@ -1978,7 +1980,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForDayOnlyAndTimeFullRequest_3daysBefore(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
 
@@ -2005,31 +2007,29 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForDayOnlyAndTimeFullRequestOn31st(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
 
-        threeDaysBeforeArrowDate = now.shift(days=-3)
-
-        threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
-
-        inputStr = 'btc usd {} {}:{} bitfinex'.format(threeDaysBeforeDayStr, nowHourStr, nowMinuteStr)
+        oneMonthBeforeArrowDate = now.shift(months=-1)
+        day = 31
+        inputStr = 'btc usd {} {}:{} bitfinex'.format(day, nowHourStr, nowMinuteStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-#        if nowMonthStr == threeDaysBeforeMonthStr:
-            # this test can only be performed after the 3rd day of the mnnth,
-            # othervise, the test which assumes that we try a full request with only day and time
-            # specified, but with the day number set to 3 days before today - so, in the future
-            # if we are between the 1st and the 3rd since the month is not specified, can not be run.
-        self.assertEqual(
-            'ERROR - day is out of range for month: day 31, month {}'.format(now.month), printResult)
-        self.assertEqual('', fullCommandStr)
-        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+        try:
+            _ = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, now.month, now.year, now.hour, now.minute, 0,
+                                                                                   LOCAL_TIME_ZONE)
+        except ValueError:
+            # only if the request is for a month which does not have a 31st is the test performed !
+            self.assertEqual(
+                'ERROR - day is out of range for month: day 31, month {}'.format(now.month), printResult)
+            self.assertEqual('', fullCommandStr)
+            self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
     def testGetPrintableResultForDayOnlyAndTimeFullRequest_8daysBefore(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
 
@@ -2056,7 +2056,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForDayOnlyAndTimeullRequest_1daysAfter(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
 
@@ -2092,7 +2092,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForDayOnlyAndTimePartialRequest_3daysBefore(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
 
@@ -2122,7 +2122,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForDayOnlyAndTimePartialRequest_8daysBefore(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
 
@@ -2149,7 +2149,7 @@ class TestControllerGui(unittest.TestCase):
 
 
     def testGetPrintableResultForDayOnlyAndTimePartialRequest_1daysAfter(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
 
