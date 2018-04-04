@@ -592,7 +592,7 @@ class SeqDiagBuilder:
         '''
         Records in a FlowEntry list the control flow information which will be used later to build
         the Plantuml sequence diagram creation commands. Information is recorded only if the
-        SeqDiagBuilder was activated.
+        SeqDiagBuilder was activated using SeqDiagBuilder.activate().
 
         :return:
         '''
@@ -690,6 +690,8 @@ class SeqDiagBuilder:
 
         for className in moduleClassNameList:
             instance = SeqDiagBuilder._instanciateClass(className, moduleName)
+
+            # obtain the list of methods of the instance
             methodTupplesList = inspect.getmembers(instance, predicate=inspect.ismethod)
 
             for methodTupple in methodTupplesList:
@@ -763,8 +765,8 @@ class SeqDiagBuilder:
     @staticmethod
     def _instanciateClass(className, moduleName):
         '''
-        This toMethod instanciate the passed className dxfined in the passed module name
-        whatever the number
+        This method instanciate the passed className defined in the passed module name
+        whatever the number of required arguments in the __init__ method.
         :param className:
         :param moduleName:
         :return:
@@ -783,6 +785,9 @@ class SeqDiagBuilder:
         try:
             instance = eval('class_(' + noneStr + ')')
         except TypeError:
+            # here, the clasa we try to instanciate has an __init__ method with one or more
+            # arguments. We enter in a loop, trying to instanciate the class adding one argument
+            # at each loop run.
             noneStr = 'None'
             while not instance:
                 try:
