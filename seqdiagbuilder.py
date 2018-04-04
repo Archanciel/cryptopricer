@@ -240,7 +240,7 @@ class RecordedFlowPath:
     def addIfNotIn(self, newFlowEntry):
         '''
         This method adds a flow entry to the internal flowEntryList if the internal flowEntryList
-        already contains the entry point and provided this flow entry is not alreay in the
+        already contains the entry point and provided this flow entry is not already in the
         flowEntryList.
 
         The addition is only possible if the entry point was reached. For example, if
@@ -457,8 +457,14 @@ class SeqDiagBuilder:
         '''
         isFlowRecorded = True
 
-        if SeqDiagBuilder.recordedFlowPath == None or SeqDiagBuilder.recordedFlowPath.isEmpty():
-            SeqDiagBuilder._issueWarning("No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{}.".format(SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod))
+        if SeqDiagBuilder.recordedFlowPath == None:
+            SeqDiagBuilder._issueWarning(
+                "No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{} reached: {}.".format(
+                    SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass,
+                    SeqDiagBuilder.seqDiagEntryMethod, False))
+            isFlowRecorded = False
+        elif SeqDiagBuilder.recordedFlowPath.isEmpty():
+            SeqDiagBuilder._issueWarning("No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{} reached: {}.".format(SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod, SeqDiagBuilder.recordedFlowPath.entryPointReached))
             isFlowRecorded = False
 
         seqDiagCommandStr = SeqDiagBuilder._buildCommandFileHeaderSection()
@@ -508,6 +514,10 @@ class SeqDiagBuilder:
                 returnEntry = classMethodReturnStack.pop()
                 commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry, maxSigArgNum, maxSigCharLen)
                 seqDiagCommandStr += commandStr
+        else:
+            # adding dummy line to stick to Plantuml command file syntax and prevent
+            # error messages in built diagram
+            seqDiagCommandStr += "actor {}\n\n".format(actorName)
 
         seqDiagCommandStr += "@enduml"
 
@@ -632,20 +642,10 @@ class SeqDiagBuilder:
                         source = sourceFile.read()
                         parsedSource = ast.parse(source)
                         moduleClassNameList = [node.name for node in ast.walk(parsedSource) if isinstance(node, ast.ClassDef)]
-                        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(currentMethodName,
-                                                                                            moduleName,
-                                                                                            moduleClassNameList)
-                        if instanceList == []:
+                        instance, toMethodReturn, toMethodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(moduleClassNameList, moduleName, currentMethodName)
+
+                        if instance == None:
                             continue
-                        filteredInstanceList, toMethodReturn, toMethodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, currentMethodName)
-                        instance = filteredInstanceList[0]
-                        if len(filteredInstanceList) > 1:
-                            filteredClassNameList = []
-                            for filteredInstance in filteredInstanceList:
-                                filteredClassNameList.append(filteredInstance.__class__.__name__)
-                            SeqDiagBuilder._issueWarning(
-                                "More than one class {} found in module {} do support toMethod {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the toMethod documentation.".format(str(filteredClassNameList), moduleName, currentMethodName, toMethodSignature, instance.__class__.__name__,
-                                                                                                                                                                                                                                                       SEQDIAG_SELECT_METHOD_TAG))
 
                         toClass = instance.__class__.__name__
                         toMethodName = currentMethodName
@@ -703,7 +703,7 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def _getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName):
+    def _getFilteredInstanceListAndMethodSignatureAndReturnDoc(moduleClassNameList, moduleName, methodName):
         '''
         This method returns the passed instance List filtered so that it only contains instances
         supporting the passed methodName. The string associated to the %s tag defined in
@@ -726,40 +726,63 @@ class SeqDiagBuilder:
         :return: filteredInstanceList, methodReturn, methodSignature
         '''
 
-        filteredInstanceList = []
+        instanceList = []
         methodReturn = ''
         methodSignature = ''
+        selectedMethodFound = False
 
-        if not instanceList:
-            return filteredInstanceList, methodReturn, methodSignature
+        for className in moduleClassNameList:
+            if selectedMethodFound:
+                break
 
-        for instance in instanceList:
-            filteredInstanceList.append(instance)
+            instance = SeqDiagBuilder._instanciateClass(className, moduleName)
+
+            # obtain the list of methods of the instance
             methodTupplesList = inspect.getmembers(instance, predicate=inspect.ismethod)
-            relevantMethodTupple = [x for x in methodTupplesList if x[0] == methodName][0]
-            methodObj = relevantMethodTupple[1]
-            methodDoc = methodObj.__doc__
 
-            if methodDoc:
-                # get method return type from toMethod doc
-                match = re.search(SEQDIAG_RETURN_TAG_PATTERN, methodDoc)
-                if match:
-                    methodReturn = match.group(1)
+            for methodTupple in methodTupplesList:
+                if methodName == methodTupple[0]:
+                    # here, methodName is a member of className
 
-                # chech if method doc contains :seqdiag_select_method tag
-                match = re.search(SEQDIAG_SELECT_METHOD_TAG_PATTERN, methodDoc)
-                if match:
-                    # in case several instances do support methodName, the first one containing
-                    # the method whose doc is tagged with :seqdiag_select_method is returned in
-                    # the filteredInstanceList and all the other instances are ignored.
-                    filteredInstanceList = [instance]
-                    break
+                    methodObj = methodTupple[1]
+                    methodSignature = str(signature(methodObj))
+                    methodDoc = methodObj.__doc__
 
-        # get method signature
+                    if methodDoc:
+                        # get method return type from method documentation
+                        match = re.search(SEQDIAG_RETURN_TAG_PATTERN, methodDoc)
+                        if match:
+                            methodReturn = match.group(1)
 
-        methodSignature = str(signature(methodObj))
+                        # chech if method documentation contains :seqdiag_select_method tag
+                        match = re.search(SEQDIAG_SELECT_METHOD_TAG_PATTERN, methodDoc)
+                        if match:
+                            # in case several instances do support methodName, the first one containing
+                            # the method whose doc is tagged with :seqdiag_select_method is returned in
+                            # the instance list and all the other instances are ignored.
+                            instanceList = [instance]
+                            selectedMethodFound = True
+                            break
 
-        return filteredInstanceList, methodReturn, methodSignature
+                    instanceList.append(instance)
+
+        if instanceList == []:
+            # no class supporting methodName found in moduleName
+            return None, None, None
+
+        instance = instanceList[0]
+
+        if len(instanceList) > 1:
+            filteredClassNameList = []
+            for filteredInstance in instanceList:
+                filteredClassNameList.append(filteredInstance.__class__.__name__)
+            SeqDiagBuilder._issueWarning(
+                "More than one class {} found in module {} do support method {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the toMethod documentation.".format(
+                    str(filteredClassNameList), moduleName, methodName, methodSignature,
+                    instance.__class__.__name__,
+                    SEQDIAG_SELECT_METHOD_TAG))
+
+        return instance, methodReturn, methodSignature
 
 
     @staticmethod
