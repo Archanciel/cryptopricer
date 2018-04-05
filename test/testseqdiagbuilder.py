@@ -142,6 +142,14 @@ class Parent:
         '''
         pass
 
+    def inheritedMethod(self, inhArg):
+        '''
+        This a dummy merhod.
+        :seqdiag_return inhMethResult
+        :return:
+        '''
+        SeqDiagBuilder.recordFlow()
+
 
 class ChildOne(Parent):
     def getCoordinate(self, location=''):
@@ -263,6 +271,14 @@ class ClassA:
         '''
         b = ClassB()
         res = b.createInnerRequest(1)
+
+    def aMethod(self, aMarg):
+        '''
+        :seqdiag_return ResultAmeth
+        :return:
+        '''
+        child = ChildTwo()
+        child.inheritedMethod(aMarg)
 
 
 class ClassB:
@@ -1177,6 +1193,28 @@ USER -> ChildThree: getCoordinateNoneSelected(location='')
 
         SeqDiagBuilder.deactivate()
 
+    def testRecordFlowWhereMulitpleClassesSupportInheritedMethodAndNoneIsSelected(self):
+        entryPoint = ClassA()
+
+        SeqDiagBuilder.activate('ClassA', 'aMethod')  # activate sequence diagram building
+        entryPoint.aMethod(1)
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+USER -> ChildThree: getCoordinateNoneSelected(location='')
+    activate ChildTwo
+    USER <-- ChildTwo: return Coord
+    deactivate ChildThree
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()
 
     def testCreateSeqDiaqCommandsOnFullRequestHistoDayPrice(self):
         from datetimeutil import DateTimeUtil

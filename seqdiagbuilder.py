@@ -396,15 +396,30 @@ class SeqDiagBuilder:
 
         if len(SeqDiagBuilder.seqDiagWarningList) > 0:
             # building a header containing the warnings
-            commandFileHeaderSectionStr += "left header\n<b><font color=red >Warnings</font></b>\n"
+            commandFileHeaderSectionStr += "center header\n<b><font color=red size=20> Warnings</font></b>\n"
 
             for warning in SeqDiagBuilder.seqDiagWarningList:
-                commandFileHeaderSectionStr += "<font color=red>{}</font>\n".format(warning)
+                commandFileHeaderSectionStr += SeqDiagBuilder._splitWarningToLines(warning)
 
             commandFileHeaderSectionStr += "endheader\n\n"
 
         return commandFileHeaderSectionStr
 
+
+    @staticmethod
+    def _splitWarningToLines(warningStr):
+        '''
+
+        :param warningStr:
+        :return:
+        '''
+        formattedWarnings = ''
+        lines = warningStr.split('. ')
+
+        for line in lines:
+            formattedWarnings += '<b><font color=red size=14>  {}.</font></b>\n'.format(line)
+
+        return formattedWarnings
 
     @staticmethod
     def createDiagram(targetDriveDirName, actorName, maxSigArgNum=None, maxSigCharLen=None):
@@ -623,8 +638,7 @@ class SeqDiagBuilder:
             fromClassName = ''              # class containing the method calling the toMethod
             fromMethodName = ''             # method calling the toMethod
             toMethodCallLineNumber = '0'    # line number in the fromMethod of the toMethod call
-            fromMethodReturn = ''           # fromMethod returned result as tagged by the :seqdiag_return
-                                            # tag in the fromMethod documentation
+
             for frame in frameList[:-1]: #last line in frameList is the call to the recordFlow() method !
                 match = re.match(PYTHON_FILE_AND_FUNC_PATTERN, frame)
                 if match:
@@ -636,7 +650,7 @@ class SeqDiagBuilder:
                     # now the current module is opened and its source code is parsed. Then, the classes
                     # it contains are instanciated in order to select the one supporting the current
                     # method methodName. The purpose is to be able to access to various informations
-                    # used later to build the sequence diagram, like the method signature and tagged
+                    # used later to build the sequence diagram, namely the method signature and tagged
                     # informations potentially contained in the method documentation.
                     with open(pythonClassFilePath + moduleName + '.py', "r") as sourceFile:
                         source = sourceFile.read()
@@ -654,7 +668,6 @@ class SeqDiagBuilder:
                         fromClassName = toClass
                         fromMethodName = toMethodName
                         toMethodCallLineNumber = "{}-{}".format(toMethodCallLineNumber, methodCallLineNumber)
-                        fromMethodReturn = toMethodReturn
                         SeqDiagBuilder.recordedFlowPath.addIfNotIn(flowEntry)
 #            print(SeqDiagBuilder.recordedFlowPath)
 
@@ -777,7 +790,7 @@ class SeqDiagBuilder:
             for filteredInstance in instanceList:
                 filteredClassNameList.append(filteredInstance.__class__.__name__)
             SeqDiagBuilder._issueWarning(
-                "More than one class {} found in module {} do support method {}{}. Class {} chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the toMethod documentation.".format(
+                "More than one class {} found in module {} do support method {}{}. Since Python provides no information to determine the exact target class, class {} was chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the target method documentation. See help for more informations".format(
                     str(filteredClassNameList), moduleName, methodName, methodSignature,
                     instance.__class__.__name__,
                     SEQDIAG_SELECT_METHOD_TAG))
