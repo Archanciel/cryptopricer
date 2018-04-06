@@ -600,7 +600,7 @@ class TestSeqDiagBuilder(unittest.TestCase):
         SeqDiagBuilder.deactivate()
 
 
-    def testCreateSeqDiaqCommandsOnSimplestCallWithoutRecordFlowCallInLeafMethod(self):
+    def testCreateSeqDiagCommandsOnSimplestCallWithoutRecordFlowCallInLeafMethod(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a0')  # activate sequence diagram building
@@ -608,25 +608,28 @@ class TestSeqDiagBuilder(unittest.TestCase):
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
 
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
         self.assertEqual(
 '''@startuml
-left header
-<b><font color=red >Warnings</font></b>
-<font color=red>No control flow recorded. Method activate() called: True. Method recordFlow() called: False. Specified entry point: A.a0 reached: False.</font>
+center header
+<b><font color=red size=20> Warnings</font></b>
+<b><font color=red size=14>  No control flow recorded.</font></b>
+<b><font color=red size=14>  Method activate() called: True.</font></b>
+<b><font color=red size=14>  Method recordFlow() called: False.</font></b>
+<b><font color=red size=14>  Specified entry point: A.a0 reached: False.</font></b>
 endheader
 
 actor USER
 
 @enduml''', commands)
 
-        with open("c:\\temp\\ess.txt", "w") as f:
-            f.write(commands)
-
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
 
-    def testCreateSeqDiaqCommandsOnSimplestCall(self):
+    def testCreateSeqDiagCommandsOnSimplestCall(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a1')  # activate sequence diagram building
@@ -642,15 +645,15 @@ actor USER
 '''@startuml
 
 actor USER
-USER -> A: a1(a1_p1, a1_p2)
-	activate A
-	USER <-- A: return Aa1Return
-	deactivate A
+	USER -> A: a1(a1_p1, a1_p2)
+		activate A
+		USER <-- A: return Aa1Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
-    def testCreateSeqDiaqCommandsTwoLevelCallTwoDiffMethods(self):
+    def testCreateSeqDiagCommandsTwoLevelCallTwoDiffMethods(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a10')  # activate sequence diagram building
@@ -666,23 +669,23 @@ USER -> A: a1(a1_p1, a1_p2)
 '''@startuml
 
 actor USER
-USER -> A: a10(a10_p1)
-	activate A
-	A -> B: b4(b4_p1)
-		activate B
-		A <-- B: return Bb4Return
-		deactivate B
-	A -> B: b5(b5_p1)
-		activate B
-		A <-- B: return Bb5Return
-		deactivate B
-	USER <-- A: return Aa10Return
-	deactivate A
+	USER -> A: a10(a10_p1)
+		activate A
+		A -> B: b4(b4_p1)
+			activate B
+			A <-- B: return Bb4Return
+			deactivate B
+		A -> B: b5(b5_p1)
+			activate B
+			A <-- B: return Bb5Return
+			deactivate B
+		USER <-- A: return Aa10Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
-    def testCreateSeqDiaqCommandsOnTwoLevelCall(self):
+    def testCreateSeqDiagCommandsOnTwoLevelCall(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a2')  # activate sequence diagram building
@@ -699,20 +702,20 @@ USER -> A: a10(a10_p1)
 '''@startuml
 
 actor USER
-USER -> A: a2(a2_p1)
-	activate A
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	USER <-- A: return Aa2Return
-	deactivate A
+	USER -> A: a2(a2_p1)
+		activate A
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		USER <-- A: return Aa2Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
 
-    def testCreateSeqDiaqCommandsOnThreeLevelCallingMidLevelMethodTwice(self):
+    def testCreateSeqDiagCommandsOnThreeLevelCallingMidLevelMethodTwice(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a6')  # activate sequence diagram building
@@ -729,32 +732,32 @@ USER -> A: a2(a2_p1)
 '''@startuml
 
 actor USER
-USER -> A: a6(a6_p1)
-	activate A
-	A -> B: b2(b2_p1)
-		activate B
-		B -> C: c1(c1_p1)
-			activate C
-			B <-- C: return Cc1Return
-			deactivate C
-		A <-- B: return Bb2Return
-		deactivate B
-	A -> B: b2(b2_p1)
-		activate B
-		B -> C: c1(c1_p1)
-			activate C
-			B <-- C: return Cc1Return
-			deactivate C
-		A <-- B: return Bb2Return
-		deactivate B
-	USER <-- A: return Aa6Return
-	deactivate A
+	USER -> A: a6(a6_p1)
+		activate A
+		A -> B: b2(b2_p1)
+			activate B
+			B -> C: c1(c1_p1)
+				activate C
+				B <-- C: return Cc1Return
+				deactivate C
+			A <-- B: return Bb2Return
+			deactivate B
+		A -> B: b2(b2_p1)
+			activate B
+			B -> C: c1(c1_p1)
+				activate C
+				B <-- C: return Cc1Return
+				deactivate C
+			A <-- B: return Bb2Return
+			deactivate B
+		USER <-- A: return Aa6Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
 
-    def testCreateSeqDiaqCommandsOnFiveLevelCallingSecondLevelMethodTwice(self):
+    def testCreateSeqDiagCommandsOnFiveLevelCallingSecondLevelMethodTwice(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a11')  # activate sequence diagram building
@@ -771,39 +774,39 @@ USER -> A: a6(a6_p1)
 '''@startuml
 
 actor USER
-USER -> A: a11(a11_p1)
-	activate A
-	A -> B: b6(b6_p1)
-		activate B
-		B -> C: c2(c2_p1)
-			activate C
-			C -> D: d1(d1_p1)
-				activate D
-				C <-- D: return Dd1Return
-				deactivate D
-			B <-- C: return Cc2Return
-			deactivate C
-		A <-- B: return Bb6Return
-		deactivate B
-	A -> B: b6(b6_p1)
-		activate B
-		B -> C: c2(c2_p1)
-			activate C
-			C -> D: d1(d1_p1)
-				activate D
-				C <-- D: return Dd1Return
-				deactivate D
-			B <-- C: return Cc2Return
-			deactivate C
-		A <-- B: return Bb6Return
-		deactivate B
-	USER <-- A: return Aa11Return
-	deactivate A
+	USER -> A: a11(a11_p1)
+		activate A
+		A -> B: b6(b6_p1)
+			activate B
+			B -> C: c2(c2_p1)
+				activate C
+				C -> D: d1(d1_p1)
+					activate D
+					C <-- D: return Dd1Return
+					deactivate D
+				B <-- C: return Cc2Return
+				deactivate C
+			A <-- B: return Bb6Return
+			deactivate B
+		A -> B: b6(b6_p1)
+			activate B
+			B -> C: c2(c2_p1)
+				activate C
+				C -> D: d1(d1_p1)
+					activate D
+					C <-- D: return Dd1Return
+					deactivate D
+				B <-- C: return Cc2Return
+				deactivate C
+			A <-- B: return Bb6Return
+			deactivate B
+		USER <-- A: return Aa11Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
-    def testCreateSeqDiaqCommandsOnFiveLevelCallingSecondLevelMethodTwiceWithRecordFlowInEveryMethod(self):
+    def testCreateSeqDiagCommandsOnFiveLevelCallingSecondLevelMethodTwiceWithRecordFlowInEveryMethod(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a12')  # activate sequence diagram building
@@ -820,63 +823,63 @@ USER -> A: a11(a11_p1)
 '''@startuml
 
 actor USER
-USER -> A: a12(a12_p1)
-	activate A
-	A -> B: b7(b7_p1)
-		activate B
-		B -> C: c3(c3_p1)
-			activate C
-			C -> D: d2(d2_p1)
-				activate D
-				C <-- D: return Dd2Return
-				deactivate D
-			C -> C: c4(c4_p1)
+	USER -> A: a12(a12_p1)
+		activate A
+		A -> B: b7(b7_p1)
+			activate B
+			B -> C: c3(c3_p1)
 				activate C
 				C -> D: d2(d2_p1)
 					activate D
 					C <-- D: return Dd2Return
 					deactivate D
-				C <-- C: return Cc4Return
+				C -> C: c4(c4_p1)
+					activate C
+					C -> D: d2(d2_p1)
+						activate D
+						C <-- D: return Dd2Return
+						deactivate D
+					C <-- C: return Cc4Return
+					deactivate C
+				B <-- C: return Cc3Return
 				deactivate C
-			B <-- C: return Cc3Return
-			deactivate C
-		B -> D: d2(d2_p1)
-			activate D
-			B <-- D: return Dd2Return
-			deactivate D
-		A <-- B: return Bb7Return
-		deactivate B
-	A -> B: b7(b7_p1)
-		activate B
-		B -> C: c3(c3_p1)
-			activate C
-			C -> D: d2(d2_p1)
+			B -> D: d2(d2_p1)
 				activate D
-				C <-- D: return Dd2Return
+				B <-- D: return Dd2Return
 				deactivate D
-			C -> C: c4(c4_p1)
+			A <-- B: return Bb7Return
+			deactivate B
+		A -> B: b7(b7_p1)
+			activate B
+			B -> C: c3(c3_p1)
 				activate C
 				C -> D: d2(d2_p1)
 					activate D
 					C <-- D: return Dd2Return
 					deactivate D
-				C <-- C: return Cc4Return
+				C -> C: c4(c4_p1)
+					activate C
+					C -> D: d2(d2_p1)
+						activate D
+						C <-- D: return Dd2Return
+						deactivate D
+					C <-- C: return Cc4Return
+					deactivate C
+				B <-- C: return Cc3Return
 				deactivate C
-			B <-- C: return Cc3Return
-			deactivate C
-		B -> D: d2(d2_p1)
-			activate D
-			B <-- D: return Dd2Return
-			deactivate D
-		A <-- B: return Bb7Return
-		deactivate B
-	USER <-- A: return Aa12Return
-	deactivate A
+			B -> D: d2(d2_p1)
+				activate D
+				B <-- D: return Dd2Return
+				deactivate D
+			A <-- B: return Bb7Return
+			deactivate B
+		USER <-- A: return Aa12Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
-    def testCreateSeqDiaqCommandsOnFiveLevelCallingSecondLevelMethodTwiceWithRecordFlowInOnePlaceOnly(self):
+    def testCreateSeqDiagCommandsOnFiveLevelCallingSecondLevelMethodTwiceWithRecordFlowInOnePlaceOnly(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a13')  # activate sequence diagram building
@@ -893,32 +896,32 @@ USER -> A: a12(a12_p1)
 '''@startuml
 
 actor USER
-USER -> A: a13(a13_p1)
-	activate A
-	A -> B: b8(b8_p1)
-		activate B
-		B -> D: d2(d2_p1)
-			activate D
-			B <-- D: return Dd2Return
-			deactivate D
-		A <-- B: return Bb8Return
-		deactivate B
-	A -> B: b8(b8_p1)
-		activate B
-		B -> D: d2(d2_p1)
-			activate D
-			B <-- D: return Dd2Return
-			deactivate D
-		A <-- B: return Bb8Return
-		deactivate B
-	USER <-- A: return Aa13Return
-	deactivate A
+	USER -> A: a13(a13_p1)
+		activate A
+		A -> B: b8(b8_p1)
+			activate B
+			B -> D: d2(d2_p1)
+				activate D
+				B <-- D: return Dd2Return
+				deactivate D
+			A <-- B: return Bb8Return
+			deactivate B
+		A -> B: b8(b8_p1)
+			activate B
+			B -> D: d2(d2_p1)
+				activate D
+				B <-- D: return Dd2Return
+				deactivate D
+			A <-- B: return Bb8Return
+			deactivate B
+		USER <-- A: return Aa13Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
 
-    def testCreateSeqDiaqCommandsOnThreeLevelCallingLastLevelMethodTwice(self):
+    def testCreateSeqDiagCommandsOnThreeLevelCallingLastLevelMethodTwice(self):
         '''
         Calling two level deep method which calls last Level method twice
         :return:
@@ -939,28 +942,28 @@ USER -> A: a13(a13_p1)
 '''@startuml
 
 actor USER
-USER -> A: a7(a7_p1)
-	activate A
-	A -> B: b3(b3_p1)
-		activate B
-		B -> C: c1(c1_p1)
-			activate C
-			B <-- C: return Cc1Return
-			deactivate C
-		B -> C: c1(c1_p1)
-			activate C
-			B <-- C: return Cc1Return
-			deactivate C
-		A <-- B: return Bb3Return
-		deactivate B
-	USER <-- A: return Aa6Return
-	deactivate A
+	USER -> A: a7(a7_p1)
+		activate A
+		A -> B: b3(b3_p1)
+			activate B
+			B -> C: c1(c1_p1)
+				activate C
+				B <-- C: return Cc1Return
+				deactivate C
+			B -> C: c1(c1_p1)
+				activate C
+				B <-- C: return Cc1Return
+				deactivate C
+			A <-- B: return Bb3Return
+			deactivate B
+		USER <-- A: return Aa6Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
 
-    def testCreateSeqDiaqCommandsOnTwoLevelCallCallingMethodTwice(self):
+    def testCreateSeqDiagCommandsOnTwoLevelCallCallingMethodTwice(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a4')  # activate sequence diagram building
@@ -977,24 +980,24 @@ USER -> A: a7(a7_p1)
 '''@startuml
 
 actor USER
-USER -> A: a4(a4_p1)
-	activate A
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	USER <-- A: return Aa4Return
-	deactivate A
+	USER -> A: a4(a4_p1)
+		activate A
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		USER <-- A: return Aa4Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
 
-    def testCreateSeqDiaqCommandsOnTwoLevelCallCallingMethodThreeTimes(self):
+    def testCreateSeqDiagCommandsOnTwoLevelCallCallingMethodThreeTimes(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a5')  # activate sequence diagram building
@@ -1011,28 +1014,28 @@ USER -> A: a4(a4_p1)
 '''@startuml
 
 actor USER
-USER -> A: a5(a5_p1)
-	activate A
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	A -> B: b1(b1_p1)
-		activate B
-		A <-- B: return Bb1Return
-		deactivate B
-	USER <-- A: return Aa5Return
-	deactivate A
+	USER -> A: a5(a5_p1)
+		activate A
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		A -> B: b1(b1_p1)
+			activate B
+			A <-- B: return Bb1Return
+			deactivate B
+		USER <-- A: return Aa5Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
 
-    def testCreateSeqDiaqCommandsOnThreeLevelCall(self):
+    def testCreateSeqDiagCommandsOnThreeLevelCall(self):
         entryPoint = A()
 
         SeqDiagBuilder.activate('A', 'a3')  # activate sequence diagram building
@@ -1048,18 +1051,18 @@ USER -> A: a5(a5_p1)
 '''@startuml
 
 actor USER
-USER -> A: a3(a3_p1)
-	activate A
-	A -> B: b2(b2_p1)
-		activate B
-		B -> C: c1(c1_p1)
-			activate C
-			B <-- C: return Cc1Return
-			deactivate C
-		A <-- B: return Bb2Return
-		deactivate B
-	USER <-- A: return Aa3Return
-	deactivate A
+	USER -> A: a3(a3_p1)
+		activate A
+		A -> B: b2(b2_p1)
+			activate B
+			B -> C: c1(c1_p1)
+				activate C
+				B <-- C: return Cc1Return
+				deactivate C
+			A <-- B: return Bb2Return
+			deactivate B
+		USER <-- A: return Aa3Return
+		deactivate A
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -1136,10 +1139,10 @@ USER -> A: a3(a3_p1)
 '''@startuml
 
 actor USER
-USER -> ChildThree: getCoordinate(location='')
-	activate ChildThree
-	USER <-- ChildThree: return CoordSel
-	deactivate ChildThree
+	USER -> ChildThree: getCoordinate(location='')
+		activate ChildThree
+		USER <-- ChildThree: return CoordSel
+		deactivate ChildThree
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()
@@ -1158,9 +1161,12 @@ USER -> ChildThree: getCoordinate(location='')
 
         self.assertEqual(
 '''@startuml
-left header
-<b><font color=red >Warnings</font></b>
-<font color=red>No control flow recorded. Method activate() called: True. Method recordFlow() called: True. Specified entry point: ChildTwo.getCoordinate reached: False.</font>
+center header
+<b><font color=red size=20> Warnings</font></b>
+<b><font color=red size=14>  No control flow recorded.</font></b>
+<b><font color=red size=14>  Method activate() called: True.</font></b>
+<b><font color=red size=14>  Method recordFlow() called: True.</font></b>
+<b><font color=red size=14>  Specified entry point: ChildTwo.getCoordinate reached: False.</font></b>
 endheader
 
 actor USER
@@ -1183,12 +1189,22 @@ actor USER
 
         self.assertEqual(
 '''@startuml
+center header
+<b><font color=red size=20> Warnings</font></b>
+<b><font color=red size=20> 1</font></b>
+<b><font color=red size=14>  More than one class ['Parent', 'ChildOne', 'ChildTwo', 'ChildThree', 'ChildOfChildTwo'] found in module testseqdiagbuilder do support method getCoordinateNoneSelected(location='').</font></b>
+<b><font color=red size=14>  Since Python provides no way to determine the exact target class, class Parent was chosen by default for building the sequence diagram.</font></b>
+<b><font color=red size=14>  To override this selection, put tag :seqdiag_select_method somewhere in the target method documentation or define every class of the hierarchy in its own file.</font></b>
+<b><font color=red size=14>  See help for more information.</font></b>
+<b><font color=red size=20> 2</font></b>
+<b><font color=red size=14>  No control flow recorded.</font></b>
+<b><font color=red size=14>  Method activate() called: True.</font></b>
+<b><font color=red size=14>  Method recordFlow() called: True.</font></b>
+<b><font color=red size=14>  Specified entry point: ChildTwo.getCoordinateNoneSelected reached: False.</font></b>
+endheader
 
 actor USER
-USER -> ChildThree: getCoordinateNoneSelected(location='')
-    activate ChildTwo
-    USER <-- ChildTwo: return Coord
-    deactivate ChildThree
+
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()
@@ -1206,17 +1222,29 @@ USER -> ChildThree: getCoordinateNoneSelected(location='')
 
         self.assertEqual(
 '''@startuml
+center header
+<b><font color=red size=20> Warnings</font></b>
+<b><font color=red size=14>  More than one class ['Parent', 'ChildOne', 'ChildTwo', 'ChildThree', 'ChildOfChildTwo'] found in module testseqdiagbuilder do support method inheritedMethod(inhArg).</font></b>
+<b><font color=red size=14>  Since Python provides no way to determine the exact target class, class Parent was chosen by default for building the sequence diagram.</font></b>
+<b><font color=red size=14>  To override this selection, put tag :seqdiag_select_method somewhere in the target method documentation or define every class of the hierarchy in its own file.</font></b>
+<b><font color=red size=14>  See help for more information.</font></b>
+endheader
+
 
 actor USER
-USER -> ChildThree: getCoordinateNoneSelected(location='')
-    activate ChildTwo
-    USER <-- ChildTwo: return Coord
-    deactivate ChildThree
+	USER -> ClassA: aMethod(aMarg)
+		activate ClassA
+		ClassA -> Parent: inheritedMethod(inhArg)
+			activate Parent
+			ClassA <-- Parent: return inhMethResult
+			deactivate Parent
+		USER <-- ClassA: return ResultAmeth
+		deactivate ClassA
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()
 
-    def testCreateSeqDiaqCommandsOnFullRequestHistoDayPrice(self):
+    def testCreateSeqDiagCommandsOnFullRequestHistoDayPrice(self):
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
         from configurationmanager import ConfigurationManager
@@ -1315,7 +1343,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
         SeqDiagBuilder.deactivate()
 
 
-    def testCreateSeqDiaqCommandsOnFullRequestHistoDayPriceWithSignatureLimitation(self):
+    def testCreateSeqDiagCommandsOnFullRequestHistoDayPriceWithSignatureLimitation(self):
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
         from configurationmanager import ConfigurationManager
@@ -1418,7 +1446,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
         SeqDiagBuilder.deactivate()
 
 
-    def testCreateSeqDiaqCommandsOnClassesWithEmbededSelfCalls(self):
+    def testCreateSeqDiagCommandsOnClassesWithEmbededSelfCalls(self):
         entryPoint = ClassA()
 
         SeqDiagBuilder.activate('ClassA', 'doWork')  # activate sequence diagram building
@@ -1433,33 +1461,33 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 '''@startuml
 
 actor USER
-USER -> ClassA: doWork()
-	activate ClassA
-	ClassA -> ClassA: internalCall()
+	USER -> ClassA: doWork()
 		activate ClassA
-		ClassA -> ClassA: internalInnerCall()
+		ClassA -> ClassA: internalCall()
 			activate ClassA
-			ClassA -> ClassB: createInnerRequest(parm1)
+			ClassA -> ClassA: internalInnerCall()
+				activate ClassA
+				ClassA -> ClassB: createInnerRequest(parm1)
+					activate ClassB
+					ClassA <-- ClassB: return Bool
+					deactivate ClassB
+				ClassA <-- ClassA: return ResultPrice
+				deactivate ClassA
+			ClassA -> ClassB: createRequest(parm1, parm2)
 				activate ClassB
 				ClassA <-- ClassB: return Bool
 				deactivate ClassB
 			ClassA <-- ClassA: return ResultPrice
 			deactivate ClassA
-		ClassA -> ClassB: createRequest(parm1, parm2)
-			activate ClassB
-			ClassA <-- ClassB: return Bool
-			deactivate ClassB
-		ClassA <-- ClassA: return ResultPrice
+		USER <-- ClassA: return ClassAdoWorkRes
 		deactivate ClassA
-	USER <-- ClassA: return ClassAdoWorkRes
-	deactivate ClassA
 @enduml''', commands)
 
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
 
-    def testCreateSeqDiaqCommandsWithoutActivatingSeqDiagBuilder(self):
+    def testCreateSeqDiagCommandsWithoutActivatingSeqDiagBuilder(self):
         entryPoint = ClassA()
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
@@ -1468,7 +1496,7 @@ USER -> ClassA: doWork()
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
 
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
-        self.assertEqual('No control flow recorded. Method activate() called: False. Method recordFlow() called: True. Specified entry point: None.None reached: False.', SeqDiagBuilder.getWarningList()[0])
+        self.assertEqual('No control flow recorded. Method activate() called: False. Method recordFlow() called: True. Specified entry point: None.None reached: False', SeqDiagBuilder.getWarningList()[0])
 
 
     def test_getInstancesForClassSupportingMethodInClassHierarchyInMultipleClasses(self):

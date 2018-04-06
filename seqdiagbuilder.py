@@ -394,11 +394,20 @@ class SeqDiagBuilder:
         '''
         commandFileHeaderSectionStr = "@startuml\n"
 
-        if len(SeqDiagBuilder.seqDiagWarningList) > 0:
-            # building a header containing the warnings
+        warningNb = len(SeqDiagBuilder.seqDiagWarningList)
+
+        if warningNb > 0:
+            # building a header containing the warnings. If several warnings are issued, they are numbered.
             commandFileHeaderSectionStr += "center header\n<b><font color=red size=20> Warnings</font></b>\n"
+            warningIndex = 0
+
+            if warningNb > 1:
+                warningIndex = 1
 
             for warning in SeqDiagBuilder.seqDiagWarningList:
+                if warningIndex:
+                    commandFileHeaderSectionStr += "<b><font color=red size=20> {}</font></b>\n".format(warningIndex)
+                    warningIndex += 1
                 commandFileHeaderSectionStr += SeqDiagBuilder._splitWarningToLines(warning)
 
             commandFileHeaderSectionStr += "endheader\n\n"
@@ -473,14 +482,13 @@ class SeqDiagBuilder:
         isFlowRecorded = True
 
         if SeqDiagBuilder.recordedFlowPath == None:
-            SeqDiagBuilder._issueWarning(
-                "No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{} reached: {}.".format(
-                    SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass,
-                    SeqDiagBuilder.seqDiagEntryMethod, False))
+            isEntryPointReached = False
             isFlowRecorded = False
+            SeqDiagBuilder.issueNoFlowRecordedWarning(isEntryPointReached)
         elif SeqDiagBuilder.recordedFlowPath.isEmpty():
-            SeqDiagBuilder._issueWarning("No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{} reached: {}.".format(SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod, SeqDiagBuilder.recordedFlowPath.entryPointReached))
+            isEntryPointReached = SeqDiagBuilder.recordedFlowPath.entryPointReached
             isFlowRecorded = False
+            SeqDiagBuilder.issueNoFlowRecordedWarning(isEntryPointReached)
 
         seqDiagCommandStr = SeqDiagBuilder._buildCommandFileHeaderSection()
 
@@ -538,6 +546,12 @@ class SeqDiagBuilder:
 
         return seqDiagCommandStr
 
+    @staticmethod
+    def issueNoFlowRecordedWarning(isEntryPointReached):
+        SeqDiagBuilder._issueWarning(
+            "No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{} reached: {}".format(
+                SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass,
+                SeqDiagBuilder.seqDiagEntryMethod, isEntryPointReached))
 
     @staticmethod
     def _handleSeqDiagReturnMesssageCommand(returnEntry, maxArgNum, maxReturnTypeCharLen):
@@ -576,7 +590,7 @@ class SeqDiagBuilder:
         :param flowEntry:
         :return:
         '''
-        return (flowEntry.getIndentNumber() - 1) * TAB_CHAR
+        return flowEntry.getIndentNumber() * TAB_CHAR
 
     @staticmethod
     def _getReturnIndent(returnEntry):
@@ -585,7 +599,7 @@ class SeqDiagBuilder:
         :param returnEntry:
         :return:
         '''
-        return returnEntry.getIndentNumber() * TAB_CHAR
+        return (returnEntry.getIndentNumber() + 1) * TAB_CHAR
 
     @staticmethod
     def _addForwardSeqDiagCommand(fromClass, toClass, method, signature, indentStr):
@@ -638,6 +652,9 @@ class SeqDiagBuilder:
             fromClassName = ''              # class containing the method calling the toMethod
             fromMethodName = ''             # method calling the toMethod
             toMethodCallLineNumber = '0'    # line number in the fromMethod of the toMethod call
+            entryClassEncountered = False   # optimization: before the entry class was found in a module
+                                            # referenced in a frame, searching classes supporting a method
+                                            # in this module does make sense
 
             for frame in frameList[:-1]: #last line in frameList is the call to the recordFlow() method !
                 match = re.match(PYTHON_FILE_AND_FUNC_PATTERN, frame)
@@ -656,6 +673,15 @@ class SeqDiagBuilder:
                         source = sourceFile.read()
                         parsedSource = ast.parse(source)
                         moduleClassNameList = [node.name for node in ast.walk(parsedSource) if isinstance(node, ast.ClassDef)]
+
+                        if not entryClassEncountered and not SeqDiagBuilder.seqDiagEntryClass in moduleClassNameList:
+                            # optimization: if the entry class was not yet found and if moduleName
+                            # does not contain the definition of the entry class, searching an instance
+                            # supporting the entry method in this module does make sense
+                            continue
+                        else:
+                            entryClassEncountered = True
+
                         instance, toMethodReturn, toMethodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(moduleClassNameList, moduleName, currentMethodName)
 
                         if instance == None:
@@ -718,6 +744,16 @@ class SeqDiagBuilder:
     @staticmethod
     def _getFilteredInstanceListAndMethodSignatureAndReturnDoc(moduleClassNameList, moduleName, methodName):
         '''
+        Returns a list containing one instance for every class located in moduleName (their names are contained
+        in moduleClassNameList) which supports the method methodName.
+
+        Normally, the returned list should contain only one instance. If more than one instance are
+        returned, this indicates that the module contains a class hierarchy with method methodName
+        defined in the base class (and so inherited or overridden by its subclasses). More than one
+        instance are returned aswell if the module contains two or more unrelated classes with the same
+        method methodName.
+
+
         This method returns the passed instance List filtered so that it only contains instances
         supporting the passed methodName. The string associated to the %s tag defined in
         the (selected) method documentation aswell as the (selected) method signature are returned.
@@ -790,7 +826,7 @@ class SeqDiagBuilder:
             for filteredInstance in instanceList:
                 filteredClassNameList.append(filteredInstance.__class__.__name__)
             SeqDiagBuilder._issueWarning(
-                "More than one class {} found in module {} do support method {}{}. Since Python provides no way to determine the exact target class, class {} was chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the target method documentation or define all classes of the hierarchy in their own file. See help for more information".format(
+                "More than one class {} found in module {} do support method {}{}. Since Python provides no way to determine the exact target class, class {} was chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the target method documentation or define every class of the hierarchy in its own file. See help for more information".format(
                     str(filteredClassNameList), moduleName, methodName, methodSignature,
                     instance.__class__.__name__,
                     SEQDIAG_SELECT_METHOD_TAG))
