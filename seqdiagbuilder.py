@@ -790,7 +790,7 @@ class SeqDiagBuilder:
             for filteredInstance in instanceList:
                 filteredClassNameList.append(filteredInstance.__class__.__name__)
             SeqDiagBuilder._issueWarning(
-                "More than one class {} found in module {} do support method {}{}. Since Python provides no information to determine the exact target class, class {} was chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the target method documentation. See help for more informations".format(
+                "More than one class {} found in module {} do support method {}{}. Since Python provides no way to determine the exact target class, class {} was chosen by default for building the sequence diagram. To override this selection, put tag {} somewhere in the target method documentation or define all classes of the hierarchy in their own file. See help for more informations".format(
                     str(filteredClassNameList), moduleName, methodName, methodSignature,
                     instance.__class__.__name__,
                     SEQDIAG_SELECT_METHOD_TAG))
