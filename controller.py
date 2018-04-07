@@ -14,10 +14,10 @@ from requester import Requester
 
 class Controller:
     '''
-    Instanciate the app component and
+    Instanciate the app components and
     control the rep loop
+    :seqdiag_note Entry point of the business layer
     '''
-    
     def __init__(self, printer, configMgr):
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptopricer.ini'

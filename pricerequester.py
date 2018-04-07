@@ -12,6 +12,9 @@ from resultdata import ResultData
 IDX_DATA_ENTRY_TO = 1
 
 class PriceRequester:
+    '''
+    :seqdiag_note obtain the RT or histo rates from Cryptocompare
+    '''
     def __init__(self):
         try:
             #since ssl prevents requesting the data from CryptoCompare
