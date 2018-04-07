@@ -1091,7 +1091,7 @@ actor USER
         methodName = 'getPrintableResultForInput'
 
         instanceList = [SeqDiagBuilder._instanciateClass(className, moduleName)]
-        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
+        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._extractToClassMethodInformation(instanceList, moduleName, methodName)
 
         self.assertEqual(len(filteredInstanceList), 1)
         self.assertEqual(returnDoc, 'printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions')
@@ -1104,7 +1104,7 @@ actor USER
         moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
         methodName = 'getCoordinate'
         instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
-        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
+        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._extractToClassMethodInformation(instanceList, moduleName, methodName)
 
         self.assertEqual(len(filteredInstanceList), 3)
         self.assertEqual(returnDoc, 'Coord')
@@ -1117,7 +1117,7 @@ actor USER
         moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'ChildThree', 'TestSeqDiagBuilder', 'IsolatedClass']
         methodName = 'getCoordinate'
         instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
-        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._getFilteredInstanceListAndMethodSignatureAndReturnDoc(instanceList, moduleName, methodName)
+        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._extractToClassMethodInformation(instanceList, moduleName, methodName)
 
         self.assertEqual(len(filteredInstanceList), 1)
         self.assertEqual(returnDoc, 'CoordSel')
@@ -1371,27 +1371,12 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
         requestDayStr = eightDaysBeforeDayStr
         requestMonthStr = eightDaysBeforeMonthStr
         inputStr = 'mcap btc {}/{} all'.format(requestDayStr, requestMonthStr)
+        import time
+        start_time = time.time()
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
+        print("--- %s seconds ---" % (time.time() - start_time))
 
-        if DateTimeUtil.isDateOlderThan(eightDaysBeforeArrowDate, 7):
-            hourStr = '00'
-            minuteStr = '00'
-            priceType = 'C'
-        else:
-            hourStr = eightDaysBeforeHourStr
-            minuteStr = eightDaysBeforeMinuteStr
-            priceType = 'M'
-
-        self.assertEqual(
-            'MCAP/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr,
-                                                               hourStr, minuteStr, priceType),
-            UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual(
-            'mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr,
-                                                 minuteStr), fullCommandStr)
-        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
-        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         commands = SeqDiagBuilder.createSeqDiaqCommands('GUI', None, 20)
 
         with open("c:\\temp\\ess.txt", "w") as f:
@@ -1497,36 +1482,6 @@ actor USER
 
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
         self.assertEqual('No control flow recorded. Method activate() called: False. Method recordFlow() called: True. Specified entry point: None.None reached: False', SeqDiagBuilder.getWarningList()[0])
-
-
-    def test_getInstancesForClassSupportingMethodInClassHierarchyInMultipleClasses(self):
-        moduleName = 'testseqdiagbuilder'
-        moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
-        methodName = 'getCoordinate'
-        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
-        self.assertEqual(len(instanceList), 3)
-        self.assertEqual('Parent', instanceList[0].__class__.__name__)
-        self.assertEqual('ChildOne', instanceList[1].__class__.__name__)
-        self.assertEqual('ChildTwo', instanceList[2].__class__.__name__)
-
-
-    def test_getInstancesForClassSupportingMethodInClassHierarchyInOneClass(self):
-        moduleName = 'testseqdiagbuilder'
-        moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
-        methodName = 'm'
-        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
-        self.assertEqual(len(instanceList), 1)
-        self.assertEqual('ChildOne', instanceList[0].__class__.__name__)
-
-
-    def test_getInstancesForClassSupportingMethodInOneClass(self):
-        moduleName = 'testseqdiagbuilder'
-        moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo',
-                               'TestSeqDiagBuilder', 'IsolatedClass']
-        methodName = 'analyse'
-        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
-        self.assertEqual(len(instanceList), 1)
-        self.assertEqual('IsolatedClass', instanceList[0].__class__.__name__)
 
 
     def testFlowEntryEq(self):
