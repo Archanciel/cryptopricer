@@ -2,14 +2,17 @@ import traceback, re, ast, importlib, inspect
 import webbrowser
 import os
 from inspect import signature
+import collections
 
 SEQDIAG_RETURN_TAG = ":seqdiag_return"
 SEQDIAG_SELECT_METHOD_TAG = ":seqdiag_select_method"
+SEQDIAG_NOTE_TAG = ":seqdiag_note"
 
 SEQDIAG_RETURN_TAG_PATTERN = r"%s (.*)" % SEQDIAG_RETURN_TAG
 SEQDIAG_SELECT_METHOD_TAG_PATTERN = r"%s(.*)" % SEQDIAG_SELECT_METHOD_TAG
 PYTHON_FILE_AND_FUNC_PATTERN = r"([\w:\\]+\\)(\w+)\.py, line (\d*) in (.*)"
 FRAME_PATTERN = r"(?:<FrameSummary file ([\w:\\,._\s]+)(?:>, |>\]))"
+SEQDIAG_NOTE_TAG_PATTERN = r"%s(.*)" % SEQDIAG_NOTE_TAG
 
 
 TAB_CHAR = '\t'
@@ -360,7 +363,7 @@ class SeqDiagBuilder:
     seqDiagEntryClass = None
     seqDiagEntryMethod = None
     recordedFlowPath = None
-
+    participantDocOrderedDic = None
 
     @staticmethod
     def activate(entryClass, entryMethod):
@@ -368,6 +371,7 @@ class SeqDiagBuilder:
         SeqDiagBuilder.seqDiagEntryMethod = entryMethod
         SeqDiagBuilder.recordedFlowPath = RecordedFlowPath(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod)
         SeqDiagBuilder._isActive = True
+        SeqDiagBuilder.participantDocOrderedDic = collections.OrderedDict()
 
 
     @staticmethod
@@ -383,6 +387,7 @@ class SeqDiagBuilder:
         SeqDiagBuilder.seqDiagWarningList = []
         SeqDiagBuilder._isActive = False
         SeqDiagBuilder._recordFlowCalled = False
+        SeqDiagBuilder.participantDocOrderedDic = collections.OrderedDict()
 
 
     @staticmethod
@@ -685,11 +690,12 @@ class SeqDiagBuilder:
                         else:
                             entryClassEncountered = True
 
-                        toClassName, toMethodReturn, toMethodSignature = SeqDiagBuilder._extractToClassMethodInformation(moduleClassNameList, moduleName, currentMethodName)
+                        toClassName, toClassNote, toMethodReturn, toMethodSignature = SeqDiagBuilder._extractToClassMethodInformation(moduleClassNameList, moduleName, currentMethodName)
 
                         if toClassName == None:
                             continue
 
+                        SeqDiagBuilder.participantDocOrderedDic[toClassName] = toClassNote
                         toMethodName = currentMethodName
                         flowEntry = FlowEntry(fromClassName, fromMethodName, toClassName, toMethodName, toMethodCallLineNumber,
                                               toMethodSignature, toMethodReturn)
@@ -735,7 +741,7 @@ class SeqDiagBuilder:
                                     the associated value can be returned as the method return value.
                                     In case the method doc contains the :seqdiag_select_method tag,
                                     the class containing the method is the unique one to be retained
-        :return: 
+        :return:
         '''
 
         instanceList = []
@@ -780,10 +786,18 @@ class SeqDiagBuilder:
 
         if instanceList == []:
             # no class supporting methodName found in moduleName
-            return None, None, None
+            return None, None, None, None
 
         instance = instanceList[0]
         className = instance.__class__.__name__
+        classDoc =  instance.__class__.__doc__
+        classNote = ''
+
+        if classDoc:
+            # get class note from class documentation
+            match = re.search(SEQDIAG_NOTE_TAG_PATTERN, classDoc)
+            if match:
+                classNote = match.group(1)
 
         if len(instanceList) > 1:
             filteredClassNameList = []
@@ -795,7 +809,7 @@ class SeqDiagBuilder:
                     instance.__class__.__name__,
                     SEQDIAG_SELECT_METHOD_TAG))
 
-        return className, methodReturn, methodSignature
+        return className, classNote, methodReturn, methodSignature
 
 
     @staticmethod
