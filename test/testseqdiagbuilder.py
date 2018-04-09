@@ -1372,10 +1372,8 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
         requestMonthStr = eightDaysBeforeMonthStr
         inputStr = 'mcap btc {}/{} all'.format(requestDayStr, requestMonthStr)
         import time
-        start_time = time.time()
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
-        print("--- %s seconds ---" % (time.time() - start_time))
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('GUI', None, 20)
 
