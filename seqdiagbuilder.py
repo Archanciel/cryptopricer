@@ -363,7 +363,7 @@ class SeqDiagBuilder:
     seqDiagEntryClass = None
     seqDiagEntryMethod = None
     recordedFlowPath = None
-    participantDocOrderedDic = None
+    _participantDocOrderedDic = None
 
     @staticmethod
     def activate(entryClass, entryMethod):
@@ -371,7 +371,7 @@ class SeqDiagBuilder:
         SeqDiagBuilder.seqDiagEntryMethod = entryMethod
         SeqDiagBuilder.recordedFlowPath = RecordedFlowPath(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod)
         SeqDiagBuilder._isActive = True
-        SeqDiagBuilder.participantDocOrderedDic = collections.OrderedDict()
+        SeqDiagBuilder._participantDocOrderedDic = collections.OrderedDict()
 
 
     @staticmethod
@@ -387,7 +387,7 @@ class SeqDiagBuilder:
         SeqDiagBuilder.seqDiagWarningList = []
         SeqDiagBuilder._isActive = False
         SeqDiagBuilder._recordFlowCalled = False
-        SeqDiagBuilder.participantDocOrderedDic = collections.OrderedDict()
+        SeqDiagBuilder._participantDocOrderedDic = collections.OrderedDict()
 
 
     @staticmethod
@@ -418,6 +418,27 @@ class SeqDiagBuilder:
             commandFileHeaderSectionStr += "endheader\n\n"
 
         return commandFileHeaderSectionStr
+
+
+    @staticmethod
+    def _splitClassNoteToLines(classNote, maxNoteCharLen):
+        return classNote
+
+
+    @staticmethod
+    def _buildClassNoteSection(maxNoteCharLen):
+        classNoteSectionStr = ''
+
+        for className, classNote in SeqDiagBuilder._participantDocOrderedDic.items():
+            if classNote == '':
+                participantEntry = 'participant {}\n'.format(className)
+            else:
+                formattedClassNote = SeqDiagBuilder._splitClassNoteToLines(classNote, maxNoteCharLen)
+                participantEntry = 'participant {}\n{}note over of {}\n{}{}{}\n{}end note\n'.format(className, TAB_CHAR, className, TAB_CHAR, TAB_CHAR, formattedClassNote, TAB_CHAR)
+
+            classNoteSectionStr += participantEntry
+
+        return classNoteSectionStr
 
 
     @staticmethod
@@ -471,7 +492,7 @@ class SeqDiagBuilder:
     @staticmethod
     def createSeqDiaqCommands(actorName, maxSigArgNum=None, maxSigCharLen=None):
         '''
-        This method use the control flow data collected during execution to create
+        This method uses the control flow data collected during execution to create
         the commands Plantuml will use to draw the sequence diagram.
 
         To build the diagram itself, type java -jar plantuml.jar -tsvg seqdiagcommands.txt
@@ -496,6 +517,7 @@ class SeqDiagBuilder:
             SeqDiagBuilder.issueNoFlowRecordedWarning(isEntryPointReached)
 
         seqDiagCommandStr = SeqDiagBuilder._buildCommandFileHeaderSection()
+        seqDiagCommandStr += SeqDiagBuilder._buildClassNoteSection(maxSigCharLen)
 
         if isFlowRecorded:
             classMethodReturnStack = SeqDiagCommandStack()
@@ -695,7 +717,10 @@ class SeqDiagBuilder:
                         if toClassName == None:
                             continue
 
-                        SeqDiagBuilder.participantDocOrderedDic[toClassName] = toClassNote
+                        # storing the class note for further use when creating the Plantuml seq diag
+                        # command file
+                        SeqDiagBuilder._participantDocOrderedDic[toClassName] = toClassNote
+
                         toMethodName = currentMethodName
                         flowEntry = FlowEntry(fromClassName, fromMethodName, toClassName, toMethodName, toMethodCallLineNumber,
                                               toMethodSignature, toMethodReturn)
