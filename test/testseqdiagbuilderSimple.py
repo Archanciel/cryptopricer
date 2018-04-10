@@ -15,7 +15,7 @@ from seqdiagbuilder import RecordedFlowPath
 import collections
 
 
-class TestSeqDiagBuilder(unittest.TestCase):
+class TestSeqDiagBuilderSimple(unittest.TestCase):
 
 
     def testFlowEntryEq(self):
