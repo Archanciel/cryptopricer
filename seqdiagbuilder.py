@@ -12,7 +12,7 @@ SEQDIAG_RETURN_TAG_PATTERN = r"%s (.*)" % SEQDIAG_RETURN_TAG
 SEQDIAG_SELECT_METHOD_TAG_PATTERN = r"%s(.*)" % SEQDIAG_SELECT_METHOD_TAG
 PYTHON_FILE_AND_FUNC_PATTERN = r"([\w:\\]+\\)(\w+)\.py, line (\d*) in (.*)"
 FRAME_PATTERN = r"(?:<FrameSummary file ([\w:\\,._\s]+)(?:>, |>\]))"
-SEQDIAG_NOTE_TAG_PATTERN = r"%s(.*)" % SEQDIAG_NOTE_TAG
+SEQDIAG_NOTE_TAG_PATTERN = r"%s (.*)" % SEQDIAG_NOTE_TAG
 
 
 TAB_CHAR = '\t'
@@ -421,20 +421,54 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def _splitClassNoteToLines(classNote, maxNoteCharLen):
-        return classNote
+    def _splitNoteToLines(oneLineNote, maxNoteLineLen):
+        '''
+        Splits the oneLineNote string into lines not exceeding maxNoteLineLen and returns the lines
+        into a list.
+
+        :param oneLineNote:
+        :param maxNoteLineLen:
+        :return:
+        '''
+        if oneLineNote == '':
+            return []
+
+        noteWordList = oneLineNote.split(' ')
+        noteLine = noteWordList[0]
+        noteLineLen = len(noteLine)
+        noteLineList = []
+
+        for word in noteWordList[1:]:
+            wordLen = len(word)
+
+            if noteLineLen + wordLen + 1 > maxNoteLineLen:
+                noteLineList.append(noteLine)
+                noteLine = word
+                noteLineLen = wordLen
+            else:
+                noteLine += ' ' + word
+                noteLineLen += wordLen + 1
+
+        noteLineList.append(noteLine)
+
+        return noteLineList
 
 
     @staticmethod
-    def _buildClassNoteSection(maxNoteCharLen):
+    def _buildClassNoteSection(participantDocOrderedDic, maxNoteCharLen):
         classNoteSectionStr = ''
 
-        for className, classNote in SeqDiagBuilder._participantDocOrderedDic.items():
+        for className, classNote in participantDocOrderedDic.items():
             if classNote == '':
                 participantEntry = 'participant {}\n'.format(className)
             else:
-                formattedClassNote = SeqDiagBuilder._splitClassNoteToLines(classNote, maxNoteCharLen)
-                participantEntry = 'participant {}\n{}note over of {}\n{}{}{}\n{}end note\n'.format(className, TAB_CHAR, className, TAB_CHAR, TAB_CHAR, formattedClassNote, TAB_CHAR)
+                classNoteLineList = SeqDiagBuilder._splitNoteToLines(classNote, maxNoteCharLen * 1.5)
+                participantEntry = 'participant {}\n{}note over of {}\n'.format(className, TAB_CHAR, className)
+
+                for classNoteLine in classNoteLineList:
+                    participantEntry += '{}{}{}\n'.format(TAB_CHAR, TAB_CHAR, classNoteLine)
+
+                participantEntry += '{}end note\n'.format(TAB_CHAR)
 
             classNoteSectionStr += participantEntry
 
@@ -517,7 +551,7 @@ class SeqDiagBuilder:
             SeqDiagBuilder.issueNoFlowRecordedWarning(isEntryPointReached)
 
         seqDiagCommandStr = SeqDiagBuilder._buildCommandFileHeaderSection()
-        seqDiagCommandStr += SeqDiagBuilder._buildClassNoteSection(maxSigCharLen)
+        seqDiagCommandStr += SeqDiagBuilder._buildClassNoteSection(SeqDiagBuilder._participantDocOrderedDic, maxSigCharLen)
 
         if isFlowRecorded:
             classMethodReturnStack = SeqDiagCommandStack()
