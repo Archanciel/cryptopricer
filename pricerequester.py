@@ -13,7 +13,7 @@ IDX_DATA_ENTRY_TO = 1
 
 class PriceRequester:
     '''
-    :seqdiag_note Obtains the RT or histo rates from Cryptocompare
+    :seqdiag_note Obtains the RT or historical rates from the Cryptocompare web site
     '''
     def __init__(self):
         try:
