@@ -176,6 +176,7 @@ class Requester:
         filled with the command specific data. May return a CommandError.
         :param inputStr: input string to parse
         :seqdiag_return AbstractCommand
+        :seqdiag_note May return a CommandError.
         :return: Command concrete instance
         '''
 

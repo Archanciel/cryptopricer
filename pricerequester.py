@@ -49,6 +49,7 @@ class PriceRequester:
         historical prices, the close price for a given date is
         the same whatever the location of the user is !
 
+        :seqdiag_note Obtainins a minute price if request date < 7 days from now, else a day close price.
         :seqdiag_return ResultData
         '''
         resultData = ResultData()
