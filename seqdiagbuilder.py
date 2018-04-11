@@ -556,11 +556,10 @@ class SeqDiagBuilder:
         seqDiagCommandStr = SeqDiagBuilder._buildCommandFileHeaderSection()
 
         if isFlowRecorded:
-            seqDiagCommandStr += SeqDiagBuilder._buildClassNoteSection(SeqDiagBuilder._participantDocOrderedDic,
-                                                                       maxSigCharLen)
             classMethodReturnStack = SeqDiagCommandStack()
             seqDiagCommandStr += "\nactor {}\n".format(actorName)
-
+            seqDiagCommandStr += SeqDiagBuilder._buildClassNoteSection(SeqDiagBuilder._participantDocOrderedDic,
+                                                                       maxSigCharLen)
             firstFlowEntry = SeqDiagBuilder.recordedFlowPath.flowEntryList[0]
             firstFlowEntry.fromClass = actorName
             fromClass = firstFlowEntry.fromClass
@@ -644,20 +643,23 @@ class SeqDiagBuilder:
         toMethod = flowEntry.toMethod
         toSignature = flowEntry.createSignature(maxSigArgNum, maxSigCharLen)
         toMethodNote = flowEntry.toMethodNote
-
-        if toMethodNote != '':
-            toMethodNoteLineList = SeqDiagBuilder._splitNoteToLines(toMethodNote, maxSigCharLen)
-            participantEntry = 'participant {}\n{}note over of {}\n'.format(className, TAB_CHAR, className)
-
-            for classNoteLine in toMethodNoteLineList:
-                participantEntry += '{}{}{}\n'.format(TAB_CHAR, TAB_CHAR, classNoteLine)
-
-            participantEntry += '{}end note\n'.format(TAB_CHAR)
-
         indentStr = SeqDiagBuilder._getForwardIndent(flowEntry)
         commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
 
+        if toMethodNote != '':
+            noteSection = ''
+            toMethodNoteLineList = SeqDiagBuilder._splitNoteToLines(toMethodNote, maxSigCharLen * 1.5)
+            indentStr += TAB_CHAR
+            noteSection = '{}note right\n'.format(indentStr)
+
+            for noteLine in toMethodNoteLineList:
+                noteSection += '{}{}{}\n'.format(indentStr, TAB_CHAR, noteLine)
+
+            noteSection += '{}end note\n'.format(indentStr)
+            commandStr += noteSection
+
         return commandStr
+
 
     @staticmethod
     def _getForwardIndent(flowEntry):
