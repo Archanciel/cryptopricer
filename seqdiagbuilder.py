@@ -20,7 +20,7 @@ TAB_CHAR = '\t'
 
 class FlowEntry:
     def __init__(self, fromClass='', fromMethod='', toClass='', toMethod='', toMethodCalledFromLineNumber='',
-                 toSignature='', toReturnType=''):
+                 toSignature='', toMethodNote='', toReturnType=''):
         '''
 
         :param fromClass:                       class containing the fromMethod
@@ -30,6 +30,7 @@ class FlowEntry:
         :param toMethodCalledFromLineNumber:    line number in the fromMethod from which
                                                 the toMethod was called
         :param toSignature:                     toMethod signature
+        :param toMethodNote                     toMethod note
         :param toReturnType:                    return type of the toMethod
         '''
         self.fromClass = fromClass
@@ -38,6 +39,7 @@ class FlowEntry:
         self.toMethod = toMethod
         self.toMethodCalledFromLineNumber = toMethodCalledFromLineNumber
         self.toSignature = toSignature
+        self.toMethodNote = toMethodNote
         self.toReturnType = toReturnType
 
 
@@ -48,6 +50,7 @@ class FlowEntry:
                self.toMethod == other.toMethod and \
                self.toMethodCalledFromLineNumber == other.toMethodCalledFromLineNumber and \
                self.toSignature == other.toSignature and \
+               self.toMethodNote == other.toMethodNote and \
                self.toReturnType == other.toReturnType
 
 
@@ -218,7 +221,7 @@ class FlowEntry:
 
 
     def __str__(self):
-        return "{}.{}, {}.{}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.toClass, self.toMethod, self.toMethodCalledFromLineNumber, self.toSignature, self.toReturnType)
+        return "{}.{}, {}.{}{}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.toClass, self.toMethod, self.toSignature, self.toMethodCalledFromLineNumber, self.toMethodNote, self.toReturnType)
 
 
 class RecordedFlowPath:
@@ -551,9 +554,10 @@ class SeqDiagBuilder:
             SeqDiagBuilder.issueNoFlowRecordedWarning(isEntryPointReached)
 
         seqDiagCommandStr = SeqDiagBuilder._buildCommandFileHeaderSection()
-        seqDiagCommandStr += SeqDiagBuilder._buildClassNoteSection(SeqDiagBuilder._participantDocOrderedDic, maxSigCharLen)
 
         if isFlowRecorded:
+            seqDiagCommandStr += SeqDiagBuilder._buildClassNoteSection(SeqDiagBuilder._participantDocOrderedDic,
+                                                                       maxSigCharLen)
             classMethodReturnStack = SeqDiagCommandStack()
             seqDiagCommandStr += "\nactor {}\n".format(actorName)
 
@@ -639,6 +643,17 @@ class SeqDiagBuilder:
         toClass = flowEntry.toClass
         toMethod = flowEntry.toMethod
         toSignature = flowEntry.createSignature(maxSigArgNum, maxSigCharLen)
+        toMethodNote = flowEntry.toMethodNote
+
+        if toMethodNote != '':
+            toMethodNoteLineList = SeqDiagBuilder._splitNoteToLines(toMethodNote, maxSigCharLen)
+            participantEntry = 'participant {}\n{}note over of {}\n'.format(className, TAB_CHAR, className)
+
+            for classNoteLine in toMethodNoteLineList:
+                participantEntry += '{}{}{}\n'.format(TAB_CHAR, TAB_CHAR, classNoteLine)
+
+            participantEntry += '{}end note\n'.format(TAB_CHAR)
+
         indentStr = SeqDiagBuilder._getForwardIndent(flowEntry)
         commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
 
@@ -746,7 +761,7 @@ class SeqDiagBuilder:
                         else:
                             entryClassEncountered = True
 
-                        toClassName, toClassNote, toMethodReturn, toMethodSignature = SeqDiagBuilder._extractToClassMethodInformation(moduleClassNameList, moduleName, currentMethodName)
+                        toClassName, toClassNote, toMethodReturn, toMethodSignature, toMethodNote = SeqDiagBuilder._extractToClassMethodInformation(moduleClassNameList, moduleName, currentMethodName)
 
                         if toClassName == None:
                             continue
@@ -757,7 +772,7 @@ class SeqDiagBuilder:
 
                         toMethodName = currentMethodName
                         flowEntry = FlowEntry(fromClassName, fromMethodName, toClassName, toMethodName, toMethodCallLineNumber,
-                                              toMethodSignature, toMethodReturn)
+                                              toMethodSignature, toMethodNote, toMethodReturn)
                         fromClassName = toClassName
                         fromMethodName = toMethodName
                         toMethodCallLineNumber = "{}-{}".format(toMethodCallLineNumber, methodCallLineNumber)
@@ -779,8 +794,8 @@ class SeqDiagBuilder:
     def _extractToClassMethodInformation(moduleClassNameList, moduleName, methodName):
         '''
         This method returns informations specific to the target class and method, namely, the name
-        of the class supporting methodName, its seqdiag note, the target method seqdiag note, its
-        return type and its signature.
+        of the class supporting methodName, its seqdiag note, the target method return type, its
+        signature and its seqdiag note.
 
         Normally, only one class supporting methodName should be found in moduleName. If more
         than one class are found, this indicates that the module contains a class hierarchy with
@@ -800,12 +815,14 @@ class SeqDiagBuilder:
                                     the associated value can be returned as the method return value.
                                     In case the method doc contains the :seqdiag_select_method tag,
                                     the class containing the method is the unique one to be retained
-        :return:
+
+        :return:                    className, classNote, methodReturn, methodSignature, methodNote
         '''
 
         instanceList = []
         methodReturn = ''
         methodSignature = ''
+        methodNote = ''
         selectedMethodFound = False
 
         for className in moduleClassNameList:
@@ -831,6 +848,11 @@ class SeqDiagBuilder:
                         if match:
                             methodReturn = match.group(1)
 
+                        # get method note from method documentation
+                        match = re.search(SEQDIAG_NOTE_TAG_PATTERN, methodDoc)
+                        if match:
+                            methodNote = match.group(1)
+
                         # chech if method documentation contains :seqdiag_select_method tag
                         match = re.search(SEQDIAG_SELECT_METHOD_TAG_PATTERN, methodDoc)
                         if match:
@@ -845,7 +867,7 @@ class SeqDiagBuilder:
 
         if instanceList == []:
             # no class supporting methodName found in moduleName
-            return None, None, None, None
+            return None, None, None, None, None
 
         instance = instanceList[0]
         className = instance.__class__.__name__
@@ -868,7 +890,7 @@ class SeqDiagBuilder:
                     instance.__class__.__name__,
                     SEQDIAG_SELECT_METHOD_TAG))
 
-        return className, classNote, methodReturn, methodSignature
+        return className, classNote, methodReturn, methodSignature, methodNote
 
 
     @staticmethod
