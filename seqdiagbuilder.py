@@ -646,8 +646,8 @@ class SeqDiagBuilder:
         indentStr = SeqDiagBuilder._getForwardIndent(flowEntry)
         commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
 
+        # adding method note
         if toMethodNote != '':
-            noteSection = ''
             toMethodNoteLineList = SeqDiagBuilder._splitNoteToLines(toMethodNote, maxSigCharLen * 1.5)
             indentStr += TAB_CHAR
             noteSection = '{}note right\n'.format(indentStr)
