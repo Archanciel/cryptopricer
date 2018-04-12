@@ -7,12 +7,14 @@ import collections
 SEQDIAG_RETURN_TAG = ":seqdiag_return"
 SEQDIAG_SELECT_METHOD_TAG = ":seqdiag_select_method"
 SEQDIAG_NOTE_TAG = ":seqdiag_note"
+SEQDIAG_METHOD_RETURN_NOTE_TAG = ":seqdiag_return_note"
 
 SEQDIAG_RETURN_TAG_PATTERN = r"%s (.*)" % SEQDIAG_RETURN_TAG
 SEQDIAG_SELECT_METHOD_TAG_PATTERN = r"%s(.*)" % SEQDIAG_SELECT_METHOD_TAG
 PYTHON_FILE_AND_FUNC_PATTERN = r"([\w:\\]+\\)(\w+)\.py, line (\d*) in (.*)"
 FRAME_PATTERN = r"(?:<FrameSummary file ([\w:\\,._\s]+)(?:>, |>\]))"
 SEQDIAG_NOTE_TAG_PATTERN = r"%s (.*)" % SEQDIAG_NOTE_TAG
+SEQDIAG_METHOD_RETURN_NOTE_TAG_PATTERN = r"%s (.*)" % SEQDIAG_METHOD_RETURN_NOTE_TAG
 
 
 TAB_CHAR = '\t'
@@ -20,7 +22,7 @@ TAB_CHAR = '\t'
 
 class FlowEntry:
     def __init__(self, fromClass='', fromMethod='', toClass='', toMethod='', toMethodCalledFromLineNumber='',
-                 toSignature='', toMethodNote='', toReturnType=''):
+                 toSignature='', toMethodNote='', toReturnType='', toReturnNote=''):
         '''
 
         :param fromClass:                       class containing the fromMethod
@@ -32,6 +34,7 @@ class FlowEntry:
         :param toSignature:                     toMethod signature
         :param toMethodNote                     toMethod note
         :param toReturnType:                    return type of the toMethod
+        :param toReturnNote:                    return type note
         '''
         self.fromClass = fromClass
         self.fromMethod = fromMethod
@@ -41,6 +44,7 @@ class FlowEntry:
         self.toSignature = toSignature
         self.toMethodNote = toMethodNote
         self.toReturnType = toReturnType
+        self.toReturnNote = toReturnNote
 
 
     def __eq__(self, other):
@@ -51,7 +55,8 @@ class FlowEntry:
                self.toMethodCalledFromLineNumber == other.toMethodCalledFromLineNumber and \
                self.toSignature == other.toSignature and \
                self.toMethodNote == other.toMethodNote and \
-               self.toReturnType == other.toReturnType
+               self.toReturnType == other.toReturnType and \
+               self.toReturnNote == other.toReturnNote
 
 
     def isEntryPoint(self, targetClass, targetMethod):
@@ -221,7 +226,7 @@ class FlowEntry:
 
 
     def __str__(self):
-        return "{}.{}, {}.{}{}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.toClass, self.toMethod, self.toSignature, self.toMethodCalledFromLineNumber, self.toMethodNote, self.toReturnType)
+        return "{}.{}, {}.{}{}, {}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.toClass, self.toMethod, self.toSignature, self.toMethodCalledFromLineNumber, self.toMethodNote, self.toReturnType, self.toMethodReturnNote)
 
 
 class RecordedFlowPath:
@@ -617,15 +622,29 @@ class SeqDiagBuilder:
                 SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass,
                 SeqDiagBuilder.seqDiagEntryMethod, isEntryPointReached))
 
+
     @staticmethod
     def _handleSeqDiagReturnMesssageCommand(returnEntry, maxArgNum, maxReturnTypeCharLen):
         fromClass = returnEntry.toClass
         toClass = returnEntry.fromClass
         toReturnType = returnEntry.createReturnType(maxArgNum, maxReturnTypeCharLen)
+        toMethodReturnNote = returnEntry.toReturnNote
         indentStr = SeqDiagBuilder._getReturnIndent(returnEntry)
         commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, toReturnType, indentStr)
 
+        # adding return note
+        if toMethodReturnNote != '':
+            toMethoReturndNoteLineList = SeqDiagBuilder._splitNoteToLines(toMethodReturnNote, maxReturnTypeCharLen * 1.5)
+            noteSection = '{}note right\n'.format(indentStr)
+
+            for noteLine in toMethoReturndNoteLineList:
+                noteSection += '{}{}{}\n'.format(indentStr, TAB_CHAR, noteLine)
+
+            noteSection += '{}end note\n'.format(indentStr)
+            commandStr += noteSection
+
         return commandStr
+
 
     @staticmethod
     def _handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen):
@@ -763,7 +782,7 @@ class SeqDiagBuilder:
                         else:
                             entryClassEncountered = True
 
-                        toClassName, toClassNote, toMethodReturn, toMethodSignature, toMethodNote = SeqDiagBuilder._extractToClassMethodInformation(moduleClassNameList, moduleName, currentMethodName)
+                        toClassName, toClassNote, toMethodReturn, toMethodSignature, toMethodNote, toMethodReturnNote = SeqDiagBuilder._extractToClassMethodInformation(moduleClassNameList, moduleName, currentMethodName)
 
                         if toClassName == None:
                             continue
@@ -774,7 +793,7 @@ class SeqDiagBuilder:
 
                         toMethodName = currentMethodName
                         flowEntry = FlowEntry(fromClassName, fromMethodName, toClassName, toMethodName, toMethodCallLineNumber,
-                                              toMethodSignature, toMethodNote, toMethodReturn)
+                                              toMethodSignature, toMethodNote, toMethodReturn, toMethodReturnNote)
                         fromClassName = toClassName
                         fromMethodName = toMethodName
                         toMethodCallLineNumber = "{}-{}".format(toMethodCallLineNumber, methodCallLineNumber)
@@ -796,8 +815,8 @@ class SeqDiagBuilder:
     def _extractToClassMethodInformation(moduleClassNameList, moduleName, methodName):
         '''
         This method returns informations specific to the target class and method, namely, the name
-        of the class supporting methodName, its seqdiag note, the target method return type, its
-        signature and its seqdiag note.
+        of the class supporting methodName, its seqdiag note, the target method return type,
+        the target method return note, the method signature and its seqdiag note.
 
         Normally, only one class supporting methodName should be found in moduleName. If more
         than one class are found, this indicates that the module contains a class hierarchy with
@@ -818,13 +837,14 @@ class SeqDiagBuilder:
                                     In case the method doc contains the :seqdiag_select_method tag,
                                     the class containing the method is the unique one to be retained
 
-        :return:                    className, classNote, methodReturn, methodSignature, methodNote
+        :return:                    className, classNote, methodReturn, methodSignature, methodNote, methodReturnNote
         '''
 
         instanceList = []
         methodReturn = ''
         methodSignature = ''
         methodNote = ''
+        methodReturnNote = ''
         selectedMethodFound = False
 
         for className in moduleClassNameList:
@@ -855,6 +875,11 @@ class SeqDiagBuilder:
                         if match:
                             methodNote = match.group(1)
 
+                        # get method return note from method documentation
+                        match = re.search(SEQDIAG_METHOD_RETURN_NOTE_TAG_PATTERN, methodDoc)
+                        if match:
+                            methodReturnNote = match.group(1)
+
                         # chech if method documentation contains :seqdiag_select_method tag
                         match = re.search(SEQDIAG_SELECT_METHOD_TAG_PATTERN, methodDoc)
                         if match:
@@ -869,7 +894,7 @@ class SeqDiagBuilder:
 
         if instanceList == []:
             # no class supporting methodName found in moduleName
-            return None, None, None, None, None
+            return None, None, None, None, None, None
 
         instance = instanceList[0]
         className = instance.__class__.__name__
@@ -892,7 +917,7 @@ class SeqDiagBuilder:
                     instance.__class__.__name__,
                     SEQDIAG_SELECT_METHOD_TAG))
 
-        return className, classNote, methodReturn, methodSignature, methodNote
+        return className, classNote, methodReturn, methodSignature, methodNote, methodReturnNote
 
 
     @staticmethod

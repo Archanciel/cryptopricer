@@ -1385,6 +1385,24 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 '''@startuml
 
 actor GUI
+participant Controller
+	note over of Controller
+		Entry point of the business
+		layer
+	end note
+participant Requester
+	note over of Requester
+		Parses the user commands
+	end note
+participant CommandPrice
+participant Processor
+participant PriceRequester
+	note over of PriceRequester
+		Obtains the RT or historical
+		rates from the Cryptocompare
+		web site
+	end note
+participant GuiOutputFormater
 GUI -> Controller: getPrintableResultForInput(inputStr)
 	activate Controller
 	Controller -> Requester: getCommand(inputStr)
@@ -1399,12 +1417,21 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 			deactivate Requester
 		Controller <-- Requester: return AbstractCommand
 		deactivate Requester
+		note right
+			May return a CommandError in
+			case of parsing problem.
+		end note
 	Controller -> CommandPrice: execute()
 		activate CommandPrice
 		CommandPrice -> Processor: getCryptoPrice(crypto, fiat, ...)
 			activate Processor
 			Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, fiat, ...)
 				activate PriceRequester
+				note right
+					Obtainins a minute price if
+					request date < 7 days from
+					now, else a day close price.
+				end note
 				PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, fiat, ...)
 					activate PriceRequester
 					PriceRequester <-- PriceRequester: return ResultData
