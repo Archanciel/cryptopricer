@@ -100,3 +100,7 @@ Comment:
 #### As is, CryptoPricer is pretty basic. Though, it has been developped with respect of a sound object oriented architecture and with a very strong emphasis on unit testing. This offers the warranty that
 * the application can be extended easily
 * adding or improving functionality won't introduce bugs in the existing code
+
+## Installation
+### Required libraries
+* kivy
