@@ -5,7 +5,6 @@ from commandcrypto import CommandCrypto
 from commanderror import CommandError
 from commandprice import CommandPrice
 from commandquit import CommandQuit
-from configurationmanager import ConfigurationManager
 from crypcompexchanges import CrypCompExchanges
 from pricerequester import PriceRequester
 from processor import Processor
