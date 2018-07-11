@@ -50,12 +50,12 @@ class Egg:
 
 class LeafOne:
     def i(self):
-        SeqDiagBuilder.recordFlow(3)
+        SeqDiagBuilder.recordFlow()
 
 
 class LeafTwo:
     def j(self):
-        SeqDiagBuilder.recordFlow(3)
+        SeqDiagBuilder.recordFlow()
 
 
 class Client:
@@ -646,6 +646,8 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
 	USER -> A: a1(a1_p1, a1_p2)
 		activate A
 		USER <-- A: return Aa1Return
@@ -670,6 +672,9 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
+participant B
 	USER -> A: a10(a10_p1)
 		activate A
 		A -> B: b4(b4_p1)
@@ -703,6 +708,9 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
+participant B
 	USER -> A: a2(a2_p1)
 		activate A
 		A -> B: b1(b1_p1)
@@ -733,6 +741,10 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
+participant B
+participant C
 	USER -> A: a6(a6_p1)
 		activate A
 		A -> B: b2(b2_p1)
@@ -775,6 +787,11 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
+participant B
+participant C
+participant D
 	USER -> A: a11(a11_p1)
 		activate A
 		A -> B: b6(b6_p1)
@@ -824,6 +841,11 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
+participant B
+participant C
+participant D
 	USER -> A: a12(a12_p1)
 		activate A
 		A -> B: b7(b7_p1)
@@ -897,6 +919,10 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
+participant B
+participant D
 	USER -> A: a13(a13_p1)
 		activate A
 		A -> B: b8(b8_p1)
@@ -943,6 +969,10 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
+participant B
+participant C
 	USER -> A: a7(a7_p1)
 		activate A
 		A -> B: b3(b3_p1)
@@ -981,6 +1011,9 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
+participant B
 	USER -> A: a4(a4_p1)
 		activate A
 		A -> B: b1(b1_p1)
@@ -1015,6 +1048,9 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
+participant B
 	USER -> A: a5(a5_p1)
 		activate A
 		A -> B: b1(b1_p1)
@@ -1052,6 +1088,10 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant A
+participant B
+participant C
 	USER -> A: a3(a3_p1)
 		activate A
 		A -> B: b2(b2_p1)
@@ -1085,45 +1125,6 @@ actor USER
 
         self.assertIsInstance(instance, PriceRequester)
 
-    @unittest.skip
-    def test_getFilteredInstanceListAndMethodSignatureAndReturnDoc(self):
-        className = 'Controller'
-        moduleName = 'controller'
-        methodName = 'getPrintableResultForInput'
-
-        instanceList = [SeqDiagBuilder._instanciateClass(className, moduleName)]
-        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._extractToClassMethodInformation(instanceList, moduleName, methodName)
-
-        self.assertEqual(len(filteredInstanceList), 1)
-        self.assertEqual(returnDoc, 'printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions')
-        self.assertEqual(methodSignature, '(inputStr)')
-
-
-    @unittest.skip
-    def test_getFilteredInstanceListAndMethodSignatureAndReturnDocWhereMulitpleClassesSupportSameMethod(self):
-        moduleName = 'testseqdiagbuilder'
-        moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'TestSeqDiagBuilder', 'IsolatedClass']
-        methodName = 'getCoordinate'
-        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
-        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._extractToClassMethodInformation(instanceList, moduleName, methodName)
-
-        self.assertEqual(len(filteredInstanceList), 3)
-        self.assertEqual(returnDoc, 'Coord')
-        self.assertEqual(methodSignature, "(location='')")
-
-
-    @unittest.skip
-    def test_getFilteredInstanceListAndMethodSignatureAndReturnDocWhereMulitpleClassesSupportSameMethodAndOneIsSelected(self):
-        moduleName = 'testseqdiagbuilder'
-        moduleClassNameList = ['Foo', 'Bar', 'Egg', 'LeafOne', 'LeafTwo', 'Parent', 'ChildOne', 'ChildTwo', 'ChildThree', 'TestSeqDiagBuilder', 'IsolatedClass']
-        methodName = 'getCoordinate'
-        instanceList = SeqDiagBuilder._getInstancesForClassSupportingMethod(methodName, moduleName, moduleClassNameList)
-        filteredInstanceList, returnDoc, methodSignature = SeqDiagBuilder._extractToClassMethodInformation(instanceList, moduleName, methodName)
-
-        self.assertEqual(len(filteredInstanceList), 1)
-        self.assertEqual(returnDoc, 'CoordSel')
-        self.assertEqual(methodSignature, "(location='')")
-
 
     def testRecordFlowWhereMulitpleClassesSupportSameMethodAndOneIsSelected(self):
         entryPoint = ChildThree()
@@ -1140,6 +1141,8 @@ actor USER
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant ChildThree
 	USER -> ChildThree: getCoordinate(location='')
 		activate ChildThree
 		USER <-- ChildThree: return CoordSel
@@ -1233,6 +1236,9 @@ endheader
 
 
 actor USER
+participant TestSeqDiagBuilder
+participant ClassA
+participant Parent
 	USER -> ClassA: aMethod(aMarg)
 		activate ClassA
 		ClassA -> Parent: inheritedMethod(inhArg)
@@ -1245,6 +1251,7 @@ actor USER
 
         SeqDiagBuilder.deactivate()
 
+    @unittest.skip
     def testCreateSeqDiagCommandsOnFullRequestHistoDayPrice(self):
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
@@ -1344,6 +1351,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
         SeqDiagBuilder.deactivate()
 
 
+    @unittest.skip
     def testCreateSeqDiagCommandsOnFullRequestHistoDayPriceWithSignatureLimitation(self):
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
@@ -1472,6 +1480,9 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 '''@startuml
 
 actor USER
+participant TestSeqDiagBuilder
+participant ClassA
+participant ClassB
 	USER -> ClassA: doWork()
 		activate ClassA
 		ClassA -> ClassA: internalCall()
