@@ -2,21 +2,34 @@ import os
 
 from commandprice import CommandPrice
 from abstractoutputformater import AbstractOutputFormater
-from kivy.core.clipboard import Clipboard
 from datetimeutil import DateTimeUtil
 
 
 class GuiOutputFormater(AbstractOutputFormater):
     
     
-    def __init__(self, configurationMgr):
+    def __init__(self, configurationMgr, activateClipboard = False):
+        '''
+        Ctor. The parm activateClipboard with default value set to False was added to prevent SeqDiagBuilder
+        unit tests in TestSeqDiagBuilder where the CryptoPricer Condtroller class were implied to crash the Pycharm
+        unit test environment. This crask was due to an obscure problem in the Pycharm unit test framework. This
+        failure only happened if the kivy clipboard class was imported.
+
+        :param configurationMgr:
+        :param activateClipboard:
+        '''
         # commented code below does not run in Pydroid since Pydroid does not support
         # the sl4a lib
         # if os.name == 'posix':
         #     import android
         #     self._clipboard = android.Android()
         # else:
-        self._clipboard = Clipboard
+        self.activateClipboard = activateClipboard
+
+        if self.activateClipboard:
+            from kivy.core.clipboard import Clipboard
+            self._clipboard = Clipboard
+
         self.configurationMgr = configurationMgr
 
 
@@ -162,15 +175,20 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 
     def toClipboard(self, numericVal):
-        if os.name != 'posix':
-            #causes an exception after updating all conda packages on 7.2.2018 !
-            pass
-        else:
+        if os.name == 'posix':
             self._clipboard.copy(str(numericVal))
+        else:
+            if not self.activateClipboard:
+                pass
+            else:
+                self._clipboard.copy(str(numericVal))
 
 
     def fromClipboard(self):
-        return self._clipboard.paste()
+        if not self.activateClipboard:
+            return 'Clipboard not available since not activated at ConsoleOutputFormater initialisation'
+        else:
+            return self._clipboard.paste()
 
 
 if __name__ == '__main__':

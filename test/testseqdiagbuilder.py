@@ -1251,7 +1251,7 @@ participant Parent
 
         SeqDiagBuilder.deactivate()
 
-    @unittest.skip
+
     def testCreateSeqDiagCommandsOnFullRequestHistoDayPrice(self):
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
@@ -1278,7 +1278,7 @@ participant Parent
         requestYearStr = eightDaysBeforeYearStr
         requestDayStr = eightDaysBeforeDayStr
         requestMonthStr = eightDaysBeforeMonthStr
-        inputStr = 'mcap btc {}/{} all'.format(requestDayStr, requestMonthStr)
+        inputStr = 'eth btc {}/{} all'.format(requestDayStr, requestMonthStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
@@ -1292,9 +1292,9 @@ participant Parent
             priceType = 'M'
 
         self.assertEqual(
-            'MCAP/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+            'ETH/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removePriceFromResult(printResult))
-        self.assertEqual('mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
+        self.assertEqual('eth btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
         commands = SeqDiagBuilder.createSeqDiaqCommands('GUI')
@@ -1302,10 +1302,28 @@ participant Parent
         with open("c:\\temp\\ess.txt","w") as f:
             f.write(commands)
 
+        SeqDiagBuilder.deactivate()
+
+#        print(commands)
         self.assertEqual(
 '''@startuml
 
 actor GUI
+participant Controller
+	note over of Controller
+		Entry point of the business layer
+	end note
+participant Requester
+	note over of Requester
+		Parses the user commands
+	end note
+participant CommandPrice
+participant Processor
+participant PriceRequester
+	note over of PriceRequester
+		Obtains the RT or historical rates from the Cryptocompare web site
+	end note
+participant GuiOutputFormater
 GUI -> Controller: getPrintableResultForInput(inputStr)
 	activate Controller
 	Controller -> Requester: getCommand(inputStr)
@@ -1320,12 +1338,18 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 			deactivate Requester
 		Controller <-- Requester: return AbstractCommand
 		deactivate Requester
+		note right
+			May return a CommandError in case of parsing problem.
+		end note
 	Controller -> CommandPrice: execute()
 		activate CommandPrice
-		CommandPrice -> Processor: getCryptoPrice(crypto, fiat, exchange, day, month, year, hour, minute, priceValueSymbol=None, priceValueAmount=None, priceValueSaveFlag=None, requestInputString='')
+		CommandPrice -> Processor: getCryptoPrice(crypto, fiat, exchange, day, month, year, hour, minute, priceValueSymbol=None, ...)
 			activate Processor
 			Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange)
 				activate PriceRequester
+				note right
+					Obtainins a minute price if request date < 7 days from now, else a day close price.
+				end note
 				PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, fiat, timeStampUTC, exchange, resultData)
 					activate PriceRequester
 					PriceRequester <-- PriceRequester: return ResultData
@@ -1348,10 +1372,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 	deactivate Controller
 @enduml''', commands)
 
-        SeqDiagBuilder.deactivate()
 
-
-    @unittest.skip
     def testCreateSeqDiagCommandsOnFullRequestHistoDayPriceWithSignatureLimitation(self):
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
@@ -1389,7 +1410,8 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
         with open("c:\\temp\\ess.txt", "w") as f:
             f.write(commands)
 
-        self.assertEqual(
+        try:
+            self.assertEqual(
 '''@startuml
 
 actor GUI
@@ -1460,7 +1482,11 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 		deactivate GuiOutputFormater
 	GUI <-- Controller: return printResult, ...
 	deactivate Controller
-@enduml''', commands)
+@enduml''' \
+                , commands)
+        except TypeError as e:
+            print(e)
+            pass
 
         SeqDiagBuilder.deactivate()
 
