@@ -4,6 +4,8 @@ import os
 from inspect import signature
 import collections
 
+BIG_SIGNATURE_LENGTH = 100
+
 SEQDIAG_RETURN_TAG = ":seqdiag_return"
 SEQDIAG_SELECT_METHOD_TAG = ":seqdiag_select_method"
 SEQDIAG_NOTE_TAG = ":seqdiag_note"
@@ -499,7 +501,7 @@ class SeqDiagBuilder:
         return formattedWarnings
 
     @staticmethod
-    def createDiagram(targetDriveDirName, actorName, maxSigArgNum=None, maxSigCharLen=None):
+    def createDiagram(targetDriveDirName, actorName, maxSigArgNum=None, maxSigCharLen=BIG_SIGNATURE_LENGTH):
         '''
         This method create a Plant UML command file, launch Plant UML on it and open the
         created sequence diagram svg file in a browser.
@@ -532,7 +534,7 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def createSeqDiaqCommands(actorName, maxSigArgNum=None, maxSigCharLen=None):
+    def createSeqDiaqCommands(actorName, maxSigArgNum=None, maxSigCharLen=BIG_SIGNATURE_LENGTH):
         '''
         This method uses the control flow data collected during execution to create
         the commands Plantuml will use to draw the sequence diagram.
