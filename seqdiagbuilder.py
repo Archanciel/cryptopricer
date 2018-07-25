@@ -1,10 +1,11 @@
 import traceback, re, ast, importlib, inspect
 import webbrowser
 import os
+import copy
 from inspect import signature
 import collections
 
-BIG_SIGNATURE_LENGTH = 100
+BIG_COMMENT_LENGTH = 100
 
 SEQDIAG_RETURN_TAG = ":seqdiag_return"
 SEQDIAG_SELECT_METHOD_TAG = ":seqdiag_select_method"
@@ -358,6 +359,76 @@ class SeqDiagCommandStack:
         return False
 
 
+class ConstructorArgsProvider:
+    def __init__(self, classArgDic):
+        '''
+
+        :param classArgDic: class cnstructor arguments dictionary
+                            classArgDic format:
+                                {
+                                    'classNameA_usage_2': ['a_arg21', 'a_arg22'], #args used at second instanciation
+                                    'classNameA_usage_1': ['a_arg11', 'a_arg12'], #args used at first instanciation
+                                    'classNameB': ['b_arg1']
+                                    'classNameC_usage_1': ['c_arg1'],
+                                    'classNameC_usage_3': ['c_arg3'],
+                                    'classNameC_usage_2': ['c_arg2']
+                                }
+        '''
+        self.classArgDic = classArgDic
+
+        # making a copy of the classArgDic so it can be added to a warning message to make it clearer.
+        # Doing a deep copy does not seem necessary for now, but in the future ...
+        self.savedClassArgDic = copy.deepcopy(classArgDic)
+
+
+    def getArgsForClassConstructor(self, className):
+        '''
+        Return a list containing the ctor arguments for the passed className. If className is
+        not found in the internal classArgDic, None is returned.
+
+        :param className:
+        :return: list containing the ctor arguments in their usage order, None if no entry exist
+                 for the passed className
+        '''
+
+        # collecting all the keys in the classArgDic which are for the className.
+        # The keys may contain a digit, which indicates that the entry can only be
+        # used once to instanciate className
+        keys = self.classArgDic.keys()
+        keyList = []
+
+        for key in keys:
+            if className in key:
+                keyList.append(key)
+
+        if len(keyList) == 0:
+            # here, no ctor arg definition for className found in the classArgDic
+            return None
+        elif len(keyList) == 1:
+            classNameFromDic = keyList[0]
+            if any(c.isdigit() for c in classNameFromDic):
+                args = self.classArgDic[classNameFromDic]
+
+                # since an entry in the classArgDic keyed by a key conttaining a digit
+                # can be consumed only once, it must be deleted from the classArgDic
+                del self.classArgDic[classNameFromDic]
+
+                return args
+            else:
+                # here, the ctor argument(s) are reusable and need not be removed from the classArgDic
+                return self.classArgDic.get(className, None)
+
+        # here, the keyList contains more than one key, which means that several sets of ctor
+        # arguments were specified for className, which means that at each instanciation, the used
+        # entry must be removed from the classArgDic.
+        orderedKeyList = sorted(keyList)
+        firstKey = orderedKeyList[0]
+        firstKeyArgs = self.classArgDic[firstKey]
+        del self.classArgDic[firstKey]
+
+        return firstKeyArgs
+
+
 class SeqDiagBuilder:
     '''
     This class contains a static utility methods used to build a sequence diagram from the
@@ -368,15 +439,17 @@ class SeqDiagBuilder:
     '''
 
     seqDiagWarningList = []
+    _projectPath = None
     _isActive = False
     _recordFlowCalled = False
-    seqDiagEntryClass = None
-    seqDiagEntryMethod = None
+    _seqDiagEntryClass = None
+    _seqDiagEntryMethod = None
     recordedFlowPath = None
     _participantDocOrderedDic = None
+    _constructorArgProvider = None
 
     @staticmethod
-    def activate(projectPath, entryClass, entryMethod):
+    def activate(projectPath, entryClass, entryMethod, classArgDic = None):
         '''
         Initialise and activate SeqDiagBuilder. This method must be called before calling any method
         on the entry class.
@@ -385,14 +458,28 @@ class SeqDiagBuilder:
                             'D:/Development/Python/seqdiagbuilder'
         :param entryClass:
         :param entryMethod:
+        :param classArgDic: class cnstructor arguments dictionary
+                            classArgDic format:
+                                {
+                                    'classNameA_usage_2': ['a_arg21', 'a_arg22'], #args used at second instanciation
+                                    'classNameA_usage_1': ['a_arg11', 'a_arg12'], #args used at first instanciation
+                                    'classNameB': ['b_arg1']
+                                    'classNameC_usage_1': ['c_arg1'],
+                                    'classNameC_usage_3': ['c_arg3'],
+                                    'classNameC_usage_2': ['c_arg2']
+                                }
+
         :return:
         '''
-        SeqDiagBuilder.projectPath = projectPath
-        SeqDiagBuilder.seqDiagEntryClass = entryClass
-        SeqDiagBuilder.seqDiagEntryMethod = entryMethod
-        SeqDiagBuilder.recordedFlowPath = RecordedFlowPath(SeqDiagBuilder.seqDiagEntryClass, SeqDiagBuilder.seqDiagEntryMethod)
+        SeqDiagBuilder._projectPath = projectPath
+        SeqDiagBuilder._seqDiagEntryClass = entryClass
+        SeqDiagBuilder._seqDiagEntryMethod = entryMethod
+        SeqDiagBuilder.recordedFlowPath = RecordedFlowPath(SeqDiagBuilder._seqDiagEntryClass, SeqDiagBuilder._seqDiagEntryMethod)
         SeqDiagBuilder._isActive = True
         SeqDiagBuilder._participantDocOrderedDic = collections.OrderedDict()
+
+        if classArgDic:
+            SeqDiagBuilder._constructorArgProvider = ConstructorArgsProvider(classArgDic)
 
 
     @staticmethod
@@ -402,13 +489,14 @@ class SeqDiagBuilder:
         build mode to False
         :return:
         '''
-        SeqDiagBuilder.seqDiagEntryClass = None
-        SeqDiagBuilder.seqDiagEntryMethod = None
+        SeqDiagBuilder._seqDiagEntryClass = None
+        SeqDiagBuilder._seqDiagEntryMethod = None
         SeqDiagBuilder.recordedFlowPath = None
         SeqDiagBuilder.seqDiagWarningList = []
         SeqDiagBuilder._isActive = False
         SeqDiagBuilder._recordFlowCalled = False
         SeqDiagBuilder._participantDocOrderedDic = collections.OrderedDict()
+        SeqDiagBuilder._constructorArgProvider = None
 
 
     @staticmethod
@@ -484,7 +572,9 @@ class SeqDiagBuilder:
                 participantEntry = 'participant {}\n'.format(className)
             else:
                 classNoteLineList = SeqDiagBuilder._splitNoteToLines(classNote, maxNoteCharLen * 1.5)
-                participantEntry = 'participant {}\n{}note over of {}\n'.format(className, TAB_CHAR, className)
+
+                #adding a '/' before 'note over ...' causes PlantUML to position participant notes on the same line !
+                participantEntry = 'participant {}\n{}/note over of {}\n'.format(className, TAB_CHAR, className)
 
                 for classNoteLine in classNoteLineList:
                     participantEntry += '{}{}{}\n'.format(TAB_CHAR, TAB_CHAR, classNoteLine)
@@ -512,7 +602,7 @@ class SeqDiagBuilder:
         return formattedWarnings
 
     @staticmethod
-    def createDiagram(targetDriveDirName, actorName, maxSigArgNum=None, maxSigCharLen=BIG_SIGNATURE_LENGTH):
+    def createDiagram(targetDriveDirName, actorName, maxSigArgNum=None, maxSigCharLen=BIG_COMMENT_LENGTH, maxNoteCharLen=BIG_COMMENT_LENGTH):
         '''
         This method create a Plant UML command file, launch Plant UML on it and open the
         created sequence diagram svg file in a browser.
@@ -522,12 +612,13 @@ class SeqDiagBuilder:
         :param actorName:           name of the sequence diagram actor.
         :param maxSigArgNum:        maximum arguments number of a called toMethod
                                     toSignature. Applies to return type aswell.
-        :param maxSigCharLen:       maximum length a toMethod toSignature can occupy.
+        :param maxSigCharLen:       maximum length a method signature can occupy.
                                     Applies to return type aswell.
+        :param maxNoteCharLen:      maximum length a method or participant note can occupy.
         :return:                    nothing.
         '''
-        seqDiagCommands = SeqDiagBuilder.createSeqDiaqCommands(actorName, maxSigArgNum, maxSigCharLen)
-        targetCommandFileName = SeqDiagBuilder.seqDiagEntryMethod + '.txt'
+        seqDiagCommands = SeqDiagBuilder.createSeqDiaqCommands(actorName, maxSigArgNum, maxSigCharLen, maxNoteCharLen)
+        targetCommandFileName = SeqDiagBuilder._seqDiagEntryMethod + '.txt'
         targetDriveDirName = targetDriveDirName.replace('\\','/')
 
         if targetDriveDirName[-1] != '/':
@@ -541,11 +632,11 @@ class SeqDiagBuilder:
         os.chdir(targetDriveDirName)
 
         os.system('java -jar plantuml.jar -tsvg ' + targetCommandFileName)
-        webbrowser.open("file:///{}{}.svg".format(targetDriveDirName, SeqDiagBuilder.seqDiagEntryMethod))
+        webbrowser.open("file:///{}{}.svg".format(targetDriveDirName, SeqDiagBuilder._seqDiagEntryMethod))
 
 
     @staticmethod
-    def createSeqDiaqCommands(actorName, maxSigArgNum=None, maxSigCharLen=BIG_SIGNATURE_LENGTH):
+    def createSeqDiaqCommands(actorName, maxSigArgNum=None, maxSigCharLen=BIG_COMMENT_LENGTH, maxNoteCharLen=BIG_COMMENT_LENGTH):
         '''
         This method uses the control flow data collected during execution to create
         the commands Plantuml will use to draw the sequence diagram.
@@ -558,6 +649,7 @@ class SeqDiagBuilder:
                                 toSignature. Applies to return type aswell.
         :param maxSigCharLen:   maximum length a toMethod toSignature can occupy.
                                 Applies to return type aswell.
+        :param maxNoteCharLen:      maximum length a method or participant note can occupy.
         :return:                nothing.
         '''
         isFlowRecorded = True
@@ -565,11 +657,11 @@ class SeqDiagBuilder:
         if SeqDiagBuilder.recordedFlowPath == None:
             isEntryPointReached = False
             isFlowRecorded = False
-            SeqDiagBuilder.issueNoFlowRecordedWarning(isEntryPointReached)
+            SeqDiagBuilder._issueNoFlowRecordedWarning(isEntryPointReached)
         elif SeqDiagBuilder.recordedFlowPath.isEmpty():
             isEntryPointReached = SeqDiagBuilder.recordedFlowPath.entryPointReached
             isFlowRecorded = False
-            SeqDiagBuilder.issueNoFlowRecordedWarning(isEntryPointReached)
+            SeqDiagBuilder._issueNoFlowRecordedWarning(isEntryPointReached)
 
         seqDiagCommandStr = SeqDiagBuilder._buildCommandFileHeaderSection()
 
@@ -577,17 +669,17 @@ class SeqDiagBuilder:
             classMethodReturnStack = SeqDiagCommandStack()
             seqDiagCommandStr += "\nactor {}\n".format(actorName)
             seqDiagCommandStr += SeqDiagBuilder._buildClassNoteSection(SeqDiagBuilder._participantDocOrderedDic,
-                                                                       maxSigCharLen)
+                                                                       maxNoteCharLen)
             firstFlowEntry = SeqDiagBuilder.recordedFlowPath.flowEntryList[0]
             firstFlowEntry.fromClass = actorName
             fromClass = firstFlowEntry.fromClass
-            commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, firstFlowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen)
+            commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, firstFlowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen, maxNoteCharLen)
             seqDiagCommandStr += commandStr
             fromClass = firstFlowEntry.toClass
 
             for flowEntry in SeqDiagBuilder.recordedFlowPath.flowEntryList[1:]:
                 if not classMethodReturnStack.containsFromCall(flowEntry):
-                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen)
+                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen, maxNoteCharLen)
                     seqDiagCommandStr += commandStr
                     fromClass = flowEntry.toClass
                 else:
@@ -610,7 +702,7 @@ class SeqDiagBuilder:
                         commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry, maxSigArgNum, maxSigCharLen)
                         seqDiagCommandStr += commandStr
                         fromClass = returnEntry.fromClass
-                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen)
+                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen, maxNoteCharLen)
                     seqDiagCommandStr += commandStr
                     fromClass = flowEntry.toClass
                     deepestReached = True
@@ -629,11 +721,31 @@ class SeqDiagBuilder:
         return seqDiagCommandStr
 
     @staticmethod
-    def issueNoFlowRecordedWarning(isEntryPointReached):
-        SeqDiagBuilder._issueWarning(
-            "No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{} reached: {}".format(
-                SeqDiagBuilder._isActive, SeqDiagBuilder._recordFlowCalled, SeqDiagBuilder.seqDiagEntryClass,
-                SeqDiagBuilder.seqDiagEntryMethod, isEntryPointReached))
+    def _issueNoFlowRecordedWarning(isEntryPointReached):
+        if SeqDiagBuilder._constructorArgProvider:
+            savedClassArgDic = SeqDiagBuilder._constructorArgProvider.savedClassArgDic
+        else:
+            savedClassArgDic = None
+
+        if SeqDiagBuilder._isActive:
+            warning = "No control flow recorded. Method activate() called with arguments {}, {}, {}, {}: {}. Method recordFlow() called: {}. Specified entry point: {}.{} reached: {}".format(
+                SeqDiagBuilder._projectPath,
+                SeqDiagBuilder._seqDiagEntryClass,
+                SeqDiagBuilder._seqDiagEntryMethod,
+                savedClassArgDic,
+                SeqDiagBuilder._isActive,
+                SeqDiagBuilder._recordFlowCalled,
+                SeqDiagBuilder._seqDiagEntryClass,
+                SeqDiagBuilder._seqDiagEntryMethod,
+                isEntryPointReached)
+        else:
+            warning = "No control flow recorded. Method activate() called: {}. Method recordFlow() called: {}. Specified entry point: {}.{} reached: {}".format(
+                SeqDiagBuilder._isActive,
+                SeqDiagBuilder._recordFlowCalled,
+                SeqDiagBuilder._seqDiagEntryClass,
+                SeqDiagBuilder._seqDiagEntryMethod,
+                isEntryPointReached)
+        SeqDiagBuilder._issueWarning(warning)
 
 
     @staticmethod
@@ -660,7 +772,7 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def _handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen):
+    def _handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen, maxNoteCharLen):
         '''
         Controls the creation of the Plant UML call commands.
         :param fromClass:
@@ -680,7 +792,7 @@ class SeqDiagBuilder:
 
         # adding method note
         if toMethodNote != '':
-            toMethodNoteLineList = SeqDiagBuilder._splitNoteToLines(toMethodNote, maxSigCharLen * 1.5)
+            toMethodNoteLineList = SeqDiagBuilder._splitNoteToLines(toMethodNote, maxNoteCharLen * 1.5)
             indentStr += TAB_CHAR
             noteSection = '{}note right\n'.format(indentStr)
 
@@ -771,7 +883,7 @@ class SeqDiagBuilder:
                 match = re.match(PYTHON_FILE_AND_FUNC_PATTERN, frame)
                 if match:
                     pythonClassFilePath = match.group(1)
-                    packageSpec = SeqDiagBuilder.extractPackageSpec(pythonClassFilePath)
+                    packageSpec = SeqDiagBuilder._extractPackageSpec(pythonClassFilePath)
                     moduleName = match.group(2)
                     methodCallLineNumber = match.group(3)
                     currentMethodName = match.group(4)
@@ -788,7 +900,7 @@ class SeqDiagBuilder:
                         # extracting from the parsed source the name of the classes it contains
                         moduleClassNameList = [node.name for node in ast.walk(parsedSource) if isinstance(node, ast.ClassDef)]
 
-                        if not entryClassEncountered and not SeqDiagBuilder.seqDiagEntryClass in moduleClassNameList:
+                        if not entryClassEncountered and not SeqDiagBuilder._seqDiagEntryClass in moduleClassNameList:
                             # optimization: if the entry class was not yet found and if moduleName
                             # does not contain the definition of the entry class, searching an instance
                             # supporting the entry method in this module does not make sense !
@@ -815,7 +927,7 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def extractPackageSpec(pythonClassFilePath):
+    def _extractPackageSpec(pythonClassFilePath):
         '''
         Extract the package part of the class file path. The package component will be required
         later when instanciating the class.
@@ -823,8 +935,8 @@ class SeqDiagBuilder:
         :param pythonClassFilePath:
         :return:
         '''
-        pythonisedPythonClassFilePath = SeqDiagBuilder.pythoniseFilePath(pythonClassFilePath)
-        pythonisedProjectPath = SeqDiagBuilder.pythoniseFilePath(SeqDiagBuilder.projectPath)
+        pythonisedPythonClassFilePath = SeqDiagBuilder._pythoniseFilePath(pythonClassFilePath)
+        pythonisedProjectPath = SeqDiagBuilder._pythoniseFilePath(SeqDiagBuilder._projectPath)
         packageSpec = pythonisedPythonClassFilePath.replace(pythonisedProjectPath, '')
 
         #handling file path containg either \\ (windows like) or / (unix like)
@@ -834,7 +946,7 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def pythoniseFilePath(packageSpec):
+    def _pythoniseFilePath(packageSpec):
         '''
         In order to liberate SeqDiagBuilder from sub dir separators different in Windows and
         in Unix, simply replaces them with a period.
@@ -990,22 +1102,61 @@ class SeqDiagBuilder:
         class_ = getattr(module, className)
         instance = None
         noneStr = ''
+        ctorArgValueList = None
+
+        if SeqDiagBuilder._constructorArgProvider:
+            ctorArgValueList = SeqDiagBuilder._constructorArgProvider.getArgsForClassConstructor(className)
 
         try:
-            instance = eval('class_(' + noneStr + ')')
+            if ctorArgValueList:
+                evaluationString = 'class_('
+                for argValue in ctorArgValueList:
+                    evaluationString += "'" + str(argValue) + "',"
+
+                evaluationString = evaluationString[:-1] + ')'
+                instance = eval(evaluationString)
+            else:
+                instance = eval('class_(' + noneStr + ')')
         except TypeError:
             # here, the clasa we try to instanciate has an __init__ method with one or more
             # arguments. We enter in a loop, trying to instanciate the class adding one argument
             # at each loop run.
             noneStr = 'None'
-            while not instance:
-                try:
-                    instance = eval('class_(' + noneStr + ')')
-                except TypeError:
-                    noneStr += ', None'
+            if not ctorArgValueList:
+                while not instance:
+                    try:
+                        instance = eval('class_(' + noneStr + ')')
+                    except TypeError:
+                        noneStr += ', None'
+                    except SyntaxError as e:
+                        SeqDiagBuilder._issueWarning('ERROR - constructor for class {} in module {} failed due to invalid argument(s). To solve the problem, pass a class argument dictionary with an entry for {} to the SeqDiagBuilder.activate() method'.format(
+                            className, packageSpec + moduleName, className))
+                        break
+            else:
+                SeqDiagBuilder._issueWarning('ERROR - constructor for class {} in module {} failed due to invalid \
+                argument(s) ({}) defined in the class argument dictionary passed to the SeqDiagBuilder.activate() method'.format(
+                    className, packageSpec + moduleName, ctorArgValueList))
 
         return instance
 
 
 if __name__ == '__main__':
-    pass
+    # testing ConstructorArgsProvider
+    dic = {'cl_2': ['clarg21', 'clarg22'],
+           'cl_1': ['clarg11', 'clarg12'],
+           'ca': ['ca_arg1'],
+           'cc1': ['ccarg1'],
+           'cc3': ['ccarg3'],
+           'cc2': ['ccarg2']}
+    cap = ConstructorArgsProvider(dic)
+    print('cc {}'.format(cap.getArgsForClassConstructor('cc')))
+    print('cl {}'.format(cap.getArgsForClassConstructor('cl')))
+    print('ca {}'.format(cap.getArgsForClassConstructor('ca')))
+    print()
+    print('cc {}'.format(cap.getArgsForClassConstructor('cc')))
+    print('cl {}'.format(cap.getArgsForClassConstructor('cl')))
+    print('ca {}'.format(cap.getArgsForClassConstructor('ca')))
+    print()
+    print('cc {}'.format(cap.getArgsForClassConstructor('cc')))
+    print('cl {}'.format(cap.getArgsForClassConstructor('cl')))
+    print('ca {}'.format(cap.getArgsForClassConstructor('ca')))

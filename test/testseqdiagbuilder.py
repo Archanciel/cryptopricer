@@ -12,6 +12,7 @@ from testclasses.subtestpackage.isolatedclasssub import IsolatedClassSub
 from testclasses.isolatedclasswithinstancevariables import IsolatedClassWithInstanceVariables
 from testclasses.foobarclasses import *
 from testclasses.subtestpackage.dsub import DSub
+from testclasses.subtestpackage.caller import Caller
 
 
 #from controller import Controller
@@ -313,6 +314,9 @@ class C:
             return number + self.fibonaci(number - 1)
 
 class B:
+    '''
+    :seqdiag_note This is test class note for class B
+    '''
     def b0(self, b1_p1):
         '''
 
@@ -398,6 +402,9 @@ class B:
         d.d2(1)
 
 class A:
+    '''
+    :seqdiag_note This is test class note for class A
+    '''
     def a0(self, a1_p1, a1_p2):
         '''
         :param a1_p1:
@@ -522,15 +529,13 @@ class A:
 
 class TestSeqDiagBuilder(unittest.TestCase):
     def setUp(self):
-        self.projectPath = 'D:\\Development\\Python\\CryptoPricer'
-
         SeqDiagBuilder.deactivate()
 
 
     def testCreateSeqDiagCommandsOnSimplestCallWithoutRecordFlowCallInLeafMethod(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a0')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a0')  # activate sequence diagram building
         entryPoint.a0(1, 2)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -544,14 +549,14 @@ class TestSeqDiagBuilder(unittest.TestCase):
 center header
 <b><font color=red size=20> Warnings</font></b>
 <b><font color=red size=14>  No control flow recorded.</font></b>
-<b><font color=red size=14>  Method activate() called: True.</font></b>
+<b><font color=red size=14>  Method activate() called with arguments {}, A, a0, None: True.</font></b>
 <b><font color=red size=14>  Method recordFlow() called: False.</font></b>
 <b><font color=red size=14>  Specified entry point: A.a0 reached: False.</font></b>
 endheader
 
 actor USER
 
-@enduml''', commands)
+@enduml'''.replace('{}',parentdir), commands) # using format() instead og replace fails !
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
@@ -559,7 +564,7 @@ actor USER
     def testCreateSeqDiagCommandsOnSimplestCall(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a1')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a1')  # activate sequence diagram building
         entryPoint.a1(1, 2)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -574,6 +579,9 @@ actor USER
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 	USER -> A: a1(a1_p1, a1_p2)
 		activate A
 		USER <-- A: return Aa1Return
@@ -585,7 +593,7 @@ participant A
     def testCreateSeqDiagCommandsTwoLevelCallTwoDiffMethods(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a10')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a10')  # activate sequence diagram building
         entryPoint.a10(1)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -600,7 +608,13 @@ participant A
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 participant B
+	/note over of B
+		This is test class note for class B
+	end note
 	USER -> A: a10(a10_p1)
 		activate A
 		A -> B: b4(b4_p1)
@@ -620,7 +634,7 @@ participant B
     def testCreateSeqDiagCommandsOnTwoLevelCall(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a2')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a2')  # activate sequence diagram building
         entryPoint.a2(1)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -636,7 +650,13 @@ participant B
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 participant B
+	/note over of B
+		This is test class note for class B
+	end note
 	USER -> A: a2(a2_p1)
 		activate A
 		A -> B: b1(b1_p1)
@@ -653,7 +673,7 @@ participant B
     def testCreateSeqDiagCommandsOnThreeLevelCallingMidLevelMethodTwice(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a6')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a6')  # activate sequence diagram building
         entryPoint.a6(1)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -669,7 +689,13 @@ participant B
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 participant B
+	/note over of B
+		This is test class note for class B
+	end note
 participant C
 	USER -> A: a6(a6_p1)
 		activate A
@@ -699,7 +725,7 @@ participant C
     def testCreateSeqDiagCommandsOnFiveLevelCallingSecondLevelMethodTwice(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a11')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a11')  # activate sequence diagram building
         entryPoint.a11(1)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -715,9 +741,18 @@ participant C
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 participant B
+	/note over of B
+		This is test class note for class B
+	end note
 participant C
 participant DSub
+	/note over of DSub
+		Short note DSub
+	end note
 	USER -> A: a11(a11_p1)
 		activate A
 		A -> B: b6(b6_p1)
@@ -754,7 +789,7 @@ participant DSub
     def testCreateSeqDiagCommandsOnFiveLevelCallingSecondLevelMethodTwiceProjectPathUnixLike(self):
             entryPoint = A()
 
-            SeqDiagBuilder.activate(self.projectPath.replace('\\','/'), 'A', 'a11')  # activate sequence diagram building
+            SeqDiagBuilder.activate(parentdir.replace('\\','/'), 'A', 'a11')  # activate sequence diagram building
             entryPoint.a11(1)
 
             commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -770,9 +805,18 @@ participant DSub
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 participant B
+	/note over of B
+		This is test class note for class B
+	end note
 participant C
 participant DSub
+	/note over of DSub
+		Short note DSub
+	end note
 	USER -> A: a11(a11_p1)
 		activate A
 		A -> B: b6(b6_p1)
@@ -809,7 +853,7 @@ participant DSub
     def testCreateSeqDiagCommandsOnFiveLevelCallingSecondLevelMethodTwiceWithRecordFlowInEveryMethod(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a12')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a12')  # activate sequence diagram building
         entryPoint.a12(1)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -825,9 +869,18 @@ participant DSub
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 participant B
+	/note over of B
+		This is test class note for class B
+	end note
 participant C
 participant DSub
+	/note over of DSub
+		Short note DSub
+	end note
 	USER -> A: a12(a12_p1)
 		activate A
 		A -> B: b7(b7_p1)
@@ -884,13 +937,13 @@ participant DSub
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
-    def testCreateSeqDiagCommandsOnFiveLevelCallingSecondLevelMethodTwiceWithRecordFlowInOnePlaceOnly(self):
+    def testCreateSeqDiagCommandsOnFiveLevelCallingSecondLevelMethodTwiceWithRecordFlowInOnePlaceOnlySpecifyingNoteLengthLimit(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a13')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a13')  # activate sequence diagram building
         entryPoint.a13(1)
 
-        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER', None, 200, 15)
 
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
 
@@ -903,8 +956,19 @@ participant DSub
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class
+		note for class A
+	end note
 participant B
+	/note over of B
+		This is test class
+		note for class B
+	end note
 participant DSub
+	/note over of DSub
+		Short note DSub
+	end note
 	USER -> A: a13(a13_p1)
 		activate A
 		A -> B: b8(b8_p1)
@@ -937,7 +1001,7 @@ participant DSub
         '''
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a7')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a7')  # activate sequence diagram building
         entryPoint.a7(1)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -953,7 +1017,13 @@ participant DSub
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 participant B
+	/note over of B
+		This is test class note for class B
+	end note
 participant C
 	USER -> A: a7(a7_p1)
 		activate A
@@ -979,7 +1049,7 @@ participant C
     def testCreateSeqDiagCommandsOnTwoLevelCallCallingMethodTwice(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a4')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a4')  # activate sequence diagram building
         entryPoint.a4(1)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -995,7 +1065,13 @@ participant C
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 participant B
+	/note over of B
+		This is test class note for class B
+	end note
 	USER -> A: a4(a4_p1)
 		activate A
 		A -> B: b1(b1_p1)
@@ -1016,7 +1092,7 @@ participant B
     def testCreateSeqDiagCommandsOnTwoLevelCallCallingMethodThreeTimes(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a5')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a5')  # activate sequence diagram building
         entryPoint.a5(1)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -1032,7 +1108,13 @@ participant B
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 participant B
+	/note over of B
+		This is test class note for class B
+	end note
 	USER -> A: a5(a5_p1)
 		activate A
 		A -> B: b1(b1_p1)
@@ -1057,7 +1139,7 @@ participant B
     def testCreateSeqDiagCommandsOnThreeLevelCall(self):
         entryPoint = A()
 
-        SeqDiagBuilder.activate(self.projectPath, 'A', 'a3')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'A', 'a3')  # activate sequence diagram building
         entryPoint.a3(1)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -1072,7 +1154,13 @@ participant B
 actor USER
 participant TestSeqDiagBuilder
 participant A
+	/note over of A
+		This is test class note for class A
+	end note
 participant B
+	/note over of B
+		This is test class note for class B
+	end note
 participant C
 	USER -> A: a3(a3_p1)
 		activate A
@@ -1143,7 +1231,7 @@ participant C
     def testRecordFlowWhereMulitpleClassesSupportSameMethodAndOneIsSelected(self):
         entryPoint = ChildThree()
 
-        SeqDiagBuilder.activate(self.projectPath, 'ChildThree', 'getCoordinate')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'ChildThree', 'getCoordinate')  # activate sequence diagram building
         entryPoint.getCoordinate()
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -1169,7 +1257,7 @@ participant ChildThree
     def testRecordFlowWhereMulitpleClassesSupportSameMethodAndOneIsSelectedInOtherClass(self):
         entryPoint = ChildTwo()
 
-        SeqDiagBuilder.activate(self.projectPath, 'ChildTwo', 'getCoordinate')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'ChildTwo', 'getCoordinate')  # activate sequence diagram building
         entryPoint.getCoordinate()
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -1182,14 +1270,14 @@ participant ChildThree
 center header
 <b><font color=red size=20> Warnings</font></b>
 <b><font color=red size=14>  No control flow recorded.</font></b>
-<b><font color=red size=14>  Method activate() called: True.</font></b>
+<b><font color=red size=14>  Method activate() called with arguments {}, ChildTwo, getCoordinate, None: True.</font></b>
 <b><font color=red size=14>  Method recordFlow() called: True.</font></b>
 <b><font color=red size=14>  Specified entry point: ChildTwo.getCoordinate reached: False.</font></b>
 endheader
 
 actor USER
 
-@enduml''', commands)
+@enduml'''.replace('{}',parentdir), commands) # using format() instead og replace fails !
 
         SeqDiagBuilder.deactivate()
 
@@ -1197,7 +1285,7 @@ actor USER
     def testRecordFlowWhereMulitpleClassesSupportSameMethodAndNoneIsSelected(self):
         entryPoint = ChildTwo()
 
-        SeqDiagBuilder.activate(self.projectPath, 'ChildTwo', 'getCoordinateNoneSelected')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'ChildTwo', 'getCoordinateNoneSelected')  # activate sequence diagram building
         entryPoint.getCoordinateNoneSelected()
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -1216,21 +1304,21 @@ center header
 <b><font color=red size=14>  See help for more information.</font></b>
 <b><font color=red size=20> 2</font></b>
 <b><font color=red size=14>  No control flow recorded.</font></b>
-<b><font color=red size=14>  Method activate() called: True.</font></b>
+<b><font color=red size=14>  Method activate() called with arguments {}, ChildTwo, getCoordinateNoneSelected, None: True.</font></b>
 <b><font color=red size=14>  Method recordFlow() called: True.</font></b>
 <b><font color=red size=14>  Specified entry point: ChildTwo.getCoordinateNoneSelected reached: False.</font></b>
 endheader
 
 actor USER
 
-@enduml''', commands)
+@enduml'''.replace('{}',parentdir), commands) # using format() instead og replace fails !
 
         SeqDiagBuilder.deactivate()
 
     def testRecordFlowWhereMulitpleClassesSupportInheritedMethodAndNoneIsSelected(self):
         entryPoint = ClassA()
 
-        SeqDiagBuilder.activate(self.projectPath, 'ClassA', 'aMethod')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'ClassA', 'aMethod')  # activate sequence diagram building
         entryPoint.aMethod(1)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -1267,8 +1355,8 @@ participant Parent
 
 
     def testCreateSeqDiagCommandsOnFullRequestHistoDayPrice(self):
-        if not 'CryptoPricer' in self.projectPath:
-            pass
+        if not 'CryptoPricer' in parentdir:
+            return
 
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
@@ -1276,7 +1364,7 @@ participant Parent
         from guioutputformater import GuiOutputFormater
         from controller import Controller
 
-        SeqDiagBuilder.activate(self.projectPath, 'Controller', 'getPrintableResultForInput')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'Controller', 'getPrintableResultForInput')  # activate sequence diagram building
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptopricer.ini'
@@ -1327,17 +1415,17 @@ participant Parent
 
 actor GUI
 participant Controller
-	note over of Controller
+	/note over of Controller
 		Entry point of the business layer
 	end note
 participant Requester
-	note over of Requester
+	/note over of Requester
 		Parses the user commands
 	end note
 participant CommandPrice
 participant Processor
 participant PriceRequester
-	note over of PriceRequester
+	/note over of PriceRequester
 		Obtains the RT or historical rates from the Cryptocompare web site
 	end note
 participant GuiOutputFormater
@@ -1391,8 +1479,8 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 
 
     def testCreateSeqDiagCommandsOnFullRequestHistoDayPriceWithSignatureLimitation(self):
-        if not 'CryptoPricer' in self.projectPath:
-            pass
+        if not 'CryptoPricer' in parentdir:
+            return
 
         from datetimeutil import DateTimeUtil
         from utilityfortest import UtilityForTest
@@ -1400,7 +1488,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
         from guioutputformater import GuiOutputFormater
         from controller import Controller
 
-        SeqDiagBuilder.activate(self.projectPath, 'Controller', 'getPrintableResultForInput')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'Controller', 'getPrintableResultForInput')  # activate sequence diagram building
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptopricer.ini'
@@ -1424,7 +1512,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        commands = SeqDiagBuilder.createSeqDiaqCommands('GUI', None, 20)
+        commands = SeqDiagBuilder.createSeqDiaqCommands('GUI', None, 20, 20)
 
         with open("c:\\temp\\ess.txt", "w") as f:
             f.write(commands)
@@ -1435,18 +1523,18 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 
 actor GUI
 participant Controller
-	note over of Controller
+	/note over of Controller
 		Entry point of the business
 		layer
 	end note
 participant Requester
-	note over of Requester
+	/note over of Requester
 		Parses the user commands
 	end note
 participant CommandPrice
 participant Processor
 participant PriceRequester
-	note over of PriceRequester
+	/note over of PriceRequester
 		Obtains the RT or historical
 		rates from the Cryptocompare
 		web site
@@ -1513,7 +1601,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
     def testCreateSeqDiagCommandsOnClassesWithEmbededSelfCalls(self):
         entryPoint = ClassA()
 
-        SeqDiagBuilder.activate(self.projectPath,'ClassA', 'doWork')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir,'ClassA', 'doWork')  # activate sequence diagram building
         entryPoint.doWork()
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -1569,7 +1657,7 @@ participant ClassB
     def testCreateSeqDiagCommandsOnClassLocatedInPackage(self):
         entryPoint = IsolatedClass()
 
-        SeqDiagBuilder.activate(self.projectPath, 'IsolatedClass', 'analyse')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'IsolatedClass', 'analyse')  # activate sequence diagram building
         entryPoint.analyse()
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -1595,7 +1683,7 @@ USER -> IsolatedClass: analyse()
     def testCreateSeqDiagCommandsOnClassLocatedInSubPackage(self):
         entryPoint = IsolatedClassSub()
 
-        SeqDiagBuilder.activate(self.projectPath, 'IsolatedClassSub', 'analyse')  # activate sequence diagram building
+        SeqDiagBuilder.activate(parentdir, 'IsolatedClassSub', 'analyse')  # activate sequence diagram building
         entryPoint.analyse()
 
         commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
@@ -1613,6 +1701,361 @@ USER -> IsolatedClassSub: analyse()
 	activate IsolatedClassSub
 	USER <-- IsolatedClassSub: return Analysis
 	deactivate IsolatedClassSub
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+
+    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithoutPassingClassArgsDic(self):
+        entryPoint = Caller()
+
+        SeqDiagBuilder.activate(parentdir, 'Caller', 'call')  # activate sequence diagram building
+        entryPoint.call()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
+
+        self.assertEqual(
+'''@startuml
+center header
+<b><font color=red size=20> Warnings</font></b>
+<b><font color=red size=14>  ERROR - constructor for class FileReader in module testclasses.subtestpackage.filereader failed due to invalid argument(s).</font></b>
+<b><font color=red size=14>  To solve the problem, pass a class argument dictionary with an entry for FileReader to the SeqDiagBuilder.activate() method.</font></b>
+endheader
+
+
+actor USER
+participant Caller
+USER -> Caller: call()
+	activate Caller
+	USER <-- Caller: 
+	deactivate Caller
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+
+    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithPassingClassArgsDic(self):
+        entryPoint = Caller()
+        classArgDic = {'FileReader': ['testfile.txt']}
+
+        SeqDiagBuilder.activate(parentdir, 'Caller', 'call', classArgDic)  # activate sequence diagram building
+        entryPoint.call()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+participant Caller
+participant FileReader
+USER -> Caller: call()
+	activate Caller
+	Caller -> FileReader: getContentAsList()
+		activate FileReader
+		Caller <-- FileReader: 
+		deactivate FileReader
+	USER <-- Caller: 
+	deactivate Caller
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+
+    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithPassingClassArgsDicWithTwoEntries(self):
+        '''
+        Test case where the flow requires to instanciate the same class (FileReader) twice with
+        different values passed to the ctor at each instanciation.
+        '''
+        entryPoint = Caller()
+        classArgDic = {'FileReader_1': ['testfile.txt'], 'FileReader_2': ['testfile2.txt']}
+
+        SeqDiagBuilder.activate(parentdir, 'Caller', 'callUsingTwoFileReaders',
+                                classArgDic)  # activate sequence diagram building
+        entryPoint.callUsingTwoFileReaders()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+participant Caller
+participant FileReader
+USER -> Caller: callUsingTwoFileReaders()
+	activate Caller
+	Caller -> FileReader: getContentAsList()
+		activate FileReader
+		Caller <-- FileReader: 
+		deactivate FileReader
+	Caller -> FileReader: getContentAsList()
+		activate FileReader
+		Caller <-- FileReader: 
+		deactivate FileReader
+	USER <-- Caller: 
+	deactivate Caller
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+
+    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithPassingClassArgsDicWithOneEntry(self):
+        '''
+        Test case where the flow requires to instanciate the same class (FileReader) twice with
+        the same value passed to the ctor at each instanciation.
+        '''
+        entryPoint = Caller()
+        classArgDic = {'FileReader': ['testfile.txt']}
+
+        SeqDiagBuilder.activate(parentdir, 'Caller', 'callUsingTwoFileReaders',
+                                classArgDic)  # activate sequence diagram building
+        entryPoint.callUsingTwoFileReaders()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+participant Caller
+participant FileReader
+USER -> Caller: callUsingTwoFileReaders()
+	activate Caller
+	Caller -> FileReader: getContentAsList()
+		activate FileReader
+		Caller <-- FileReader: 
+		deactivate FileReader
+	Caller -> FileReader: getContentAsList()
+		activate FileReader
+		Caller <-- FileReader: 
+		deactivate FileReader
+	USER <-- Caller: 
+	deactivate Caller
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+
+    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithPassingClassArgsDicWithOneEntryOneBooleanArg(self):
+        '''
+        Test case where the flow requires to instanciate a class (FileReaderSupportingVerboseMode) whose ctor
+        requires a string and a boolean value. To handle this situation, a class ctor arg dictionary
+        must be passed to the SeqDiagBuilder.activate() method.
+        '''
+        entryPoint = Caller()
+        classArgDic = {'FileReaderSupportingVerboseMode': ['testfile.txt', False]}
+
+        SeqDiagBuilder.activate(parentdir, 'Caller', 'callUsingVerboseFileReader',
+                                classArgDic)  # activate sequence diagram building
+        entryPoint.callUsingVerboseFileReader()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+participant Caller
+participant FileReaderSupportingVerboseMode
+USER -> Caller: callUsingVerboseFileReader()
+	activate Caller
+	Caller -> FileReaderSupportingVerboseMode: getContentAsList()
+		activate FileReaderSupportingVerboseMode
+		Caller <-- FileReaderSupportingVerboseMode: 
+		deactivate FileReaderSupportingVerboseMode
+	USER <-- Caller: 
+	deactivate Caller
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithPassingClassArgsDicWithOneEntryOneBooleanArgCallSuperClassMethod(self):
+        '''
+        Test case where the flow requires to instanciate a class (FileReaderSupportingVerboseMode) whose ctor
+        requires a string and a boolean value. To handle this situation, a class ctor arg dictionary
+        must be passed to the SeqDiagBuilder.activate() method. But here, since the method
+        FileReaderSupportingVerboseMode.getContentAsListFromSuper() calls a method of its parent
+        class, the class ctor arg dictionary must also contain an entry for the parent class since
+        its ctor __init__ method also requires arguments !
+        '''
+        entryPoint = Caller()
+        classArgDic = {'FileReaderSupportingVerboseMode': ['testfile.txt', False]}
+
+        SeqDiagBuilder.activate(parentdir, 'Caller', 'callUsingVerboseFileReaderWithCallToSuper',
+                                classArgDic)  # activate sequence diagram building
+        entryPoint.callUsingVerboseFileReaderWithCallToSuper()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
+
+        self.assertEqual(
+'''@startuml
+center header
+<b><font color=red size=20> Warnings</font></b>
+<b><font color=red size=14>  ERROR - constructor for class FileReader in module testclasses.subtestpackage.filereader failed due to invalid argument(s).</font></b>
+<b><font color=red size=14>  To solve the problem, pass a class argument dictionary with an entry for FileReader to the SeqDiagBuilder.activate() method.</font></b>
+endheader
+
+
+actor USER
+participant Caller
+participant FileReaderSupportingVerboseMode
+USER -> Caller: callUsingVerboseFileReaderWithCallToSuper()
+	activate Caller
+	Caller -> FileReaderSupportingVerboseMode: getContentAsListFromSuper()
+		activate FileReaderSupportingVerboseMode
+		Caller <-- FileReaderSupportingVerboseMode: 
+		deactivate FileReaderSupportingVerboseMode
+	USER <-- Caller: 
+	deactivate Caller
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithPassingClassArgsDicWithOneEntryOneBooleanArgCallSuperClassMethodEntryAddedForParentClass(
+            self):
+        '''
+        Test case where the flow requires to instanciate a class (FileReaderSupportingVerboseMode) whose ctor
+        requires a string and a boolean value. To handle this situation, a class ctor arg dictionary
+        must be passed to the SeqDiagBuilder.activate() method. But here, since the method
+        FileReaderSupportingVerboseMode.getContentAsListFromSuper() calls a method of its parent
+        class, the class ctor arg dictionary must also contain an entry for the parent class since
+        its ctor __init__ method also requires arguments. In this tst case, this requirement has
+        been satisfied !
+        '''
+        entryPoint = Caller()
+        classArgDic = {'FileReaderSupportingVerboseMode': ['testfile.txt', False], 'FileReader': ['testfile.txt']}
+
+        SeqDiagBuilder.activate(parentdir, 'Caller', 'callUsingVerboseFileReaderWithCallToSuper',
+                                classArgDic)  # activate sequence diagram building
+        entryPoint.callUsingVerboseFileReaderWithCallToSuper()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
+
+        self.assertEqual(
+'''@startuml
+
+actor USER
+participant Caller
+participant FileReaderSupportingVerboseMode
+participant FileReader
+USER -> Caller: callUsingVerboseFileReaderWithCallToSuper()
+	activate Caller
+	Caller -> FileReaderSupportingVerboseMode: getContentAsListFromSuper()
+		activate FileReaderSupportingVerboseMode
+		FileReaderSupportingVerboseMode -> FileReader: getContentAsList()
+			activate FileReader
+			FileReaderSupportingVerboseMode <-- FileReader: 
+			deactivate FileReader
+		Caller <-- FileReaderSupportingVerboseMode: 
+		deactivate FileReaderSupportingVerboseMode
+	USER <-- Caller: 
+	deactivate Caller
+@enduml''', commands)
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithPassingClassArgsDicWithTwoEntriesSpecifyingWrongMethodName(self):
+        '''
+        Test case where the flow requires to instanciate the same class (FileReader) twice with
+        different values passed to the ctor at each instanciation. But here, we do not specify
+        the right method for the SeqDiagBuilder.activate() method: 'callUsingTwoFileReaders'
+        should be specified, not 'call' !
+        :return:
+        '''
+        entryPoint = Caller()
+        classArgDic = {'FileReader_1': ['testfile.txt'], 'FileReader_2': ['testfile2.txt']}
+
+        SeqDiagBuilder.activate(parentdir, 'Caller', 'call',
+                                classArgDic)  # activate sequence diagram building
+        entryPoint.callUsingTwoFileReaders()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
+
+        self.assertEqual(
+"""@startuml
+center header
+<b><font color=red size=20> Warnings</font></b>
+<b><font color=red size=14>  No control flow recorded.</font></b>
+<b><font color=red size=14>  Method activate() called with arguments {}, Caller, call, {'FileReader_1': ['testfile.txt'], 'FileReader_2': ['testfile2.txt']}: True.</font></b>
+<b><font color=red size=14>  Method recordFlow() called: True.</font></b>
+<b><font color=red size=14>  Specified entry point: Caller.call reached: False.</font></b>
+endheader
+
+actor USER
+
+@enduml""".replace('{}',parentdir), commands) # using format() instead og replace fails !
+
+        SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
+
+
+    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithPassingInvalidClassArgsDic(self):
+        entryPoint = Caller()
+        classArgDic = {'FileReader': ['testfile.txt', 'inval arg']}
+
+        SeqDiagBuilder.activate(parentdir, 'Caller', 'call', classArgDic)  # activate sequence diagram building
+        entryPoint.call()
+
+        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+
+        with open("c:\\temp\\ess.txt", "w") as f:
+            f.write(commands)
+
+        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
+
+        self.assertEqual(
+'''@startuml
+center header
+<b><font color=red size=20> Warnings</font></b>
+<b><font color=red size=14>  ERROR - constructor for class FileReader in module testclasses.subtestpackage.filereader failed due to invalid                 argument(s) (['testfile.txt', 'inval arg']) defined in the class argument dictionary passed to the SeqDiagBuilder.activate() method.</font></b>
+endheader
+
+
+actor USER
+participant Caller
+USER -> Caller: call()
+	activate Caller
+	USER <-- Caller: 
+	deactivate Caller
 @enduml''', commands)
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
