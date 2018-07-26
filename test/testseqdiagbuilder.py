@@ -556,7 +556,7 @@ endheader
 
 actor USER
 
-@enduml'''.replace('{}',parentdir), commands) # using format() instead og replace fails !
+@enduml'''.format(parentdir), commands) # using format() instead og replace fails !
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
@@ -728,7 +728,7 @@ participant C
         SeqDiagBuilder.activate(parentdir, 'A', 'a11')  # activate sequence diagram building
         entryPoint.a11(1)
 
-        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+        commands = SeqDiagBuilder.createSeqDiaqCommands(actorName='USER', title='Sequence diagram title')
 
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
 
@@ -738,6 +738,7 @@ participant C
         self.assertEqual(
 '''@startuml
 
+title Sequence diagram title
 actor USER
 participant TestSeqDiagBuilder
 participant A
@@ -943,7 +944,7 @@ participant DSub
         SeqDiagBuilder.activate(parentdir, 'A', 'a13')  # activate sequence diagram building
         entryPoint.a13(1)
 
-        commands = SeqDiagBuilder.createSeqDiaqCommands('USER', None, 200, 15)
+        commands = SeqDiagBuilder.createSeqDiaqCommands(actorName='USER', title=None, maxSigArgNum=None, maxSigCharLen=200, maxNoteCharLen=15)
 
         self.assertEqual(len(SeqDiagBuilder.getWarningList()), 0)
 
@@ -1277,7 +1278,7 @@ endheader
 
 actor USER
 
-@enduml'''.replace('{}',parentdir), commands) # using format() instead og replace fails !
+@enduml'''.format(parentdir), commands) # using format() instead og replace fails !
 
         SeqDiagBuilder.deactivate()
 
@@ -1311,7 +1312,7 @@ endheader
 
 actor USER
 
-@enduml'''.replace('{}',parentdir), commands) # using format() instead og replace fails !
+@enduml'''.format(parentdir), commands) # using format() instead og replace fails !
 
         SeqDiagBuilder.deactivate()
 
@@ -1512,7 +1513,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        commands = SeqDiagBuilder.createSeqDiaqCommands('GUI', None, 20, 20)
+        commands = SeqDiagBuilder.createSeqDiaqCommands(actorName='GUI', title='CryptoPricer sequence diagram', maxSigArgNum=None, maxSigCharLen=20, maxNoteCharLen=20)
 
         with open("c:\\temp\\ess.txt", "w") as f:
             f.write(commands)
@@ -1521,6 +1522,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
             self.assertEqual(
 '''@startuml
 
+title CryptoPricer sequence diagram
 actor GUI
 participant Controller
 	/note over of Controller
@@ -2016,14 +2018,14 @@ USER -> Caller: callUsingVerboseFileReaderWithCallToSuper()
 center header
 <b><font color=red size=20> Warnings</font></b>
 <b><font color=red size=14>  No control flow recorded.</font></b>
-<b><font color=red size=14>  Method activate() called with arguments {}, Caller, call, {'FileReader_1': ['testfile.txt'], 'FileReader_2': ['testfile2.txt']}: True.</font></b>
+<b><font color=red size=14>  Method activate() called with arguments {}, Caller, call, {{'FileReader_1': ['testfile.txt'], 'FileReader_2': ['testfile2.txt']}}: True.</font></b>
 <b><font color=red size=14>  Method recordFlow() called: True.</font></b>
 <b><font color=red size=14>  Specified entry point: Caller.call reached: False.</font></b>
 endheader
 
 actor USER
 
-@enduml""".replace('{}',parentdir), commands) # using format() instead og replace fails !
+@enduml""".format(parentdir), commands) # using format() instead og replace fails !
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
