@@ -107,3 +107,6 @@ Comment:
 * arrow
 * configobj
 * beautifulsoup4
+* pillow
+* kivy.deps.sdl2
+* kivy.deps.glew
