@@ -104,5 +104,6 @@ Comment:
 ## Installation
 ### Required libraries
 * kivy
+* arrow
 * configobj
 * beautifulsoup4
