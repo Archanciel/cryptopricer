@@ -11,7 +11,7 @@ directly from the exchanges, but from the [cryptocompare.com](http://cryptocompa
 real time price and volume information from more than 90 exchanges.
 
 
-## CriptoPricer layout overview
+## CryptoPricer layout overview
 ![](screenshots/Screenshot_2018-02-18-21-30-22.jpg)
 
 
