@@ -86,7 +86,7 @@ class PriceRequester:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
-            if dic['Data'] != [] and fiat in dic:
+            if dic['Data'] != []:
                 dataDic = dic['Data'][IDX_DATA_ENTRY_TO]
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
                 resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
@@ -128,7 +128,7 @@ class PriceRequester:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
-            if dic['Data'] != [] and fiat in dic:
+            if dic['Data'] != []:
                 dataDic = dic['Data'][IDX_DATA_ENTRY_TO]
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
                 resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
