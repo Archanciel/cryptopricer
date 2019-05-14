@@ -205,11 +205,59 @@ class TestPriceRequester(unittest.TestCase):
         self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
 
 
+    def testGetHistoricalPriceAtUTCTimeStampMoreThanSevenDayForCryptoFiatPairNotSupportedByExchange(self):
+        crypto = 'BTC'
+        fiat = 'USD'
+        exchange = 'Binance'
+
+        utcArrowDateTimeObj = DateTimeUtil.localNow('UTC')
+        utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-12)
+
+        #here, since histominute price is fetched, time stamp UTC no HHMM for histoDay wil not be used !
+        resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat,
+                                                                             utcArrowDateTimeObj.timestamp,
+                                                                             utcArrowDateTimeObj.timestamp,
+                                                                             exchange)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD)")
+        self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual(fiat, resultData.getValue(resultData.RESULT_KEY_FIAT))
+        self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+
+
+
+
+
+
+
+
+    def testGetMinuteHistoricalPriceForCryptoFiatPairNotSupportedByExchange(self):
+        crypto = 'BTC'
+
+        fiat = 'USD'
+        exchange = 'Binance'
+        #time stamp is always UTC !
+        LOCAL_TIME_ZONE = 'Europe/Zurich'
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+        timeStampLocalNow = now.timestamp
+        timeStampUtcNow = DateTimeUtil.utcNowTimeStamp()
+        resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
+                                                                           fiat,
+                                                                           timeStampLocalNow,
+                                                                           timeStampUtcNow,
+                                                                           exchange)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD)")
+        self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual(fiat, resultData.getValue(resultData.RESULT_KEY_FIAT))
+        self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+
+
     def testGetHistoricalPriceAtUTCTimeStampMidOfDayWrongExchange(self):
         crypto = 'BTC'
 
         fiat = 'USD'
-        exchange = 'unknown'
+        exchange = 'Binance'
         #time stamp is always UTC !
         timeStampLocalMidDay = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 12:59:59", 'Europe/Zurich',
                                                                 "YYYY/MM/DD HH:mm:ss")
