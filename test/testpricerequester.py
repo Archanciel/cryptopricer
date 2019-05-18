@@ -269,7 +269,7 @@ class TestPriceRequester(unittest.TestCase):
                                                                            timeStampUtcNoHHMM,
                                                                            exchange)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD)")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(fiat, resultData.getValue(resultData.RESULT_KEY_FIAT))
         self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))

@@ -86,10 +86,14 @@ class PriceRequester:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
-            if dic['Data'] != []:
-                dataDic = dic['Data'][IDX_DATA_ENTRY_TO]
-                resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
-                resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
+            dataListOrDic = dic['Data']
+            if dataListOrDic != []:
+                try:
+                    dataEntryDic = dataListOrDic[IDX_DATA_ENTRY_TO]
+                    resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataEntryDic['time'])
+                    resultData.setValue(ResultData.RESULT_KEY_PRICE, dataEntryDic['close'])
+                except: # catching either an IndexError or a KeyError !
+                    resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
             else:
                 resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
 
@@ -128,10 +132,15 @@ class PriceRequester:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
-            if dic['Data'] != []:
-                dataDic = dic['Data'][IDX_DATA_ENTRY_TO]
-                resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataDic['time'])
-                resultData.setValue(ResultData.RESULT_KEY_PRICE, dataDic['close'])
+#            if dic['Data'] != [] and fiat in dic:
+            dataListOrDic = dic['Data']
+            if dataListOrDic != []:
+                try:
+                    dataEntryDic = dataListOrDic[IDX_DATA_ENTRY_TO]
+                    resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataEntryDic['time'])
+                    resultData.setValue(ResultData.RESULT_KEY_PRICE, dataEntryDic['close'])
+                except: # catching either an IndexError or a KeyError !
+                    resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
             else:
                 resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
 
