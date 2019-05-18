@@ -2,3 +2,4 @@
 /.idea
 /test/__pycache__
 /pycharm-professional-2017.2.3.exe
+*.pyc
