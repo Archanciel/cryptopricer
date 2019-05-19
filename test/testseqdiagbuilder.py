@@ -15,10 +15,6 @@ from testclasses.subtestpackage.dsub import DSub
 from testclasses.subtestpackage.caller import Caller
 
 
-#from controller import Controller
-#from pricerequester import PriceRequester
-
-
 class Client:
     def do(self):
         c1 = ChildOne()
@@ -315,7 +311,7 @@ class C:
 
 class B:
     '''
-    :seqdiag_note This is test class note for class B
+    :seqdiag_note Test class note for class B
     '''
     def b0(self, b1_p1):
         '''
@@ -403,7 +399,7 @@ class B:
 
 class A:
     '''
-    :seqdiag_note This is test class note for class A
+    :seqdiag_note Test class note for class A
     '''
     def a0(self, a1_p1, a1_p2):
         '''
@@ -580,7 +576,7 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 	USER -> A: a1(a1_p1, a1_p2)
 		activate A
@@ -609,11 +605,11 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 participant B
 	/note over of B
-		This is test class note for class B
+		Test class note for class B
 	end note
 	USER -> A: a10(a10_p1)
 		activate A
@@ -651,11 +647,11 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 participant B
 	/note over of B
-		This is test class note for class B
+		Test class note for class B
 	end note
 	USER -> A: a2(a2_p1)
 		activate A
@@ -690,11 +686,11 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 participant B
 	/note over of B
-		This is test class note for class B
+		Test class note for class B
 	end note
 participant C
 	USER -> A: a6(a6_p1)
@@ -743,11 +739,11 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 participant B
 	/note over of B
-		This is test class note for class B
+		Test class note for class B
 	end note
 participant C
 participant DSub
@@ -807,11 +803,11 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 participant B
 	/note over of B
-		This is test class note for class B
+		Test class note for class B
 	end note
 participant C
 participant DSub
@@ -871,11 +867,11 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 participant B
 	/note over of B
-		This is test class note for class B
+		Test class note for class B
 	end note
 participant C
 participant DSub
@@ -958,13 +954,13 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class
-		note for class A
+		Test class note for
+		class A
 	end note
 participant B
 	/note over of B
-		This is test class
-		note for class B
+		Test class note for
+		class B
 	end note
 participant DSub
 	/note over of DSub
@@ -1019,11 +1015,11 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 participant B
 	/note over of B
-		This is test class note for class B
+		Test class note for class B
 	end note
 participant C
 	USER -> A: a7(a7_p1)
@@ -1067,11 +1063,11 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 participant B
 	/note over of B
-		This is test class note for class B
+		Test class note for class B
 	end note
 	USER -> A: a4(a4_p1)
 		activate A
@@ -1110,11 +1106,11 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 participant B
 	/note over of B
-		This is test class note for class B
+		Test class note for class B
 	end note
 	USER -> A: a5(a5_p1)
 		activate A
@@ -1156,11 +1152,11 @@ actor USER
 participant TestSeqDiagBuilder
 participant A
 	/note over of A
-		This is test class note for class A
+		Test class note for class A
 	end note
 participant B
 	/note over of B
-		This is test class note for class B
+		Test class note for class B
 	end note
 participant C
 	USER -> A: a3(a3_p1)
@@ -1707,8 +1703,7 @@ USER -> IsolatedClassSub: analyse()
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
-
-    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithoutPassingClassArgsDic(self):
+    def testCallingMethodOnClassRequiringNonNoneConstructorParmWithoutPassingClassArgsDic(self):
         entryPoint = Caller()
 
         SeqDiagBuilder.activate(parentdir, 'Caller', 'call')  # activate sequence diagram building
@@ -1896,16 +1891,24 @@ USER -> Caller: callUsingVerboseFileReader()
 
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
 
-    def testCallingMethodOnClassRequiringNonNoneConstructotParmWithPassingClassArgsDicWithOneEntryOneBooleanArgCallSuperClassMethod(self):
+    def testCallingMethodOnClassRequiringNonNoneConstructorParmWithPassingClassArgsDicWithOneEntryOneBooleanArgCallSuperClassMethod(self):
         '''
         Test case where the flow requires to instanciate a class (FileReaderSupportingVerboseMode) whose ctor
         requires a string and a boolean value. To handle this situation, a class ctor arg dictionary
         must be passed to the SeqDiagBuilder.activate() method. But here, since the method
         FileReaderSupportingVerboseMode.getContentAsListFromSuper() calls a method of its parent
-        class, the class ctor arg dictionary must also contain an entry for the parent class since
-        its ctor __init__ method also requires arguments !
+        class, the class ctor arg dictionary must also contain an entry for the parent class (FileReader)
+        since its ctor __init__ method also requires an argument (a file name) !
         '''
         entryPoint = Caller()
+
+        # this is the argument dictionary which should be defined for successful sequence
+        # diagram generation:
+        #classArgDic = {'FileReaderSupportingVerboseMode': ['testfile.txt', False],
+        #               'FileReader': ['testfile.txt']}
+
+        # but we forget to add an entry for the FileReader base class ctor in order
+        # to ensure a correct warning will be added  to the generated sequence diagram
         classArgDic = {'FileReaderSupportingVerboseMode': ['testfile.txt', False]}
 
         SeqDiagBuilder.activate(parentdir, 'Caller', 'callUsingVerboseFileReaderWithCallToSuper',
