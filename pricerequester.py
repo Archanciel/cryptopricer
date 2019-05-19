@@ -79,7 +79,7 @@ class PriceRequester:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Check your internet connection. Details: ' + str(e.reason))
         except URLError as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Check your internet connection. Details: ' + str(e.reason))
-        except: 
+        except:
             the_type, the_value, the_traceback = sys.exc_info()
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(the_type))
         else:
@@ -92,7 +92,12 @@ class PriceRequester:
                     dataEntryDic = dataListOrDic[IDX_DATA_ENTRY_TO]
                     resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataEntryDic['time'])
                     resultData.setValue(ResultData.RESULT_KEY_PRICE, dataEntryDic['close'])
-                except: # catching either an IndexError or a KeyError !
+#                except IndexError: # does not happen in any test case
+#                    resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
+                except KeyError:
+                    # happens when pair coupled to exchange do not return ay data.
+                    # Either the exchange does not exist or the pair is not
+                    # supported by the exchange.
                     resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
             else:
                 resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
@@ -139,8 +144,13 @@ class PriceRequester:
                     dataEntryDic = dataListOrDic[IDX_DATA_ENTRY_TO]
                     resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataEntryDic['time'])
                     resultData.setValue(ResultData.RESULT_KEY_PRICE, dataEntryDic['close'])
-                except: # catching either an IndexError or a KeyError !
-                    resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
+#                except IndexError: # does not happen in any test case
+#                    resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange,isRealTime=False)
+                except KeyError:
+                    # happens when pair coupled to exchange do not return ay data.
+                    # Either the exchange does not exist or the pair is not
+                    # supported by the exchange.
+                    resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange,isRealTime=False)
             else:
                 resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
 
