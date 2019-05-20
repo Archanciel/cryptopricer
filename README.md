@@ -110,3 +110,10 @@ Comment:
 * pillow
 * kivy.deps.sdl2
 * kivy.deps.glew
+
+## Implementation
+### Typical usage sequence diagram
+Here, a simple request returning an historical day price is performed. 
+
+The request is 'btc usd 12/05 all'
+![](screenshots/sqCryptoPricerShortSig.png)
