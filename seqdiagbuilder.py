@@ -734,7 +734,7 @@ class SeqDiagBuilder:
             savedClassArgDic = None
 
         if SeqDiagBuilder._isActive:
-            warning = "No control flow recorded. Method activate() called with arguments {}, {}, {}, {}: {}. Method recordFlow() called: {}. Specified entry point: {}.{} reached: {}".format(
+            warning = "No control flow recorded. Method activate() called with arguments projectPath=<{}>, entryClass=<{}>, entryMethod=<{}>, classArgDic=<{}>: {}. Method recordFlow() called: {}. Specified entry point: {}.{} reached: {}".format(
                 SeqDiagBuilder._projectPath,
                 SeqDiagBuilder._seqDiagEntryClass,
                 SeqDiagBuilder._seqDiagEntryMethod,
@@ -960,6 +960,11 @@ class SeqDiagBuilder:
         :param packageSpec:
         :return:
         '''
+        if packageSpec == None:
+            packageSpec = '' # this prevents that nxt instruction raises an exception
+                             # A warning informing that None was passed to the activate()
+                             # method will be put in the PlantUml command file.
+
         packageSpec = packageSpec.replace('\\', '.')
         packageSpec = packageSpec.replace('/', '.')
 
