@@ -108,7 +108,7 @@ Comment:
 * configobj
 * bs4 (beautifulsoup4)
 * pillow
-* kivy.deps.sdl2
+* kivy.deps.sdl2 (warning: SDL2 not SD12 !)
 * kivy.deps.glew
 
 ## Implementation
