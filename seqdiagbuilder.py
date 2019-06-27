@@ -5,6 +5,12 @@ import copy
 from inspect import signature
 import collections
 
+SEQDIAG_LOOP_START_END_TAG = ':seqdiag_loop_start_end'
+
+SEQDIAG_LOOP_END_TAG = ':seqdiag_loop_end'
+
+SEQDIAG_LOOP_START_TAG = ':seqdiag_loop_start'
+
 BIG_COMMENT_LENGTH = 100
 
 SEQDIAG_RETURN_TAG = ":seqdiag_return"
@@ -90,10 +96,11 @@ class FlowEntry:
         return self.equalFrom(entry) and self.toMethodCalledFromLineNumber != entry.toMethodCalledFromLineNumber
 
 
-    def getIndentNumber(self):
+    def getCallDepth(self):
         '''
-        Calculate the number of time the Plant UML command must be indented in function
-        of the call depth level of the FlowEntry
+        Calculate current call depth. This info will be used to determine the
+        number of time the Plant UML command must be indented aswell as for
+        managing loop end command insertion.
         :return:
         '''
         return self.toMethodCalledFromLineNumber.count('-')
@@ -232,6 +239,16 @@ class FlowEntry:
         return "{}.{}, {}.{}{}, {}, {}, {}, {}".format(self.fromClass, self.fromMethod, self.toClass, self.toMethod, self.toSignature, self.toMethodCalledFromLineNumber, self.toMethodNote, self.toReturnType, self.toMethodReturnNote)
 
 
+    def getToMethodCallLineNumber(self):
+        '''
+        Returns the line number in fromMethod of the call to toMethod.
+        :return:
+        '''
+        lineNumberList = self.toMethodCalledFromLineNumber.split('-')
+
+        return lineNumberList[-1]
+
+
 class RecordedFlowPath:
     '''
     This class stores in a flowEntryList of FlowEntry the succession of embedded method calls whic occurred
@@ -301,10 +318,9 @@ class RecordedFlowPath:
         return outStr
 
 
-class SeqDiagCommandStack:
+class Stack:
     '''
-    This flowEntryList stores the embedded calls used to build the sequence diagram commands. It is
-    used to build the return commands of the diagram.
+    Stack base class
     '''
 
 
@@ -319,14 +335,8 @@ class SeqDiagCommandStack:
             return self.stack.pop()
 
 
-    def push(self, flowEntry):
-        '''
-        Push on the flowEntryList a 2 elements flowEntryList, the first element being the couple <class name>.<toMethod name>
-        and the second one being the string denoting the information returned to the caller by the toMethod.
-        :param flowEntry:
-        :return:
-        '''
-        self.stack.append(flowEntry)
+    def push(self, entry):
+        self.stack.append(entry)
 
         return self.stack
 
@@ -346,6 +356,11 @@ class SeqDiagCommandStack:
         return self.size() == 0
 
 
+class SeqDiagCommandStack(Stack):
+    '''
+    This flowEntryList stores the embedded calls used to build the sequence diagram commands. It is
+    used to build the return commands of the diagram.
+    '''
     def containsFromCall(self, flowEntry):
         '''
         Return True if the passed flow entry is in the SeqDiagCommandStack.
@@ -357,6 +372,15 @@ class SeqDiagCommandStack:
                 return True
 
         return False
+
+
+class LoopCommandStack(Stack):
+    '''
+    Stacks the seqdiag loop start and seqdiag loop start end commands so that
+    when required, an end UML tag can be added into the PlantUML sequence diagram
+    command file.
+    '''
+
 
 
 class ConstructorArgsProvider:
@@ -429,6 +453,164 @@ class ConstructorArgsProvider:
         return firstKeyArgs
 
 
+class LoopCommandManager():
+    '''
+    This class manages the seqdiag loop commands inserted in the body of the
+    methods called within the control flow recorded by SeqDiagBuilder. The
+    informations stored are the class and method name containing seqdiag loop
+    commands and their line number associated to the seqdiag loop command type:
+    start, startEnd and end.
+    '''
+    _loopIndexDic = None
+    _loopCommandStack = None
+
+    def __init__(self):
+        self._loopIndexDic = {}
+        self._loopCommandStack = LoopCommandStack()
+
+    def storeLoopCommands(self, fromClassName, fromMethodName, currentMethodStartLineNumber, methodBodyLines):
+        '''
+        Find in the passed methodBodyLines the seqdiag loop commands and
+        store them in the internal _loopIndexDic.
+        :return:
+        '''
+        lineNb = 0
+
+        for line in methodBodyLines[0]:
+            loopCommandTupleList = self.extractLoopCommandsFromLine(line)
+            if loopCommandTupleList:
+                # adding to the currentMethodStartLineNumber the current line
+                # number gives the line number on whichsthe seqdiag loop
+                # command is located
+                loopCommandLineNb = currentMethodStartLineNumber + lineNb
+                toMethodName = self.extractTargetMethodNameFromLoopCommandLine(line)
+                dicKey = self._buildKey(fromClassName, fromMethodName, toMethodName, loopCommandLineNb)
+
+                # this test is necessary since we only want to store the seqdiag commands once for
+                # a line of code containing them.
+                if dicKey in self._loopIndexDic:
+                    continue
+
+                for loopCommandTuple in loopCommandTupleList:
+                    loopCommandComment = loopCommandTuple[1]
+                    self.addKeyValue(dicKey, loopCommandTuple[0], loopCommandComment)
+
+            lineNb += 1
+
+    def extractLoopCommandsFromLine(self, lineStr):
+        '''
+        This method returns a list of seqdiag loop commands defined on the passed lineStr.
+        What is returned in fact is a list of 2 elements sub list. Each sub list
+        contains 2 strings: one for the seqdiag loop command itself and one for the
+        seqdiag loop command comment (may be an empty string !.
+        :param lineStr:
+        :return: list of list(s) denoting loop commands or None if no loop command
+                 found on the passed lineStr
+        '''
+        seqdiagLoopPattern = r"(:seqdiag_loop[\w]+)\s*([\w ]*)"
+
+        commandTupleList = re.findall(seqdiagLoopPattern, lineStr)
+        listOfCommandList = [list(elem) for elem in commandTupleList]
+
+        for commandList in listOfCommandList:
+            commandList[1] = commandList[1].strip()
+
+        if listOfCommandList == []:
+            listOfCommandList = None
+
+        return listOfCommandList
+
+    def _buildKey(self, fromClassName, fromMethodName, toMethodName, methodCallLineNumber):
+        '''
+        Builds the dictionary key, enforcing the internal format of the
+        dictionary.
+        :param fromClassName:
+        :param fromMethodName:
+        :param toMethodName:
+        :param methodCallLineNumber:
+        :return: dictionary key
+        '''
+        return fromClassName + "." + fromMethodName + "->" + toMethodName + ": " + str(
+            methodCallLineNumber)
+
+    def extractTargetMethodNameFromLoopCommandLine(self, seqdiagTagLine):
+        '''
+        Extract from the seqdiag loop command line the target method name.
+
+        :param seqdiagTagLine: line on which the seqdiag loop command is located
+        :return: target method name
+        '''
+        pattern = r'.([\w _]+)\('
+        match = re.search(pattern, seqdiagTagLine)
+
+        return match.group(1)
+
+    def addKeyValue(self, dicKey, seqdiagLoopTag, loopTimeNumber):
+        '''
+        Add to the internal dictionary the seqdiagLoopTag and loopTimeNumber
+        for the passed dicKey.
+
+        The value associated to a key is a list of two entries lists. This
+        is adapted to the case where two seqdiag loop tags are on the same
+        line, like, for example,
+        #:seqdiag_loop_start 3 times :seqdiag_loop_start_end 5 times.
+        Each seqdiag loop command is composed of two elements: the command
+        itself and the loop times info (may be None).
+
+        :param dicKey:
+        :param seqdiagLoopTag:
+        :param loopTimeNumber: may be None
+        :return:
+        '''
+        loopTagTimeList = [seqdiagLoopTag, loopTimeNumber]
+
+        if dicKey in self._loopIndexDic:
+            self._loopIndexDic[dicKey].append(loopTagTimeList)
+        else:
+            self._loopIndexDic[dicKey] = [loopTagTimeList]
+
+    def getLoopCommandList(self, fromClassName, fromMethodName, toMethodName, lineNb):
+        '''
+        Return a list containing one or more 2 element list representing
+        a seqdiag loop command. In case more than one seqdiag loop command
+        are defined on the instruction line, the returned list contains more
+        than one sublist. Each seqdiag loop command is represented by a 2
+        element list. Example: [':seqdiag_loop_start_end', '5 times'] or
+        [':seqdiag_loop_start_end', None]
+
+        :param fromClassName:
+        :param fromMethodName:
+        :param toMethodName:
+        :param lineNb:
+        :return: list containing one or more 2 element list representing a
+                 seqdiag loop command or None if no entry found for the input
+                 parms provided
+        '''
+        key = self._buildKey(fromClassName, fromMethodName, toMethodName, lineNb)
+
+        if key in self._loopIndexDic:
+            return self._loopIndexDic[key]
+        else:
+            return None
+
+    def stackLoopEndCommand(self, fromClassName, fromMethodName, toMethodName, toMethodCallLineNb):
+        loopCommandInfo = self._buildKey(fromClassName, fromMethodName, toMethodName, toMethodCallLineNb)
+
+        self._loopCommandStack.push(loopCommandInfo)
+
+    def unstackTopLoopEndCommand(self):
+        '''
+        Unstacks the last (top) stacked loop end command info.
+        :return:
+        '''
+        self._loopCommandStack.pop()
+
+    def peekLoopEndEntry(self, fromClassName, fromMethodName, toMethodName, toMethodCallLineNb):
+        loopCommandInfo = self._buildKey(fromClassName, fromMethodName, toMethodName, toMethodCallLineNb)
+
+        return loopCommandInfo == self._loopCommandStack.peek()
+
+
 class SeqDiagBuilder:
     '''
     This class contains a static utility methods used to build a sequence diagram from the
@@ -438,15 +620,16 @@ class SeqDiagBuilder:
     This build a svg file which can be displayed in a browsxer.
     '''
 
-    seqDiagWarningList = []
+    _seqDiagWarningList = []
     _projectPath = None
     _isActive = False
     _recordFlowCalled = False
     _seqDiagEntryClass = None
     _seqDiagEntryMethod = None
-    recordedFlowPath = None
+    _recordedFlowPath = None
     _participantDocOrderedDic = None
     _constructorArgProvider = None
+    _loopIndexDictionary = None
 
     @staticmethod
     def activate(projectPath, entryClass, entryMethod, classArgDic = None):
@@ -474,9 +657,10 @@ class SeqDiagBuilder:
         SeqDiagBuilder._projectPath = projectPath
         SeqDiagBuilder._seqDiagEntryClass = entryClass
         SeqDiagBuilder._seqDiagEntryMethod = entryMethod
-        SeqDiagBuilder.recordedFlowPath = RecordedFlowPath(SeqDiagBuilder._seqDiagEntryClass, SeqDiagBuilder._seqDiagEntryMethod)
+        SeqDiagBuilder._recordedFlowPath = RecordedFlowPath(SeqDiagBuilder._seqDiagEntryClass, SeqDiagBuilder._seqDiagEntryMethod)
         SeqDiagBuilder._isActive = True
         SeqDiagBuilder._participantDocOrderedDic = collections.OrderedDict()
+        SeqDiagBuilder._loopIndexDictionary = LoopCommandManager()
 
         if classArgDic:
             SeqDiagBuilder._constructorArgProvider = ConstructorArgsProvider(classArgDic)
@@ -491,12 +675,13 @@ class SeqDiagBuilder:
         '''
         SeqDiagBuilder._seqDiagEntryClass = None
         SeqDiagBuilder._seqDiagEntryMethod = None
-        SeqDiagBuilder.recordedFlowPath = None
-        SeqDiagBuilder.seqDiagWarningList = []
+        SeqDiagBuilder._recordedFlowPath = None
+        SeqDiagBuilder._seqDiagWarningList = []
         SeqDiagBuilder._isActive = False
         SeqDiagBuilder._recordFlowCalled = False
         SeqDiagBuilder._participantDocOrderedDic = collections.OrderedDict()
         SeqDiagBuilder._constructorArgProvider = None
+        SeqDiagBuilder._loopIndexDictionary = None
 
 
     @staticmethod
@@ -508,7 +693,7 @@ class SeqDiagBuilder:
         '''
         commandFileHeaderSectionStr = "@startuml\n"
 
-        warningNb = len(SeqDiagBuilder.seqDiagWarningList)
+        warningNb = len(SeqDiagBuilder._seqDiagWarningList)
 
         if warningNb > 0:
             # building a header containing the warnings. If several warnings are issued, they are numbered.
@@ -518,7 +703,7 @@ class SeqDiagBuilder:
             if warningNb > 1:
                 warningIndex = 1
 
-            for warning in SeqDiagBuilder.seqDiagWarningList:
+            for warning in SeqDiagBuilder._seqDiagWarningList:
                 if warningIndex:
                     commandFileHeaderSectionStr += "<b><font color=red size=20> {}</font></b>\n".format(warningIndex)
                     warningIndex += 1
@@ -656,12 +841,12 @@ class SeqDiagBuilder:
         '''
         isFlowRecorded = True
 
-        if SeqDiagBuilder.recordedFlowPath == None:
+        if SeqDiagBuilder._recordedFlowPath == None:
             isEntryPointReached = False
             isFlowRecorded = False
             SeqDiagBuilder._issueNoFlowRecordedWarning(isEntryPointReached)
-        elif SeqDiagBuilder.recordedFlowPath.isEmpty():
-            isEntryPointReached = SeqDiagBuilder.recordedFlowPath.entryPointReached
+        elif SeqDiagBuilder._recordedFlowPath.isEmpty():
+            isEntryPointReached = SeqDiagBuilder._recordedFlowPath.entryPointReached
             isFlowRecorded = False
             SeqDiagBuilder._issueNoFlowRecordedWarning(isEntryPointReached)
 
@@ -676,17 +861,38 @@ class SeqDiagBuilder:
                 seqDiagCommandStr += "\nactor {}\n".format(actorName)
             seqDiagCommandStr += SeqDiagBuilder._buildClassNoteSection(SeqDiagBuilder._participantDocOrderedDic,
                                                                        maxNoteCharLen)
-            firstFlowEntry = SeqDiagBuilder.recordedFlowPath.flowEntryList[0]
+            firstFlowEntry = SeqDiagBuilder._recordedFlowPath.flowEntryList[0]
             firstFlowEntry.fromClass = actorName
             fromClass = firstFlowEntry.fromClass
-            commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, firstFlowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen, maxNoteCharLen)
-            seqDiagCommandStr += commandStr
+            loopDepth = 0
+            forwardCommandStr, loopDepth = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass=fromClass,
+                                                                                               flowEntry=firstFlowEntry,
+                                                                                               classMethodReturnStack=classMethodReturnStack,
+                                                                                               maxSigArgNum=maxSigArgNum,
+                                                                                               maxSigCharLen=maxSigCharLen,
+                                                                                               maxNoteCharLen=maxNoteCharLen,
+                                                                                               loopDepth=loopDepth)
+            seqDiagCommandStr += forwardCommandStr
             fromClass = firstFlowEntry.toClass
 
-            for flowEntry in SeqDiagBuilder.recordedFlowPath.flowEntryList[1:]:
+            for flowEntry in SeqDiagBuilder._recordedFlowPath.flowEntryList[1:]:
                 if not classMethodReturnStack.containsFromCall(flowEntry):
-                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen, maxNoteCharLen)
-                    seqDiagCommandStr += commandStr
+                    loopStartCommandStr, loopDepth = SeqDiagBuilder._handledSeqDiagLoopStartCommand(fromClassName=fromClass,
+                                                                                                    fromMethodName=flowEntry.fromMethod,
+                                                                                                    toMethodName=flowEntry.toMethod,
+                                                                                                    toMethodCallLineNb=flowEntry.getToMethodCallLineNumber(),
+                                                                                                    callDepth=flowEntry.getCallDepth(),
+                                                                                                    loopDepth=loopDepth)
+                    seqDiagCommandStr += loopStartCommandStr
+
+                    forwardCommandStr, loopDepth = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass=fromClass,
+                                                                                                       flowEntry=flowEntry,
+                                                                                                       classMethodReturnStack=classMethodReturnStack,
+                                                                                                       maxSigArgNum=maxSigArgNum,
+                                                                                                       maxSigCharLen=maxSigCharLen,
+                                                                                                       maxNoteCharLen=maxNoteCharLen,
+                                                                                                       loopDepth=loopDepth)
+                    seqDiagCommandStr += forwardCommandStr
                     fromClass = flowEntry.toClass
                 else:
                     stopUnfolding = False
@@ -694,8 +900,18 @@ class SeqDiagBuilder:
                         returnEntry = classMethodReturnStack.pop()
                         # handle deepest or leaf return message, the one which did not
                         # generate an entry in the classMethodReturnStack
-                        commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry, maxSigArgNum, maxSigCharLen)
-                        seqDiagCommandStr += commandStr
+                        returnCmmandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry=returnEntry,
+                                                                                        maxArgNum=maxSigArgNum,
+                                                                                        maxReturnTypeCharLen=maxSigCharLen,
+                                                                                        loopDepth=loopDepth)
+
+
+                        seqDiagCommandStr += returnCmmandStr
+
+                        loopEndCommandStr, loopDepth = SeqDiagBuilder._handleLoopEndCommand(loopDepth=loopDepth,
+                                                                                            returnEntry=returnEntry)
+
+                        seqDiagCommandStr += loopEndCommandStr
 
                         # handle return message for the method which called the
                         # deepest or leaf method and which generated an entry in the
@@ -704,19 +920,40 @@ class SeqDiagBuilder:
                             stopUnfolding = True
                             fromClass = flowEntry.fromClass
                             continue
+
                         returnEntry = classMethodReturnStack.pop()
-                        commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry, maxSigArgNum, maxSigCharLen)
-                        seqDiagCommandStr += commandStr
+                        returnCommandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry=returnEntry,
+                                                                                              maxArgNum=maxSigArgNum,
+                                                                                              maxReturnTypeCharLen=maxSigCharLen,
+                                                                                              loopDepth=loopDepth)
+                        seqDiagCommandStr += returnCommandStr
                         fromClass = returnEntry.fromClass
-                    commandStr = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen, maxNoteCharLen)
-                    seqDiagCommandStr += commandStr
+
+                    loopStartCommandStr, loopDepth = SeqDiagBuilder._handledSeqDiagLoopStartCommand(fromClassName=fromClass,
+                                                                                                    fromMethodName=flowEntry.fromMethod,
+                                                                                                    toMethodName=flowEntry.toMethod,
+                                                                                                    toMethodCallLineNb=flowEntry.getToMethodCallLineNumber(),
+                                                                                                    callDepth=flowEntry.getCallDepth(),
+                                                                                                    loopDepth=loopDepth)
+                    seqDiagCommandStr += loopStartCommandStr
+
+                    forwardCommandStr, loopDepth = SeqDiagBuilder._handleSeqDiagForwardMesssageCommand(fromClass=fromClass,
+                                                                                                       flowEntry=flowEntry,
+                                                                                                       classMethodReturnStack=classMethodReturnStack,
+                                                                                                       maxSigArgNum=maxSigArgNum,
+                                                                                                       maxSigCharLen=maxSigCharLen,
+                                                                                                       maxNoteCharLen=maxNoteCharLen,
+                                                                                                       loopDepth=loopDepth)
+                    seqDiagCommandStr += forwardCommandStr
                     fromClass = flowEntry.toClass
-                    deepestReached = True
 
             while not classMethodReturnStack.isEmpty():
                 returnEntry = classMethodReturnStack.pop()
-                commandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry, maxSigArgNum, maxSigCharLen)
-                seqDiagCommandStr += commandStr
+                returnCommandStr = SeqDiagBuilder._handleSeqDiagReturnMesssageCommand(returnEntry=returnEntry,
+                                                                                      maxArgNum=maxSigArgNum,
+                                                                                      maxReturnTypeCharLen=maxSigCharLen,
+                                                                                      loopDepth=loopDepth)
+                seqDiagCommandStr += returnCommandStr
         else:
             # adding dummy line to stick to Plantuml command file syntax and prevent
             # error messages in built diagram
@@ -725,6 +962,23 @@ class SeqDiagBuilder:
         seqDiagCommandStr += "@enduml"
 
         return seqDiagCommandStr
+
+    @staticmethod
+    def _handleLoopEndCommand(loopDepth,
+                              returnEntry):
+        loopEndCommandStr = ''
+        loopCommandMgr = SeqDiagBuilder._loopIndexDictionary
+        isLoopEnd = loopCommandMgr.peekLoopEndEntry(fromClassName=returnEntry.fromClass,
+                                                    fromMethodName=returnEntry.fromMethod,
+                                                    toMethodName=returnEntry.toMethod,
+                                                    toMethodCallLineNb=returnEntry.getToMethodCallLineNumber())
+        if isLoopEnd:
+            identStr = SeqDiagBuilder._getReturnIndent(returnEntry=returnEntry, loopDepth=loopDepth)
+            loopEndCommandStr += identStr + 'end\n'
+            loopDepth -= 1
+            loopCommandMgr.unstackTopLoopEndCommand()
+
+        return loopEndCommandStr, loopDepth
 
     @staticmethod
     def _issueNoFlowRecordedWarning(isEntryPointReached):
@@ -755,32 +1009,43 @@ class SeqDiagBuilder:
 
 
     @staticmethod
-    def _handleSeqDiagReturnMesssageCommand(returnEntry, maxArgNum, maxReturnTypeCharLen):
+    def _handleSeqDiagReturnMesssageCommand(returnEntry,
+                                            maxArgNum,
+                                            maxReturnTypeCharLen,
+                                            loopDepth):
         fromClass = returnEntry.toClass
         toClass = returnEntry.fromClass
+        indentStr = SeqDiagBuilder._getReturnIndent(returnEntry=returnEntry, loopDepth=0)
         toReturnType = returnEntry.createReturnType(maxArgNum, maxReturnTypeCharLen)
+        commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, toReturnType, indentStr + loopDepth * TAB_CHAR)
+
         toMethodReturnNote = returnEntry.toReturnNote
-        indentStr = SeqDiagBuilder._getReturnIndent(returnEntry)
-        commandStr = SeqDiagBuilder._addReturnSeqDiagCommand(fromClass, toClass, toReturnType, indentStr)
 
         # adding return note
         if toMethodReturnNote != '':
             toMethoReturndNoteLineList = SeqDiagBuilder._splitNoteToLines(toMethodReturnNote, maxReturnTypeCharLen * 1.5)
-            noteSection = '{}note right\n'.format(indentStr)
+            noteSection = '{}note right\n'.format(indentStr + loopDepth * TAB_CHAR)
 
             for noteLine in toMethoReturndNoteLineList:
-                noteSection += '{}{}{}\n'.format(indentStr, TAB_CHAR, noteLine)
+                noteSection += '{}{}{}\n'.format(indentStr + loopDepth * TAB_CHAR, TAB_CHAR, noteLine)
 
-            noteSection += '{}end note\n'.format(indentStr)
+            noteSection += '{}end note\n'.format(indentStr + loopDepth * TAB_CHAR)
             commandStr += noteSection
 
         return commandStr
 
 
     @staticmethod
-    def _handleSeqDiagForwardMesssageCommand(fromClass, flowEntry, classMethodReturnStack, maxSigArgNum, maxSigCharLen, maxNoteCharLen):
+    def _handleSeqDiagForwardMesssageCommand(fromClass,
+                                             flowEntry,
+                                             classMethodReturnStack,
+                                             maxSigArgNum,
+                                             maxSigCharLen,
+                                             maxNoteCharLen,
+                                             loopDepth):
         '''
         Controls the creation of the Plant UML call commands.
+        :param loopDepth:
         :param fromClass:
         :param flowEntry:
         :param classMethodReturnStack:
@@ -793,52 +1058,81 @@ class SeqDiagBuilder:
         toMethod = flowEntry.toMethod
         toSignature = flowEntry.createSignature(maxSigArgNum, maxSigCharLen)
         toMethodNote = flowEntry.toMethodNote
-        indentStr = SeqDiagBuilder._getForwardIndent(flowEntry)
-        commandStr = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass, toClass, toMethod, toSignature, indentStr)
+        callDepth = flowEntry.getCallDepth()
+        indentStr = callDepth * TAB_CHAR
+        forwardCommandStr, indentStr  = SeqDiagBuilder._addForwardSeqDiagCommand(fromClass=fromClass,
+                                                                              toClass=toClass,
+                                                                              method=toMethod,
+                                                                              signature=toSignature,
+                                                                              indentStr=indentStr,
+                                                                              loopDepth=loopDepth)
 
+        # adding loop command
         # adding method note
         if toMethodNote != '':
             toMethodNoteLineList = SeqDiagBuilder._splitNoteToLines(toMethodNote, maxNoteCharLen * 1.5)
-            indentStr += TAB_CHAR
-            noteSection = '{}note right\n'.format(indentStr)
+            noteSection = '{}note right\n'.format(indentStr + loopDepth * TAB_CHAR)
 
             for noteLine in toMethodNoteLineList:
-                noteSection += '{}{}{}\n'.format(indentStr, TAB_CHAR, noteLine)
+                noteSection += '{}{}{}\n'.format(indentStr + loopDepth * TAB_CHAR, TAB_CHAR, noteLine)
 
-            noteSection += '{}end note\n'.format(indentStr)
-            commandStr += noteSection
+            noteSection += '{}end note\n'.format(indentStr + loopDepth * TAB_CHAR)
+            forwardCommandStr += noteSection
 
-        return commandStr
+        return forwardCommandStr, loopDepth
 
-
-    @staticmethod
-    def _getForwardIndent(flowEntry):
-        '''
-        Returns the forward ident string.
-        :param flowEntry:
-        :return:
-        '''
-        return flowEntry.getIndentNumber() * TAB_CHAR
 
     @staticmethod
-    def _getReturnIndent(returnEntry):
+    def _getReturnIndent(returnEntry, loopDepth):
         '''
         Returns the return ident string .
         :param returnEntry:
         :return:
         '''
-        return (returnEntry.getIndentNumber() + 1) * TAB_CHAR
+        if loopDepth > 1:
+            loopDepth -= 2
+
+        return (returnEntry.getCallDepth() + 1 - loopDepth) * TAB_CHAR
 
     @staticmethod
-    def _addForwardSeqDiagCommand(fromClass, toClass, method, signature, indentStr):
-        return "{}{} -> {}: {}{}\n{}activate {}\n".format(indentStr,
-                                                          fromClass,
-                                                          toClass,
-                                                          method,
-                                                          signature,
-                                                          indentStr + TAB_CHAR,
-                                                          toClass)
+    def _addForwardSeqDiagCommand(fromClass, toClass, method, signature, indentStr, loopDepth):
+        beforeActivateIndentStr = indentStr + TAB_CHAR
 
+        command = "{}{} -> {}: {}{}\n{}activate {}\n".format(indentStr + loopDepth * TAB_CHAR,
+                                                             fromClass,
+                                                             toClass,
+                                                             method,
+                                                             signature,
+                                                             beforeActivateIndentStr + loopDepth * TAB_CHAR,
+                                                             toClass)
+
+        return command, beforeActivateIndentStr
+
+
+    @staticmethod
+    def _handledSeqDiagLoopStartCommand(fromClassName,
+                                        fromMethodName,
+                                        toMethodName,
+                                        toMethodCallLineNb,
+                                        callDepth,
+                                        loopDepth):
+        indentStr = callDepth * TAB_CHAR
+        loopCommandStr = ''
+        loopCommandMgr = SeqDiagBuilder._loopIndexDictionary
+        seqdiagLoopCommandList = loopCommandMgr.getLoopCommandList(fromClassName, fromMethodName, toMethodName, toMethodCallLineNb)
+
+        if seqdiagLoopCommandList:
+            for seqdiagLoopCommand in seqdiagLoopCommandList:
+                seqdiagCommand = seqdiagLoopCommand[0]
+                if seqdiagCommand == SEQDIAG_LOOP_START_TAG or seqdiagCommand == SEQDIAG_LOOP_START_END_TAG:
+                    seqdiagCommandComment = seqdiagLoopCommand[1]
+                    loopCommandStr += "{}loop {}\n".format(indentStr + loopDepth * TAB_CHAR, seqdiagCommandComment)
+                    loopDepth += 1
+                    indentStr = loopDepth * TAB_CHAR
+                if seqdiagCommand == SEQDIAG_LOOP_START_END_TAG or seqdiagCommand == SEQDIAG_LOOP_END_TAG:
+                    loopCommandMgr.stackLoopEndCommand(fromClassName, fromMethodName, toMethodName, toMethodCallLineNb)
+
+        return loopCommandStr, loopDepth
 
     @staticmethod
     def _addReturnSeqDiagCommand(fromClass, toClass, returnType, indentStr):
@@ -868,7 +1162,7 @@ class SeqDiagBuilder:
         if not SeqDiagBuilder._isActive:
             return
 
-        SeqDiagBuilder.recordedFlowPath.entryPointReached = False
+        SeqDiagBuilder._recordedFlowPath.entryPointReached = False
 
         # get the stack trace at this point of execution
         frameListLine = repr(traceback.extract_stack())
@@ -914,7 +1208,8 @@ class SeqDiagBuilder:
                         else:
                             entryClassEncountered = True
 
-                        toClassName, toClassNote, toMethodReturn, toMethodSignature, toMethodNote, toMethodReturnNote = SeqDiagBuilder._extractToClassMethodInformation(moduleClassNameList, packageSpec, moduleName, currentMethodName)
+                        currentMethodStartLineNumber = [i for i, s in enumerate(source.split('\n')) if currentMethodName in s][0] + 1
+                        toClassName, toClassNote, toMethodReturn, toMethodSignature, toMethodNote, toMethodReturnNote = SeqDiagBuilder._extractToClassMethodInformation(moduleClassNameList, packageSpec, moduleName, currentMethodName, currentMethodStartLineNumber)
 
                         if toClassName == None:
                             continue
@@ -929,7 +1224,7 @@ class SeqDiagBuilder:
                         fromClassName = toClassName
                         fromMethodName = toMethodName
                         toMethodCallLineNumber = "{}-{}".format(toMethodCallLineNumber, methodCallLineNumber)
-                        SeqDiagBuilder.recordedFlowPath.addIfNotIn(flowEntry)
+                        SeqDiagBuilder._recordedFlowPath.addIfNotIn(flowEntry)
 
 
     @staticmethod
@@ -975,20 +1270,20 @@ class SeqDiagBuilder:
 
     @staticmethod
     def _issueWarning(warningStr):
-        SeqDiagBuilder.seqDiagWarningList.append(warningStr)
+        SeqDiagBuilder._seqDiagWarningList.append(warningStr)
 
 
     @staticmethod
     def getWarningList():
-        return SeqDiagBuilder.seqDiagWarningList
+        return SeqDiagBuilder._seqDiagWarningList
 
 
     @staticmethod
-    def _extractToClassMethodInformation(moduleClassNameList, packageSpec, moduleName, methodName):
+    def _extractToClassMethodInformation(moduleClassNameList, packageSpec, moduleName, methodName, methodStartLineNumber):
         '''
         This method returns informations specific to the target class and method, namely, the name
-        of the class supporting methodName, its seqdiag note, the target method return type,
-        the target method return note, the method signature and its seqdiag note.
+        of the class supporting methodName, the class seqdiag note, the target method return type,
+        the target method seqdiag return note, the method signature and the method seqdiag note.
 
         Normally, only one class supporting methodName should be found in moduleName. If more
         than one class are found, this indicates that the module contains a class hierarchy with
@@ -1009,6 +1304,7 @@ class SeqDiagBuilder:
                                     the associated value can be returned as the method return value.
                                     In case the method doc contains the :seqdiag_select_method tag,
                                     the class containing the method is the unique one to be retained
+        :param methodStartLineNumber source line number of current method
 
         :return:                    className, classNote, methodReturn, methodSignature, methodNote, methodReturnNote
         '''
@@ -1036,6 +1332,9 @@ class SeqDiagBuilder:
                     methodObj = methodTupple[1]
                     methodSignature = str(signature(methodObj))
                     methodDoc = methodObj.__doc__
+                    methodBodyLines = inspect.getsourcelines(methodObj)
+
+                    SeqDiagBuilder._loopIndexDictionary.storeLoopCommands(className, methodName, methodStartLineNumber, methodBodyLines)
 
                     if methodDoc:
                         # get method return type from method documentation
