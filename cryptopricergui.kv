@@ -2,6 +2,7 @@
 
 #: import main cryptopricergui
 #: import ListAdapter kivy.adapters.listadapter.ListAdapter
+#: import ListItemButton kivy.uix.listview.ListItemButton
 #: import ScrollEffect kivy.effects.scroll.ScrollEffect
 #: import CheckBox kivy.uix.checkbox.CheckBox
 
@@ -33,7 +34,7 @@ CryptoPricerGUI:
         Rectangle:
             pos: self.pos
             size: self.size
-
+                      
     BoxLayout:
         size_hint_y: None
         height: "28dp"
@@ -97,7 +98,7 @@ CryptoPricerGUI:
 
     # Define starting data and point to the ListItemButton
     # in the Python code
-    RecycleView:
+    ListView:
         id: request_ListView
         adapter: ListAdapter(data=[], cls=main.RequestListButton, args_converter=lambda row_index,rec: {'text':rec, 'on_press':root.historyItemSelected,'size_hint_y': None,'height': root.histoListItemHeight})
         height: '0dp'
@@ -164,16 +165,6 @@ CryptoPricerGUI:
                 width: 130
                 disabled: True
                 on_press: root.clearOutput()
-
-<SelectableButton>:
-    # Draw a background to indicate selection
-    canvas.before:
-        Color:
-            rgba: (.0, 0.9, .1, .3) if self.selected else (1, 1, 1, 1)
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    on_press: root.on_enter()
 
 <CustomDropDown>
     saveButton: save_Button
