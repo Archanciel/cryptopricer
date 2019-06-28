@@ -8,6 +8,10 @@ from kivy.uix.listview import ListItemButton
 class CommandListButton(ListItemButton):
     pass
 
+class RequestListButton(ListItemButton):
+    pass
+
+
 
 class MyGui(BoxLayout):
     commandInput = ObjectProperty()
