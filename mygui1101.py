@@ -13,7 +13,7 @@ class RequestListButton(ListItemButton):
 
 
 
-class MyGui(BoxLayout):
+class MyGuiLayout(BoxLayout):
     commandInput = ObjectProperty()
     commandList = ObjectProperty()
     resultOutput = ObjectProperty()
@@ -21,7 +21,7 @@ class MyGui(BoxLayout):
     showCommandList = False
 
     def __init__(self, **kwargs):
-        super(MyGui, self).__init__(**kwargs)
+        super(MyGuiLayout, self).__init__(**kwargs)
 
 
     def toggleRequestList(self):
@@ -182,9 +182,10 @@ class MyGui(BoxLayout):
         self.resultOutput.text = ''
         self.refocusOncommandInput()
 
-class MyGuiApp(App):
+class MyGui1101App(App): # implicitely looks for a kv file of name mygui1101.kv which is
+                         # class name without App, in lowercases
     def build(self):
-        return MyGui()
+        return MyGuiLayout()
 
     # code moved from CryptoPricerGUI to CryptoPricerGUIApp ! Now, works !
 
@@ -201,7 +202,7 @@ class MyGuiApp(App):
 
 
 if __name__ == '__main__':
-    dbApp = MyGuiApp()
+    dbApp = MyGui1101App()
 
     dbApp.run() 
 

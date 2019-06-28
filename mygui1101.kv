@@ -7,9 +7,9 @@
 #: import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 
-MyGui:
+MyGuiLayout:
 
-<MyGui>:
+<MyGuiLayout>:
     orientation: "vertical"
     commandInput: command
     commandList: commandListView
@@ -60,13 +60,13 @@ MyGui:
             on_press: root.toggleRequestList()
         Button:
             id: deleteBtn
-            text: "Del"
+            text: "Delete line"
             size_hint_x: 15
             disabled: True
             on_press: root.deleteRequest()
         Button:
             id: replaceBtn
-            text: "Replace"
+            text: "Replace line"
             size_hint_x: 15
             disabled: True
             on_press: root.replaceRequest()
