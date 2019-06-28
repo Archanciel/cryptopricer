@@ -515,7 +515,8 @@ class CryptoPricerGUI(BoxLayout):
 class CryptoPricerGUIApp(App):
     settings_cls = SettingsWithTabbedPanel
 
-    def build(self): # implicitely looks for a kv file of name cryptopricergui.kv
+    def build(self): # implicitely looks for a kv file of name cryptopricergui.kv which is
+                     # class name without App, in lowercases
         global fromAppBuilt
         fromAppBuilt = True
 

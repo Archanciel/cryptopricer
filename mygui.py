@@ -182,7 +182,8 @@ class MyGui(BoxLayout):
         self.resultOutput.text = ''
         self.refocusOncommandInput()
 
-class MyGuiApp(App):  # implicitely looks for a kv file of name mygui.kv
+class MyGuiApp(App):  # implicitely looks for a kv file of name mygui.kv which is
+                      # class name without App, in lowercases
     def build(self):
         return MyGui()
 
