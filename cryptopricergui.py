@@ -18,6 +18,7 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.settings import SettingSpacer
 from kivy.uix.button import Button
 from kivy.metrics import dp
+from kivy.config import Config
 
 from configurationmanager import ConfigurationManager
 from controller import Controller
@@ -519,6 +520,12 @@ class CryptoPricerGUIApp(App):
                      # class name without App, in lowercases
         global fromAppBuilt
         fromAppBuilt = True
+
+        if os.name != 'posix':
+            # running app om Windows
+            Config.set('graphics', 'width', '500')
+            Config.set('graphics', 'height', '700')
+            Config.write()
 
         return CryptoPricerGUI()
 
