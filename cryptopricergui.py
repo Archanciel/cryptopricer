@@ -295,7 +295,10 @@ class CryptoPricerGUI(BoxLayout):
             if self.showRequestList:
                 listItemNumber = len(self.requestList.adapter.data)
                 self.requestList.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
-
+                if listItemNumber == 0:
+                    self.showRequestList = False
+                    self.manageStateOfRequestListButtons()
+                    
         listView._trigger_reset_populate()
 
     def manageStateOfRequestListButtons(self):
