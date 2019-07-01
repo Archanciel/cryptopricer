@@ -292,7 +292,9 @@ class CryptoPricerGUI(BoxLayout):
         if listLength > maxVisibleItemNumber:
             listView.scroll_to(listLength - maxVisibleItemNumber)
         else:
-            listView.scroll_to(0)
+            if self.showRequestList:
+                listItemNumber = len(self.requestList.adapter.data)
+                self.requestList.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
 
         listView._trigger_reset_populate()
 
