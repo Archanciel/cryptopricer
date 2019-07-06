@@ -298,7 +298,7 @@ class CryptoPricerGUI(BoxLayout):
                 if listItemNumber == 0:
                     self.showRequestList = False
                     self.manageStateOfRequestListButtons()
-                    
+
         listView._trigger_reset_populate()
 
     def manageStateOfRequestListButtons(self):
