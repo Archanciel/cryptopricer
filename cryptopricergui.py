@@ -209,7 +209,7 @@ class CryptoPricerGUI(BoxLayout):
         pathFilename = self.configMgr.loadAtStartPathFilename
 
         if pathFilename != '':
-            self.loadPathFilename(pathFilename)
+            self.loadHistoryFromPathFilename(pathFilename)
 
     def toggleAppPosAndSize(self):
         if self.appSize == self.configMgr.APP_SIZE_HALF:
@@ -573,10 +573,10 @@ class CryptoPricerGUI(BoxLayout):
             return
 
         pathFilename = os.path.join(path, filename[0])
-        self.loadPathFilename(pathFilename)
+        self.loadHistoryFromPathFilename(pathFilename)
         self.dismissPopup()
 
-    def loadPathFilename(self, pathFilename):
+    def loadHistoryFromPathFilename(self, pathFilename):
         # emptying the list
         self.requestList.adapter.data[:] = []
 
@@ -585,6 +585,9 @@ class CryptoPricerGUI(BoxLayout):
 
         lines = list(map(lambda line: line.strip('\n'), lines))
         self.requestList.adapter.data.extend(lines)
+
+        histoLines = [{'text' : val} for val in lines]
+        self.requestListRV.data.extend(histoLines)
 
         # Reset the ListView
         self.resetListViewScrollToEnd()
