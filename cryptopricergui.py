@@ -278,21 +278,33 @@ class CryptoPricerGUI(BoxLayout):
 
         self.outputResult(outputResultStr)
 
+        fullRequestListEntry = {'text': fullRequestStr}
+
         if fullRequestStrWithSaveModeOptions != None:
+            if fullRequestListEntry in self.requestListRV.data:
+                self.requestListRV.data.remove(fullRequestListEntry)
+
             if fullRequestStr in self.requestList.adapter.data:
                 # if the full request string corresponding to the full request string with options is already
                 # in the history list, it is removed before the full request string with options is added
                 # to the list. Otherwise, this would engender a duplicate !
                 self.requestList.adapter.data.remove(fullRequestStr)
 
+            fullRequestStrWithSaveModeOptionsListEntry = {'text': fullRequestStrWithSaveModeOptions}
+
+            if not fullRequestStrWithSaveModeOptionsListEntry in self.requestListRV.data:
+                self.requestListRV.data.append(fullRequestStrWithSaveModeOptionsListEntry)
+
             if not fullRequestStrWithSaveModeOptions in self.requestList.adapter.data:
                 self.requestList.adapter.data.extend([fullRequestStrWithSaveModeOptions])
 
             # Reset the ListView
             self.resetListViewScrollToEnd()
-        elif fullRequestStr != '' and not fullRequestStr in self.requestList.adapter.data:
+        elif fullRequestStr != '' and not fullRequestStr in self.requestList.adapter.data and not fullRequestListEntry in self.requestListRV.data:
             # Add the full request to the ListView if not already in
             self.requestList.adapter.data.extend([fullRequestStr])
+
+            self.requestListRV.data.append(fullRequestListEntry)
 
             # if an identical full request string with options is in the history, it is not
             # removed automatically. If the user wants to get rid of it, he must do it exolicitely
