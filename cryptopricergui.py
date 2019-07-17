@@ -519,6 +519,11 @@ class CryptoPricerGUI(BoxLayout):
                 request)
             self.outputResult(outputResultStr)
 
+        for listEntry in self.requestListRV.data:
+            outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+                listEntry['text'])
+            self.outputResult(outputResultStr)
+
         # self.resultOutput.do_cursor_movement('cursor_pgdown')
         self.refocusOnRequestInput()
 
