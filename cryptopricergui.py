@@ -176,6 +176,7 @@ class CryptoPricerGUI(BoxLayout):
     resultOutput = ObjectProperty()
     statusBar = ObjectProperty()
     showRequestList = False
+    recycleViewCurrentSelIndex = -1
 
     def __init__(self, **kwargs):
         global fromAppBuilt
@@ -339,6 +340,17 @@ class CryptoPricerGUI(BoxLayout):
                     self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithOptions)
 
         self.refocusOnRequestInput()
+
+    def recycleViewSelectItem(self, index, isSelected):
+        if isSelected:
+            self.recycleViewCurrentSelIndex = index
+            requestStr = self.requestListRV.data[index]['text']
+            self.requestInput.text = requestStr
+            self.enableRequestListItemButtons()
+        else:
+            self.recycleViewCurrentSelIndex = -1
+            self.requestInput.text = ''
+            self.disableRequestListItemButtons()
 
     def clearOutput(self):
         self.resultOutput.text = ''
