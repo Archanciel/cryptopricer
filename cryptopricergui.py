@@ -20,6 +20,12 @@ from kivy.uix.button import Button
 from kivy.metrics import dp
 from kivy.config import Config
 
+from kivy.properties import BooleanProperty
+from kivy.uix.behaviors import FocusBehavior
+from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.uix.recycleview.layout import LayoutSelectionBehavior
+from kivy.uix.recycleview.views import RecycleDataViewBehavior
+
 from configurationmanager import ConfigurationManager
 from controller import Controller
 from guioutputformater import GuiOutputFormater
@@ -27,6 +33,50 @@ from guioutputformater import GuiOutputFormater
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
 fromAppBuilt = False
 
+class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
+                                 RecycleBoxLayout):
+    ''' Adds selection and focus behaviour to the view. '''
+
+    # required to authorise unselecting a selected item
+    touch_deselect_last = BooleanProperty(True)
+
+
+class SelectableLabel(RecycleDataViewBehavior, Label):
+    ''' Add selection support to the Label '''
+    index = None
+    selected = BooleanProperty(False)
+    selectable = BooleanProperty(True)
+
+    def refresh_view_attrs(self, rv, index, data):
+        ''' Catch and handle the view changes '''
+        self.index = index
+        return super(SelectableLabel, self).refresh_view_attrs(
+            rv, index, data)
+
+    def on_touch_down(self, touch):
+        ''' Add selection on touch down '''
+        if super(SelectableLabel, self).on_touch_down(touch):
+            return True
+        if self.collide_point(*touch.pos) and self.selectable:
+            return self.parent.select_with_touch(self.index, touch)
+
+    def apply_selection(self, rv, index, is_selected):
+        ''' Respond to the selection of items in the view. '''
+        if not self.selected and not is_selected:
+            print(index, 'simply return')
+            return
+        elif self.selected and not is_selected:
+            print(index, 'handling deselection')
+#            self.unselected = True
+            self.selected = False
+            rv.parent.recycleViewSelectItem(index, is_selected)
+        else:
+            # if self.unselected:
+            #     self.unselected = False
+            #     return
+            self.selected = not self.selected
+            print(index, 'handling selection')
+            rv.parent.recycleViewSelectItem(index, is_selected)
 
 class SettingScrollOptions(SettingOptions):
     '''
@@ -516,7 +566,7 @@ class CryptoPricerGUI(BoxLayout):
 
     def isLoadAtStart(self, filePathName):
         return self.configMgr.loadAtStartPathFilename == filePathName
-
+3
 
 class CryptoPricerGUIApp(App):
     settings_cls = SettingsWithTabbedPanel
@@ -528,8 +578,8 @@ class CryptoPricerGUIApp(App):
 
         if os.name != 'posix':
             # running app om Windows
-            Config.set('graphics', 'width', '500')
-            Config.set('graphics', 'height', '700')
+            Config.set('graphics', 'width', '400')
+            Config.set('graphics', 'height', '500')
             Config.write()
 
         return CryptoPricerGUI()

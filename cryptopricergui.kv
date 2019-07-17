@@ -111,9 +111,24 @@ CryptoPricerGUI: #root
                 pos: self.pos
                 size: self.size
 
+    RecycleView:
+        id: request_RecycleView_list
+        size_hint_y: 1
+
+        viewclass: 'SelectableLabel'
+
+        SelectableRecycleBoxLayout:
+            default_size: None, dp(15) # height of list line
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
+            multiselect: False
+            touch_multiselect: False
+
     ScrollView:
         id: scrlv_out
-        size_hint: (1, 1)
+        size_hint: (1, 6)
         canvas.before:
             Color:
                 rgb: [0,0,0]
@@ -165,6 +180,20 @@ CryptoPricerGUI: #root
                 width: 130
                 disabled: True
                 on_press: root.clearOutput()
+
+<SelectableLabel>:
+    # Draw a background to indicate selection
+    canvas.before:
+        Color:
+            rgba: (1, 0, 0, 1) if self.selected else (.0, 0.9, .1, .3)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: (0, 0.9, .1, .3)
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
 <CustomDropDown>
     saveButton: save_Button
