@@ -433,6 +433,15 @@ class CryptoPricerGUI(BoxLayout):
             self.requestInput.text = ''
             self.disableRequestListItemButtons()
 
+        # deleting from RecycleView list
+        self.requestListRV.data.pop(self.recycleViewCurrentSelIndex)
+        self.requestListRV._get_layout_manager().clear_selection()
+
+        if len(self.requestListRV.data) == 0:
+            self.disableRequestListItemButtons()
+            self.toggleHistoButton.disabled = True
+            self.requestInput.text = ''
+
         self.manageStateOfRequestListButtons()
 
         self.refocusOnRequestInput()
