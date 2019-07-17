@@ -468,6 +468,23 @@ class CryptoPricerGUI(BoxLayout):
             self.requestInput.text = ''
             self.disableRequestListItemButtons()
 
+        # Remove the selected item
+        self.requestListRV.data.pop(self.recycleViewCurrentSelIndex)
+
+        # Get the request from the TextInputs
+        requestStr = self.requestInput.text
+
+        # Add the updated data to the list if not already in
+        requestListEntry = {'text': requestStr}
+
+        if not requestListEntry in self.requestListRV.data:
+            self.requestListRV.data.append(requestListEntry)
+
+        # Clear selection
+        self.requestListRV._get_layout_manager().clear_selection()
+        self.requestInput.text = ''
+        self.disableRequestListItemButtons()
+
         self.refocusOnRequestInput()
 
     def historyItemSelected(self, instance):
