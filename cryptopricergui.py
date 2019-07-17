@@ -607,6 +607,11 @@ class CryptoPricerGUI(BoxLayout):
                 line = line + '\n'
                 stream.write(line)
 
+            for listEntry in self.requestListRV.data:
+                line = listEntry['text']
+                line = line + '\n'
+                stream.write(line)
+
         # saving in config file if the saved file
         # is to be loaded at application start
         if isLoadAtStart:
