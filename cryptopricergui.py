@@ -559,7 +559,7 @@ class CryptoPricerGUI(BoxLayout):
         self.dropDownMenu.dismiss()
 
     def openSaveHistoryFileChooser(self):
-        fileChooserDialog = SaveDialog(save=self.save, cancel=self.dismissPopup)
+        fileChooserDialog = SaveDialog(save=self.saveHistoryToFile, cancel=self.dismissPopup)
         fileChooserDialog.owner = self
         fileChooserDialog.fileChooser.rootpath = self.dataPath
         self.popup = Popup(title="Save file", content=fileChooserDialog,
@@ -595,7 +595,7 @@ class CryptoPricerGUI(BoxLayout):
         self.manageStateOfRequestListButtons()
         self.refocusOnRequestInput()
 
-    def save(self, path, filename, isLoadAtStart):
+    def saveHistoryToFile(self, path, filename, isLoadAtStart):
         if not filename:
             # no file selected. Save dialog remains open ..
             return
