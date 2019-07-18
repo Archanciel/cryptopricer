@@ -63,19 +63,15 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
     def apply_selection(self, rv, index, is_selected):
         ''' Respond to the selection of items in the view. '''
         if not self.selected and not is_selected:
-            print(index, 'simply return')
+            # case when adding a new list item
             return
         elif self.selected and not is_selected:
-            print(index, 'handling deselection')
-#            self.unselected = True
+            # toggling from selected to unselected
             self.selected = False
             rv.parent.recycleViewSelectItem(index, is_selected)
         else:
-            # if self.unselected:
-            #     self.unselected = False
-            #     return
+            # toggling from unselected to selected
             self.selected = not self.selected
-            print(index, 'handling selection')
             rv.parent.recycleViewSelectItem(index, is_selected)
 
 class SettingScrollOptions(SettingOptions):
