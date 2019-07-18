@@ -1711,10 +1711,11 @@ participant ClassB
         SeqDiagBuilder.deactivate()  # deactivate sequence diagram building
         entryPoint.doWork()
 
-        commands = SeqDiagBuilder.createSeqDiaqCommands('USER')
+        SeqDiagBuilder.createSeqDiaqCommands('USER')
 
-        self.assertEqual(len(SeqDiagBuilder.getWarningList()), 1)
-        self.assertEqual('No control flow recorded. Method activate() called: False. Method recordFlow() called: True. Specified entry point: None.None reached: False', SeqDiagBuilder.getWarningList()[0])
+        warningList = SeqDiagBuilder.getWarningList()
+        self.assertEqual(len(warningList), 1)
+        self.assertEqual('No control flow recorded.\nMethod activate() called: False.\nMethod recordFlow() called: True.\nSpecified entry point: None.None reached: False.', warningList[0])
 
 
     def testCreateSeqDiagCommandsOnClassLocatedInPackage(self):
@@ -2116,7 +2117,7 @@ actor USER
 '''@startuml
 center header
 <b><font color=red size=20> Warnings</font></b>
-<b><font color=red size=14>  ERROR - constructor for class FileReader in module testclasses.subtestpackage.filereader failed due to invalid                 argument(s) (['testfile.txt', 'inval arg']) defined in the class argument dictionary passed to the SeqDiagBuilder.activate() method.</font></b>
+<b><font color=red size=14>  ERROR - constructor for class FileReader in module testclasses.subtestpackage.filereader failed due to invalid argument(s) (['testfile.txt', 'inval arg']) defined in the class argument dictionary passed to the SeqDiagBuilder.activate() method.</font></b>
 endheader
 
 
