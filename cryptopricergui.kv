@@ -25,8 +25,8 @@ CryptoPricerGUI: #root
     statusBar: status_bar
     clearResultOutputButton: clear_output_Button
     toggleAppSizeButton: toggle_app_size_Button
-    #outputResultScrollView: scrlv_out
-    
+    requestListRVBoxLayout: selectable_recyclebox_layout
+
     padding: 10
     spacing: 10
     canvas.before:
@@ -119,6 +119,7 @@ CryptoPricerGUI: #root
         viewclass: 'SelectableLabel'
 
         SelectableRecycleBoxLayout:
+            id: selectable_recyclebox_layout
             default_size: None, dp(15) # height of list line
             default_size_hint: 1, None
             size_hint_y: None
