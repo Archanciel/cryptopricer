@@ -68,11 +68,11 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
         elif self.selected and not is_selected:
             # toggling from selected to unselected
             self.selected = False
-            rv.parent.recycleViewSelectItem(index, is_selected)
+            rv.parent.parent.recycleViewSelectItem(index, is_selected)
         else:
             # toggling from unselected to selected
             self.selected = not self.selected
-            rv.parent.recycleViewSelectItem(index, is_selected)
+            rv.parent.parent.recycleViewSelectItem(index, is_selected)
 
 class SettingScrollOptions(SettingOptions):
     '''
@@ -193,9 +193,11 @@ class CryptoPricerGUI(BoxLayout):
         self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr)
         self.dataPath = self.configMgr.dataPath
         self.histoListItemHeight = int(self.configMgr.histoListItemHeight)
-        self.requestListRVBoxLayout.default_size = None, int(self.configMgr.histoListItemHeight)
         self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
         self.maxHistoListHeight = self.histoListMaxVisibleItems * self.histoListItemHeight
+
+        self.requestListRVSelBoxLayout.default_size = None, int(self.configMgr.histoListItemHeight)
+        self.boxLayoutContainingRV.height = self.maxHistoListHeight
 
         self.appSize = self.configMgr.appSize
         self.defaultAppPosAndSize = self.configMgr.appSize

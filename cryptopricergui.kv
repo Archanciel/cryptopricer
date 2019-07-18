@@ -25,7 +25,8 @@ CryptoPricerGUI: #root
     statusBar: status_bar
     clearResultOutputButton: clear_output_Button
     toggleAppSizeButton: toggle_app_size_Button
-    requestListRVBoxLayout: selectable_recyclebox_layout
+    requestListRVSelBoxLayout: selectable_recyclebox_layout
+    boxLayoutContainingRV: boxlayout_recycleview
 
     padding: 10
     spacing: 10
@@ -112,21 +113,25 @@ CryptoPricerGUI: #root
                 pos: self.pos
                 size: self.size
 
-    RecycleView:
-        id: request_RecycleView_list
-        size_hint_y: 1
+    BoxLayout:
+        id: boxlayout_recycleview
+        size_hint_y: None
+        height: "70dp"
+        RecycleView:
+            id: request_RecycleView_list
+            size_hint_y: 1
 
-        viewclass: 'SelectableLabel'
+            viewclass: 'SelectableLabel'
 
-        SelectableRecycleBoxLayout:
-            id: selectable_recyclebox_layout
-            default_size: None, dp(15) # height of list line
-            default_size_hint: 1, None
-            size_hint_y: None
-            height: self.minimum_height
-            orientation: 'vertical'
-            multiselect: False
-            touch_multiselect: False
+            SelectableRecycleBoxLayout:
+                id: selectable_recyclebox_layout
+                default_size: None, dp(15) # height of list line
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: False
+                touch_multiselect: False
 
     ScrollView:
         id: scrlv_out
