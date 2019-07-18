@@ -196,8 +196,8 @@ class CryptoPricerGUI(BoxLayout):
         self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
         self.maxHistoListHeight = self.histoListMaxVisibleItems * self.histoListItemHeight
 
-        self.requestListRVSelBoxLayout.default_size = None, int(self.configMgr.histoListItemHeight)
-        self.boxLayoutContainingRV.height = self.maxHistoListHeight
+        # setting RecycleView list item height from config
+        self.requestListRVSelBoxLayout.default_size = None, self.histoListItemHeight
 
         self.appSize = self.configMgr.appSize
         self.defaultAppPosAndSize = self.configMgr.appSize
@@ -247,11 +247,20 @@ class CryptoPricerGUI(BoxLayout):
         if self.showRequestList:
             self.requestList.size_hint_y = None
             self.requestList.height = '0dp'
+
+            # hiding RecycleView list
+            self.boxLayoutContainingRV.height = '0dp'
+
             self.disableRequestListItemButtons()
             self.showRequestList = False
         else:
             listItemNumber = len(self.requestList.adapter.data)
             self.requestList.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
+
+            # showing RecycleView list
+            listItemNumber = len(self.requestListRV.data)
+            self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
+
             self.showRequestList = True
 
             self.resetListViewScrollToEnd()
