@@ -495,7 +495,7 @@ class CryptoPricerGUI(BoxLayout):
 
     def displayHelp(self):
         self.dropDownMenu.dismiss()
-        popup = Popup(title='CryptoPricer', content=Label(text='Version 2.1'), size_hint=(None, None), size=(400, 400))
+        popup = Popup(title='CryptoPricer', content=Label(text='Version 2.2'), size_hint=(None, None), size=(400, 400))
         popup.open()
 
     def updateStatusBar(self, messageStr):
