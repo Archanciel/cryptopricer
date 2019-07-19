@@ -7,7 +7,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
-from kivy.uix.listview import ListItemButton
 from kivy.uix.popup import Popup
 from kivy.uix.settings import SettingsWithTabbedPanel
 from kivy.uix.settings import SettingOptions
@@ -143,10 +142,6 @@ class SaveDialog(FloatLayout):
         else:
             self.loadAtStartChkb.active = False
             self.owner.updateStatusBar('')
-
-
-class RequestListButton(ListItemButton):
-    pass
 
 
 class CustomDropDown(DropDown):
