@@ -168,7 +168,6 @@ class CustomDropDown(DropDown):
 
 class CryptoPricerGUI(BoxLayout):
     requestInput = ObjectProperty()
-    requestList = ObjectProperty()
     resultOutput = ObjectProperty()
     statusBar = ObjectProperty()
     showRequestList = False
@@ -245,18 +244,12 @@ class CryptoPricerGUI(BoxLayout):
         request list.
         '''
         if self.showRequestList:
-            self.requestList.size_hint_y = None
-            self.requestList.height = '0dp'
-
             # hiding RecycleView list
             self.boxLayoutContainingRV.height = '0dp'
 
             self.disableRequestListItemButtons()
             self.showRequestList = False
         else:
-            listItemNumber = len(self.requestList.adapter.data)
-            self.requestList.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
-
             # showing RecycleView list
             listItemNumber = len(self.requestListRV.data)
             self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
@@ -291,33 +284,25 @@ class CryptoPricerGUI(BoxLayout):
 
         if fullRequestStrWithSaveModeOptions != None:
             if fullRequestListEntry in self.requestListRV.data:
-                self.requestListRV.data.remove(fullRequestListEntry)
-
-            if fullRequestStr in self.requestList.adapter.data:
                 # if the full request string corresponding to the full request string with options is already
                 # in the history list, it is removed before the full request string with options is added
                 # to the list. Otherwise, this would engender a duplicate !
-                self.requestList.adapter.data.remove(fullRequestStr)
+                self.requestListRV.data.remove(fullRequestListEntry)
 
             fullRequestStrWithSaveModeOptionsListEntry = {'text': fullRequestStrWithSaveModeOptions}
 
             if not fullRequestStrWithSaveModeOptionsListEntry in self.requestListRV.data:
                 self.requestListRV.data.append(fullRequestStrWithSaveModeOptionsListEntry)
 
-            if not fullRequestStrWithSaveModeOptions in self.requestList.adapter.data:
-                self.requestList.adapter.data.extend([fullRequestStrWithSaveModeOptions])
-
             # Reset the ListView
             self.resetListViewScrollToEnd()
-        elif fullRequestStr != '' and not fullRequestStr in self.requestList.adapter.data and not fullRequestListEntry in self.requestListRV.data:
+        elif fullRequestStr != '' and not fullRequestListEntry in self.requestListRV.data:
             # Add the full request to the ListView if not already in
-            self.requestList.adapter.data.extend([fullRequestStr])
-
-            self.requestListRV.data.append(fullRequestListEntry)
 
             # if an identical full request string with options is in the history, it is not
             # removed automatically. If the user wants to get rid of it, he must do it exolicitely
             # using the delete button !
+            self.requestListRV.data.append(fullRequestListEntry)
 
             # Reset the ListView
             self.resetListViewScrollToEnd()
@@ -367,21 +352,36 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOnRequestInput()
 
     def resetListViewScrollToEnd(self):
-        listView = self.requestList
+        # listView = self.requestList
+        # maxVisibleItemNumber = self.histoListMaxVisibleItems
+        # listLength = len(listView.adapter.data)
+        #
+        # if listLength > maxVisibleItemNumber:
+        #     listView.scroll_to(listLength - maxVisibleItemNumber)
+        # else:
+        #     if self.showRequestList:
+        #         listItemNumber = len(self.requestList.adapter.data)
+        #         self.requestList.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
+        #         if listItemNumber == 0:
+        #             self.showRequestList = False
+        #             self.manageStateOfRequestListButtons()
+        #
+        # listView._trigger_reset_populate()
+
         maxVisibleItemNumber = self.histoListMaxVisibleItems
-        listLength = len(listView.adapter.data)
+        listLength = len(self.requestListRV.data)
 
         if listLength > maxVisibleItemNumber:
-            listView.scroll_to(listLength - maxVisibleItemNumber)
+            # for the moment, I do not know how to scroll to end of RecyclweView !
+            # listView.scroll_to(listLength - maxVisibleItemNumber)
+            pass
         else:
             if self.showRequestList:
-                listItemNumber = len(self.requestList.adapter.data)
-                self.requestList.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
+                listItemNumber = len(self.requestListRV.data)
+                self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
                 if listItemNumber == 0:
                     self.showRequestList = False
                     self.manageStateOfRequestListButtons()
-
-        listView._trigger_reset_populate()
 
     def manageStateOfRequestListButtons(self):
         '''
@@ -389,12 +389,12 @@ class CryptoPricerGUI(BoxLayout):
         the status of the list: filled with items or empty.
         :return: 
         '''
-        if len(self.requestList.adapter.data) == 0:
+        if len(self.requestListRV.data) == 0:
             # request list is empty
             self.toggleHistoButton.state = 'normal'
             self.toggleHistoButton.disabled = True
             self.replayAllButton.disabled = True
-            self.requestList.height = '0dp'
+            self.boxLayoutContainingRV.height = '0dp'
             self.dropDownMenu.saveButton.disabled = True
         else:
             self.toggleHistoButton.disabled = False
@@ -427,20 +427,6 @@ class CryptoPricerGUI(BoxLayout):
         self.requestInput.focus = True
 
     def deleteRequest(self, *args):
-        # If a list item is selected
-        if self.requestList.adapter.selection:
-            # Get the text from the item selected
-            selection = self.requestList.adapter.selection[0].text
-
-            # Remove the matching item
-            self.requestList.adapter.data.remove(selection)
-
-            # Reset the ListView
-            self.resetListViewScrollToEnd()
-
-            self.requestInput.text = ''
-            self.disableRequestListItemButtons()
-
         # deleting from RecycleView list
         self.requestListRV.data.pop(self.recycleViewCurrentSelIndex)
         self.requestListRV._get_layout_manager().clear_selection()
@@ -455,27 +441,6 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOnRequestInput()
 
     def replaceRequest(self, *args):
-        # If a list item is selected
-        if self.requestList.adapter.selection:
-
-            # Get the text from the item selected
-            selection = self.requestList.adapter.selection[0].text
-
-            # Remove the matching item
-            self.requestList.adapter.data.remove(selection)
-
-            # Get the request from the TextInputs
-            requestStr = self.requestInput.text
-
-            # Add the updated data to the list if not already in
-            if not requestStr in self.requestList.adapter.data:
-                self.requestList.adapter.data.extend([requestStr])
-
-            # Reset the ListView
-            self.requestList._trigger_reset_populate()
-            self.requestInput.text = ''
-            self.disableRequestListItemButtons()
-
         # Remove the selected item
         self.requestListRV.data.pop(self.recycleViewCurrentSelIndex)
 
@@ -521,11 +486,6 @@ class CryptoPricerGUI(BoxLayout):
     def replayAllRequests(self):
         # output blank line
         self.outputResult('')
-
-        for request in self.requestList.adapter.data:
-            outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
-                request)
-            self.outputResult(outputResultStr)
 
         for listEntry in self.requestListRV.data:
             outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
@@ -585,15 +545,10 @@ class CryptoPricerGUI(BoxLayout):
         self.dismissPopup()
 
     def loadHistoryFromPathFilename(self, pathFilename):
-        # emptying the list
-        self.requestList.adapter.data[:] = []
-
         with open(pathFilename) as stream:
             lines = stream.readlines()
 
         lines = list(map(lambda line: line.strip('\n'), lines))
-        self.requestList.adapter.data.extend(lines)
-
         histoLines = [{'text' : val} for val in lines]
         self.requestListRV.data.extend(histoLines)
 
@@ -611,10 +566,6 @@ class CryptoPricerGUI(BoxLayout):
         pathFileName = os.path.join(path, filename)
 
         with open(pathFileName, 'w') as stream:
-            for line in self.requestList.adapter.data:
-                line = line + '\n'
-                stream.write(line)
-
             for listEntry in self.requestListRV.data:
                 line = listEntry['text']
                 line = line + '\n'
