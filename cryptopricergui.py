@@ -186,6 +186,10 @@ class CryptoPricerGUI(BoxLayout):
         self.configMgr = ConfigurationManager(configPath)
         self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr)
         self.dataPath = self.configMgr.dataPath
+
+        if not self.ensurePathExist(self.dataPath):
+            self.displayError(errorMsg=self.dataPath +' as defined in settings does not exit !')
+
         self.histoListItemHeight = int(self.configMgr.histoListItemHeight)
         self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
         self.maxHistoListHeight = self.histoListMaxVisibleItems * self.histoListItemHeight
@@ -203,6 +207,14 @@ class CryptoPricerGUI(BoxLayout):
 
         if pathFilename != '':
             self.loadHistoryFromPathFilename(pathFilename)
+
+    def ensurePathExist(self, path):
+        '''
+        Returns True if passed path exists
+        :param path:
+        :return:
+        '''
+        return os.path.isdir(path)
 
     def toggleAppPosAndSize(self):
         if self.appSize == self.configMgr.APP_SIZE_HALF:
@@ -495,6 +507,10 @@ class CryptoPricerGUI(BoxLayout):
 
     def displayHelp(self):
         self.dropDownMenu.dismiss()
+        popup = Popup(title='CryptoPricer', content=Label(text='Version 2.2'), size_hint=(None, None), size=(400, 400))
+        popup.open()
+
+    def displayError(self, errorMsg):
         popup = Popup(title='CryptoPricer', content=Label(text='Version 2.2'), size_hint=(None, None), size=(400, 400))
         popup.open()
 
