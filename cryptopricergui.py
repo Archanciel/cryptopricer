@@ -1,4 +1,5 @@
 import os
+from os.path import sep
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -18,7 +19,7 @@ from kivy.uix.settings import SettingSpacer
 from kivy.uix.button import Button
 from kivy.metrics import dp
 from kivy.config import Config
-
+from kivy.utils import platform
 from kivy.properties import BooleanProperty
 from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
@@ -152,10 +153,12 @@ class CustomDropDown(DropDown):
         self.owner = owner
 
     def showLoad(self):
-        self.owner.openLoadHistoryFileChooser()
+        if self.owner.ensureDataPathExist():
+            self.owner.openLoadHistoryFileChooser()
 
     def showSave(self):
-        self.owner.openSaveHistoryFileChooser()
+        if self.owner.ensureDataPathExist():
+            self.owner.openSaveHistoryFileChooser()
 
     def help(self):
         self.owner.displayHelp()
@@ -186,10 +189,6 @@ class CryptoPricerGUI(BoxLayout):
         self.configMgr = ConfigurationManager(configPath)
         self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr)
         self.dataPath = self.configMgr.dataPath
-
-        if not self.ensurePathExist(self.dataPath):
-            self.displayError(errorMsg=self.dataPath +' as defined in settings does not exit !')
-
         self.histoListItemHeight = int(self.configMgr.histoListItemHeight)
         self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
         self.maxHistoListHeight = self.histoListMaxVisibleItems * self.histoListItemHeight
@@ -208,13 +207,30 @@ class CryptoPricerGUI(BoxLayout):
         if pathFilename != '':
             self.loadHistoryFromPathFilename(pathFilename)
 
-    def ensurePathExist(self, path):
+    def ensureDataPathExist(self):
         '''
-        Returns True if passed path exists
-        :param path:
+        Display a warning in a popup if the data path defined in the settings
+        does nor exist and return False. If path ok, returns True. This prevents
+        exceptions at load or save or settings save time.
         :return:
         '''
-        return os.path.isdir(path)
+        if not os.path.isdir(self.dataPath):
+            popupSize = None
+
+            if platform == 'android':
+                popupSize = (600, 300)
+            elif platform == 'win':
+                popupSize = (300, 150)
+
+            popup = Popup(title='CryptoPricer WARNING', content=Label(
+                text='Data path ' + self.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'),
+                          auto_dismiss=True, size_hint=(None, None),
+                          size=popupSize)
+            popup.open()
+
+            return False
+        else:
+            return True
 
     def toggleAppPosAndSize(self):
         if self.appSize == self.configMgr.APP_SIZE_HALF:
@@ -510,10 +526,6 @@ class CryptoPricerGUI(BoxLayout):
         popup = Popup(title='CryptoPricer', content=Label(text='Version 2.2'), size_hint=(None, None), size=(400, 400))
         popup.open()
 
-    def displayError(self, errorMsg):
-        popup = Popup(title='CryptoPricer', content=Label(text='Version 2.2'), size_hint=(None, None), size=(400, 400))
-        popup.open()
-
     def updateStatusBar(self, messageStr):
         self.statusBar.text = messageStr
 
@@ -603,6 +615,7 @@ class CryptoPricerGUI(BoxLayout):
 
 class CryptoPricerGUIApp(App):
     settings_cls = SettingsWithTabbedPanel
+    cryptoPricerGUI = None
 
     def build(self): # implicitely looks for a kv file of name cryptopricergui.kv which is
                      # class name without App, in lowercases
@@ -615,19 +628,18 @@ class CryptoPricerGUIApp(App):
             Config.set('graphics', 'height', '500')
             Config.write()
 
-        return CryptoPricerGUI()
+        self.cryptoPricerGUI = CryptoPricerGUI()
 
+        return self.cryptoPricerGUI
 
     def on_pause(self):
         # Here you can save data if needed
         return True
 
-
     def on_resume(self):
         # Here you can check if any data needs replacing (usually nothing)
 
         pass
-
 
     def build_config(self, config):
         '''
@@ -673,7 +685,6 @@ class CryptoPricerGUIApp(App):
             ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE: ConfigurationManager.DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE})
         config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
             ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION: ConfigurationManager.DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION})
-
 
     def build_settings(self, settings):
         # removing kivy default settings page from the settings dialog
@@ -751,8 +762,6 @@ class CryptoPricerGUIApp(App):
                 }
             ]""")
                                 )
-
-
     def on_config_change(self, config, section, key, value):
         if config is self.config:
             if key == ConfigurationManager.CONFIG_KEY_APP_SIZE:
@@ -784,7 +793,6 @@ class CryptoPricerGUIApp(App):
                 self.root.configMgr.referenceCurrency = config.getdefault(ConfigurationManager.CONFIG_SECTION_GENERAL, ConfigurationManager.CONFIG_KEY_REFERENCE_CURRENCY, ConfigurationManager.DEFAULT_REFERENCE_CURRENCY)
                 self.root.configMgr.storeConfig()
 
-
     def get_application_config(self, defaultpath="c:/temp/%(appname)s.ini"):
         '''
         Redefining super class method to control the name and location of the application
@@ -792,9 +800,6 @@ class CryptoPricerGUIApp(App):
         :param defaultpath: used under Windows
         :return:
         '''
-        from kivy.utils import platform
-        from os.path import sep
-
         if platform == 'android':
             defaultpath = '/sdcard/.%(appname)s.ini'
         elif platform == 'ios':
@@ -805,6 +810,8 @@ class CryptoPricerGUIApp(App):
         return os.path.expanduser(defaultpath) % {
             'appname': 'cryptopricer', 'appdir': self.directory}
 
+    def on_start(self):
+        self.cryptoPricerGUI.ensureDataPathExist()
 
 if __name__ == '__main__':
     dbApp = CryptoPricerGUIApp()
