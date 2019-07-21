@@ -361,6 +361,7 @@ class CryptoPricerGUI(BoxLayout):
             requestStr = self.requestListRV.data[index]['text']
             self.requestInput.text = requestStr
             self.enableRequestListItemButtons()
+            self.refocusOnRequestInput()
         else:
             self.recycleViewCurrentSelIndex = -1
             self.requestInput.text = ''
@@ -480,21 +481,6 @@ class CryptoPricerGUI(BoxLayout):
         self.disableRequestListItemButtons()
 
         self.refocusOnRequestInput()
-
-    def historyItemSelected(self, instance):
-        requestStr = str(instance.text)
-
-        # counter-intuitive, but test must be defined that way !
-        if instance.is_selected:
-            # disabling the 2 history request list item related buttons
-            self.disableRequestListItemButtons()
-        else:
-            self.enableRequestListItemButtons()
-
-        self.requestInput.text = requestStr
-        self.refocusOnRequestInput()
-
-        self.dropDownMenu.saveButton.disabled = False
 
     def enableRequestListItemButtons(self):
         self.deleteButton.disabled = False
