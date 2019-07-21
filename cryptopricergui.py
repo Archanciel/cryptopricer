@@ -568,6 +568,9 @@ class CryptoPricerGUI(BoxLayout):
         self.dismissPopup()
 
     def loadHistoryFromPathFilename(self, pathFilename):
+        if not self.ensureDataPathExist():
+            return
+
         with open(pathFilename) as stream:
             lines = stream.readlines()
 
@@ -582,7 +585,7 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOnRequestInput()
 
     def saveHistoryToFile(self, path, filename, isLoadAtStart):
-        if not filename:
+        if not filename or not self.ensureDataPathExist():
             # no file selected. Save dialog remains open ..
             return
 
