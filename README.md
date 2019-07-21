@@ -59,7 +59,7 @@ Comment:
 
 
 ### Using the -v value command to obtain the counterparty value in fiat at the obtained price of the value command quantity of the cryptocurrency
-#### Partial request: -d0 -vs100xmr -fusd to obtain the counterparty value in usdsof 100xmr, computed using the returned RT xmr price
+#### Partial request: -d0 -vs100xmr -fusd to obtain the counterparty value in usd of 100 xmr, computed using the returned RT xmr price
 ![](screenshots/Screenshot_2018-02-16-21-40-41.jpg)
 
 Comment: 
