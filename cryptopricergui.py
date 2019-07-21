@@ -815,6 +815,13 @@ class CryptoPricerGUIApp(App):
             'appname': 'cryptopricer', 'appdir': self.directory}
 
     def on_start(self):
+        '''
+        Testing at app start if data path defined in settings does exist
+        and if history file loaded at start app does exist. Since a warning popup
+        is displayed in case of invalid data, this must be performed here and
+        not in CryptoPricerGUI.__init__ where no popup could be displayed.
+        :return:
+        '''
         message = 'Data path ' + self.cryptoPricerGUI.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
 
         if self.cryptoPricerGUI.ensureDataPathExist(self.cryptoPricerGUI.dataPath, message):
