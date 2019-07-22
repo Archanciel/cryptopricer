@@ -183,9 +183,11 @@ class CryptoPricerGUI(BoxLayout):
 
         super(CryptoPricerGUI, self).__init__(**kwargs)
         self.dropDownMenu = CustomDropDown(owner=self)
+        requestListRVSpacing = 0.5
 
         if os.name == 'posix':
             configPath = '/sdcard/cryptopricer.ini'
+            requestListRVSpacing = 2
         else:
             configPath = 'c:\\temp\\cryptopricer.ini'
             self.toggleAppSizeButton.text = 'Half'  # correct on Windows version !
@@ -199,6 +201,7 @@ class CryptoPricerGUI(BoxLayout):
 
         # setting RecycleView list item height from config
         self.requestListRVSelBoxLayout.default_size = None, self.histoListItemHeight
+        self.requestListRVSelBoxLayout.spacing = requestListRVSpacing
 
         self.appSize = self.configMgr.appSize
         self.defaultAppPosAndSize = self.configMgr.appSize
