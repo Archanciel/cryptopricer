@@ -98,7 +98,8 @@
         RecycleView:
             id: request_RecycleView_list
             size_hint_y: 1
-
+            scroll_y: 0 # forces scrolling to list bottom after adding an entry
+            effect_cls: "ScrollEffect" # prevents overscrolling
             viewclass: 'SelectableLabel'
 
             SelectableRecycleBoxLayout:
@@ -107,7 +108,7 @@
                 default_size_hint: 1, None
                 size_hint_y: None
                 height: self.minimum_height
-                spacing: 1
+                spacing: 0.5
                 orientation: 'vertical'
                 multiselect: False
                 touch_multiselect: False
