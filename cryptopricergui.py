@@ -552,8 +552,9 @@ class CryptoPricerGUI(BoxLayout):
         self.dismissPopup()
 
     def loadHistoryFromPathFilename(self, pathFilename):
-        message = 'Data file\n' + pathFilename + 'not found. No history loaded.'
-        if not self.ensureDataPathExist(pathFilename, message):
+        dataFileNotFoundMessage = 'Data file\n' + pathFilename + 'not found. No history loaded.'
+
+        if not self.ensureDataPathExist(pathFilename, dataFileNotFoundMessage):
             return
 
         with open(pathFilename) as stream:
@@ -570,9 +571,9 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOnRequestInput()
 
     def saveHistoryToFile(self, path, filename, isLoadAtStart):
-        message = 'Data path ' + path + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
+        dataPathNotExistMessage = self.buildDataPathNotExistMessage(path)
 
-        if not filename or not self.ensureDataPathExist(filename, message):
+        if not filename or not self.ensureDataPathExist(filename, dataPathNotExistMessage):
             # no file selected. Save dialog remains open ..
             return
 
@@ -599,9 +600,14 @@ class CryptoPricerGUI(BoxLayout):
 
     # --- end file chooser code ---
 
+    def buildDataPathNotExistMessage(self, path):
+        return 'Data path ' + path + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
+
     def isLoadAtStart(self, filePathName):
         return self.configMgr.loadAtStartPathFilename == filePathName
-3
+
+    def buildFileNotFoundMessage(self, filePathFilename):
+        return 'Data file\n' + filePathFilename + '\nnot found. No history loaded.'
 
 class CryptoPricerGUIApp(App):
     settings_cls = SettingsWithTabbedPanel
@@ -808,14 +814,14 @@ class CryptoPricerGUIApp(App):
         not in CryptoPricerGUI.__init__ where no popup could be displayed.
         :return:
         '''
-        message = 'Data path ' + self.cryptoPricerGUI.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
+        dataPathNotExistMessage = self.cryptoPricerGUI.buildDataPathNotExistMessage(self.cryptoPricerGUI.dataPath)
 
-        if self.cryptoPricerGUI.ensureDataPathExist(self.cryptoPricerGUI.dataPath, message):
+        if self.cryptoPricerGUI.ensureDataPathExist(self.cryptoPricerGUI.dataPath, dataPathNotExistMessage):
             # loading the load at start history file if defined
             historyFilePathFilename = self.cryptoPricerGUI.configMgr.loadAtStartPathFilename
-            message = 'Data file\n' + historyFilePathFilename + '\nnot found. No history loaded.'
+            dataFileNotFoundMessage = self.cryptoPricerGUI.buildFileNotFoundMessage(historyFilePathFilename)
 
-            if historyFilePathFilename != '' and self.cryptoPricerGUI.ensureDataPathExist(historyFilePathFilename, message):
+            if historyFilePathFilename != '' and self.cryptoPricerGUI.ensureDataPathExist(historyFilePathFilename, dataFileNotFoundMessage):
                 self.cryptoPricerGUI.loadHistoryFromPathFilename(historyFilePathFilename)
 
 if __name__ == '__main__':
