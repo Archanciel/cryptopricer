@@ -7,8 +7,8 @@
 <CryptoPricerGUI>:
     orientation: "vertical"
     #optimizing app size for your smartphone with Messagease keyboard
-    size_hint: 1, .56
-    pos_hint: {'x' : 0, 'y' : .44}
+    size_hint: 1, .62
+    pos_hint: {'x' : 0, 'y' : .38}
     requestInput: request_TextInput
     requestListRV: request_RecycleView_list
     resultOutput: ro_output_TextInput
@@ -97,7 +97,6 @@
         height: "0dp"
         RecycleView:
             id: request_RecycleView_list
-            size_hint_y: 1
             scroll_y: 0 # forces scrolling to list bottom after adding an entry
             effect_cls: "ScrollEffect" # prevents overscrolling
             viewclass: 'SelectableLabel'
@@ -115,7 +114,6 @@
 
     ScrollView:
         id: scrlv_out
-        size_hint: (1, 6)
         canvas.before:
             Color:
                 rgb: [0,0,0]
