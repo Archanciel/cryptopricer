@@ -292,7 +292,6 @@ class CryptoPricerGUI(BoxLayout):
         '''
         # Get the request from the TextInput
         requestStr = self.requestInput.text
-        self.updateStatusBar(requestStr)
 
         # purpose of the informations obtained from the business layer:
         #   outputResultStr - for the output text zone
