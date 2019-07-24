@@ -334,7 +334,7 @@ class CryptoPricerGUI(BoxLayout):
         self.manageStateOfRequestListButtons()
         self.requestInput.text = ''
 
-        # displaying request and result in status bar
+        # displaying request in status bar
 
         if 'ERROR' in outputResultStr:
             if requestStr == '':
@@ -346,7 +346,10 @@ class CryptoPricerGUI(BoxLayout):
                 if requestStr == '':
                     self.updateStatusBar('REPLAY --> ' + fullRequestStrWithSaveModeOptions)
                 elif requestStr:
-                    self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithSaveModeOptions)
+                    if requestStr != fullRequestStrWithSaveModeOptions:
+                        self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithSaveModeOptions)
+                    else:
+                        self.updateStatusBar(fullRequestStrWithSaveModeOptions)
             else:
                 if not fullRequestStrWithOptions:
                     fullRequestStrWithOptions = fullRequestStr
@@ -354,7 +357,10 @@ class CryptoPricerGUI(BoxLayout):
                 if requestStr == '':
                     self.updateStatusBar('REPLAY --> ' + fullRequestStrWithOptions)
                 elif requestStr:
-                    self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithOptions)
+                    if requestStr != fullRequestStrWithOptions:
+                        self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithOptions)
+                    else:
+                        self.updateStatusBar(fullRequestStrWithOptions)
 
         self.refocusOnRequestInput()
 
@@ -514,6 +520,7 @@ class CryptoPricerGUI(BoxLayout):
         popup.open()
 
     def updateStatusBar(self, messageStr):
+        print(messageStr, ': ', len(messageStr), ' ', self.statusBar.font_size)
         self.statusBar.text = messageStr
 
     # --- file chooser code ---
