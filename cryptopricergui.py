@@ -510,7 +510,6 @@ class CryptoPricerGUI(BoxLayout):
         popup.open()
 
     def updateStatusBar(self, messageStr):
-        print(messageStr, ': ', len(messageStr), ' ', self.statusBar.font_size)
         self.statusBar.text = messageStr
 
     # --- file chooser code ---
