@@ -336,30 +336,21 @@ class CryptoPricerGUI(BoxLayout):
         # displaying request in status bar
 
         if 'ERROR' in outputResultStr:
-            if requestStr == '':
-                self.updateStatusBar('REPLAY --> ' + outputResultStr)
-            elif requestStr:
-                self.updateStatusBar(requestStr + ' --> ' + outputResultStr)
+            self.updateStatusBar(requestStr + ' --> ' + 'ERROR ...')
         else:
             if fullRequestStrWithSaveModeOptions:
-                if requestStr == '':
-                    self.updateStatusBar('REPLAY --> ' + fullRequestStrWithSaveModeOptions)
-                elif requestStr:
-                    if requestStr != fullRequestStrWithSaveModeOptions:
-                        self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithSaveModeOptions)
-                    else:
-                        self.updateStatusBar(fullRequestStrWithSaveModeOptions)
+                if requestStr != fullRequestStrWithSaveModeOptions:
+                    self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithSaveModeOptions)
+                else:
+                    self.updateStatusBar(fullRequestStrWithSaveModeOptions)
             else:
                 if not fullRequestStrWithOptions:
                     fullRequestStrWithOptions = fullRequestStr
 
-                if requestStr == '':
-                    self.updateStatusBar('REPLAY --> ' + fullRequestStrWithOptions)
-                elif requestStr:
-                    if requestStr != fullRequestStrWithOptions:
-                        self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithOptions)
-                    else:
-                        self.updateStatusBar(fullRequestStrWithOptions)
+                if requestStr != fullRequestStrWithOptions:
+                    self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithOptions)
+                else:
+                    self.updateStatusBar(fullRequestStrWithOptions)
 
         self.refocusOnRequestInput()
 
