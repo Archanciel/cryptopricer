@@ -171,6 +171,7 @@ class CustomDropDown(DropDown):
 class CryptoPricerGUI(BoxLayout):
     requestInput = ObjectProperty()
     resultOutput = ObjectProperty()
+    statusBarScroller = ObjectProperty()
     statusBar = ObjectProperty()
     showRequestList = False
     recycleViewCurrentSelIndex = -1
@@ -607,6 +608,12 @@ class CryptoPricerGUI(BoxLayout):
 
     def buildFileNotFoundMessage(self, filePathFilename):
         return 'Data file\n' + filePathFilename + '\nnot found. No history loaded.'
+
+    def statusBarTextChanged(self):
+        width_calc = self.statusBarScroller.width
+        for line_label in self.statusBar._lines_labels:
+            width_calc = max(width_calc, line_label.width + 20)   # add 20 to avoid automatically creating a new line
+        self.statusBar.width = width_calc
 
 class CryptoPricerGUIApp(App):
     settings_cls = SettingsWithTabbedPanel
