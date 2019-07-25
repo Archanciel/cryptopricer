@@ -33,7 +33,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
-        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
+        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.62')
         self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
 
@@ -55,7 +55,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
-        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
+        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.62')
         self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
 
@@ -77,7 +77,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
-        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
+        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.62')
         self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
 
@@ -102,7 +102,7 @@ class TestConfigurationManager(unittest.TestCase):
 
         self.assertEqual(self.configMgr.loadAtStartPathFilename, '')
         self.assertEqual(self.configMgr.histoListVisibleSize, '3')
-        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.56')
+        self.assertEqual(self.configMgr.appSizeHalfProportion, '0.62')
         self.assertEqual(self.configMgr.referenceCurrency, 'USD')
 
 
