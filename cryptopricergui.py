@@ -3,28 +3,28 @@ from os.path import sep
 
 from kivy.app import App
 from kivy.clock import Clock
+from kivy.config import Config
+from kivy.metrics import dp
+from kivy.properties import BooleanProperty
 from kivy.properties import ObjectProperty
+from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
-from kivy.uix.settings import SettingsWithTabbedPanel
-from kivy.uix.settings import SettingOptions
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.widget import Widget
-from kivy.uix.togglebutton import ToggleButton
-from kivy.uix.settings import SettingSpacer
-from kivy.uix.button import Button
-from kivy.metrics import dp
-from kivy.config import Config
-from kivy.utils import platform
-from kivy.properties import BooleanProperty
-from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.settings import SettingOptions
+from kivy.uix.settings import SettingSpacer
+from kivy.uix.settings import SettingsWithTabbedPanel
+from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.widget import Widget
+from kivy.utils import platform
 
 from configurationmanager import ConfigurationManager
 from controller import Controller
@@ -39,7 +39,6 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 
     # required to authorise unselecting a selected item
     touch_deselect_last = BooleanProperty(True)
-
 
 class SelectableLabel(RecycleDataViewBehavior, Label):
     ''' Add selection support to the Label '''
@@ -113,12 +112,10 @@ class SettingScrollOptions(SettingOptions):
         btn.bind(on_release=popup.dismiss)
         content.add_widget(btn)
 
-
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
     fileChooser = ObjectProperty(None)
-
 
 class SaveDialog(FloatLayout):
     save = ObjectProperty(None)
@@ -144,7 +141,6 @@ class SaveDialog(FloatLayout):
             self.loadAtStartChkb.active = False
             self.owner.updateStatusBar('')
 
-
 class CustomDropDown(DropDown):
     saveButton = ObjectProperty(None)
 
@@ -167,6 +163,8 @@ class CustomDropDown(DropDown):
     def help(self):
         self.owner.displayHelp()
 
+class ScrollablePopup(Popup):
+    contentBox = ObjectProperty()
 
 class CryptoPricerGUI(BoxLayout):
     requestInput = ObjectProperty()
@@ -507,7 +505,16 @@ class CryptoPricerGUI(BoxLayout):
 
     def displayHelp(self):
         self.dropDownMenu.dismiss()
-        popup = Popup(title='CryptoPricer HELP', content=Label(text='Version 2.2'), size_hint=(None, None), size=(400, 400))
+
+        popupSize = None
+
+        if platform == 'android':
+            popupSize = (980, 1200)
+        elif platform == 'win':
+            popupSize = (400, 450)
+
+        popup = ScrollablePopup(title='CryptoPricer 2.3 HELP', size_hint=(None, None), size=popupSize)
+        popup.contentBox.content.text = 'Thank ayou God !\n' * 30
         popup.open()
 
     def updateStatusBar(self, messageStr):

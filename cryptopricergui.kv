@@ -232,7 +232,6 @@
                 text: "Load"
                 on_release: root.load(filechooser.path, filechooser.selection)
 
-
 <SaveDialog>:
     fileChooser: filechooser
     loadAtStartChkb: load_at_start
@@ -270,3 +269,30 @@
             Button:
                 text: "Save"
                 on_release: root.save(filechooser.path, text_input.text, load_at_start.active)
+
+<ScrollablePopup>:
+    id: scr_popup
+    auto_dismiss: False
+    contentBox: content_box
+
+    BoxLayout:
+        id: content_box
+        orientation: "vertical"
+        content: content_text
+
+        ScrollView:
+            effect_cls: "ScrollEffect" # prevents overscrolling
+            do_scroll_x: False # limiting to vertical scrolling
+            Label:
+                id: content_text
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: (self.width-20), None
+                line_height: 1.5
+                valign: "top"
+
+        Button:
+            text: "Close"
+            size_hint_y: None
+            height: "40dp"
+            on_press: root.dismiss()
