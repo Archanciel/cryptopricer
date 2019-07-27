@@ -12,160 +12,145 @@ class TestGuiUtil(unittest.TestCase):
     def setUp(self):
         pass
 
-    def testSplitLongLineToShorterLines(self):
+    def test_splitLongLineToShorterLines(self):
         note = 'a long class description. Which occupies several lines.'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], 'a long class description.')
         self.assertEqual(multilineNote[1], 'Which occupies several lines.')
 
 
-    def testSplitLongLineToShorterLinesEmptyNote(self):
+    def test_splitLongLineToShorterLinesEmptyNote(self):
         note = ''
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 0)
 
 
-    def testSplitLongLineToShorterLinesOneWordNoteLenEqualsMaxNoteLineLenMinusOne(self):
+    def test_splitLongLineToShorterLinesOneWordNoteLenEqualsMaxNoteLineLenMinusOne(self):
         note = '12345678911234567892123456789'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 1)
         self.assertEqual(multilineNote[0], '12345678911234567892123456789')
 
 
-    def testSplitLongLineToShorterLinesOneWordNoteLenEqualsMaxNoteLineLen(self):
+    def test_splitLongLineToShorterLinesOneWordNoteLenEqualsMaxNoteLineLen(self):
         note = '123456789112345678921234567893'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 1)
         self.assertEqual(multilineNote[0], '123456789112345678921234567893')
 
 
-    def testSplitLongLineToShorterLinesOneWordNoteLenEqualsMaxNoteLineLenPlusOne(self):
+    def test_splitLongLineToShorterLinesOneWordNoteLenEqualsMaxNoteLineLenPlusOne(self):
         note = '1234567891123456789212345678931'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 1)
         self.assertEqual(multilineNote[0], '1234567891123456789212345678931')
 
 
-    def testSplitLongLineToShorterLinesTwoWordsNoteLenEqualsMaxNoteLineLen(self):
+    def test_splitLongLineToShorterLinesTwoWordsNoteLenEqualsMaxNoteLineLen(self):
         note = '12345678911234 567892123456789'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 1)
         self.assertEqual(multilineNote[0], '12345678911234 567892123456789')
 
 
-    def testSplitLongLineToShorterLinesTwoWordsNoteLenEqualsMaxNoteLineLenPlusOne(self):
+    def test_splitLongLineToShorterLinesTwoWordsNoteLenEqualsMaxNoteLineLenPlusOne(self):
         note = '123456789112345 678921234567893'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '123456789112345')
         self.assertEqual(multilineNote[1], '678921234567893')
 
 
-    def testSplitLongLineToShorterLinesTwoWordsNoteLenEqualsMaxNoteLineLenPlusTwo(self):
+    def test_splitLongLineToShorterLinesTwoWordsNoteLenEqualsMaxNoteLineLenPlusTwo(self):
         note = '123456789112345 6789212345678931'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '123456789112345')
         self.assertEqual(multilineNote[1], '6789212345678931')
 
 
-    def testSplitLongLineToShorterLinesTwoWordsFirstEqualsMaxLen(self):
+    def test_splitLongLineToShorterLinesTwoWordsFirstEqualsMaxLen(self):
         note = '123456789112345678921234567893 2'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '123456789112345678921234567893')
         self.assertEqual(multilineNote[1], '2')
 
 
-    def testSplitLongLineToShorterLinesTwoWordsFirstEqualsMaxLenPlusOne(self):
+    def test_splitLongLineToShorterLinesTwoWordsFirstEqualsMaxLenPlusOne(self):
         note = '1234567891123456789212345678931 3'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '1234567891123456789212345678931')
         self.assertEqual(multilineNote[1], '3')
 
 
-    def testSplitLongLineToShorterLinesTwoWordsFirstAndSecondEqualsMaxLen(self):
+    def test_splitLongLineToShorterLinesTwoWordsFirstAndSecondEqualsMaxLen(self):
         note = '123456789112345678921234567893 123456789112345678921234567893'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '123456789112345678921234567893')
         self.assertEqual(multilineNote[1], '123456789112345678921234567893')
 
 
-    def testSplitLongLineToShorterLinesTwoWordsFirstAndSecondEqualsMaxLenPlusOne(self):
+    def test_splitLongLineToShorterLinesTwoWordsFirstAndSecondEqualsMaxLenPlusOne(self):
         note = '1234567891123456789212345678931 1234567891123456789212345678931'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '1234567891123456789212345678931')
         self.assertEqual(multilineNote[1], '1234567891123456789212345678931')
 
-    def testSplitLongLineToShorterLinesLargeNote(self):
+    def test_splitLongLineToShorterLinesLargeNote(self):
         note = 'ERROR - :seqdiag_loop_start tag located on line 53 of file containing class ClassLoopTagOnMethodNotInRecordFlow is placed on an instruction calling method doC4NotRecordedInFlow() which is not part of the execution flow recorded by GuiUtil.'
         maxNoteLineLen = 150
 
-        multilineNote = GuiUtil.splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], 'ERROR - :seqdiag_loop_start tag located on line 53 of file containing class ClassLoopTagOnMethodNotInRecordFlow is placed on an instruction calling')
         self.assertEqual(multilineNote[1], 'method doC4NotRecordedInFlow() which is not part of the execution flow recorded by GuiUtil.')
 
-    def testSplitLongLineToShorterLinesLargeNoteWithEndOfLine(self):
-        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in USD. The price is an average of the btc quotation on all the exchanges.'
-        maxNoteLineLen = 50
-
-        multilineNote = GuiUtil.splitLongLineToShorterLines(text, maxNoteLineLen)
-
-#        self.assertEqual(len(multilineNote), 6)
-        self.assertEqual(multilineNote[0], 'CryptoPricer full request')
-        self.assertEqual(multilineNote[1], '\n\n')
-        self.assertEqual(multilineNote[2], 'btc usd 0 all')
-        self.assertEqual(multilineNote[3], '\n\n')
-        self.assertEqual(multilineNote[4], 'Returns the current price of 1 btc in USD. The')
-        self.assertEqual(multilineNote[5], 'price is an average of the btc quotation on all the exchanges.')
-        self.assertEqual(multilineNote[1], 'method doC4NotRecordedInFlow() which is not part of the execution flow recorded by GuiUtil.')
-
-    def testGetListOfParagraphs(self):
+    def test_getListOfParagraphs(self):
         text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\n\nThis section explains the preceeding section'
 
-        list = GuiUtil.getListOfParagraphs(text)
+        list = GuiUtil._getListOfParagraphs(text)
         self.assertEqual(len(list), 11)
         self.assertEqual(list[0],'CryptoPricer full request')
         self.assertEqual(list[1],'\n\n')
@@ -179,29 +164,67 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(list[9],'\n\n')
         self.assertEqual(list[10],'This section explains the preceeding section')
 
-    def testSplitLongWarningWithDotsToFormattedLines(self):
-        longWarning = "No control flow recorded.\nMethod activate() called with arguments projectPath=<D:\Development\Python\seqdiagbuilder>, entryClass=<Caller>, entryMethod=<call>, classArgDic=<{'FileReader_1': ['testfile.txt'], 'FileReader_2': ['testfile2.txt']}>: True.\nMethod recordFlow() called: True.\nSpecified entry point: Caller.call reached: False."
+    def test_getListOfSizedParagraphs(self):
+        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\n\nThis section explains the preceeding section'
+        width = 60
+        list = GuiUtil._getListOfSizedParagraphs(text, width)
+        self.assertEqual(len(list), 12)
+        self.assertEqual(list[0],'CryptoPricer full request')
+        self.assertEqual(list[1],'\n\n')
+        self.assertEqual(list[2],'btc usd 0 all')
+        self.assertEqual(list[3],'\n\n')
+        self.assertEqual(list[4],'Returns the current price of 1 btc in usd.')
+        self.assertEqual(list[5],'\n')
+        self.assertEqual(list[6],'The price is an average of the btc quotation on all the')
+        self.assertEqual(list[7],'exchanges. It is computed by the crypto prices provider.')
+        self.assertEqual(list[8],'\n\n\n')
+        self.assertEqual(list[9],'Next section')
+        self.assertEqual(list[10],'\n\n')
+        self.assertEqual(list[11],'This section explains the preceeding section')
 
-        multiLineFormattedWarning = GuiUtil.splitLongWarningToFormattedLines(longWarning)
+    def test_getListOfSizedParagraphsSmallerWidth(self):
+        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\n\nThis section explains the preceeding section'
+        width = 30
+        list = GuiUtil._getListOfSizedParagraphs(text, width)
+        self.assertEqual(len(list), 16)
+        self.assertEqual(list[0],'CryptoPricer full request')
+        self.assertEqual(list[1],'\n\n')
+        self.assertEqual(list[2],'btc usd 0 all')
+        self.assertEqual(list[3],'\n\n')
+        self.assertEqual(list[4],'Returns the current price of 1')
+        self.assertEqual(list[5],'btc in usd.')
+        self.assertEqual(list[6],'\n')
+        self.assertEqual(list[7],'The price is an average of the')
+        self.assertEqual(list[8],'btc quotation on all the')
+        self.assertEqual(list[9],'exchanges. It is computed by')
+        self.assertEqual(list[10],'the crypto prices provider.')
+        self.assertEqual(list[11],'\n\n\n')
+        self.assertEqual(list[12],'Next section')
+        self.assertEqual(list[13],'\n\n')
+        self.assertEqual(list[14],'This section explains the')
+        self.assertEqual(list[15],'preceeding section')
 
-        self.assertEqual(
-"""<b><font color=red size=14>  No control flow recorded.</font></b>
-<b><font color=red size=14>  Method activate() called with arguments projectPath=<D:\Development\Python\seqdiagbuilder>, entryClass=<Caller>, entryMethod=<call>, classArgDic=<{'FileReader_1': ['testfile.txt'], 'FileReader_2': ['testfile2.txt']}>: True.</font></b>
-<b><font color=red size=14>  Method recordFlow() called: True.</font></b>
-<b><font color=red size=14>  Specified entry point: Caller.call reached: False.</font></b>
-""", multiLineFormattedWarning)
 
-    def testSplitLongWarningWithBackslashNToFormattedLines(self):
-        longWarning = "No control flow recorded.\nMethod activate() called with arguments projectPath=<D:\Development\Python\seqdiagbuilder>, entryClass=<Caller>, entryMethod=<call>, classArgDic=<{'FileReader_1': ['testfile.txt'], 'FileReader_2': ['testfile2.txt']}>: True.\nMethod recordFlow() called: True\nSpecified entry point: Caller.call reached: False."
+    def testSizeParagraphsToSmallerWidth(self):
+        text = 'CryptoPricer full request\nbtc usd 0 all\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\nThis section explains the preceeding section'
+        width = 54
+        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        self.assertEqual('''
+CryptoPricer full request
 
-        multiLineFormattedWarning = GuiUtil.splitLongWarningToFormattedLines(longWarning)
+btc usd 0 all
 
-        self.assertEqual(
-"""<b><font color=red size=14>  No control flow recorded.</font></b>
-<b><font color=red size=14>  Method activate() called with arguments projectPath=<D:\Development\Python\seqdiagbuilder>, entryClass=<Caller>, entryMethod=<call>, classArgDic=<{'FileReader_1': ['testfile.txt'], 'FileReader_2': ['testfile2.txt']}>: True.</font></b>
-<b><font color=red size=14>  Method recordFlow() called: True</font></b>
-<b><font color=red size=14>  Specified entry point: Caller.call reached: False.</font></b>
-""", multiLineFormattedWarning)
+Returns the current price of 1 btc in usd.
+
+The price is an average of the btc quotation on all
+the exchanges. It is computed by the crypto prices
+provider.
+
+
+
+Next section
+
+This section explains the preceeding section''',resizedText)
 
 if __name__ == '__main__':
     unittest.main()

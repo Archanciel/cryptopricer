@@ -2,7 +2,7 @@ import re
 
 class GuiUtil:
     @staticmethod
-    def splitLongLineToShorterLines(longLine, shorterLinesMaxLen):
+    def _splitLongLineToShorterLines(longLine, shorterLinesMaxLen):
         '''
         Splits the longLine string into lines not exceeding maxNoteLineLen and returns the lines
         into a list.
@@ -35,7 +35,7 @@ class GuiUtil:
         return noteLineList
 
     @staticmethod
-    def getListOfParagraphs(text):
+    def _getListOfParagraphs(text):
         '''
         The text input parm contains paragraphs separated by either \n\n\n, \n\n, or \n.
 
@@ -53,16 +53,46 @@ class GuiUtil:
         return listOfParagraphs
 
     @staticmethod
-    def splitLongWarningToFormattedLines(warningStr):
+    def _getListOfSizedParagraphs(longParagraphLineStr, width):
         '''
+        Returns a list of lines corresponding to the input longParagraphLineStr parm.
+        The returned lines do not exceed the passed width.
 
-        :param warningStr:
-        :return:
+        :param longParagraphLineStr: string containing paragraphs separated by \n\n\n, \n\n
+                                     or \n
+        :param width: line width in char number
+        :return: list of lines and \n\n\n, \n\n or \n
         '''
-        formattedWarnings = ''
-        lines = warningStr.split('\n')
+        listOfOriginalWidthParagraphs = GuiUtil._getListOfParagraphs(longParagraphLineStr)
+        listOfLimitedWidthParagraphs = []
 
-        for line in lines:
-            formattedWarnings += '<b><font color=red size=14>  {}</font></b>\n'.format(line)
+        for line in listOfOriginalWidthParagraphs:
+            if '\n' in line:
+                listOfLimitedWidthParagraphs.append(line)
+            else:
+                shortenedLines = GuiUtil._splitLongLineToShorterLines(line, width)
+                listOfLimitedWidthParagraphs.extend(shortenedLines)
 
-        return formattedWarnings
+        return listOfLimitedWidthParagraphs
+
+    @staticmethod
+    def sizeParagraphsToSmallerWidth(longParagraphLineStr, width):
+        '''
+        Returns a string corresponding to the input longParagraphLineStr parm,
+        but with lines shortened to be smaller or equal to the passed width.
+
+        :param longParagraphLineStr: string containing paragraphs separated by \n\n\n, \n\n
+                                     or \n
+        :param width: line width in char number
+        :return: string of shorter lines and \n\n\n, \n\n or \n
+        '''
+        listOfLimitedWidthParagraphs = GuiUtil._getListOfSizedParagraphs(longParagraphLineStr, width)
+        sizedParagraphLineStr = ''
+
+        for line in listOfLimitedWidthParagraphs:
+            if '\n' in line:
+                sizedParagraphLineStr += line
+            else:
+                sizedParagraphLineStr += '\n' + line
+
+        return sizedParagraphLineStr

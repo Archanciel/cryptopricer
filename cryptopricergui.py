@@ -29,6 +29,7 @@ from kivy.utils import platform
 from configurationmanager import ConfigurationManager
 from controller import Controller
 from guioutputformater import GuiOutputFormater
+from guiutil import GuiUtil
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
 fromAppBuilt = False
@@ -510,11 +511,15 @@ class CryptoPricerGUI(BoxLayout):
 
         if platform == 'android':
             popupSize = (980, 1200)
+            helpTextWidth = 46
         elif platform == 'win':
             popupSize = (400, 450)
+            helpTextWidth = 54
 
         popup = ScrollablePopup(title='CryptoPricer 2.3 HELP', size_hint=(None, None), size=popupSize)
-        popup.contentBox.content.text = 'Thank ayou God !\n' * 30
+        helpText = 'CryptoPricer full request\nbtc usd 0 all\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\nThis section explains the preceeding section'
+        formatedHelpText = GuiUtil.sizeParagraphsToSmallerWidth(helpText + '\n\n' + helpText, helpTextWidth)
+        popup.contentBox.content.text = formatedHelpText
         popup.open()
 
     def updateStatusBar(self, messageStr):
