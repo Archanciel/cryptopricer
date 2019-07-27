@@ -37,21 +37,20 @@ class GuiUtil:
     @staticmethod
     def getListOfParagraphs(text):
         '''
-        text contains paragraphs separated by either \n\n\n, \n\n, or \n. The last paragraph
-        is (and must be) terminated by \n !
+        The text input parm contains paragraphs separated by either \n\n\n, \n\n, or \n.
 
         :param text:
-        :return: list of paragraphs AND their separators \n\n\n, \n\n, or \n, except
-                 the last \n.
+        :return: list of paragraphs AND their separators \n\n\n, \n\n, or \n.
         '''
-        pattern = r'([\w .-]+)(\n\n\n|\n\n|\n*)'
+        pattern = r'([\w .-]+)(\n\n\n|\n\n|\n|.*)'
         listOfParagraphs = []
 
         for match in re.finditer(pattern, text):
-            for x in match.groups():
-                listOfParagraphs.append(x)
+            for subGroup in match.groups():
+                if subGroup:
+                    listOfParagraphs.append(subGroup)
 
-        return listOfParagraphs[:-1]
+        return listOfParagraphs
 
     @staticmethod
     def splitLongWarningToFormattedLines(warningStr):

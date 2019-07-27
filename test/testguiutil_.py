@@ -163,19 +163,21 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(multilineNote[1], 'method doC4NotRecordedInFlow() which is not part of the execution flow recorded by GuiUtil.')
 
     def testGetListOfParagraphs(self):
-        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges.\n\n\nNext section.\n'
+        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\n\nThis section explains the preceeding section'
 
         list = GuiUtil.getListOfParagraphs(text)
-        self.assertEqual(len(list), 9)
+        self.assertEqual(len(list), 11)
         self.assertEqual(list[0],'CryptoPricer full request')
         self.assertEqual(list[1],'\n\n')
         self.assertEqual(list[2],'btc usd 0 all')
         self.assertEqual(list[3],'\n\n')
         self.assertEqual(list[4],'Returns the current price of 1 btc in usd.')
         self.assertEqual(list[5],'\n')
-        self.assertEqual(list[6],'The price is an average of the btc quotation on all the exchanges.')
+        self.assertEqual(list[6],'The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.')
         self.assertEqual(list[7],'\n\n\n')
-        self.assertEqual(list[8],'Next section.')
+        self.assertEqual(list[8],'Next section')
+        self.assertEqual(list[9],'\n\n')
+        self.assertEqual(list[10],'This section explains the preceeding section')
 
     def testSplitLongWarningWithDotsToFormattedLines(self):
         longWarning = "No control flow recorded.\nMethod activate() called with arguments projectPath=<D:\Development\Python\seqdiagbuilder>, entryClass=<Caller>, entryMethod=<call>, classArgDic=<{'FileReader_1': ['testfile.txt'], 'FileReader_2': ['testfile2.txt']}>: True.\nMethod recordFlow() called: True.\nSpecified entry point: Caller.call reached: False."
