@@ -247,5 +247,27 @@ Next section
 
 This section explains the preceeding section''',resizedText)
 
+
+    def testSizeParagraphsToSmallerWidthWithMarkupColor(self):
+        text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\nbtc usd 0 all\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n[b][color=ff0000]Next section[/color][/b]\nThis section explains the preceeding section'
+        width = 54
+        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        self.assertEqual('''
+[b][color=ff0000]CryptoPricer full request[/color][/b]
+
+btc usd 0 all
+
+Returns the current price of 1 btc in usd.
+
+The price is an average of the btc quotation on all
+the exchanges. It is computed by the crypto prices
+provider.
+
+
+
+[b][color=ff0000]Next section[/color][/b]
+
+This section explains the preceeding section''',resizedText)
+
 if __name__ == '__main__':
     unittest.main()
