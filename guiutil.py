@@ -42,7 +42,7 @@ class GuiUtil:
         :param text:
         :return: list of paragraphs AND their separators \n\n\n, \n\n, or \n.
         '''
-        pattern = r'([\w .-]+)(\n\n\n|\n\n|\n|.*)'
+        pattern = r'([\w .-\[\]/]+)(\n\n\n|\n\n|\n|.*)'
         listOfParagraphs = []
 
         for match in re.finditer(pattern, text):

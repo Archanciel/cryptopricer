@@ -516,8 +516,8 @@ class CryptoPricerGUI(BoxLayout):
             popupSize = (400, 450)
             helpTextWidth = 54
 
-        popup = ScrollablePopup(title='CryptoPricer 2.3', size_hint=(None, None), size=popupSize)
-        helpText = 'CryptoPricer full request\nbtc usd 0 all\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\nThis section explains the preceeding section'
+        popup = ScrollablePopup(title='CryptoPricer 2.3 HELP', size_hint=(None, None), size=popupSize)
+        helpText = '[b]CryptoPricer full request[/b]\nbtc usd 0 all\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\nThis section explains the preceeding section'
         formatedHelpText = GuiUtil.sizeParagraphsToSmallerWidth(helpText + '\n\n' + helpText, helpTextWidth)
         popup.contentBox.content.text = formatedHelpText
         popup.open()
