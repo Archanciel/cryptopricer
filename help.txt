@@ -1,47 +1,58 @@
-CryptoPricer help
+[b][cr]Requesting RT and historical cryptocurrency prices[/b][/c]
 
-Requesting RT and historical cryptocurrency prices
+CryptoPricer supports two kinds of requests: full requests and partial requests.
 
-Full request
-------------
+[b]Full request[/b]
 
-<crypto> <fiat> <date time> <exchange> <optional command>
-<date time>:	0 for RT
-				21/12 or 21/12/17
-				21/12 8:34 --> current year assumed
-				21 8:34  --> here, only the day and time are provided as date/time specification. This is interpreted as the time at the specified day IN THE CURRENT MONTH
-				8:34 --> here, the time only date/time specification is interpreted as time IN THE CURRENT DATE
-				
-				WARNING: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
+<crypto> <fiat> <date time> <exchange> <options>
 
-Ex: we are the 16/12/17 at 22:10
+<date time> possible values:
 
-	btc usd 0 bittrex --> 
-	BTC/USD on BitTrex: 16/12/17 22:10R 19120
+    0 for RT
 
-	eth btc 16/12 13:45 bitfinex --> 
-	ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+    21/12 or 21/12/19 or 21/12/2019. If no year is
+    specified, current year is assumed. If no time
+    is specified, current time is assumed.
 
-	eth btc 13:45 bitfinex --> 
-	ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+    21/12 8:34 --> current year assumed
 
-	eth btc 15 8:45 bitfinex --> 
-	ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
+    21 8:34  --> here, since no month is specified,
+    current month or previous month is assumed.
 
-	eth btc 21/1 13:45 bitfinex --> 
-	ETH/BTC on Bitfinex: 21/01/17C 0.01185
+    8:34 --> here, since no date is specified, current
+    date is assumed.
 
-	btc usd 0 bittrex -v0.01btc -->
-	0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
-	
-	R = RT
-	M = Minute price (precision at the minute)
-	C = Close price
-	
-	WARNING: <optional command> must be specified at the end of the full command price
+[b]WARNING[/b]: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
 
-Partial request
----------------
+[b]Output price qualifiers[/b]:
+
+R = RT
+M = Minute price (precision at the minute)
+C = Close price
+
+Examples: assume we are on 16/12/17 at 22:10
+
+[cg]btc usd 0 bittrex[/c] -->
+BTC/USD on BitTrex: 16/12/17 22:10R 19120
+
+[cg]eth btc 16/12 13:45 bitfinex[/c] -->
+ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+
+[cg]eth btc 13:45 bitfinex[/c] -->
+ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+
+[cg]eth btc 15 8:45 bitfinex[/c] -->
+ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
+
+[cg]eth btc 21/1 13:45 bitfinex[/c] -->
+ETH/BTC on Bitfinex: 21/01/17C 0.01185
+
+[cg]btc usd 0 bittrex -v0.01btc[/c] -->
+0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
+
+[b]WARNING[/b]: <options> must be specified at the end of the full command price
+
+[b]Partial request[/b]
 
 Once a full request has been entered, it is handy to just change one or more parameters of the initial command. The app keeps and reuses the parameters which are not redefined.
 
@@ -50,9 +61,11 @@ The partial request parameters are specified using the parms
 -c<crypto>
 -f<fiat>
 -d<date>
-	<date> can be 0 for RT, dd (current month) or dd/mm (current year) or dd/mm/yy or dd/mm/yyyy
+    <date> can be 0 for RT, dd (current month) or
+    dd/mm (current year) or dd/mm/yy or
+    dd/mm/yyyy
 -t<time>
-	<time> format: hh:mm
+    <time> format: hh:mm
 -e<exchange>
 
 Ex:	continuing from last full request above (eth btc 21/1 13:45 bitfinex)
