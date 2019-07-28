@@ -55,7 +55,7 @@ class GuiUtil:
     @staticmethod
     def _getListOfSizedParagraphs(longParagraphLineStr, width):
         '''
-        Returns a list of lines corresponding to the input longParagraphLineStr parm.
+        Returns a list of lines corresponding to the input markupedStr parm.
         The returned lines do not exceed the passed width.
 
         :param longParagraphLineStr: string containing paragraphs separated by \n\n\n, \n\n
@@ -78,7 +78,7 @@ class GuiUtil:
     @staticmethod
     def sizeParagraphsToSmallerWidth(longParagraphLineStr, width):
         '''
-        Returns a string corresponding to the input longParagraphLineStr parm,
+        Returns a string corresponding to the input markupedStr parm,
         but with lines shortened to be smaller or equal to the passed width.
 
         :param longParagraphLineStr: string containing paragraphs separated by \n\n\n, \n\n
@@ -96,3 +96,26 @@ class GuiUtil:
                 sizedParagraphLineStr += '\n' + line
 
         return sizedParagraphLineStr
+
+    @staticmethod
+    def decodeMarkup(markupedStr):
+        '''
+        Returns a string corresponding to the input markupedStr parm containing coded
+        markups with them replaced by Kivy markups.
+
+        :param markupedStr: string containing coded markups
+        :return: string containing Kivy markups
+        '''
+
+        replaceTupleList = [("[cr]", "[color=ff0000]"),
+                            ("[cg]", "[color=19ff52ff]"),
+                            ("[/c]", "[/color]")]
+        
+        # Iterate over the strings to be replaced
+        for code, replCode in replaceTupleList:
+            # Check if string is in the main string
+            if code in markupedStr:
+                # Replace the string
+                markupedStr = markupedStr.replace(code, replCode)
+
+        return '\n' + markupedStr

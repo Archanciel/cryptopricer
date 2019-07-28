@@ -511,14 +511,15 @@ class CryptoPricerGUI(BoxLayout):
 
         if platform == 'android':
             popupSize = (980, 1200)
-            helpTextWidth = 46
         elif platform == 'win':
             popupSize = (400, 450)
-            helpTextWidth = 54
 
-        popup = ScrollablePopup(title='CryptoPricer 2.3 HELP', size_hint=(None, None), size=popupSize)
-        helpText = '[b]CryptoPricer full request[/b]\nbtc usd 0 all\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\nThis section explains the preceeding section'
-        formatedHelpText = GuiUtil.sizeParagraphsToSmallerWidth(helpText + '\n\n' + helpText, helpTextWidth)
+        popup = ScrollablePopup(title='CryptoPricer 2.3', size_hint=(None, None), size=popupSize)
+
+        with open('help.txt') as helpFile:
+            helpText = helpFile.read()
+
+        formatedHelpText = GuiUtil.decodeMarkup(helpText)
         popup.contentBox.content.text = formatedHelpText
         popup.open()
 
