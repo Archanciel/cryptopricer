@@ -8,13 +8,13 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 <date time> possible values:
 
-    0 for RT
+    [b][cy]0[/cy][/b] for RT
 
-    21/12 or 21/12/19 or 21/12/2019. If no year is
-    specified, current year is assumed. If no time
-    is specified, current time is assumed.
+    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified,
+    current year is assumed. If no time is specified, current
+    time is assumed.
 
-    21/12 8:34 --> current year assumed
+    [b][cy]21/12 8:34[/c][/b] --> current year assumed
 
     21 8:34  --> here, since no month is specified,
     current month or previous month is assumed.

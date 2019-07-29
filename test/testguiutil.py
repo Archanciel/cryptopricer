@@ -148,7 +148,7 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(multilineNote[1], 'method doC4NotRecordedInFlow() which is not part of the execution flow recorded by GuiUtil.')
 
     def test_getListOfParagraphs(self):
-        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\n\nThis section explains the preceeding section'
+        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in: usd.\nThe price is an average of the btc quotation, or: price, on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\n\nThis section explains the preceeding section'
 
         list = GuiUtil._getListOfParagraphs(text)
         self.assertEqual(len(list), 11)
@@ -156,9 +156,9 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(list[1],'\n\n')
         self.assertEqual(list[2],'btc usd 0 all')
         self.assertEqual(list[3],'\n\n')
-        self.assertEqual(list[4],'Returns the current price of 1 btc in usd.')
+        self.assertEqual(list[4],'Returns the current price of 1 btc in: usd.')
         self.assertEqual(list[5],'\n')
-        self.assertEqual(list[6],'The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.')
+        self.assertEqual(list[6],'The price is an average of the btc quotation, or: price, on all the exchanges. It is computed by the crypto prices provider.')
         self.assertEqual(list[7],'\n\n\n')
         self.assertEqual(list[8],'Next section')
         self.assertEqual(list[9],'\n\n')
@@ -271,7 +271,7 @@ This section explains the preceeding section''',resizedText)
     def testDecodeMarkup(self):
         text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\n[b][color=ff0000]Next section[/color][/b]\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil.decodeMarkup(text, width)
+        resizedText = GuiUtil.decodeMarkup(text)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -295,7 +295,7 @@ This section explains the preceeding section''',resizedText)
             text = markupFile.read()
 
         width = 54
-        resizedText = GuiUtil.decodeMarkup(text, width)
+        resizedText = GuiUtil.decodeMarkup(text)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -310,6 +310,61 @@ The price is an average of the btc quotation on all the exchanges. It is compute
 [b][color=ff0000]Next section[/color][/b]
 
 This section explains the preceeding section''',resizedText)
+
+    def testApplyRightShift(self):
+        text = '''<date time> possible values:
+
+    [b][cy]0[/cy][/b] for RT
+
+    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified,
+    current year is assumed. If no time is specified, current
+    time is assumed.
+
+
+    [b][cy]21/12 8:34[/c][/b] --> current year assumed'''
+
+        width = 54
+        leftShiftStr = '    '
+        resizedText = GuiUtil.applyRightShift(text, width, leftShiftStr)
+        self.assertEqual('''
+<date time> possible values:
+
+    [b][color=ffff00ff]0[/color][/b] for RT
+
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is 
+    specified, current year is assumed. If no time is
+    specified, current time is assumed.
+
+
+    [b][color=ffff00ff]21/12 8:34[/color][/b] --> current year assumed''',resizedText)
+
+    def test_calculateMarkupsLength(self):
+        text = '[b][cy]0[/cy][/b] for RT'
+        self.assertEqual(GuiUtil._calculateMarkupsLength(text), 16)
+        text = '[b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified'
+        self.assertEqual(GuiUtil._calculateMarkupsLength(text), 15)
+        text = '[b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is '
+        self.assertEqual(GuiUtil._calculateMarkupsLength(text), 31)
+
+    def test_splitLongLineToShorterLinesAccountingForCodedMarkup(self):
+        line = '    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified,'
+        width = 54
+        leftShiftStr = '    '
+        shortenedLineList = GuiUtil._splitLongLineToShorterLinesAccountingForMarkup(line, width, leftShiftStr)
+
+        self.assertEqual(shortenedLineList[0], '    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is')
+        self.assertEqual(shortenedLineList[1], '    specified,')
+
+    def test_splitLongLineToShorterLinesAccountingForDecodedMarkup(self):
+        line = '    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is specified,'
+        width = 54
+        leftShiftStr = '    '
+        shortenedLineList = GuiUtil._splitLongLineToShorterLinesAccountingForMarkup(line, width, leftShiftStr)
+
+        self.assertEqual(shortenedLineList[0],
+                         '    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is')
+        self.assertEqual(shortenedLineList[1], '    specified,')
+
 
 if __name__ == '__main__':
     unittest.main()
