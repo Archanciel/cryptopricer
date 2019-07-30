@@ -346,7 +346,7 @@ This section explains the preceeding section''',resizedText)
         text = '[b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is '
         self.assertEqual(GuiUtil._calculateMarkupsLength(text), 31)
 
-    def test_splitLongLineToShorterLinesAccountingForCodedMarkup(self):
+    def test_splitShiftedLongLineToShorterLinesAccountingForCodedMarkup(self):
         line = '    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified,'
         width = 54
         leftShiftStr = '    '
@@ -355,7 +355,7 @@ This section explains the preceeding section''',resizedText)
         self.assertEqual(shortenedLineList[0], '    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is')
         self.assertEqual(shortenedLineList[1], '    specified,')
 
-    def test_splitLongLineToShorterLinesAccountingForDecodedMarkup(self):
+    def test_splitShiftedLongLineToShorterLinesAccountingForDecodedMarkup(self):
         line = '    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is specified,'
         width = 54
         leftShiftStr = '    '

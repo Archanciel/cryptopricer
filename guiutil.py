@@ -14,25 +14,25 @@ class GuiUtil:
         if longLine == '':
             return []
 
-        noteWordList = longLine.split(' ')
-        noteLine = noteWordList[0]
-        noteLineLen = len(noteLine)
-        noteLineList = []
+        wordList = longLine.split(' ')
+        shortenedLine = wordList[0]
+        shortenedLineLen = len(shortenedLine)
+        shortenedLineList = []
 
-        for word in noteWordList[1:]:
+        for word in wordList[1:]:
             wordLen = len(word)
 
-            if noteLineLen + wordLen + 1 > shorterLinesMaxLen:
-                noteLineList.append(noteLine)
-                noteLine = word
-                noteLineLen = wordLen
+            if shortenedLineLen + wordLen + 1 > shorterLinesMaxLen:
+                shortenedLineList.append(shortenedLine)
+                shortenedLine = word
+                shortenedLineLen = wordLen
             else:
-                noteLine += ' ' + word
-                noteLineLen += wordLen + 1
+                shortenedLine += ' ' + word
+                shortenedLineLen += wordLen + 1
 
-        noteLineList.append(noteLine)
+        shortenedLineList.append(shortenedLine)
 
-        return noteLineList
+        return shortenedLineList
 
     @staticmethod
     def _getListOfParagraphs(text):
