@@ -76,6 +76,38 @@ class GuiUtil:
         return listOfLimitedWidthParagraphs
 
     @staticmethod
+    def _getListOfSizedRightShiftedParagraphs(longParagraphLineStr, width, leftShiftStr):
+        '''
+        Returns a list of lines corresponding to the input longParagraphLineStr parm.
+        The returned lines do not exceed the passed width.
+
+        :param longParagraphLineStr: string containing paragraphs separated by \n\n\n, \n\n
+                                     or \n
+        :param width: line width in char number
+        :return: list of lines and \n\n\n, \n\n or \n
+        '''
+        listOfOriginalWidthParagraphs = GuiUtil._getListOfShiftedAndMarkedUpSizedParagraphs(longParagraphLineStr, width)
+        listOfLimitedWidthParagraphs = []
+        lastShortenedLine = ''
+
+        for line in listOfOriginalWidthParagraphs:
+            if '\n' in line:
+                listOfLimitedWidthParagraphs.append(line)
+                lastShortenedLine = ''
+            else:
+                line = lastShortenedLine + line
+                shortenedLines = GuiUtil._splitLongLineToShorterLinesAccountingForMarkup(line, width, leftShiftStr)
+
+                if len(shortenedLines) > 1:
+                    listOfLimitedWidthParagraphs.extend(shortenedLines[:-1])
+                    lastShortenedLine = shortenedLines[-1]
+                else:
+                    listOfLimitedWidthParagraphs.extend(shortenedLines)
+                    lastShortenedLine = ''
+
+        return listOfLimitedWidthParagraphs
+
+    @staticmethod
     def sizeParagraphsToSmallerWidth(longParagraphLineStr, width):
         '''
         Returns a string corresponding to the input longParagraphLineStr parm,
@@ -143,8 +175,7 @@ class GuiUtil:
 
         listOfLimitedWidthParagraphs = GuiUtil._splitLongLineToShorterLinesAccountingForMarkup(longParagraphLineStr, width, leftShiftStr)
 
-
-        return '\n' + longParagraphLineStr
+        return '\n' + sizedParagraphLineStr
 
     @staticmethod
     def _getListOfShiftedAndMarkedUpSizedParagraphs(longParagraphLineStr, width):

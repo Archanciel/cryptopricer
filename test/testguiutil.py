@@ -355,7 +355,7 @@ This section explains the preceeding section''',resizedText)
         self.assertEqual(shortenedLineList[0], '    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is')
         self.assertEqual(shortenedLineList[1], '    specified,')
 
-    def test_splitLongLineToShorterLinesAccountingForDecodedMarkup(self):
+    def test_splitLongLineToShorterLinesAccountingForDecodedMarkupOneLine(self):
         line = '    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is specified,'
         width = 54
         leftShiftStr = '    '
@@ -365,6 +365,32 @@ This section explains the preceeding section''',resizedText)
                          '    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is')
         self.assertEqual(shortenedLineList[1], '    specified,')
 
+    def test_getListOfSizedRightShiftedParagraphs(self):
+
+        line = '''<date time> possible values:
+
+    [b][color=ffff00ff]0[/color][/b] for RT
+
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is specified,
+    current year is assumed. If no time is specified, current
+    time is assumed.
+
+
+    [b][color=ffff00ff]21/12 8:34[/color][/b] --> current year assumed'''
+
+        width = 54
+        leftShiftStr = '    '
+        shortenedLineList = GuiUtil._getListOfSizedRightShiftedParagraphs(line, width, leftShiftStr)
+
+        self.assertEqual('<date time> possible values:', shortenedLineList[0])
+        self.assertEqual('\n\n', shortenedLineList[1])
+        self.assertEqual('    [b][color=ffff00ff]0[/color][/b] for RT', shortenedLineList[2])
+        self.assertEqual('\n\n', shortenedLineList[3])
+        self.assertEqual('    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is', shortenedLineList[4])
+        self.assertEqual('    specified, current year is assumed. If no time is', shortenedLineList[5])
+        self.assertEqual('	specified, current time is assumed.', shortenedLineList[6])
+        self.assertEqual('\n\n\n', shortenedLineList[7])
+        self.assertEqual('    [b][color=ffff00ff]21/12 8:34[/color][/b] --> current year assumed', shortenedLineList[8])
 
 if __name__ == '__main__':
     unittest.main()
