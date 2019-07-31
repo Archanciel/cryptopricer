@@ -204,6 +204,23 @@ class GuiUtil:
         return shortenedLineList
 
     @staticmethod
+    def _encodeTabbedText(lineList):
+        encodedLinesList = []
+        tabMode = False
+
+        for line in lineList:
+            if '    ' in line:
+                tabMode = True
+                line = line.replace('    ', '[t]')
+            else:
+                if tabMode:
+                    tabMode = False
+
+            encodedLinesList.append(line)
+
+        return '\n'.join(encodedLinesList)
+
+    @staticmethod
     def _calculateMarkupsLength(lineWithMarkups):
         pattern = r"(\[[\w/=]+\])"
         markupsLen = 0

@@ -268,6 +268,61 @@ provider.
 
 This section explains the preceeding section''',resizedText)
 
+    def testSizeParagraphsToSmallerWidthWithMarkupColorFromFile(self):
+        FILE_PATH = 'popupMarkupTest.txt'
+        text = ''
+
+        with open(FILE_PATH) as markupFile:
+            # removing end of line newline char
+            for line in markupFile.readlines():
+                if len(line) > 1:
+                    if line[-1] == '\n':
+                        line = line[:-1]
+                text += line
+
+        width = 54
+        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        self.assertEqual('''
+[b][color=ff0000]CryptoPricer full request[/color][/b]
+
+btc usd 0 all
+
+Returns the current price of 1 btc in usd.
+
+The price is an average of the btc quotation on all
+the exchanges. It is computed by the crypto prices
+provider.
+
+
+
+[b][color=ff0000]Next section[/color][/b]
+
+This section explains the preceeding section''', resizedText)
+
+    def test_encodeTabbedText(self):
+        lineList = None
+
+        with open('shiftedPopupMarkupTest.txt', 'r') as file:
+            lineList = file.read().splitlines()
+
+        encodedTabbedText = GuiUtil._encodeTabbedText(lineList)
+
+        self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
+
+btc usd 0 all
+
+Returns the current price of 1 btc in usd.
+
+[t]The price is an average of the btc quotation on all
+[t]the exchanges. It is computed by the crypto prices
+[t]provider.
+no tab line
+
+
+[b][color=ff0000]Next section[/color][/b]
+
+This section explains the preceeding section''', encodedTabbedText)
+
     def testDecodeMarkup(self):
         text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\n[b][color=ff0000]Next section[/color][/b]\n\nThis section explains the preceeding section'
         width = 54
