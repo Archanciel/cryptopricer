@@ -2,7 +2,7 @@ def encodeTabbedLines():
     encodedLinesList = []
     tabMode = False
        
-    with open('/sdcard/tabbedText.txt', 'r') as file:
+    with open('tabbedText.txt', 'r') as file:
         for line in file.read().splitlines():
             if '    ' in line:
                 tabMode = True
@@ -20,7 +20,7 @@ def encodeTabbedLinesVariant():
     encodedLinesList = []
     tabMode = False
        
-    with open('/sdcard/tabbedText.txt', 'r') as file:
+    with open('tabbedText.txt', 'r') as file:
         for line in file.read().splitlines():
             if '    ' in line:
                 tabMode = True
@@ -38,7 +38,7 @@ def encodeTabbedLinesSmarter():
     encodedLinesList = []
     tabMode = False
        
-    with open('/sdcard/tabbedText.txt', 'r') as file:
+    with open('tabbedText.txt', 'r') as file:
         for line in file.read().splitlines():
             if '    ' in line and not tabMode:
                 tabMode = True

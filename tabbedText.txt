@@ -1,6 +1,7 @@
 bonjour.
-    ceci est dÃ©calÃ©,
+    ceci est décalé,
     et cela aussi.
+mais pas cela
 
 
 Et maintenant, la suite ...
