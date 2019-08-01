@@ -303,13 +303,17 @@ This section explains the preceeding section''', resizedText)
         FILE_PATH = 'regularAndShiftedPopupMarkupTest.txt'
         text = ''
 
-        with open(FILE_PATH) as markupFile:
-            # removing end of line newline char
-            for line in markupFile.readlines():
-                if len(line) > 1:
-                    if line[-1] == '\n':
-                        line = line[:-1]
-                text += line
+        # with open(FILE_PATH) as markupFile:
+        #     # removing end of line newline char
+        #     for line in markupFile.readlines():
+        #         if len(line) > 1:
+        #             if line[-1] == '\n':
+        #                 line = line[:-1]
+        #         text += line
+
+        with open(FILE_PATH) as file:
+#            lineList = file.read().splitlines()
+            text = file.read()
 
         width = 54
         resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)

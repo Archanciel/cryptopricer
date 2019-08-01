@@ -34,6 +34,38 @@ class GuiUtil:
 
         return shortenedLineList
 
+    def _splitTabbedLineToShorterTabedLines(longLine, shorterLinesMaxLen):
+        '''
+        Splits the longLine string into lines not exceeding shorterLinesMaxLen and returns the lines
+        into a list.
+
+        :param longLine:
+        :param shorterLinesMaxLen:
+        :return:
+        '''
+        if longLine == '':
+            return []
+
+        wordList = longLine.split(' ')
+        shortenedLine = wordList[0]
+        shortenedLineLen = len(shortenedLine)
+        shortenedLineList = []
+
+        for word in wordList[1:]:
+            wordLen = len(word)
+
+            if shortenedLineLen + wordLen + 1 > shorterLinesMaxLen:
+                shortenedLineList.append(shortenedLine)
+                shortenedLine = word
+                shortenedLineLen = wordLen
+            else:
+                shortenedLine += ' ' + word
+                shortenedLineLen += wordLen + 1
+
+        shortenedLineList.append(shortenedLine)
+
+        return shortenedLineList
+
     @staticmethod
     def _getListOfParagraphs(text):
         '''
@@ -42,7 +74,7 @@ class GuiUtil:
         :param text:
         :return: list of paragraphs AND their separators \n\n\n, \n\n, or \n.
         '''
-        pattern = r'([\w .,:-\[\]/]+)(\n\n\n|\n\n|\n|.*)'
+        pattern = r'([\w .,:-\[\]/*]+)(\n\n\n|\n\n|\n|.*)'
         listOfParagraphs = []
 
         for match in re.finditer(pattern, text):
@@ -69,6 +101,9 @@ class GuiUtil:
         for line in listOfOriginalWidthParagraphs:
             if '\n' in line:
                 listOfLimitedWidthParagraphs.append(line)
+            elif '[t]' in line:
+                shortenedLines = GuiUtil._splitTabbedLineToShorterTabedLines(line, width)
+                listOfLimitedWidthParagraphs.extend(shortenedLines)
             else:
                 shortenedLines = GuiUtil._splitLongLineToShorterLines(line, width)
                 listOfLimitedWidthParagraphs.extend(shortenedLines)
@@ -92,7 +127,8 @@ class GuiUtil:
         :param width: line width in char number
         :return: string of shorter lines and \n\n\n, \n\n or \n
         '''
-        listOfLimitedWidthParagraphs = GuiUtil._getListOfSizedParagraphs(longParagraphLineStr, width)
+        tabEncodedLongParagraphLineStr = GuiUtil._encodeTabbedText(longParagraphLineStr.splitlines())
+        listOfLimitedWidthParagraphs = GuiUtil._getListOfSizedParagraphs(tabEncodedLongParagraphLineStr, width)
         sizedParagraphLineStr = ''
 
         for line in listOfLimitedWidthParagraphs:
