@@ -81,6 +81,12 @@ class GuiUtil:
         Returns a string corresponding to the input longParagraphLineStr parm,
         but with lines shortened to be smaller or equal to the passed width.
 
+        This method is no longer used by CriptoPricerGui.py since it is simpler
+        to use the capacity of the Kivy Label used in the ScrollablePopup to
+        format the lines of words according to the Label effective width. This
+        width will be different on each Android device on which CriptoPricerGui
+        is executed !
+
         :param longParagraphLineStr: string containing paragraphs separated by \n\n\n, \n\n
                                      or \n
         :param width: line width in char number
