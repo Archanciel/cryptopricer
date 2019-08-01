@@ -299,6 +299,45 @@ provider.
 
 This section explains the preceeding section''', resizedText)
 
+    def testSizeParagraphsToSmallerWidthWithMarkupColorAndTabbedParagraphsFromFile(self):
+        FILE_PATH = 'regularAndShiftedPopupMarkupTest.txt'
+        text = ''
+
+        with open(FILE_PATH) as markupFile:
+            # removing end of line newline char
+            for line in markupFile.readlines():
+                if len(line) > 1:
+                    if line[-1] == '\n':
+                        line = line[:-1]
+                text += line
+
+        width = 54
+        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        self.assertEqual('''
+[b][color=ff0000]CryptoPricer full request[/color][/b]
+
+btc usd 0 all
+
+Returns the current price of 1 btc in usd.
+
+This is a long explanation which will occupy several
+lines once reorganized by the Label itself.
+    The price is an average of the btc quotation on 
+    all the exchanges. It is computed by the crypto 
+    prices provider.
+no tab line
+
+    * new tabbed line
+
+    * other tabbed line
+    
+    * last tabbed line
+
+
+[b][color=ff0000]Next section[/color][/b]
+
+This section explains the preceeding section''', resizedText)
+
     def test_encodeTabbedText(self):
         lineList = None
 
