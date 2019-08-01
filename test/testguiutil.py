@@ -317,6 +317,11 @@ Returns the current price of 1 btc in usd.
 [t]the exchanges. It is computed by the crypto prices
 [t]provider.
 no tab line
+[t]* new tabbed line
+
+[t]* other tabbed line
+[t]
+[t]* last tabbed line
 
 
 [b][color=ff0000]Next section[/color][/b]
