@@ -148,7 +148,7 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(multilineNote[1], 'method doC4NotRecordedInFlow() which is not part of the execution flow recorded by GuiUtil.')
 
     def test_getListOfParagraphs(self):
-        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in: usd.\nThe price is an average of the btc quotation, or: price, on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\n\nThis section explains the preceeding section'
+        text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in: usd.\n\nThe price is an average of the btc quotation, or: price, on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
 
         list = GuiUtil._getListOfParagraphs(text)
         self.assertEqual(len(list), 11)
@@ -165,7 +165,7 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(list[10],'This section explains the preceeding section')
 
     def test_getListOfSizedParagraphs(self):
-        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\n\nThis section explains the preceeding section'
+        text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
         width = 60
         list = GuiUtil._getListOfSizedParagraphs(text, width)
         self.assertEqual(len(list), 12)
@@ -183,7 +183,7 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(list[11],'This section explains the preceeding section')
 
     def test_getListOfSizedParagraphsSmallerWidth(self):
-        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\n\nThis section explains the preceeding section'
+        text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
         width = 30
         list = GuiUtil._getListOfSizedParagraphs(text, width)
         self.assertEqual(len(list), 16)
@@ -206,7 +206,7 @@ class TestGuiUtil(unittest.TestCase):
 
 
     def testSizeParagraphsToSmallerWidth(self):
-        text = 'CryptoPricer full request\nbtc usd 0 all\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\nThis section explains the preceeding section'
+        text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\nThis section explains the preceeding section'
         width = 54
         resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
         self.assertEqual('''
@@ -227,7 +227,7 @@ Next section
 This section explains the preceeding section''',resizedText)
 
     def testSizeParagraphsToSmallerWidthWithMarkup(self):
-        text = '[b]CryptoPricer full request[/b]\nbtc usd 0 all\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\nNext section\nThis section explains the preceeding section'
+        text = '[b]CryptoPricer full request[/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\nThis section explains the preceeding section'
         width = 54
         resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
         self.assertEqual('''
@@ -248,7 +248,7 @@ Next section
 This section explains the preceeding section''',resizedText)
 
     def testSizeParagraphsToSmallerWidthWithMarkupColor(self):
-        text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\nbtc usd 0 all\nReturns the current price of 1 btc in usd.\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n[b][color=ff0000]Next section[/color][/b]\nThis section explains the preceeding section'
+        text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\n[b][color=ff0000]Next section[/color][/b]\n\nThis section explains the preceeding section'
         width = 54
         resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
         self.assertEqual('''
@@ -273,12 +273,7 @@ This section explains the preceeding section''',resizedText)
         text = ''
 
         with open(FILE_PATH) as markupFile:
-            # removing end of line newline char
-            for line in markupFile.readlines():
-                if len(line) > 1:
-                    if line[-1] == '\n':
-                        line = line[:-1]
-                text += line
+            text = markupFile.read()
 
         width = 54
         resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
@@ -303,16 +298,7 @@ This section explains the preceeding section''', resizedText)
         FILE_PATH = 'regularAndShiftedPopupMarkupTest.txt'
         text = ''
 
-        # with open(FILE_PATH) as markupFile:
-        #     # removing end of line newline char
-        #     for line in markupFile.readlines():
-        #         if len(line) > 1:
-        #             if line[-1] == '\n':
-        #                 line = line[:-1]
-        #         text += line
-
         with open(FILE_PATH) as file:
-#            lineList = file.read().splitlines()
             text = file.read()
 
         width = 54
