@@ -139,7 +139,9 @@ class GuiUtil:
             else:
                 sizedParagraphLineStr += '\n' + line
 
-        return sizedParagraphLineStr
+        tabDecodedLongParagraphLineStr = GuiUtil._decodeTabbedText(sizedParagraphLineStr)
+
+        return tabDecodedLongParagraphLineStr
 
     @staticmethod
     def decodeMarkup(markupedStr):
@@ -263,6 +265,10 @@ class GuiUtil:
             encodedLinesList.append(line)
 
         return '\n'.join(encodedLinesList)
+
+    @staticmethod
+    def _decodeTabbedText(paragraphStr):
+        return paragraphStr.replace('[t]', '    ')
 
     @staticmethod
     def _calculateMarkupsLength(lineWithMarkups):
