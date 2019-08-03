@@ -1,11 +1,11 @@
-[b][color=ff0000]CryptoPricer full request[/color][/b]
+[b][cr]CryptoPricer full and long title request[/c][/b]
 
 btc usd 0 all
 
 Returns the current price of 1 btc in usd.
 
 This is a long explanation which will occupy several lines once reorganized by the Label itself.
-    The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.
+    The [b][cy]price[/c][/b] is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.
 no tab line
 
     * new tabbed line
@@ -15,6 +15,6 @@ no tab line
     * last tabbed line
 
 
-[b][color=ff0000]Next section[/color][/b]
+[b][cg]Next section[/cg][/b]
 
 This section explains the preceeding section

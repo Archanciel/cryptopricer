@@ -519,7 +519,9 @@ class CryptoPricerGUI(BoxLayout):
         with open('help.txt') as helpFile:
             helpText = helpFile.read()
 
-        formatedHelpText = GuiUtil.decodeMarkup(helpText)
+#        formatedHelpText = GuiUtil.decodeMarkup(helpText)
+        width = 54
+        formatedHelpText = GuiUtil.sizeParagraphsToSmallerWidth(helpText, width)
         popup.contentBox.content.text = formatedHelpText
         popup.open()
 

@@ -1,5 +1,10 @@
 import re
 
+TAB_SPACES = '    '
+TAB_CODE = '[t]'
+TAB_SIZE = 4
+
+
 class GuiUtil:
     @staticmethod
     def _splitLongLineToShorterLines(longLine, shorterLinesMaxLen):
@@ -34,7 +39,7 @@ class GuiUtil:
 
         return shortenedLineList
 
-    def _splitTabbedLineToShorterTabedLines(longLine, shorterLinesMaxLen):
+    def _splitTabbedLineToShorterTabbedLines(longLine, shorterLinesMaxLen):
         '''
         Splits the longLine string into lines not exceeding shorterLinesMaxLen and returns the lines
         into a list.
@@ -46,9 +51,11 @@ class GuiUtil:
         if longLine == '':
             return []
 
+        shorterLinesMaxLen -= TAB_SIZE
         wordList = longLine.split(' ')
         shortenedLine = wordList[0]
-        shortenedLineLen = len(shortenedLine)
+        markupsLen = GuiUtil._calculateMarkupsLength(longLine)
+        shortenedLineLen = -markupsLen + len(shortenedLine)
         shortenedLineList = []
 
         for word in wordList[1:]:
@@ -56,7 +63,7 @@ class GuiUtil:
 
             if shortenedLineLen + wordLen + 1 > shorterLinesMaxLen:
                 shortenedLineList.append(shortenedLine)
-                shortenedLine = word
+                shortenedLine = TAB_CODE + word
                 shortenedLineLen = wordLen
             else:
                 shortenedLine += ' ' + word
@@ -74,7 +81,7 @@ class GuiUtil:
         :param text:
         :return: list of paragraphs AND their separators \n\n\n, \n\n, or \n.
         '''
-        pattern = r'([\w .,:-\[\]/*]+)(\n\n\n\n|\n\n\n|\n\n|\n|.*)'
+        pattern = r'([\w .,:\-\[\]/*<>=]+)(\n\n\n\n|\n\n\n|\n\n|\n|.*)'
         listOfParagraphs = []
 
         for match in re.finditer(pattern, text):
@@ -103,11 +110,12 @@ class GuiUtil:
         for line in listOfOriginalWidthParagraphs:
             if '\n' in line:
                 listOfLimitedWidthParagraphs.append(line)
-            elif '[t]' in line:
-                shortenedLines = GuiUtil._splitTabbedLineToShorterTabedLines(line, width)
+            elif TAB_CODE in line:
+                shortenedLines = GuiUtil._splitTabbedLineToShorterTabbedLines(line, width)
                 listOfLimitedWidthParagraphs.extend(shortenedLines)
             else:
                 shortenedLines = GuiUtil._splitLongLineToShorterLines(line, width)
+#                shortenedLines = [line]
                 listOfLimitedWidthParagraphs.extend(shortenedLines)
 
         return listOfLimitedWidthParagraphs
@@ -129,6 +137,21 @@ class GuiUtil:
         :param width: line width in char number
         :return: string of shorter lines and \n\n\n, \n\n or \n
         '''
+        replaceTupleList = [("[cr]", "[color=ff0000]"),
+                            ("[cg]", "[color=19ff52ff]"),
+                            ("[cy]", "[color=ffff00ff]"),
+                            ("[/cr]", "[/color]"),
+                            ("[/cg]", "[/color]"),
+                            ("[/cy]", "[/color]"),
+                            ("[/c]", "[/color]")]
+
+        # Iterate over the strings to be replaced
+        for code, replCode in replaceTupleList:
+            # Check if string is in the main string
+            if code in longParagraphLineStr:
+                # Replace the string
+                longParagraphLineStr = longParagraphLineStr.replace(code, replCode)
+
         tabEncodedLongParagraphLineStr = GuiUtil._encodeTabbedText(longParagraphLineStr.splitlines())
         listOfLimitedWidthParagraphs = GuiUtil._getListOfSizedParagraphs(tabEncodedLongParagraphLineStr, width)
         sizedParagraphLineStr = ''
@@ -187,8 +210,8 @@ class GuiUtil:
                 # Replace the string
                 longParagraphLineStr = longParagraphLineStr.replace(code, replCode)
 
-        listOfLimitedWidthParagraphs = GuiUtil._splitLongLineToShorterLinesAccountingForMarkup(longParagraphLineStr, width, leftShiftStr)
-
+        listOfLimitedWidthParagraphs = GuiUtil._splitLongLineToShorterLinesAccountingForMarkup(longParagraphLineStr,
+                                                                                               width)
 
         return '\n' + longParagraphLineStr
 
@@ -216,48 +239,15 @@ class GuiUtil:
         return listOfLimitedWidthParagraphs
 
     @staticmethod
-    def _splitLongLineToShorterLinesAccountingForMarkup(longLine, shorterLinesMaxLen, leftShiftStr):
-        '''
-        Splits the longLine string into lines not exceeding shorterLinesMaxLen and returns the lines
-        into a list. Markup chars are ignored when computing the returned line length.
-
-        :param longLine:
-        :param shorterLinesMaxLen:
-        :return:
-        '''
-        if longLine == '':
-            return []
-
-        wordList = longLine.split(' ')
-        shortenedLine = wordList[0]
-        markupsLen = GuiUtil._calculateMarkupsLength(longLine)
-        shortenedLineLen = -markupsLen + len(shortenedLine)
-        shortenedLineList = []
-
-        for word in wordList[1:]:
-            wordLen = len(word)
-
-            if shortenedLineLen + wordLen + 1 > shorterLinesMaxLen:
-                shortenedLineList.append(shortenedLine)
-                shortenedLine = leftShiftStr + word
-                shortenedLineLen = wordLen
-            else:
-                shortenedLine += ' ' + word
-                shortenedLineLen += wordLen + 1
-
-        shortenedLineList.append(shortenedLine)
-
-        return shortenedLineList
-
-    @staticmethod
     def _encodeTabbedText(lineList):
         encodedLinesList = []
         tabMode = False
+        pattern = r'^' + TAB_SPACES
 
         for line in lineList:
-            if '    ' in line:
+            if re.match(pattern, line):
                 tabMode = True
-                line = line.replace('    ', '[t]')
+                line = re.sub(pattern, TAB_CODE, line)
             else:
                 if tabMode:
                     tabMode = False
@@ -268,7 +258,7 @@ class GuiUtil:
 
     @staticmethod
     def _decodeTabbedText(paragraphStr):
-        return paragraphStr.replace('[t]', '    ')
+        return paragraphStr.replace(TAB_CODE, TAB_SPACES)
 
     @staticmethod
     def _calculateMarkupsLength(lineWithMarkups):

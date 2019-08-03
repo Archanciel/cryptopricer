@@ -312,8 +312,8 @@ Returns the current price of 1 btc in usd.
 
 This is a long explanation which will occupy several
 lines once reorganized by the Label itself.
-    The price is an average of the btc quotation on 
-    all the exchanges. It is computed by the crypto 
+    The price is an average of the btc quotation on
+    all the exchanges. It is computed by the crypto
     prices provider.
 no tab line
 
@@ -327,6 +327,128 @@ no tab line
 [b][color=ff0000]Next section[/color][/b]
 
 This section explains the preceeding section''', resizedText)
+
+    def testSizeParagraphsToSmallerWidthWithLongMarkupColorAndTabbedParagraphsFromFile(self):
+        FILE_PATH = 'regularAndShiftedPopupLongMarkupTest.txt'
+        text = ''
+
+        with open(FILE_PATH) as file:
+            text = file.read()
+
+        width = 54
+        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        self.assertEqual('''
+[b][color=ff0000]CryptoPricer full and long title
+request[/color][/b]
+
+btc usd 0 all
+
+Returns the current price of 1 btc in usd.
+
+This is a long explanation which will occupy several
+lines once reorganized by the Label itself.
+    The [b][color=ffff00ff]price[/color][/b] is an average of the btc quotation on
+    all the exchanges. It is computed by the crypto
+    prices provider.
+no tab line
+
+    * new tabbed line
+
+    * other tabbed line
+    
+    * last tabbed line
+
+
+[b][color=19ff52ff]Next section[/color][/b]
+
+This section explains the preceeding section''', resizedText)
+
+    def testSizeParagraphsOnRealPartialHelpFile(self):
+        FILE_PATH = 'partial_help.txt'
+        text = ''
+
+        with open(FILE_PATH) as file:
+            text = file.read()
+
+        width = 54
+        resizedText = GuiUtil.decodeMarkup(text)
+        self.assertEqual('''
+[b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
+
+CryptoPricer supports two kinds of requests: full requests and partial requests.
+
+[b]Full request[/b]
+
+<crypto> <fiat> <date time> <exchange> <options>
+
+<date time> possible values:
+
+    [b][color=ffff00ff]0[/color][/b] for RT
+
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is specified,
+    current year is assumed. If no time is specified, current
+    time is assumed.
+
+    [b][color=ffff00ff]21/12 8:34[/color][/b] --> current year assumed
+
+    21 8:34  --> here, since no month is specified,
+    current month or previous month is assumed.
+
+    8:34 --> here, since no date is specified, current
+    date is assumed.
+
+[b]WARNING[/b]: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
+
+[b]Output price qualifiers[/b]:
+
+R = RT
+M = Minute price (precision at the minute)
+C = Close price
+''', resizedText)
+
+    def testSizeParagraphsOnRealPartialNoBreakLinesHelpFile(self):
+        FILE_PATH = 'partial_help_nobreaked_lines.txt'
+        text = ''
+
+        with open(FILE_PATH) as file:
+            text = file.read()
+
+        width = 54
+        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        #        resizedText = GuiUtil.decodeMarkup(text)
+        self.assertEqual('''
+[b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
+
+CryptoPricer supports two kinds of requests: full requests and partial requests.
+
+[b]Full request[/b]
+
+<crypto> <fiat> <date time> <exchange> <options>
+
+<date time> possible values:
+
+    [b][color=ffff00ff]0[/color][/b] for RT
+
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is specified,
+    current year is assumed. If no time is specified, current
+    time is assumed.
+
+    [b][color=ffff00ff]21/12 8:34[/color][/b] --> current year assumed
+
+    21 8:34  --> here, since no month is specified,
+    current month or previous month is assumed.
+
+    8:34 --> here, since no date is specified, current
+    date is assumed.
+
+[b]WARNING[/b]: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
+
+[b]Output price qualifiers[/b]:
+
+R = RT
+M = Minute price (precision at the minute)
+C = Close price
+''', resizedText)
 
     def test_encodeTabbedText(self):
         lineList = None
@@ -405,22 +527,19 @@ This section explains the preceeding section''',resizedText)
 
     [b][cy]0[/cy][/b] for RT
 
-    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified,
-    current year is assumed. If no time is specified, current
-    time is assumed.
+    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified, current year is assumed. If no time is specified, current time is assumed.
 
 
     [b][cy]21/12 8:34[/c][/b] --> current year assumed'''
 
         width = 54
-        leftShiftStr = '    '
-        resizedText = GuiUtil.applyRightShift(text, width, leftShiftStr)
+        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
         self.assertEqual('''
 <date time> possible values:
 
     [b][color=ffff00ff]0[/color][/b] for RT
 
-    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is 
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is
     specified, current year is assumed. If no time is
     specified, current time is assumed.
 
@@ -434,26 +553,6 @@ This section explains the preceeding section''',resizedText)
         self.assertEqual(GuiUtil._calculateMarkupsLength(text), 15)
         text = '[b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is '
         self.assertEqual(GuiUtil._calculateMarkupsLength(text), 31)
-
-    def test_splitShiftedLongLineToShorterLinesAccountingForCodedMarkup(self):
-        line = '    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified,'
-        width = 54
-        leftShiftStr = '    '
-        shortenedLineList = GuiUtil._splitLongLineToShorterLinesAccountingForMarkup(line, width, leftShiftStr)
-
-        self.assertEqual(shortenedLineList[0], '    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is')
-        self.assertEqual(shortenedLineList[1], '    specified,')
-
-    def test_splitShiftedLongLineToShorterLinesAccountingForDecodedMarkup(self):
-        line = '    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is specified,'
-        width = 54
-        leftShiftStr = '    '
-        shortenedLineList = GuiUtil._splitLongLineToShorterLinesAccountingForMarkup(line, width, leftShiftStr)
-
-        self.assertEqual(shortenedLineList[0],
-                         '    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is')
-        self.assertEqual(shortenedLineList[1], '    specified,')
-
 
 if __name__ == '__main__':
     unittest.main()
