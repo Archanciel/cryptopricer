@@ -429,13 +429,13 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
     [b][color=ffff00ff]0[/color][/b] for RT
 
-    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is specified,
-    current year is assumed. If no time is specified, current
-    time is assumed.
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is
+    specified, current year is assumed. If no time is
+    specified, current time is assumed.
 
     [b][color=ffff00ff]21/12 8:34[/color][/b] --> current year assumed
 
-    21 8:34  --> here, since no month is specified,
+    21 8:34 --> here, since no month is specified,
     current month or previous month is assumed.
 
     8:34 --> here, since no date is specified, current
@@ -447,8 +447,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 R = RT
 M = Minute price (precision at the minute)
-C = Close price
-''', resizedText)
+C = Close price''', resizedText)
 
     def test_encodeTabbedText(self):
         lineList = None

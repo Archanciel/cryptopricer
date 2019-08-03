@@ -81,7 +81,7 @@ class GuiUtil:
         :param text:
         :return: list of paragraphs AND their separators \n\n\n, \n\n, or \n.
         '''
-        pattern = r'([\w .,:\-\[\]/*<>=]+)(\n\n\n\n|\n\n\n|\n\n|\n|.*)'
+        pattern = r'([\w .,:\-\[\]/*<>=\'\(\)]+)(\n\n\n\n|\n\n\n|\n\n|\n|.*)'
         listOfParagraphs = []
 
         for match in re.finditer(pattern, text):
@@ -114,9 +114,10 @@ class GuiUtil:
                 shortenedLines = GuiUtil._splitTabbedLineToShorterTabbedLines(line, width)
                 listOfLimitedWidthParagraphs.extend(shortenedLines)
             else:
-                shortenedLines = GuiUtil._splitLongLineToShorterLines(line, width)
-#                shortenedLines = [line]
-                listOfLimitedWidthParagraphs.extend(shortenedLines)
+#                shortenedLines = GuiUtil._splitLongLineToShorterLines(line, width)
+#                listOfLimitedWidthParagraphs.extend(shortenedLines)
+                if line != '':
+                    listOfLimitedWidthParagraphs.extend([line])
 
         return listOfLimitedWidthParagraphs
 
