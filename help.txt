@@ -10,13 +10,13 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
     [b][cy]0[/cy][/b] for RT
 
-    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified, current year is assumed. If no time is specified, current time is assumed.
+    [b][cy]21/12[/c][/b] or [b][cy]21/12/19[/c][/b] or [b][cy]21/12/2019[/c][/b]. If no year is specified, current year is assumed. If no time is specified, current time is assumed.
 
     [b][cy]21/12 8:34[/c][/b] --> current year assumed
 
-    21 8:34 --> here, since no month is specified, current month or previous month is assumed.
+    [b][cy]21 8:34[/c][/b] --> here, since no month is specified, current month or previous month is assumed.
 
-    8:34 --> here, since no date is specified, current date is assumed.
+    [b][cy]8:34[/c][/b] --> here, since no date is specified, current date is assumed.
 
 [b]WARNING[/b]: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
 
