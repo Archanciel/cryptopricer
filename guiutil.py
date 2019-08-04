@@ -136,23 +136,8 @@ class GuiUtil:
         :param width: line width in char number
         :return: string of shorter lines and \n\n\n, \n\n or \n
         '''
-        pattern = r''
-        replaceTupleList = [("[cr]", "[color=ff0000]"),
-                            ("[cg]", "[color=19ff52ff]"),
-                            ("[cy]", "[color=ffff00ff]"),
-                            ("[/cr]", "[/color]"),
-                            ("[/cg]", "[/color]"),
-                            ("[/cy]", "[/color]"),
-                            ("[/c]", "[/color]")]
-
-        # Iterate over the strings to be replaced
-        for code, replCode in replaceTupleList:
-            # Check if string is in the main string
-            if code in longParagraphLineStr:
-                # Replace the string
-                longParagraphLineStr = longParagraphLineStr.replace(code, replCode)
-
-        tabEncodedLongParagraphLineStr = GuiUtil._encodeTabbedText(longParagraphLineStr.splitlines())
+        decodedMarkupParagraphStr = GuiUtil._decodeMarkup(longParagraphLineStr)
+        tabEncodedLongParagraphLineStr = GuiUtil._encodeTabbedText(decodedMarkupParagraphStr.splitlines())
         listOfLimitedWidthParagraphs = GuiUtil._getListOfSizedParagraphs(tabEncodedLongParagraphLineStr, width)
         sizedParagraphLineStr = ''
 
@@ -167,7 +152,7 @@ class GuiUtil:
         return tabDecodedLongParagraphLineStr
 
     @staticmethod
-    def decodeMarkup(markupedStr):
+    def _decodeMarkup(markupedStr):
         '''
         Returns a string corresponding to the input longParagraphLineStr parm containing coded
         markups with them replaced by Kivy markups.
@@ -191,7 +176,7 @@ class GuiUtil:
                 # Replace the string
                 markupedStr = markupedStr.replace(code, replCode)
 
-        return '\n' + markupedStr
+        return markupedStr
 
     @staticmethod
     def applyRightShift(longParagraphLineStr, width, leftShiftStr):

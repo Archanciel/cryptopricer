@@ -346,7 +346,7 @@ no tab line
 
 This section explains the preceeding section''', resizedText)
 
-    def testSizeParagraphsOnRealPartialHelpFile(self):
+    def test_decodeMarkupOnRealPartialHelpFile(self):
         FILE_PATH = 'partial_help.txt'
         text = ''
 
@@ -354,9 +354,8 @@ This section explains the preceeding section''', resizedText)
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil.decodeMarkup(text)
-        self.assertEqual('''
-[b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
+        resizedText = GuiUtil._decodeMarkup(text)
+        self.assertEqual('''[b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
 
 CryptoPricer supports two kinds of requests: full requests and partial requests.
 
@@ -461,12 +460,11 @@ no tab line
 
 This section explains the preceeding section''', encodedTabbedText)
 
-    def testDecodeMarkup(self):
+    def test_decodeMarkup(self):
         text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\n[b][color=ff0000]Next section[/color][/b]\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil.decodeMarkup(text)
-        self.assertEqual('''
-[b][color=ff0000]CryptoPricer full request[/color][/b]
+        resizedText = GuiUtil._decodeMarkup(text)
+        self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
 
 btc usd 0 all
 
@@ -480,7 +478,7 @@ The price is an average of the btc quotation on all the exchanges. It is compute
 
 This section explains the preceeding section''',resizedText)
 
-    def testDecodeMarkupFromFile(self):
+    def test_decodeMarkupFromFile(self):
         FILE_PATH = 'scrollablePopupMarkupTest.txt'
         text = ''
 
@@ -488,9 +486,8 @@ This section explains the preceeding section''',resizedText)
             text = markupFile.read()
 
         width = 54
-        resizedText = GuiUtil.decodeMarkup(text)
-        self.assertEqual('''
-[b][color=ff0000]CryptoPricer full request[/color][/b]
+        resizedText = GuiUtil._decodeMarkup(text)
+        self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
 
 btc usd 0 all
 
