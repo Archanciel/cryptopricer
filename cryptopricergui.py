@@ -511,16 +511,16 @@ class CryptoPricerGUI(BoxLayout):
 
         if platform == 'android':
             popupSize = (980, 1200)
+            width = 45
         elif platform == 'win':
             popupSize = (400, 450)
+            width = 54
 
         popup = ScrollablePopup(title='CryptoPricer 2.3', size_hint=(None, None), size=popupSize)
 
         with open('help.txt') as helpFile:
             helpText = helpFile.read()
 
-#        formatedHelpText = GuiUtil.decodeMarkup(helpText)
-        width = 54
         formatedHelpText = GuiUtil.sizeParagraphsForKivyLabel(helpText, width)
         popup.contentBox.content.text = formatedHelpText
         popup.open()
