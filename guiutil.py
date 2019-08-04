@@ -41,8 +41,11 @@ class GuiUtil:
 
     def _splitTabbedLineToShorterTabbedLines(longLine, shorterLinesMaxLen):
         '''
-        Splits the longLine string into lines not exceeding shorterLinesMaxLen and returns the lines
-        into a list.
+        Splits the longLine string into lines starting with a tab code and not exceeding
+        shorterLinesMaxLen and returns the shortened lines into a list of tab coded lines.
+
+        This method takes care of the existence of any Kivy markup, which must not be accounted
+        into the size of the resized line.
 
         :param longLine:
         :param shorterLinesMaxLen:
@@ -74,9 +77,11 @@ class GuiUtil:
         return shortenedLineList
 
     @staticmethod
-    def _getListOfParagraphs(text):
+    def _getListOfOriginalSizeParagraphs(text):
         '''
         The text input parm contains paragraphs separated by either \n\n\n, \n\n, or \n.
+        The method split the input string into a list of paragraphs AND their separators \n\n\n,
+        \n\n, or \n.
 
         :param text:
         :return: list of paragraphs AND their separators \n\n\n, \n\n, or \n.
@@ -94,33 +99,50 @@ class GuiUtil:
         return listOfParagraphs
 
     @staticmethod
-    def _getListOfSizedParagraphs(longParagraphLineStr, width):
+    def _getListOfParagraphsSizedForKivyLabel(longParagraphLineStr, width):
         '''
+        The Kivy label handles correctly any sized lines, putting words on the next line when the
+        label width is reached. But in case of right shifted paragraphs(i.e starting with a tab code),
+        additional processing must be performed sto split the shifted paragraph into shifted lines,
+        i.e lines starting with a tab code ([t]).
+
         Returns a list of lines corresponding to the input longParagraphLineStr parm.
-        The returned lines do not exceed the passed width.
+        The returned lines correspond to the original paragraph if it contai×s no tab code. Otherwise,
+        the tabbed paragraph is splitted into correctly sized tabbed lines since the Kivy label does
+        not handles correctly right shifted lines.
+
+        So, the width parm is relevant only for handling right shifted paragraphs.
 
         :param longParagraphLineStr: string containing paragraphs separated by \n\n\n, \n\n
                                      or \n
         :param width: line width in char number
         :return: list of lines and \n\n\n, \n\n or \n
         '''
-        listOfOriginalWidthParagraphs = GuiUtil._getListOfParagraphs(longParagraphLineStr)
+
+        # first, split the longParagraphLineStr into original size paragraphs.
+        listOfOriginalWidthParagraphs = GuiUtil._getListOfOriginalSizeParagraphs(longParagraphLineStr)
+
+        # then, handles each original size paragraph either leaving it unchanged if it is
+        # not a right shifted paragraph, or splitting it into correctly shortened lines if
+        # it is right shifted.
         listOfLimitedWidthParagraphs = []
 
         for line in listOfOriginalWidthParagraphs:
             if '\n' in line:
                 listOfLimitedWidthParagraphs.append(line)
             elif TAB_CODE in line:
+                # handling right shifted paragraph
                 shortenedLines = GuiUtil._splitTabbedLineToShorterTabbedLines(line, width)
                 listOfLimitedWidthParagraphs.extend(shortenedLines)
             else:
                 if line != '':
+                    # leaving regular paragraph unchanged
                     listOfLimitedWidthParagraphs.extend([line])
 
         return listOfLimitedWidthParagraphs
 
     @staticmethod
-    def sizeParagraphsToSmallerWidth(longParagraphLineStr, width):
+    def sizeParagraphsForKivyLabel(longParagraphLineStr, width):
         '''
         Returns a string corresponding to the input longParagraphLineStr parm,
         but with lines shortened to be smaller or equal to the passed width.
@@ -136,26 +158,37 @@ class GuiUtil:
         :param width: line width in char number
         :return: string of shorter lines and \n\n\n, \n\n or \n
         '''
-        decodedMarkupParagraphStr = GuiUtil._decodeMarkup(longParagraphLineStr)
-        tabEncodedLongParagraphLineStr = GuiUtil._encodeTabbedText(decodedMarkupParagraphStr.splitlines())
-        listOfLimitedWidthParagraphs = GuiUtil._getListOfSizedParagraphs(tabEncodedLongParagraphLineStr, width)
-        sizedParagraphLineStr = ''
 
-        for line in listOfLimitedWidthParagraphs:
+        # replacing short markup codes by full Kivy markup codes
+        decodedMarkupParagraphStr = GuiUtil._decodeMarkups(longParagraphLineStr)
+
+        # replacing spaces in line beginning by spaces (shifted or tabbed lines) by a tab code ([t])
+        # to facilitate futher resizing of paragraphs.
+        tabEncodedLongParagraphLineStr = GuiUtil._encodeShiftedLinesWithTabCode(decodedMarkupParagraphStr.splitlines())
+
+        # sizing the paragraph so that they are correctly displayed in a Kivy label. Only the tabbed
+        # paragraphs are splitted in shorter tabbed lines
+        listOfResizedParagraphs = GuiUtil._getListOfParagraphsSizedForKivyLabel(tabEncodedLongParagraphLineStr, width)
+
+        # reconstructing a string for the Kivy label
+        resizedParagraphLineStr = ''
+
+        for line in listOfResizedParagraphs:
             if '\n' in line:
-                sizedParagraphLineStr += line
+                resizedParagraphLineStr += line
             else:
-                sizedParagraphLineStr += '\n' + line
+                resizedParagraphLineStr += '\n' + line
 
-        tabDecodedLongParagraphLineStr = GuiUtil._decodeTabbedText(sizedParagraphLineStr)
+        # replacing the [t] tab code by its correspnding spaces
+        tabDecodedResizedParagraphLineStr = GuiUtil._decodeTabCodedShiftedLine(resizedParagraphLineStr)
 
-        return tabDecodedLongParagraphLineStr
+        return tabDecodedResizedParagraphLineStr
 
     @staticmethod
-    def _decodeMarkup(markupedStr):
+    def _decodeMarkups(markupedStr):
         '''
-        Returns a string corresponding to the input longParagraphLineStr parm containing coded
-        markups with them replaced by Kivy markups.
+        The input markupedStr parm contains coded markups ([cr] for setting the next words to red,
+        for example). The method replaces the markup codes with full Kivy markups.
 
         :param markupedStr: string containing coded markups
         :return: string containing Kivy markups
@@ -224,7 +257,13 @@ class GuiUtil:
         return listOfLimitedWidthParagraphs
 
     @staticmethod
-    def _encodeTabbedText(lineList):
+    def _encodeShiftedLinesWithTabCode(lineList):
+        '''
+        Replaces line begin tab spaces by a tab code ([t]) in the lines contained in the lineList input
+        parm. Returns a tab encoded string.
+        :param lineList:
+        :return: tab encoded string
+        '''
         encodedLinesList = []
         tabMode = False
         pattern = r'^' + TAB_SPACES
@@ -242,11 +281,16 @@ class GuiUtil:
         return '\n'.join(encodedLinesList)
 
     @staticmethod
-    def _decodeTabbedText(paragraphStr):
-        return paragraphStr.replace(TAB_CODE, TAB_SPACES)
+    def _decodeTabCodedShiftedLine(lineStr):
+        return lineStr.replace(TAB_CODE, TAB_SPACES)
 
     @staticmethod
     def _calculateMarkupsLength(lineWithMarkups):
+        '''
+        Computes the length os any Kivy markup code contained into the passed lineWithMarkups.
+        :param lineWithMarkups:
+        :return:
+        '''
         pattern = r"(\[[\w/=]+\])"
         markupsLen = 0
 

@@ -521,7 +521,7 @@ class CryptoPricerGUI(BoxLayout):
 
 #        formatedHelpText = GuiUtil.decodeMarkup(helpText)
         width = 54
-        formatedHelpText = GuiUtil.sizeParagraphsToSmallerWidth(helpText, width)
+        formatedHelpText = GuiUtil.sizeParagraphsForKivyLabel(helpText, width)
         popup.contentBox.content.text = formatedHelpText
         popup.open()
 

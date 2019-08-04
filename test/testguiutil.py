@@ -147,10 +147,10 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(multilineNote[0], 'ERROR - :seqdiag_loop_start tag located on line 53 of file containing class ClassLoopTagOnMethodNotInRecordFlow is placed on an instruction calling')
         self.assertEqual(multilineNote[1], 'method doC4NotRecordedInFlow() which is not part of the execution flow recorded by GuiUtil.')
 
-    def test_getListOfParagraphs(self):
+    def test_getListOfOriginalSizeParagraphs(self):
         text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in: usd.\n\nThe price is an average of the btc quotation, or: price, on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
 
-        list = GuiUtil._getListOfParagraphs(text)
+        list = GuiUtil._getListOfOriginalSizeParagraphs(text)
         self.assertEqual(len(list), 11)
         self.assertEqual(list[0],'CryptoPricer full request')
         self.assertEqual(list[1],'\n\n')
@@ -164,10 +164,10 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(list[9],'\n\n')
         self.assertEqual(list[10],'This section explains the preceeding section')
 
-    def test_getListOfSizedParagraphs(self):
+    def test_getListOfParagraphsSizedForKivyLabel(self):
         text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
         width = 60
-        list = GuiUtil._getListOfSizedParagraphs(text, width)
+        list = GuiUtil._getListOfParagraphsSizedForKivyLabel(text, width)
         self.assertEqual(len(list), 11)
         self.assertEqual(list[0],'CryptoPricer full request')
         self.assertEqual(list[1],'\n\n')
@@ -181,28 +181,51 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(list[9],'\n\n')
         self.assertEqual(list[10],'This section explains the preceeding section')
 
-    def test_getListOfSizedParagraphsSmallerWidth(self):
-        text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
+    def test_getListOfParagraphsSizedForKivyLabelWithTabCodedParagraph(self):
+        text = '[t]a first right shifted paragraph\n\n\n[t]btc usd 0 all\n\n\nReturns the current price of 1 btc in usd.\n\n[t]The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\n[t]This section explains the preceeding section'
+
         width = 30
-        list = GuiUtil._getListOfSizedParagraphs(text, width)
-        self.assertEqual(len(list), 11)
-        self.assertEqual(list[0],'CryptoPricer full request')
-        self.assertEqual(list[1],'\n\n')
-        self.assertEqual(list[2],'btc usd 0 all')
-        self.assertEqual(list[3],'\n\n')
-        self.assertEqual(list[4],'Returns the current price of 1 btc in usd.')
-        self.assertEqual(list[5],'\n')
-        self.assertEqual(list[6],'The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.')
-        self.assertEqual(list[7],'\n\n\n')
-        self.assertEqual(list[8],'Next section')
-        self.assertEqual(list[9],'\n\n')
-        self.assertEqual(list[10],'This section explains the preceeding section')
+        list = GuiUtil._getListOfParagraphsSizedForKivyLabel(text, width)
+        self.assertEqual(17, len(list))
+        self.assertEqual(list[0],'[t]a first right shifted')
+        self.assertEqual(list[1],'[t]paragraph')
+        self.assertEqual(list[2],'\n\n')
+        self.assertEqual(list[3],'[t]btc usd 0 all')
+        self.assertEqual(list[4],'\n\n')
+        self.assertEqual(list[5],'Returns the current price of 1 btc in usd.')
+        self.assertEqual(list[6],'\n')
+        self.assertEqual(list[7],'[t]The price is an average of')
+        self.assertEqual(list[8],'[t]the btc quotation on all')
+        self.assertEqual(list[9],'[t]the exchanges. It is')
+        self.assertEqual(list[10],'[t]computed by the crypto')
+        self.assertEqual(list[11],'[t]prices provider.')
+        self.assertEqual(list[12],'\n\n\n')
+        self.assertEqual(list[13],'Next section')
+        self.assertEqual(list[14],'\n\n')
+        self.assertEqual(list[15],'[t]This section explains the')
+        self.assertEqual(list[16],'[t]preceeding section')
 
+    def test_splitTabbedLineToShorterTabbedLines(self):
+        text = '[t]a first right shifted paragraph'
 
-    def testSizeParagraphsToSmallerWidth(self):
+        width = 30
+        list = GuiUtil._splitTabbedLineToShorterTabbedLines(text, width)
+        self.assertEqual(2, len(list))
+        self.assertEqual(list[0],'[t]a first right shifted')
+        self.assertEqual(list[1],'[t]paragraph')
+
+    def test_splitTabbedLineToShorterTabbedLinesShortTabbedParagraph(self):
+        text = '[t]a first right shifted'
+
+        width = 30
+        list = GuiUtil._splitTabbedLineToShorterTabbedLines(text, width)
+        self.assertEqual(1, len(list))
+        self.assertEqual(list[0],'[t]a first right shifted')
+
+    def testSizeParagraphsForKivyLabel(self):
         text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 CryptoPricer full request
 
@@ -218,10 +241,10 @@ Next section
 
 This section explains the preceeding section''',resizedText)
 
-    def testSizeParagraphsToSmallerWidthWithMarkup(self):
+    def testSizeParagraphsForKivyLabelWithMarkup(self):
         text = '[b]CryptoPricer full request[/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b]CryptoPricer full request[/b]
 
@@ -237,10 +260,10 @@ Next section
 
 This section explains the preceeding section''',resizedText)
 
-    def testSizeParagraphsToSmallerWidthWithMarkupColor(self):
+    def testSizeParagraphsForKivyLabelWithMarkupColor(self):
         text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\n[b][color=ff0000]Next section[/color][/b]\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -256,7 +279,7 @@ The price is an average of the btc quotation on all the exchanges. It is compute
 
 This section explains the preceeding section''',resizedText)
 
-    def testSizeParagraphsToSmallerWidthWithMarkupColorFromFile(self):
+    def testSizeParagraphsForKivyLabelWithMarkupColorFromFile(self):
         FILE_PATH = 'popupMarkupTest.txt'
         text = ''
 
@@ -264,7 +287,7 @@ This section explains the preceeding section''',resizedText)
             text = markupFile.read()
 
         width = 54
-        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -280,7 +303,7 @@ The price is an average of the btc quotation on all the exchanges. It is compute
 
 This section explains the preceeding section''', resizedText)
 
-    def testSizeParagraphsToSmallerWidthWithMarkupColorAndTabbedParagraphsFromFile(self):
+    def testSizeParagraphsForKivyLabelWithMarkupColorAndTabbedParagraphsFromFile(self):
         FILE_PATH = 'regularAndShiftedPopupMarkupTest.txt'
         text = ''
 
@@ -288,7 +311,7 @@ This section explains the preceeding section''', resizedText)
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -313,7 +336,7 @@ no tab line
 
 This section explains the preceeding section''', resizedText)
 
-    def testSizeParagraphsToSmallerWidthWithLongMarkupColorAndTabbedParagraphsFromFile(self):
+    def testSizeParagraphsForKivyLabelWithLongMarkupColorAndTabbedParagraphsFromFile(self):
         FILE_PATH = 'regularAndShiftedPopupLongMarkupTest.txt'
         text = ''
 
@@ -321,7 +344,7 @@ This section explains the preceeding section''', resizedText)
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full and long title request[/color][/b]
 
@@ -346,7 +369,7 @@ no tab line
 
 This section explains the preceeding section''', resizedText)
 
-    def test_decodeMarkupOnRealPartialHelpFile(self):
+    def test_decodeMarkupsOnRealPartialHelpFile(self):
         FILE_PATH = 'partial_help.txt'
         text = ''
 
@@ -354,7 +377,7 @@ This section explains the preceeding section''', resizedText)
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil._decodeMarkup(text)
+        resizedText = GuiUtil._decodeMarkups(text)
         self.assertEqual('''[b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
 
 CryptoPricer supports two kinds of requests: full requests and partial requests.
@@ -388,7 +411,7 @@ M = Minute price (precision at the minute)
 C = Close price
 ''', resizedText)
 
-    def testSizeParagraphsOnRealPartialNoBreakLinesHelpFile(self):
+    def testSizeParagraphsForKivyLabelnRealPartialNoBreakLinesHelpFile(self):
         FILE_PATH = 'partial_help_nobreaked_lines.txt'
         text = ''
 
@@ -396,7 +419,7 @@ C = Close price
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
         #        resizedText = GuiUtil.decodeMarkup(text)
         self.assertEqual('''
 [b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
@@ -431,13 +454,13 @@ R = RT
 M = Minute price (precision at the minute)
 C = Close price''', resizedText)
 
-    def test_encodeTabbedText(self):
+    def test_encodeShiftedLinesWithTabCode(self):
         lineList = None
 
         with open('shiftedPopupMarkupTest.txt', 'r') as file:
             lineList = file.read().splitlines()
 
-        encodedTabbedText = GuiUtil._encodeTabbedText(lineList)
+        encodedTabbedText = GuiUtil._encodeShiftedLinesWithTabCode(lineList)
 
         self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -460,10 +483,10 @@ no tab line
 
 This section explains the preceeding section''', encodedTabbedText)
 
-    def test_decodeMarkup(self):
+    def test_decodeMarkups(self):
         text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\n[b][color=ff0000]Next section[/color][/b]\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil._decodeMarkup(text)
+        resizedText = GuiUtil._decodeMarkups(text)
         self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
 
 btc usd 0 all
@@ -478,7 +501,7 @@ The price is an average of the btc quotation on all the exchanges. It is compute
 
 This section explains the preceeding section''',resizedText)
 
-    def test_decodeMarkupFromFile(self):
+    def test_decodeMarkupsFromFile(self):
         FILE_PATH = 'scrollablePopupMarkupTest.txt'
         text = ''
 
@@ -486,7 +509,7 @@ This section explains the preceeding section''',resizedText)
             text = markupFile.read()
 
         width = 54
-        resizedText = GuiUtil._decodeMarkup(text)
+        resizedText = GuiUtil._decodeMarkups(text)
         self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
 
 btc usd 0 all
@@ -501,7 +524,7 @@ The price is an average of the btc quotation on all the exchanges. It is compute
 
 This section explains the preceeding section''',resizedText)
 
-    def testApplyRightShift(self):
+    def testSizeParagraphsForKivyLabelWithShiftedParagraphs(self):
         text = '''<date time> possible values:
 
     [b][cy]0[/cy][/b] for RT
@@ -512,7 +535,7 @@ This section explains the preceeding section''',resizedText)
     [b][cy]21/12 8:34[/c][/b] --> current year assumed'''
 
         width = 54
-        resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
+        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 <date time> possible values:
 
