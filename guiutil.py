@@ -114,8 +114,6 @@ class GuiUtil:
                 shortenedLines = GuiUtil._splitTabbedLineToShorterTabbedLines(line, width)
                 listOfLimitedWidthParagraphs.extend(shortenedLines)
             else:
-#                shortenedLines = GuiUtil._splitLongLineToShorterLines(line, width)
-#                listOfLimitedWidthParagraphs.extend(shortenedLines)
                 if line != '':
                     listOfLimitedWidthParagraphs.extend([line])
 
@@ -138,6 +136,7 @@ class GuiUtil:
         :param width: line width in char number
         :return: string of shorter lines and \n\n\n, \n\n or \n
         '''
+        pattern = r''
         replaceTupleList = [("[cr]", "[color=ff0000]"),
                             ("[cg]", "[color=19ff52ff]"),
                             ("[cy]", "[color=ffff00ff]"),

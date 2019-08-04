@@ -168,41 +168,35 @@ class TestGuiUtil(unittest.TestCase):
         text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
         width = 60
         list = GuiUtil._getListOfSizedParagraphs(text, width)
-        self.assertEqual(len(list), 12)
+        self.assertEqual(len(list), 11)
         self.assertEqual(list[0],'CryptoPricer full request')
         self.assertEqual(list[1],'\n\n')
         self.assertEqual(list[2],'btc usd 0 all')
         self.assertEqual(list[3],'\n\n')
         self.assertEqual(list[4],'Returns the current price of 1 btc in usd.')
         self.assertEqual(list[5],'\n')
-        self.assertEqual(list[6],'The price is an average of the btc quotation on all the')
-        self.assertEqual(list[7],'exchanges. It is computed by the crypto prices provider.')
-        self.assertEqual(list[8],'\n\n\n')
-        self.assertEqual(list[9],'Next section')
-        self.assertEqual(list[10],'\n\n')
-        self.assertEqual(list[11],'This section explains the preceeding section')
+        self.assertEqual(list[6],'The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.')
+        self.assertEqual(list[7],'\n\n\n')
+        self.assertEqual(list[8],'Next section')
+        self.assertEqual(list[9],'\n\n')
+        self.assertEqual(list[10],'This section explains the preceeding section')
 
     def test_getListOfSizedParagraphsSmallerWidth(self):
         text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
         width = 30
         list = GuiUtil._getListOfSizedParagraphs(text, width)
-        self.assertEqual(len(list), 16)
+        self.assertEqual(len(list), 11)
         self.assertEqual(list[0],'CryptoPricer full request')
         self.assertEqual(list[1],'\n\n')
         self.assertEqual(list[2],'btc usd 0 all')
         self.assertEqual(list[3],'\n\n')
-        self.assertEqual(list[4],'Returns the current price of 1')
-        self.assertEqual(list[5],'btc in usd.')
-        self.assertEqual(list[6],'\n')
-        self.assertEqual(list[7],'The price is an average of the')
-        self.assertEqual(list[8],'btc quotation on all the')
-        self.assertEqual(list[9],'exchanges. It is computed by')
-        self.assertEqual(list[10],'the crypto prices provider.')
-        self.assertEqual(list[11],'\n\n\n')
-        self.assertEqual(list[12],'Next section')
-        self.assertEqual(list[13],'\n\n')
-        self.assertEqual(list[14],'This section explains the')
-        self.assertEqual(list[15],'preceeding section')
+        self.assertEqual(list[4],'Returns the current price of 1 btc in usd.')
+        self.assertEqual(list[5],'\n')
+        self.assertEqual(list[6],'The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.')
+        self.assertEqual(list[7],'\n\n\n')
+        self.assertEqual(list[8],'Next section')
+        self.assertEqual(list[9],'\n\n')
+        self.assertEqual(list[10],'This section explains the preceeding section')
 
 
     def testSizeParagraphsToSmallerWidth(self):
@@ -216,9 +210,7 @@ btc usd 0 all
 
 Returns the current price of 1 btc in usd.
 
-The price is an average of the btc quotation on all
-the exchanges. It is computed by the crypto prices
-provider.
+The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.
 
 
 
@@ -237,9 +229,7 @@ btc usd 0 all
 
 Returns the current price of 1 btc in usd.
 
-The price is an average of the btc quotation on all
-the exchanges. It is computed by the crypto prices
-provider.
+The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.
 
 
 
@@ -258,9 +248,7 @@ btc usd 0 all
 
 Returns the current price of 1 btc in usd.
 
-The price is an average of the btc quotation on all
-the exchanges. It is computed by the crypto prices
-provider.
+The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.
 
 
 
@@ -284,9 +272,7 @@ btc usd 0 all
 
 Returns the current price of 1 btc in usd.
 
-The price is an average of the btc quotation on all
-the exchanges. It is computed by the crypto prices
-provider.
+The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.
 
 
 
@@ -310,8 +296,7 @@ btc usd 0 all
 
 Returns the current price of 1 btc in usd.
 
-This is a long explanation which will occupy several
-lines once reorganized by the Label itself.
+This is a long explanation which will occupy several lines once reorganized by the Label itself.
     The price is an average of the btc quotation on
     all the exchanges. It is computed by the crypto
     prices provider.
@@ -338,15 +323,13 @@ This section explains the preceeding section''', resizedText)
         width = 54
         resizedText = GuiUtil.sizeParagraphsToSmallerWidth(text, width)
         self.assertEqual('''
-[b][color=ff0000]CryptoPricer full and long title
-request[/color][/b]
+[b][color=ff0000]CryptoPricer full and long title request[/color][/b]
 
 btc usd 0 all
 
 Returns the current price of 1 btc in usd.
 
-This is a long explanation which will occupy several
-lines once reorganized by the Label itself.
+This is a long explanation which will occupy several lines once reorganized by the Label itself.
     The [b][color=ffff00ff]price[/color][/b] is an average of the btc quotation on
     all the exchanges. It is computed by the crypto
     prices provider.
