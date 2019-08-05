@@ -298,3 +298,33 @@ class GuiUtil:
             markupsLen += len(match.group())
 
         return markupsLen
+
+    @staticmethod
+    def _removeEOLFromFile(textFile):
+        begLineSpacePattern = r"    "
+        anyAlphaNumCharPattern = r"\w+"
+        isTab = False
+        isFirstLine = True
+        noEOLStr = ''
+
+        for line in textFile.readlines():
+            if not re.match(begLineSpacePattern, line) and re.search(anyAlphaNumCharPattern, line):
+                if isFirstLine:
+                    noEOLStr += line[:-1]
+                    isFirstLine = False
+                else:
+                    noEOLStr += ' ' + line[:-1]
+            elif re.match(begLineSpacePattern, line) and not isTab:
+                noEOLStr += line[:-1]
+                isTab = True
+                isFirstLine = True
+            elif re.match(begLineSpacePattern, line) and isTab:
+                line = line[4:-1]
+                noEOLStr += ' ' + line
+                isFirstLine = True
+            else:
+                noEOLStr += '\n' + line
+                isTab = False
+                isFirstLine = True
+
+        return noEOLStr
