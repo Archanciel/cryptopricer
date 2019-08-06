@@ -102,8 +102,8 @@ class GuiOutputFormater(AbstractOutputFormater):
 
         if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE):
             if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
-                #in case the value command generated a warning, if the value command data contains a crypto or fiat
-                #different from the crypto or fiat of tthe request, the fullCommandStrWithSaveModeOptions remains
+                #in case the value command generated a warning, if the value command data contains a crypto or unit
+                #different from the crypto or unit of tthe request, the fullCommandStrWithSaveModeOptions remains
                 #None and wont't be stored in the request history list of the GUI !
                 fullCommandStrWithSaveModeOptions = fullCommandStr + ' -vs' + commandDic[CommandPrice.PRICE_VALUE_AMOUNT] + commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
         else:

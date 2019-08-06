@@ -582,7 +582,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - fiat missing or invalid")
+                         "ERROR - unit missing or invalid")
 
 
 if __name__ == '__main__':

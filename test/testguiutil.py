@@ -384,7 +384,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 [b]Full request[/b]
 
-<crypto> <fiat> <date time> <exchange> <options>
+<crypto> <unit> <date time> <exchange> <options>
 
 <date time> possible values:
 
@@ -428,7 +428,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 [b]Full request[/b]
 
-<crypto> <fiat> <date time> <exchange> <options>
+<crypto> <unit> <date time> <exchange> <options>
 
 <date time> possible values:
 
@@ -571,7 +571,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 [b]Full request[/b]
 
-<crypto> <fiat> <date time> <exchange> <options>
+<crypto> <unit> <date time> <exchange> <options>
 
 <date time> possible values:
 
@@ -615,7 +615,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 [b]Full request[/b]
 
-<crypto> <fiat> <date time> <exchange> <options>
+<crypto> <unit> <date time> <exchange> <options>
 
 <date time> possible values:
 
@@ -662,7 +662,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 [b]Full request[/b]
 
-<crypto> <fiat> <date time> <exchange> <options>
+<crypto> <unit> <date time> <exchange> <options>
 
 <date time> possible values:
 

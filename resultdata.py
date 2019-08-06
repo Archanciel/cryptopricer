@@ -10,7 +10,7 @@ class ResultData:
     RESULT_KEY_WARNINGS_DIC = 'WARNING_MSG'
     RESULT_KEY_INITIAL_COMMAND_PARMS = 'INIT_COMMAND_PARMS' #command parm dic denoting the user requesr
     RESULT_KEY_PRICE_VALUE_CRYPTO = 'PRICE_VAL_CRYPTO' #store the crypto price returned for -v command
-    RESULT_KEY_PRICE_VALUE_FIAT = 'PRICE_VAL_FIAT'     #store the fiat price returned for -v command
+    RESULT_KEY_PRICE_VALUE_FIAT = 'PRICE_VAL_FIAT'     #store the unit price returned for -v command
     RESULT_KEY_PRICE_VALUE_SAVE = 'PRICE_VAL_SAVE'     #store True or False to indicate if the price value command is to be stored in history (-vs) or not (-v)
 
     WARNING_TYPE_FUTURE_DATE = 'FUTURE_DATE'

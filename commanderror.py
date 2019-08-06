@@ -4,7 +4,7 @@ from resultdata import ResultData
 class CommandError(AbstractCommand):
     USER_COMMAND_MISSING_MSG = 'user command missing'
     CRYPTO_SYMBOL_MISSING_MSG = 'crypto symbol missing' #to delete !
-    FIAT_LIST_MISSING_MSG = 'fiat list missing'
+    FIAT_LIST_MISSING_MSG = 'unit list missing'
     COMMAND_NOT_SUPPORTED_MSG = '{} not supported'
     PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG = 'in {}, {} must respect {} format'
     PARTIAL_PRICE_VALUE_COMMAND_FORMAT_INVALID_MSG = 'in {}, {} must respect 99.99999zzz <price><symbol> format'
@@ -36,7 +36,7 @@ class CommandError(AbstractCommand):
 
         if errorType == self.COMMAND_ERROR_TYPE_FULL_REQUEST:
             errorTypeLabelStr = 'full request'
-            errorMsgTail = ' violates format <crypto> <fiat> <date|time> <exchange> <opt commands>'
+            errorMsgTail = ' violates format <crypto> <unit> <date|time> <exchange> <opt commands>'
         elif errorType == self.COMMAND_ERROR_TYPE_PARTIAL_REQUEST:
             errorTypeLabelStr = 'invalid partial request'
         elif errorType == self.COMMAND_ERROR_TYPE_INVALID_COMMAND:

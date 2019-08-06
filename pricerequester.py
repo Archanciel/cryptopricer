@@ -93,7 +93,7 @@ class PriceRequester:
                     resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataEntryDic['time'])
                     resultData.setValue(ResultData.RESULT_KEY_PRICE, dataEntryDic['close'])
 #                except IndexError: # does not happen in any test case
-#                    resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
+#                    resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange, isRealTime=False)
                 except KeyError:
                     # happens when pair coupled to exchange do not return ay data.
                     # Either the exchange does not exist or the pair is not
@@ -137,7 +137,7 @@ class PriceRequester:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
-#            if dic['Data'] != [] and fiat in dic:
+#            if dic['Data'] != [] and unit in dic:
             dataListOrDic = dic['Data']
             if dataListOrDic != []:
                 try:
@@ -145,7 +145,7 @@ class PriceRequester:
                     resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataEntryDic['time'])
                     resultData.setValue(ResultData.RESULT_KEY_PRICE, dataEntryDic['close'])
 #                except IndexError: # does not happen in any test case
-#                    resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange,isRealTime=False)
+#                    resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange,isRealTime=False)
                 except KeyError:
                     # happens when pair coupled to exchange do not return ay data.
                     # Either the exchange does not exist or the pair is not
@@ -189,7 +189,7 @@ class PriceRequester:
             
             if fiat in dic:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
-                resultData.setValue(ResultData.RESULT_KEY_PRICE, dic[fiat]) #current price is indexed by fiat symbol in returned dic
+                resultData.setValue(ResultData.RESULT_KEY_PRICE, dic[fiat]) #current price is indexed by unit symbol in returned dic
             else:
                 resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=True)
 

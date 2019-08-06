@@ -31,7 +31,7 @@ class Requester:
     USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
 
     '''
-    Full price command parms pattern. Crypto symbol (mandatory, first position mandatory), fiat symbol (optional, 
+    Full price command parms pattern. Crypto symbol (mandatory, first position mandatory), unit symbol (optional, 
     if provided, must be in second position), date (optional), time (optional) and exchange (optional). The three
     last parms can be provided in any order after the 2 first parms !
     
@@ -448,12 +448,12 @@ class Requester:
             else: #neither full nor parrial pattern matched
                 return None # will cause an error.
         else: #full request entered. Here, parms were entered in an order reflected in the
-              # pattern: crypto fiat in this mandatory order, then date time exchange, of which order
+              # pattern: crypto unit in this mandatory order, then date time exchange, of which order
               # can be different.
             requestType = REQUEST_TYPE_FULL
             self.commandPrice.initialiseParsedParmData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
-            self.commandPrice.parsedParmData[CommandPrice.UNIT] = groupList[1] #mandatory fiat parm, its order is fixed
+            self.commandPrice.parsedParmData[CommandPrice.UNIT] = groupList[1] #mandatory unit parm, its order is fixed
             optionalParsedParmDataDic = self._buildFullCommandPriceOptionalParmsDic(groupList[2:])
 
             if optionalParsedParmDataDic != None:
@@ -740,7 +740,7 @@ class Requester:
         # convert "[usd-chf]"
         # into
         # ['usd', 'chf']
-        # and return the fiat list
+        # and return the unit list
 
         fiatList = []
         patternFiat = r"((\w+)-)|((\w+)\])|(\[(w+)\])"
@@ -792,7 +792,7 @@ class Requester:
                     if '[' in elem:
                         if ' ' in elem:  # list of date/price pairs
                             cryptoDataList += self._parseDatePrice(elem)
-                        else:  # list of fiat currencies
+                        else:  # list of unit currencies
                             fiatDataList = self._parseFiat(elem)
                     else:  # crypto symbol like btc or flag like -nosave
                         if '-' in elem:

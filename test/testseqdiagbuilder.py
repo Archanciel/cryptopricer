@@ -1506,14 +1506,14 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 		end note
 	Controller -> CommandPrice: execute()
 		activate CommandPrice
-		CommandPrice -> Processor: getCryptoPrice(crypto, fiat, exchange, day, month, year, hour, minute, priceValueSymbol=None, ...)
+		CommandPrice -> Processor: getCryptoPrice(crypto, unit, exchange, day, month, year, hour, minute, priceValueSymbol=None, ...)
 			activate Processor
-			Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange)
+			Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, unit, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange)
 				activate PriceRequester
 				note right
 					Obtainins a minute price if request date < 7 days from now, else a day close price.
 				end note
-				PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, fiat, timeStampUTC, exchange, resultData)
+				PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, unit, timeStampUTC, exchange, resultData)
 					activate PriceRequester
 					PriceRequester <-- PriceRequester: return ResultData
 					deactivate PriceRequester
@@ -1623,16 +1623,16 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 		end note
 	Controller -> CommandPrice: execute()
 		activate CommandPrice
-		CommandPrice -> Processor: getCryptoPrice(crypto, fiat, ...)
+		CommandPrice -> Processor: getCryptoPrice(crypto, unit, ...)
 			activate Processor
-			Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, fiat, ...)
+			Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, unit, ...)
 				activate PriceRequester
 				note right
 					Obtainins a minute price if
 					request date < 7 days from
 					now, else a day close price.
 				end note
-				PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, fiat, ...)
+				PriceRequester -> PriceRequester: _getHistoDayPriceAtUTCTimeStamp(crypto, unit, ...)
 					activate PriceRequester
 					PriceRequester <-- PriceRequester: return ResultData
 					deactivate PriceRequester

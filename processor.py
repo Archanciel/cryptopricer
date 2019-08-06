@@ -17,7 +17,7 @@ class Processor:
 
     def getCryptoPrice(self,
                        crypto,
-                       fiat,
+                       unit,
                        exchange,
                        day,
                        month,
@@ -32,7 +32,7 @@ class Processor:
         Ask the PriceRequester either a RT price or a historical price. Then, in case a price value parm (-v)
         was specified, does the conversion and add its result to the returned ResultData
         :param crypto: upper case crypto symbol
-        :param fiat: upper case fiat symbol
+        :param unit: upper case counter party symbol
         :param exchange: exchange name
         :param day: int day number
         :param month: int month number
@@ -40,14 +40,16 @@ class Processor:
         :param hour: int hour number
         :param minute: int minute number
         :param priceValueSymbol: upper case price value symbol. If == crypto, this means that priceValueAmount provided
-                                 is in crypto and must be converted into fiat at the rate returned by the PriceRequester.
+                                 is in crypto and must be converted into unit (counter party) at the rate returned by
+                                 the PriceRequester.
 
-                                 If the price value symbol == fiat, this means that priceValueAmount provided
-                                 is in fiat and must be converted into crypto at the rate returned by the PriceRequester.
+                                 If the price value symbol == unit, this means that priceValueAmount provided
+                                 is in the counter party (unit or an other crypto) and must be converted into crypto at
+                                 the rate returned by the PriceRequester.
 
                                  Ex 1:  -v0.001btc
                                         crypto == BTC
-                                        fiat == USD
+                                        unit == USD
                                         priceValueSymbol == BTC
                                         priceValueAmount == 0.001
 
@@ -56,7 +58,7 @@ class Processor:
 
                                  Ex 2:  -v500usd
                                         crypto == BTC
-                                        fiat == USD
+                                        unit == USD
                                         priceValueSymbol == USD
                                         priceValueAmount == 500
 
@@ -75,12 +77,11 @@ class Processor:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your request ({})".format(requestInputString))
             return resultData
         else:
-            #this responsability is specific to the PriceRequester and should be moved to it !
             try:
                 validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
             except(KeyError):
                 resultData = ResultData()
-                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, fiat))
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, unit))
                 return resultData
 
         localTz = self.configManager.localTimeZone
@@ -90,7 +91,7 @@ class Processor:
             # when the user specifies 0 for either the date,
             # this means current price is asked and date components
             # are set to zero !
-            resultData = self.priceRequester.getCurrentPrice(crypto, fiat, validExchangeSymbol)
+            resultData = self.priceRequester.getCurrentPrice(crypto, unit, validExchangeSymbol)
 
             if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 #adding date time info if no error returned
@@ -102,7 +103,7 @@ class Processor:
             #getting historical price, either histo day or histo minute
             timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
             timeStampUtcNoHHMM = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, 0, 0, 0, 'UTC')
-            resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, fiat, timeStampLocal, timeStampUtcNoHHMM, validExchangeSymbol)
+            resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, unit, timeStampLocal, timeStampUtcNoHHMM, validExchangeSymbol)
 
             if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 #adding date time info if no error returned
@@ -117,23 +118,23 @@ class Processor:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
                 
         if priceValueSymbol != None and not resultData.isError():
-            resultData = self._computePriceValue(resultData, crypto, fiat, priceValueSymbol, priceValueAmount, priceValueSaveFlag)
+            resultData = self._computePriceValue(resultData, crypto, unit, priceValueSymbol, priceValueAmount, priceValueSaveFlag)
             
         return resultData
 
 
-    def _computePriceValue(self, resultData, crypto, fiat, priceValueSymbol, priceValueAmount, priceValueSaveFlag):
+    def _computePriceValue(self, resultData, crypto, unit, priceValueSymbol, priceValueAmount, priceValueSaveFlag):
         '''
         Compute the priceValueAmount according to the passed parms and put the result in
         the passed resultData.
         :param priceValueSymbol: upper case price value symbol. If == crypto, this means that priceValueAmount provided
-                                 is in crypto and must be converted into fiat at the rate returned by the PriceRequester.
+                                 is in crypto and must be converted into unit at the rate returned by the PriceRequester.
 
-                                 If the price value symbol == fiat, this means that priceValueAmount provided
-                                 is in fiat and must be converted into crypto at the rate returned by the PriceRequester.
+                                 If the price value symbol == unit, this means that priceValueAmount provided
+                                 is in unit and must be converted into crypto at the rate returned by the PriceRequester.
 
                                  Ex 1:  crypto == BTC
-                                        fiat == USD
+                                        unit == USD
                                         priceValueSymbol == BTC
                                         priceValueAmount == 0.001
 
@@ -141,7 +142,7 @@ class Processor:
                                         converted value will be 20000 USD * 0.001 BTC => 200 USD
 
                                  Ex 2:  crypto == BTC
-                                        fiat == USD
+                                        unit == USD
                                         priceValueSymbol == USD
                                         priceValueAmount == 500
 
@@ -155,12 +156,12 @@ class Processor:
         conversionRate = resultData.getValue(resultData.RESULT_KEY_PRICE)
         
         if priceValueSymbol == crypto:
-            #converting priceValueAmount in crypto to equivalent value in fiat
+            #converting priceValueAmount in crypto to equivalent value in unit
             convertedValue = priceValueAmount * conversionRate
             resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, priceValueAmount)
             resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, convertedValue)
-        elif priceValueSymbol == fiat:
-            #converting priceValueAmount in fiat to equivalent value in crypto
+        elif priceValueSymbol == unit:
+            #converting priceValueAmount in unit to equivalent value in crypto
             convertedValue = priceValueAmount / conversionRate
             resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, convertedValue)
             resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, priceValueAmount)
@@ -171,8 +172,8 @@ class Processor:
                 valueCommand = '-v'
 
             resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
-                                  "WARNING - price value symbol {} differs from both crypto ({}) and fiat ({}) of last request. {} parameter ignored".format(
-                                      priceValueSymbol, crypto, fiat, valueCommand))
+                                  "WARNING - price value symbol {} differs from both crypto ({}) and unit ({}) of last request. {} parameter ignored".format(
+                                      priceValueSymbol, crypto, unit, valueCommand))
             
         return resultData
 

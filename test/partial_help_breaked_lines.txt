@@ -5,7 +5,7 @@ and partial requests.
 
 [b]Full request[/b]
 
-<crypto> <fiat> <date time> <exchange> <options>
+<crypto> <unit> <date time> <exchange> <options>
 
 <date time> possible values:
 

@@ -779,7 +779,7 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual("ERROR - fiat missing or invalid\n", contentList[1])
+            self.assertEqual("ERROR - unit missing or invalid\n", contentList[1])
 
 
     def testControllerInvalidCommandMissingFiatProvided(self):
@@ -806,7 +806,7 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual("ERROR - fiat missing or invalid\n", contentList[1])
+            self.assertEqual("ERROR - unit missing or invalid\n", contentList[1])
 
 
     def testControllerHistoDayPriceDiffOptParmsOrder(self):
@@ -939,7 +939,7 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('ERROR - fiat missing or invalid\n', contentList[1])
+            self.assertEqual('ERROR - unit missing or invalid\n', contentList[1])
             self.assertEqual('ERROR - invalid partial request -uusd 2:56\n', contentList[3])
             self.assertEqual('BTC/USD on BitTrex: ' + '{}/0{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[5][:-1]))
             self.assertEqual('Warning - request date {}/0{}/{} 02:56 can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[6][:-1])
@@ -1002,7 +1002,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual(
-                'ERROR - fiat missing or invalid', contentList[1][:-1])
+                'ERROR - unit missing or invalid', contentList[1][:-1])
             self.assertEqual(
                 'ERROR - invalid partial request -uusd', contentList[3][:-1]) #improve error msg
             self.assertEqual(

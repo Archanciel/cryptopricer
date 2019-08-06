@@ -234,7 +234,7 @@ class CommandPrice(AbstractCommand):
 
         if fiat == None or any(char.isdigit() for char in fiat):
             resultData = ResultData()
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - fiat missing or invalid")
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - unit missing or invalid")
 
         # debug code useful on phone !
         #        dateTimeList = [dayStr, monthStr, yearStr, hourStr, minuteStr]
