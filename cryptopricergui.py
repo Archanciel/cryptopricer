@@ -517,11 +517,11 @@ class CryptoPricerGUI(BoxLayout):
             width = 54
 
         popup = ScrollablePopup(title='CryptoPricer 2.3', size_hint=(None, None), size=popupSize)
-
+        formatedHelpText = '' \
+                           ''
         with open('help.txt') as helpFile:
-            helpText = helpFile.read()
+            formatedHelpText = GuiUtil.sizeParagraphsForKivyLabelFromFile(helpFile, width)
 
-        formatedHelpText = GuiUtil.sizeParagraphsForKivyLabel(helpText, width)
         popup.contentBox.content.text = formatedHelpText
         popup.open()
 

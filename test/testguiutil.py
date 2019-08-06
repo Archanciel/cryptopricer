@@ -222,10 +222,10 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(1, len(list))
         self.assertEqual(list[0],'[t]a first right shifted')
 
-    def testSizeParagraphsForKivyLabel(self):
+    def test_sizeParagraphsForKivyLabel(self):
         text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
+        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 CryptoPricer full request
 
@@ -241,10 +241,10 @@ Next section
 
 This section explains the preceeding section''',resizedText)
 
-    def testSizeParagraphsForKivyLabelWithMarkup(self):
+    def test_sizeParagraphsForKivyLabelWithMarkup(self):
         text = '[b]CryptoPricer full request[/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
+        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b]CryptoPricer full request[/b]
 
@@ -260,10 +260,10 @@ Next section
 
 This section explains the preceeding section''',resizedText)
 
-    def testSizeParagraphsForKivyLabelWithMarkupColor(self):
+    def test_sizeParagraphsForKivyLabelWithMarkupColor(self):
         text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\n[b][color=ff0000]Next section[/color][/b]\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
+        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -279,7 +279,7 @@ The price is an average of the btc quotation on all the exchanges. It is compute
 
 This section explains the preceeding section''',resizedText)
 
-    def testSizeParagraphsForKivyLabelWithMarkupColorFromFile(self):
+    def test_sizeParagraphsForKivyLabelWithMarkupColorFromFile(self):
         FILE_PATH = 'popupMarkupTest.txt'
         text = ''
 
@@ -287,7 +287,7 @@ This section explains the preceeding section''',resizedText)
             text = markupFile.read()
 
         width = 54
-        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
+        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -303,7 +303,7 @@ The price is an average of the btc quotation on all the exchanges. It is compute
 
 This section explains the preceeding section''', resizedText)
 
-    def testSizeParagraphsForKivyLabelWithMarkupColorAndTabbedParagraphsFromFile(self):
+    def test_sizeParagraphsForKivyLabelWithMarkupColorAndTabbedParagraphsFromFile(self):
         FILE_PATH = 'regularAndShiftedPopupMarkupTest.txt'
         text = ''
 
@@ -311,7 +311,7 @@ This section explains the preceeding section''', resizedText)
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
+        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -336,7 +336,7 @@ no tab line
 
 This section explains the preceeding section''', resizedText)
 
-    def testSizeParagraphsForKivyLabelWithLongMarkupColorAndTabbedParagraphsFromFile(self):
+    def test_sizeParagraphsForKivyLabelWithLongMarkupColorAndTabbedParagraphsFromFile(self):
         FILE_PATH = 'regularAndShiftedPopupLongMarkupTest.txt'
         text = ''
 
@@ -344,7 +344,7 @@ This section explains the preceeding section''', resizedText)
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
+        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full and long title request[/color][/b]
 
@@ -411,7 +411,7 @@ M = Minute price (precision at the minute)
 C = Close price
 ''', resizedText)
 
-    def testSizeParagraphsForKivyLabelnRealPartialNoBreakLinesHelpFile(self):
+    def test_sizeParagraphsForKivyLabelnRealPartialNoBreakLinesHelpFile(self):
         FILE_PATH = 'partial_help_nobreaked_lines.txt'
         text = ''
 
@@ -419,7 +419,7 @@ C = Close price
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
+        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
         #        resizedText = GuiUtil.decodeMarkup(text)
         self.assertEqual('''
 [b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
@@ -526,7 +526,7 @@ The price is an average of the btc quotation on all the exchanges. It is compute
 
 This section explains the preceeding section''',resizedText)
 
-    def testSizeParagraphsForKivyLabelWithShiftedParagraphs(self):
+    def test_sizeParagraphsForKivyLabelWithShiftedParagraphs(self):
         text = '''<date time> possible values:
 
     [b][cy]0[/cy][/b] for RT
@@ -537,7 +537,7 @@ This section explains the preceeding section''',resizedText)
     [b][cy]21/12 8:34[/c][/b] --> current year assumed'''
 
         width = 54
-        resizedText = GuiUtil.sizeParagraphsForKivyLabel(text, width)
+        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 <date time> possible values:
 
@@ -594,6 +594,101 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
     M = Minute price (precision at the minute)
 
     C = Close price''', noEOLText)
+
+    def testSizeParagraphsForKivyLabelnRealPartialWithBreakLinesHelpFile(self):
+        '''
+        This test ensures that text resizing for the Kivy label destination works
+        on a help file where the not shifted long lines are sized for better reading
+        at help write time.
+        '''
+        FILE_PATH = 'partial_help_breaked_lines.txt'
+        resizedText = ''
+        width = 54
+
+        with open(FILE_PATH) as file:
+            resizedText = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
+
+        self.assertEqual('''
+[b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
+
+CryptoPricer supports two kinds of requests: full requests and partial requests.
+
+[b]Full request[/b]
+
+<crypto> <fiat> <date time> <exchange> <options>
+
+<date time> possible values:
+
+    [b][color=ffff00ff]0[/color][/b] for RT
+
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is
+    specified, current year is assumed. If no time is
+    specified, current time is assumed.
+
+    [b][color=ffff00ff]21/12 8:34[/color][/b] --> current year assumed
+
+    21 8:34 --> here, since no month is specified,
+    current month or previous month is assumed.
+
+    8:34 --> here, since no date is specified, current
+    date is assumed.
+
+[b]WARNING[/b]: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
+
+[b]Output price qualifiers[/b]:
+
+    R = RT
+
+    M = Minute price (precision at the minute)
+
+    C = Close price''', resizedText)
+
+    def testSizeParagraphsForKivyLabelnRealPartialWithNoBreakLinesHelpFile(self):
+        '''
+        This test ensures that text resizing for the Kivy label destination works
+        on a help file where the not shifted long lines do not include any break.
+        '''
+        FILE_PATH = 'partial_help_nobreaked_lines.txt'
+        resizedText = ''
+        width = 54
+
+        with open(FILE_PATH) as file:
+            resizedText = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
+
+        self.assertEqual('''
+[b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
+
+CryptoPricer supports two kinds of requests: full requests and partial requests.
+
+[b]Full request[/b]
+
+<crypto> <fiat> <date time> <exchange> <options>
+
+<date time> possible values:
+
+    [b][color=ffff00ff]0[/color][/b] for RT
+
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is
+    specified, current year is assumed. If no time is
+    specified, current time is assumed.
+
+    [b][color=ffff00ff]21/12 8:34[/color][/b] --> current year assumed
+
+    21 8:34 --> here, since no month is specified,
+    current month or previous month is assumed.
+
+    8:34 --> here, since no date is specified, current
+    date is assumed.
+
+[b]WARNING[/b]: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
+
+[b]Output price qualifiers[/b]:
+
+    R = RT
+
+    M = Minute price (precision at the minute)
+
+    C = Close price''', resizedText)
 
 if __name__ == '__main__':
     unittest.main()

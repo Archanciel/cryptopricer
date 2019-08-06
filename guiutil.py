@@ -142,7 +142,7 @@ class GuiUtil:
         return listOfLimitedWidthParagraphs
 
     @staticmethod
-    def sizeParagraphsForKivyLabel(longParagraphLineStr, width):
+    def _sizeParagraphsForKivyLabel(longParagraphLineStr, width):
         '''
         Returns a string corresponding to the input longParagraphLineStr parm,
         but with lines shortened to be smaller or equal to the passed width.
@@ -300,31 +300,70 @@ class GuiUtil:
         return markupsLen
 
     @staticmethod
-    def _removeEOLFromFile(textFile):
+    def _removeEOLFromFile(breakedLineFile):
+        '''
+        Cleverly removes the EOL '\n' on a file content where the not shifted long lines are sized
+        for better reading at creation time.
+
+        :param breakedLineFile: file whose long line are split on several lines
+        :return: cleverly EOL purged string
+        '''
         begLineSpacePattern = r"    "
         anyAlphaNumCharPattern = r"\w+"
-        isTab = False
+        isLineRightShifted = False
         isFirstLine = True
         noEOLStr = ''
 
-        for line in textFile.readlines():
+        for line in breakedLineFile.readlines():
             if not re.match(begLineSpacePattern, line) and re.search(anyAlphaNumCharPattern, line):
+                # line is not shifted and contains char (is not only \n)
                 if isFirstLine:
                     noEOLStr += line[:-1]
                     isFirstLine = False
                 else:
+                    # handling the next not shifted line, simply concatenating it to the previous
+                    # not shifted lines
                     noEOLStr += ' ' + line[:-1]
-            elif re.match(begLineSpacePattern, line) and not isTab:
+            elif re.match(begLineSpacePattern, line) and not isLineRightShifted:
+                # handling the first right shifted line
                 noEOLStr += line[:-1]
-                isTab = True
+                isLineRightShifted = True
                 isFirstLine = True
-            elif re.match(begLineSpacePattern, line) and isTab:
-                line = line[4:-1]
+            elif re.match(begLineSpacePattern, line) and isLineRightShifted:
+                # handling the next right shifted line, simply concatenating it to the previous
+                # shifted lines
+                line = line[4:-1] # removing the tab spaces and the EOL \n
                 noEOLStr += ' ' + line
                 isFirstLine = True
             else:
+                # handling empty break line
                 noEOLStr += '\n' + line
-                isTab = False
+                isLineRightShifted = False
                 isFirstLine = True
 
         return noEOLStr
+
+    @staticmethod
+    def sizeParagraphsForKivyLabelFromFile(breakedLineFile, width):
+        '''
+        Returns a string corresponding to the content of the file breakedLineFile,
+        but with lines shortened to be smaller or equal to the passed width.
+
+        This method is no longer used by CriptoPricerGui.py since it is simpler
+        to use the capacity of the Kivy Label used in the ScrollablePopup to
+        format the lines of words according to the Label effective width. This
+        width will be different on each Android device on which CriptoPricerGui
+        is executed !
+
+        :param longParagraphLineStr: string containing paragraphs separated by \n\n\n, \n\n
+                                     or \n
+        :param width: line width in char number
+        :return: string of shorter lines and \n\n\n, \n\n or \n
+        '''
+
+        # cleverly removing line end '\n' in order to simplify further processing
+        # for resizinf the text fot the Kivy destination label.
+        noEOLText = GuiUtil._removeEOLFromFile(breakedLineFile)
+
+        # resizing the text
+        return GuiUtil._sizeParagraphsForKivyLabel(noEOLText, width)

@@ -22,28 +22,30 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 [b]Output price qualifiers[/b]:
 
-R = RT
-M = Minute price (precision at the minute)
-C = Close price
+    [b][cy]R[/c][/b] = RT
+
+    [b][cy]M[/c][/b] = Minute price (precision at the minute)
+
+    [b][cy]C[/c][/b] = Close price
 
 Examples: assume we are on 16/12/17 at 22:10
 
-[cg]btc usd 0 bittrex[/c] -->
+[cy]btc usd 0 bittrex[/c] -->
 BTC/USD on BitTrex: 16/12/17 22:10R 19120
 
-[cg]eth btc 16/12 13:45 bitfinex[/c] -->
+[cy]eth btc 16/12 13:45 bitfinex[/c] -->
 ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
 
-[cg]eth btc 13:45 bitfinex[/c] -->
+[cy]eth btc 13:45 bitfinex[/c] -->
 ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
 
-[cg]eth btc 15 8:45 bitfinex[/c] -->
+[cy]eth btc 15 8:45 bitfinex[/c] -->
 ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
 
-[cg]eth btc 21/1 13:45 bitfinex[/c] -->
+[cy]eth btc 21/1 13:45 bitfinex[/c] -->
 ETH/BTC on Bitfinex: 21/01/17C 0.01185
 
-[cg]btc usd 0 bittrex -v0.01btc[/c] -->
+[cy]btc usd 0 bittrex -v0.01btc[/c] -->
 0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
 
 [b]WARNING[/b]: <options> must be specified at the end of the full command price
