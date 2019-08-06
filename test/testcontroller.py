@@ -123,7 +123,7 @@ class TestController(unittest.TestCase):
 
     def testControllerHistoDayPriceThenEmptyPartialParms(self):
         stdin = sys.stdin
-        sys.stdin = StringIO('btc usd 30/9/2017 all\n-t\n-d\n-e\n-c\n-f\nq\ny')
+        sys.stdin = StringIO('btc usd 30/9/2017 all\n-t\n-d\n-e\n-c\n-u\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -150,7 +150,7 @@ class TestController(unittest.TestCase):
             self.assertEqual('ERROR - invalid partial request -d\n', contentList[5])
             self.assertEqual('ERROR - invalid partial request -e\n', contentList[7])
             self.assertEqual('ERROR - invalid partial request -c\n', contentList[9])
-            self.assertEqual('ERROR - invalid partial request -f\n', contentList[11])
+            self.assertEqual('ERROR - invalid partial request -u\n', contentList[11])
 
 
     def testControllerHistoDayPriceInvalidTimeFormat(self):
@@ -846,7 +846,7 @@ class TestController(unittest.TestCase):
         previsousDateMonth = previousDate.month
 
         stdin = sys.stdin
-        sys.stdin = StringIO('eth usd 0 bitfinex\n-d{}/{}\n-d0\n-fbtc\nq\ny'.format(previsousDateDay, previsousDateMonth))
+        sys.stdin = StringIO('eth usd 0 bitfinex\n-d{}/{}\n-d0\n-ubtc\nq\ny'.format(previsousDateDay, previsousDateMonth))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -915,7 +915,7 @@ class TestController(unittest.TestCase):
         nextRequestDay = '23'
         nextRequestMonth = '9'
         stdin = sys.stdin
-        sys.stdin = StringIO('btc 23/9 2:56 bittrex\n-fusd 2:56\n-d23/9\nq\ny')
+        sys.stdin = StringIO('btc 23/9 2:56 bittrex\n-uusd 2:56\n-d23/9\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -940,7 +940,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('ERROR - fiat missing or invalid\n', contentList[1])
-            self.assertEqual('ERROR - invalid partial request -fusd 2:56\n', contentList[3])
+            self.assertEqual('ERROR - invalid partial request -uusd 2:56\n', contentList[3])
             self.assertEqual('BTC/USD on BitTrex: ' + '{}/0{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[5][:-1]))
             self.assertEqual('Warning - request date {}/0{}/{} 02:56 can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[6][:-1])
 
@@ -977,7 +977,7 @@ class TestController(unittest.TestCase):
         now = DateTimeUtil.localNow('Europe/Zurich')
 
         stdin = sys.stdin
-        sys.stdin = StringIO('btc\n-fusd\n-d0\n-ebittrex\nq\ny')
+        sys.stdin = StringIO('btc\n-uusd\n-d0\n-ebittrex\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -1004,7 +1004,7 @@ class TestController(unittest.TestCase):
             self.assertEqual(
                 'ERROR - fiat missing or invalid', contentList[1][:-1])
             self.assertEqual(
-                'ERROR - invalid partial request -fusd', contentList[3][:-1]) #improve error msg
+                'ERROR - invalid partial request -uusd', contentList[3][:-1]) #improve error msg
             self.assertEqual(
                 'ERROR - exchange could not be parsed due to an error in your request (-d0)', contentList[5][:-1])
             self.assertEqual(
@@ -1020,7 +1020,7 @@ class TestController(unittest.TestCase):
         yesterdayMonth = yesterday.month
 
         stdin = sys.stdin
-        sys.stdin = StringIO('eth usd 0 bitfinex\n-d{}/{}\n-d0\n-fbtc\nq\ny'.format(yesterdayDay, yesterdayMonth))
+        sys.stdin = StringIO('eth usd 0 bitfinex\n-d{}/{}\n-d0\n-ubtc\nq\ny'.format(yesterdayDay, yesterdayMonth))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'

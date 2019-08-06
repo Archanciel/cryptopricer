@@ -30,7 +30,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteHistoricalPriceFourDigitYear(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
@@ -52,7 +52,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteHistoricalPriceTwoDigitYear(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
@@ -80,7 +80,7 @@ class TestCommandPrice(unittest.TestCase):
         testTimeZoneStr = 'Europe/Zurich'
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = testDayStr
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = testMonthStr
@@ -112,7 +112,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteHistoricalPriceNoMonth(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '1'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = None
@@ -140,7 +140,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteHistoricalPriceWrongExchange(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'Unknown'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
@@ -171,7 +171,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePrice(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '0'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '0'
@@ -222,7 +222,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceWrongExchange(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'Unknown'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '0'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '0'
@@ -246,7 +246,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidYearOneDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '0'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '0'
@@ -262,7 +262,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteHistoDayPriceInvalidYearIsZero(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '10'
@@ -278,7 +278,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidYearThreeDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '1'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
@@ -294,7 +294,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidYearFiveDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '1'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
@@ -310,7 +310,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidMonthThreeDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '21'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '112'
@@ -326,7 +326,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidDayThreeDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '211'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '11'
@@ -342,7 +342,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidDayValue(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '32'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '11'
@@ -358,7 +358,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidMonthValue(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '31'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '13'
@@ -374,7 +374,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidHourValue(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '31'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '12'
@@ -390,7 +390,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidMinuteValue(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '31'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '12'
@@ -406,7 +406,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteHistoricalPriceDateOneYearFromNow(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
 
         now, nowDayStr, nowMonthStr, nowHourStr, nowMinuteStr = self.getFormattedNowDateTimeComponents()
@@ -431,7 +431,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteHistoricalPriceDateTwoYearsFromNowNoTime(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
 
         now, nowDayStr, nowMonthStr, nowHourStr, nowMinuteStr = self.getFormattedNowDateTimeComponents()
@@ -456,7 +456,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteHistoricalPriceDateOneMinuteFromNow(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
 
         now, nowDayStr, nowMonthStr, nowHourStr, nowMinuteStr = self.getFormattedNowDateTimeComponents()
@@ -491,7 +491,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidYearNonDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '1'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
@@ -507,7 +507,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidDayFormat(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10:00'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
@@ -523,7 +523,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidDayFormat(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = 'o1'
@@ -539,7 +539,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidHourFormat(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
@@ -555,7 +555,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidMinuteFormat(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
@@ -571,7 +571,7 @@ class TestCommandPrice(unittest.TestCase):
 
     def testExecuteRealTimePriceInvalidFiat(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.FIAT] = 'usd6'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd6'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
         self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'

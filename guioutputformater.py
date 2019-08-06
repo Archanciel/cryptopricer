@@ -86,13 +86,13 @@ class GuiOutputFormater(AbstractOutputFormater):
         
         if priceType == resultData.PRICE_TYPE_RT:      
             fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
-                             commandDic[CommandPrice.FIAT] + ' 0 ' + \
+                             commandDic[CommandPrice.UNIT] + ' 0 ' + \
                              commandDic[CommandPrice.EXCHANGE]
         else:
             requestDateDMY, requestDateHM = self._buildFullDateAndTimeStrings(commandDic, self.configurationMgr.localTimeZone)
 
             fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
-                             commandDic[CommandPrice.FIAT] + ' ' + \
+                             commandDic[CommandPrice.UNIT] + ' ' + \
                              requestDateDMY + ' ' + \
                              requestDateHM + ' ' + \
                              commandDic[CommandPrice.EXCHANGE]

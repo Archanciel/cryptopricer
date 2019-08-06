@@ -147,7 +147,7 @@ class Requester:
         CommmandPrice.parsedParmData dictionary keys
         '''
         self.inputParmParmDataDicKeyDic = {'-C': CommandPrice.CRYPTO,
-                                           '-F': CommandPrice.FIAT,
+                                           '-U': CommandPrice.UNIT,
                                            '-D': CommandPrice.DAY_MONTH_YEAR,
                                            '-T': CommandPrice.HOUR_MINUTE,
                                            '-E': CommandPrice.EXCHANGE,
@@ -276,7 +276,7 @@ class Requester:
     def _buildFullCommandPriceOptionalParmsDic(self, optionalParmList):
         '''
         Since DAY_MONTH_YEAR, HOUR_MINUTE and EXCHANGE can be provided in any order after CRYPTO
-        and FIAT, this method differentiate them build an optional command price parm data dictionary
+        and UNIT, this method differentiate them build an optional command price parm data dictionary
         with the right key. This dictionary will be added to the CommandPrice parmData dictionary.
 
         :seqdiag_return optionalParsedParmDataDic
@@ -453,7 +453,7 @@ class Requester:
             requestType = REQUEST_TYPE_FULL
             self.commandPrice.initialiseParsedParmData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
-            self.commandPrice.parsedParmData[CommandPrice.FIAT] = groupList[1] #mandatory fiat parm, its order is fixed
+            self.commandPrice.parsedParmData[CommandPrice.UNIT] = groupList[1] #mandatory fiat parm, its order is fixed
             optionalParsedParmDataDic = self._buildFullCommandPriceOptionalParmsDic(groupList[2:])
 
             if optionalParsedParmDataDic != None:
@@ -728,7 +728,7 @@ class Requester:
         print('   -t9:08')
         print('   -ebittrex')
 #        print('[btc 5/7 0.0015899 6/7 0.00153] [usd-chf]')
-#        print('Beware: IF YOU ENTER MORE THAN ONE FIAT CURRENCY, DO NOT FORGET TO SEPARATE THEM WITH A \'-\' !')
+#        print('Beware: IF YOU ENTER MORE THAN ONE UNIT CURRENCY, DO NOT FORGET TO SEPARATE THEM WITH A \'-\' !')
         inp = input('\nm for more or anything else to exit help\n')
         
         if inp.upper() == 'M':

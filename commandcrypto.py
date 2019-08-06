@@ -2,7 +2,7 @@ from abstractcommand import AbstractCommand
 
 class CommandCrypto(AbstractCommand):
     CRYPTO_LIST = "CRYPTO"
-    FIAT_LIST = "FIAT"
+    FIAT_LIST = "UNIT"
     FLAG = "FLAG"
 
     def __init__(self, receiver = None):

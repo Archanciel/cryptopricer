@@ -221,7 +221,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('btc usd 0 bitfinex', fullCommandStr)
         self.assertEqual('btc usd 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
-        inputStr = '-feth'
+        inputStr = '-ueth'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
@@ -245,7 +245,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
-        inputStr = '-fusd'
+        inputStr = '-uusd'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
@@ -1547,7 +1547,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('xmr usd 0 bitfinex', fullCommandStr)
         self.assertEqual('xmr usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
-        inputStr = '-fbtc'
+        inputStr = '-ubtc'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
@@ -1594,11 +1594,11 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         # then replay same request with no error
-        inputStr = '-feth -zooo'
+        inputStr = '-ueth -zooo'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        self.assertEqual('BTC/ETH on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported command -zooo in request -feth -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+        self.assertEqual('BTC/ETH on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported command -zooo in request -ueth -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                 nowMinuteStr), UtilityForTest.removePriceFromResult(printResult))  #removing \n from contentList entry !
         self.assertEqual('btc eth 0 all', fullCommandStr) #empty string since request caused an error !
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1873,7 +1873,7 @@ class TestControllerGui(unittest.TestCase):
             minuteStr = requestMinuteStr
             priceType = 'M'
 
-        inputStr = '-fbtc -eall -t{}:{} -vs100eth -ceth -d{}/{}'.format(requestHourStr, requestMinuteStr, requestDayStr, requestMonthStr)
+        inputStr = '-ubtc -eall -t{}:{} -vs100eth -ceth -d{}/{}'.format(requestHourStr, requestMinuteStr, requestDayStr, requestMonthStr)
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 

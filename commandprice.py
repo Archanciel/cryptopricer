@@ -9,7 +9,7 @@ class CommandPrice(AbstractCommand):
     by the Controller
     '''
     CRYPTO = "CRYPTO"
-    FIAT = "FIAT"
+    UNIT = "UNIT"
     EXCHANGE = "EXCHANGE"
     DAY = "DAY"
     MONTH = "MONTH"
@@ -45,14 +45,14 @@ class CommandPrice(AbstractCommand):
         key/value pairs added at the first use of the command.
 
         For example, entering 'btc usd 0 Bittrex' will cause the parsedParmData dic
-        to be initialized with only CRYPTO, FIAT, DAY_MONTH_YEAR, DAY, MONTH, YEAR
+        to be initialized with only CRYPTO, UNIT, DAY_MONTH_YEAR, DAY, MONTH, YEAR
         and EXCHANGE entries. HOUR_MINUTE, HOUR and MINUTE will be missing. This
         will cause subsequent errors in Requester in case the first usage was
         'btc usd 0 Bittrex'
         :return:
         '''
         self.parsedParmData[self.CRYPTO] = None
-        self.parsedParmData[self.FIAT] = None
+        self.parsedParmData[self.UNIT] = None
         self.parsedParmData[self.EXCHANGE] = None
         self.parsedParmData[self.DAY] = None
         self.parsedParmData[self.MONTH] = None
@@ -98,7 +98,7 @@ class CommandPrice(AbstractCommand):
             return resultPriceOrBoolean
 
         cryptoUpper = self.parsedParmData[self.CRYPTO].upper()
-        fiatUpper = self.parsedParmData[self.FIAT].upper()
+        fiatUpper = self.parsedParmData[self.UNIT].upper()
         exchange = self.parsedParmData[self.EXCHANGE]
 
         dayStr = self.parsedParmData[self.DAY]
@@ -230,7 +230,7 @@ class CommandPrice(AbstractCommand):
     def _validateMandatoryData(self):
         resultData = True
 
-        fiat = self.parsedParmData[self.FIAT]
+        fiat = self.parsedParmData[self.UNIT]
 
         if fiat == None or any(char.isdigit() for char in fiat):
             resultData = ResultData()
@@ -393,7 +393,7 @@ if __name__ == '__main__':
     print('HISTORICAL')
 
     cpr.parsedParmData[cpr.CRYPTO] = 'btc'
-    cpr.parsedParmData[cpr.FIAT] = 'usd'
+    cpr.parsedParmData[cpr.UNIT] = 'usd'
     cpr.parsedParmData[cpr.EXCHANGE] = 'bittrex'
     cpr.parsedParmData[cpr.DAY] = '12'
     cpr.parsedParmData[cpr.MONTH] = '9'

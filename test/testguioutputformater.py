@@ -91,7 +91,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '5/12/17 09:30')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
-                            {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
+                            {'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
                              'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'PRICE_VAL_AMOUNT': None, 'PRICE_VAL_SYMBOL': None})
 
         fullCommandString, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
@@ -404,9 +404,9 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE, 465.52)
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '5/12/17 09:30')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
-        resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': None, 'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
+        resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': None, 'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
-                            {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
+                            {'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
                              'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'PRICE_VAL_AMOUNT': None, 'PRICE_VAL_SYMBOL': None})
 
         fullCommandString, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
@@ -429,7 +429,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '5/12/17 09:30')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
-                            {'CRYPTO': 'eth', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
+                            {'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
                              'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'PRICE_VAL_AMOUNT': None, 'PRICE_VAL_SYMBOL': None})
 
         fullCommandString, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
@@ -489,7 +489,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, '0.01')
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, '160')
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
-                            {'CRYPTO': 'btc', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
+                            {'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
                              'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'PRICE_VAL_DATA': None,
                              'PRICE_VAL_AMOUNT': '0.01', 'PRICE_VAL_SYMBOL': 'btc', 'PRICE_VAL_SAVE': False})
 
@@ -618,7 +618,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, '160')
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE, True)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
-                            {'CRYPTO': 'btc', 'FIAT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
+                            {'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
                              'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'PRICE_VAL_DATA': None,
                              'PRICE_VAL_AMOUNT': '0.01', 'PRICE_VAL_SYMBOL': 'btc', 'PRICE_VAL_SAVE': True})
         stdout = sys.stdout
