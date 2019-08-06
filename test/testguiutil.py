@@ -450,9 +450,11 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 [b]Output price qualifiers[/b]:
 
-R = RT
-M = Minute price (precision at the minute)
-C = Close price''', resizedText)
+    R = RT
+
+    M = Minute price (precision at the minute)
+
+    C = Close price''', resizedText)
 
     def test_encodeShiftedLinesWithTabCode(self):
         lineList = None
