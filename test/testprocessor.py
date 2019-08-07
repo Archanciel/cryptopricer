@@ -26,7 +26,7 @@ class TestProcessor(unittest.TestCase):
 
     def testGetCryptoPriceHistorical(self):    
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 12
         month = 9
@@ -35,7 +35,7 @@ class TestProcessor(unittest.TestCase):
         minute = 5
 
         resultData = self.processor.getCryptoPrice(crypto,
-                                               fiat,
+                                               unit,
                                                exchange,
                                                day,
                                                month,
@@ -44,7 +44,7 @@ class TestProcessor(unittest.TestCase):
                                                minute)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
@@ -52,9 +52,9 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
 
 
-    def testGetCryptoPriceHistoricalPriceValueCryptoToFiat(self):    
+    def testGetCryptoPriceHistoricalPriceValueCryptoToUnit(self):    
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 12
         month = 9
@@ -65,7 +65,7 @@ class TestProcessor(unittest.TestCase):
         priceValueAmount = 0.001
 
         resultData = self.processor.getCryptoPrice(crypto,
-                                               fiat,
+                                               unit,
                                                exchange,
                                                day,
                                                month,
@@ -76,19 +76,19 @@ class TestProcessor(unittest.TestCase):
                                                priceValueAmount)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO), priceValueAmount)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), 4.122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT), 4.122)
 
 
-    def testGetCryptoPriceHistoricalPriceValueFromBadCryptoToFiat(self):    
+    def testGetCryptoPriceHistoricalPriceValueFromBadCryptoToUnit(self):    
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 12
         month = 9
@@ -99,7 +99,7 @@ class TestProcessor(unittest.TestCase):
         priceValueAmount = 0.001
 
         resultData = self.processor.getCryptoPrice(crypto,
-                                               fiat,
+                                               unit,
                                                exchange,
                                                day,
                                                month,
@@ -110,20 +110,20 @@ class TestProcessor(unittest.TestCase):
                                                priceValueAmount)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT), None)
         self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - price value symbol ETH differs from both crypto (BTC) and unit (USD) of last request. -v parameter ignored")
 
 
-    def testGetCryptoPriceHistoricalPriceValueFiatToCrypto(self):    
+    def testGetCryptoPriceHistoricalPriceValueUnitToCrypto(self):    
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 12
         month = 9
@@ -134,7 +134,7 @@ class TestProcessor(unittest.TestCase):
         priceValueAmount = 70
 
         resultData = self.processor.getCryptoPrice(crypto,
-                                               fiat,
+                                               unit,
                                                exchange,
                                                day,
                                                month,
@@ -145,7 +145,7 @@ class TestProcessor(unittest.TestCase):
                                                priceValueAmount)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
@@ -164,12 +164,12 @@ class TestProcessor(unittest.TestCase):
             outputFormater = GuiOutputFormater(self.configMgr)
 
         self.assertEqual(outputFormater.formatFloatToStr(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO)), outputFormater.formatFloatToStr(0.01698205))
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), priceValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT), priceValueAmount)
 
 
-    def testGetCryptoPriceHistoricalPriceValueFromBadFiatToCrypto(self):    
+    def testGetCryptoPriceHistoricalPriceValueFromBadUnitToCrypto(self):    
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 12
         month = 9
@@ -180,7 +180,7 @@ class TestProcessor(unittest.TestCase):
         priceValueAmount = 70
 
         resultData = self.processor.getCryptoPrice(crypto,
-                                               fiat,
+                                               unit,
                                                exchange,
                                                day,
                                                month,
@@ -191,14 +191,14 @@ class TestProcessor(unittest.TestCase):
                                                priceValueAmount)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)      
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT), None)
         self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - price value symbol EUR differs from both crypto (BTC) and unit (USD) of last request. -v parameter ignored")
 
 
@@ -207,7 +207,7 @@ class TestProcessor(unittest.TestCase):
         now = DateTimeUtil.localNow('Europe/Zurich')
         recent = now.shift(days = -2)
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = recent.day
         month = recent.month
@@ -216,7 +216,7 @@ class TestProcessor(unittest.TestCase):
         minute = 5
 
         resultData = self.processor.getCryptoPrice(crypto,
-                                               fiat,
+                                               unit,
                                                exchange,
                                                day,
                                                month,
@@ -237,7 +237,7 @@ class TestProcessor(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} 10:05'.format(recentDayStr, monthStr, year - 2000))
@@ -245,7 +245,7 @@ class TestProcessor(unittest.TestCase):
 
     def testGetCryptoPriceHistoricalWrongExchange(self):    
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'unknown'
         day = 12
         month = 9
@@ -253,7 +253,7 @@ class TestProcessor(unittest.TestCase):
         hour = 10
         minute = 5
         resultData = self.processor.getCryptoPrice(crypto,
-                                               fiat,
+                                               unit,
                                                exchange,
                                                day,
                                                month,
@@ -262,7 +262,7 @@ class TestProcessor(unittest.TestCase):
                                                minute)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), None)
@@ -272,7 +272,7 @@ class TestProcessor(unittest.TestCase):
 
     def testGetCryptoPriceRealTime(self):
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 0
         month = 0
@@ -281,7 +281,7 @@ class TestProcessor(unittest.TestCase):
         minute = 0
 
         resultData = self.processor.getCryptoPrice(crypto,
-                                               fiat,
+                                               unit,
                                                exchange,
                                                day,
                                                month,
@@ -326,7 +326,7 @@ class TestProcessor(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr))
@@ -334,7 +334,7 @@ class TestProcessor(unittest.TestCase):
     def testGetCryptoPriceRealTimeWrongExchange(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'unknown'
         day = 0
         month = 0
@@ -343,7 +343,7 @@ class TestProcessor(unittest.TestCase):
         minute = 1
 
         resultData = self.processor.getCryptoPrice(crypto,
-                                               fiat,
+                                               unit,
                                                exchange,
                                                day,
                                                month,
@@ -352,7 +352,7 @@ class TestProcessor(unittest.TestCase):
                                                minute)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), None)
@@ -363,7 +363,7 @@ class TestProcessor(unittest.TestCase):
     def testGetCryptoPriceRealTimeExchangeNotSupportPair(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'BTC38'
         day = 0
         month = 0
@@ -372,7 +372,7 @@ class TestProcessor(unittest.TestCase):
         minute = 0
 
         resultData = self.processor.getCryptoPrice(crypto,
-                                               fiat,
+                                               unit,
                                                exchange,
                                                day,
                                                month,
@@ -382,7 +382,7 @@ class TestProcessor(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), fiat)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), exchange)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), None)

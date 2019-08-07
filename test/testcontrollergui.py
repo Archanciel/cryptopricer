@@ -1837,7 +1837,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth usd {}/{}/{} {}:{} all -vs100usd'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
                                                                requestMinuteStr), fullCommandStrWithSaveModeOptions)
 
-    def testGetPrintableResultForRealThenChangeFiatExchangeTimeAddVSCommandAndChangeCryptoDate(self):
+    def testGetPrintableResultForRealThenChangeUnitExchangeTimeAddVSCommandAndChangeCryptoDate(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)

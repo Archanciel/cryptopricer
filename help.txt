@@ -6,9 +6,9 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 <crypto> <unit> <date time> <exchange> <options>
 
-    [b][cy]<crypto>[/c][/b] = crypto currency symbol like btc, but a fiat symbol is possible too
+    [b][cy]<crypto>[/c][/b] = crypto currency symbol like btc, but a unit symbol is possible too
 
-    [b][cy]<unit>[/c][/b] = counterparty symbol, crypto or fiat currency
+    [b][cy]<unit>[/c][/b] = counterparty symbol, crypto or unit currency
 
     [b][cy]<date time>[/c][/b] more details below
 
@@ -91,7 +91,7 @@ IMPORTANT: entering a full request wipes out  all the previously entered partial
 Valuation command -v or -vs or -v0 (zero)
 -----------------------------------------
 
-Used to obtain the converted fiat/crypto amount at the rate of the last request, or at an up to date RT rate
+Used to obtain the converted unit/crypto amount at the rate of the last request, or at an up to date RT rate
 
 Command format: -v999.9999ZZZ or -vs999.9999ZZZ, s is a save command option which means the command will be in effect 
 across the subsequent partial requests 

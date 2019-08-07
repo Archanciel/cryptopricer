@@ -782,7 +782,7 @@ class TestController(unittest.TestCase):
             self.assertEqual("ERROR - unit missing or invalid\n", contentList[1])
 
 
-    def testControllerInvalidCommandMissingFiatProvided(self):
+    def testControllerInvalidCommandMissingUnitProvided(self):
         stdin = sys.stdin
         sys.stdin = StringIO('btc 1/1 2:00 all\nq\ny')
 
@@ -839,7 +839,7 @@ class TestController(unittest.TestCase):
             self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[7])
 
 
-    def testControllerRTThenHistoMinuteThenRThenNewFiat(self):
+    def testControllerRTThenHistoMinuteThenRThenNewUnit(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         previousDate = now.shift(days = -2)
         previsousDateDay = previousDate.day
@@ -973,7 +973,7 @@ class TestController(unittest.TestCase):
             self.assertEqual('Warning - unsupported command -h22:21 in request -h22:21\n', contentList[4])
 
 
-    def testControllerScenarioMissingFiatBadErrorMsg(self):
+    def testControllerScenarioMissingUnitBadErrorMsg(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
 
         stdin = sys.stdin

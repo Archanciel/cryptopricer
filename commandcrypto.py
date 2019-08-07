@@ -2,7 +2,7 @@ from abstractcommand import AbstractCommand
 
 class CommandCrypto(AbstractCommand):
     CRYPTO_LIST = "CRYPTO"
-    FIAT_LIST = "UNIT"
+    UNIT_LIST = "UNIT"
     FLAG = "FLAG"
 
     def __init__(self, receiver = None):
@@ -11,7 +11,7 @@ class CommandCrypto(AbstractCommand):
 
     def initialiseParsedParmData(self):
         self.parsedParmData[self.CRYPTO_LIST] = None
-        self.parsedParmData[self.FIAT_LIST] = None
+        self.parsedParmData[self.UNIT_LIST] = None
         self.parsedParmData[self.FLAG] = None
 
 

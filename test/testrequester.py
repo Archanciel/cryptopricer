@@ -23,7 +23,7 @@ class TestRequester(unittest.TestCase):
     -teste input crypto avec 0 price/oate,
     1 price/date, n price/date
     
-    -idem 0, 1, n fiats
+    -idem 0, 1, n units
     
     -varie order crypto list/unit list/
     nosave command
@@ -46,40 +46,40 @@ class TestRequester(unittest.TestCase):
         self.requester = requester
 
 
-    def test_parseFiatTwoFiatsNoFiatSep(self):
+    def test_parseUnitTwoUnitsNoUnitSep(self):
         inputStr = "[usd chf]"
-        fiatList = self.requester._parseFiat(inputStr.upper())
-        self.assertEqual(fiatList, ['CHF'])
+        unitList = self.requester._parseUnit(inputStr.upper())
+        self.assertEqual(unitList, ['CHF'])
 
 
-    def test_parseFiatTwoFiats(self):
+    def test_parseUnitTwoUnits(self):
         inputStr = "[usd-chf]"
-        fiatList = self.requester._parseFiat(inputStr.upper())
-        self.assertEqual(fiatList, ['USD', 'CHF'])
+        unitList = self.requester._parseUnit(inputStr.upper())
+        self.assertEqual(unitList, ['USD', 'CHF'])
 
 
-    def test_parseFiatEmptyFiatList(self):
+    def test_parseUnitEmptyUnitList(self):
         inputStr = "[]"
-        fiatList = self.requester._parseFiat(inputStr.upper())
-        self.assertEqual(fiatList, [])
+        unitList = self.requester._parseUnit(inputStr.upper())
+        self.assertEqual(unitList, [])
 
 
-    def test_parseFiatOneFiat(self):
+    def test_parseUnitOneUnit(self):
         inputStr = "[usd]"
-        fiatList = self.requester._parseFiat(inputStr.upper())
-        self.assertEqual(fiatList, ['USD'])
+        unitList = self.requester._parseUnit(inputStr.upper())
+        self.assertEqual(unitList, ['USD'])
 
 
-    def test_parseFiatThreeFiats(self):
+    def test_parseUnitThreeUnits(self):
         inputStr = "[usd-chf-eur]"
-        fiatList = self.requester._parseFiat(inputStr.upper())
-        self.assertEqual(fiatList, ['USD', 'CHF', 'EUR'])
+        unitList = self.requester._parseUnit(inputStr.upper())
+        self.assertEqual(unitList, ['USD', 'CHF', 'EUR'])
 
 
-    def test_parseFiatNoFiatList(self):
+    def test_parseUnitNoUnitList(self):
         inputStr = ""
-        fiatList = self.requester._parseFiat(inputStr.upper())
-        self.assertEqual(fiatList, [])
+        unitList = self.requester._parseUnit(inputStr.upper())
+        self.assertEqual(unitList, [])
 
 
     def test_getUserCommandCommandMissingOtherCommand(self):
@@ -178,9 +178,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(datePriceList, ['05/02', '0.0015899'])
 
 
-    def test_parseOOCommandParmsFiatListMissingNoOtherCommand(self):
+    def test_parseOOCommandParmsUnitListMissingNoOtherCommand(self):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153]"
-        cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
+        cryptoDataList, unitDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, self.commandError)
         resultData = self.commandError.execute()
 
@@ -188,9 +188,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual("ERROR - invalid request : unit list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
-    def test_parseOOCommandParmsFiatListMissingWithOtherCommand(self):
+    def test_parseOOCommandParmsUnitListMissingWithOtherCommand(self):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153] -nosave"
-        cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
+        cryptoDataList, unitDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, self.commandError)
         resultData = self.commandError.execute()
 
@@ -200,25 +200,25 @@ class TestRequester(unittest.TestCase):
 
     def test_parseOOCommandParms(self):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave"
-        cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
+        cryptoDataList, unitDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEqual(fiatDataList, ['USD', 'CHF'])
+        self.assertEqual(unitDataList, ['USD', 'CHF'])
         self.assertEqual(flag, '-NOSAVE')
 
 
     def test_parseOOCommandParmsNoOtherCommand(self):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153] [usd-chf]"
-        cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
+        cryptoDataList, unitDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEqual(fiatDataList, ['USD', 'CHF'])
+        self.assertEqual(unitDataList, ['USD', 'CHF'])
         self.assertEqual(flag, None)
 
 
-    def test_parseOOCommandParmsEmptyFiatListNoOtherCommand(self):
+    def test_parseOOCommandParmsEmptyUnitListNoOtherCommand(self):
         inputStr = "btc [5/7 0.0015899 6/7 0.00153] []"
-        cryptoDataList, fiatDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
+        cryptoDataList, unitDataList, flag = self.requester._parseOOCommandParms(inputStr, inputStr.upper())
         self.assertEqual(cryptoDataList, ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEqual(fiatDataList, [])
+        self.assertEqual(unitDataList, [])
         self.assertEqual(flag, None)
 
 
@@ -229,7 +229,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(cryptoCommand, CommandCrypto)
         parsedParmData = cryptoCommand.parsedParmData
         self.assertEqual(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEqual(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
+        self.assertEqual(parsedParmData[cryptoCommand.UNIT_LIST], ['USD', 'CHF'])
         self.assertEqual(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
 
 
@@ -241,7 +241,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(cryptoCommand, CommandCrypto)
         parsedParmData = cryptoCommand.parsedParmData
         self.assertEqual(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEqual(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
+        self.assertEqual(parsedParmData[cryptoCommand.UNIT_LIST], ['USD', 'CHF'])
         self.assertEqual(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
 
         sys.stdin = stdin
@@ -255,13 +255,13 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(cryptoCommand, CommandCrypto)
         parsedParmData = cryptoCommand.parsedParmData
         self.assertEqual(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEqual(parsedParmData[cryptoCommand.FIAT_LIST], ['USD', 'CHF'])
+        self.assertEqual(parsedParmData[cryptoCommand.UNIT_LIST], ['USD', 'CHF'])
         self.assertEqual(parsedParmData[cryptoCommand.FLAG], None)
 
         sys.stdin = stdin
 
 
-    def testRequestOOCommandEmptyFiat(self):
+    def testRequestOOCommandEmptyUnit(self):
         stdin = sys.stdin
         sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] [] -nosave")
         cryptoCommand = self.requester.request()
@@ -269,13 +269,13 @@ class TestRequester(unittest.TestCase):
         self.assertIsInstance(cryptoCommand, CommandCrypto)
         parsedParmData = cryptoCommand.parsedParmData
         self.assertEqual(parsedParmData[cryptoCommand.CRYPTO_LIST], ['BTC', '5/7', '0.0015899', '6/7', '0.00153'])
-        self.assertEqual(parsedParmData[cryptoCommand.FIAT_LIST], [])
+        self.assertEqual(parsedParmData[cryptoCommand.UNIT_LIST], [])
         self.assertEqual(parsedParmData[cryptoCommand.FLAG], '-NOSAVE')
 
         sys.stdin = stdin
 
 
-    def testRequestOOCommandNoFiat(self):
+    def testRequestOOCommandNoUnit(self):
         stdin = sys.stdin
         sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] -nosave")
         command = self.requester.request()
@@ -371,19 +371,19 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(('btc', 'usd', '1/9', '12:05', None, None, None), groupList)
 
 
-    def test_parseGroupsFullNoFiatDMHHMMNoExchange(self):
+    def test_parseGroupsFullNoUnitDMHHMMNoExchange(self):
         inputStr = "btc 1/9 12:05"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
         self.assertEqual(('btc', '1/9', '12:05', None, None, None, None), groupList)
 
 
-    def test_parseGroupsFullNoFiatDMNoTimeNoExchange(self):
+    def test_parseGroupsFullNoUnitDMNoTimeNoExchange(self):
         inputStr = "btc 1/9"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
         self.assertEqual(('btc', '1/9', None, None, None, None, None), groupList)
 
 
-    def test_parseGroupsFullNoFiatNoDateNoTimeNoExchange(self):
+    def test_parseGroupsFullNoUnitNoDateNoTimeNoExchange(self):
         inputStr = "btc"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
         self.assertEqual(('btc', None, None, None, None, None, None), groupList)
@@ -594,7 +594,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(('-c', 'eth', '-u', 'gbp', None, None, None, None, None, None, None, None, None, None, None, None), groupList)
 
 
-    def test_parseGroupsPartialNoFiatNoDateNoTimeNoExchangeNoValue(self):
+    def test_parseGroupsPartialNoUnitNoDateNoTimeNoExchangeNoValue(self):
         inputStr = "-ceth"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
@@ -608,14 +608,14 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(('-u', 'gbp', None, None, None, None, None, None, None, None, None, None, None, None, None, None), groupList)
 
 
-    def test_parseGroupsPartialValueFloatNoCryptoNoFiatNoDateNoTimeNoExchange(self):
+    def test_parseGroupsPartialValueFloatNoCryptoNoUnitNoDateNoTimeNoExchange(self):
         inputStr = "-v700.05usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
         self.assertEqual(('-v', '700.05usd', None, None, None, None, None, None, None, None, None, None, None, None, None, None), groupList)
 
 
-    def test_parseGroupsPartialValueIntNoCryptoNoFiatNoDateNoTimeNoExchange(self):
+    def test_parseGroupsPartialValueIntNoCryptoNoUnitNoDateNoTimeNoExchange(self):
         inputStr = "-v700usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
@@ -1149,7 +1149,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
 
 
-    def test_parseAndFillFullCommandPriceNoFiatNoDateNoTimeNoExchange(self):
+    def test_parseAndFillFullCommandPriceNoUnitNoDateNoTimeNoExchange(self):
         inputStr = "btc"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandPrice, self.commandPrice)
@@ -2552,7 +2552,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def testRequestPriceCommandPartialFiatTime(self):
+    def testRequestPriceCommandPartialUnitTime(self):
         # first, enter full command price
         stdin = sys.stdin
         sys.stdin = StringIO("eth gbp 1/8/16 13:46 CCEX")
@@ -2593,7 +2593,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def testRequestPriceCommandPartialFiatTimeZeroRejected(self):
+    def testRequestPriceCommandPartialUnitTimeZeroRejected(self):
         # first, enter full command price
         stdin = sys.stdin
         sys.stdin = StringIO("eth gbp 1/8/16 13:46 CCEX")

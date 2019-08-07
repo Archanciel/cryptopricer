@@ -6,38 +6,38 @@ class CurrencyPairTester:
         self.currencyPairDic = self._loadCurrencyPairDic()
 
 
-    def isListed(self, crypto, fiat, exchange):
+    def isListed(self, crypto, unit, exchange):
         '''
         return True if the triplet is known from CurrencyPairTester,
         False if not.
         '''
-        cryptoFiatExch = crypto.upper() + fiat.upper() + exchange.upper()
+        cryptoUnitExch = crypto.upper() + unit.upper() + exchange.upper()
         
-        if self.currencyPairDic.get(cryptoFiatExch.upper()) == None:
+        if self.currencyPairDic.get(cryptoUnitExch.upper()) == None:
             return False
         else:
             return True
         
 
-    def addCurrencyPair(self, crypto, fiat, exchange):
+    def addCurrencyPair(self, crypto, unit, exchange):
         '''
         add the triplet to the internal dic and
         to the file on disk.
         '''
-        if self.isListed(crypto, fiat, exchange):
+        if self.isListed(crypto, unit, exchange):
             return #do not add same entry twice !
             
         cryptoU = crypto.upper()
-        fiatU = fiat.upper()
+        unitU = unit.upper()
         exchangeU = exchange.upper()
 
-        cryptoFiatExch = cryptoU + fiatU + exchangeU
-        self.currencyPairDic[cryptoFiatExch] = ''
+        cryptoUnitExch = cryptoU + unitU + exchangeU
+        self.currencyPairDic[cryptoUnitExch] = ''
         
-        cryptoFiatExchComma = cryptoU + ',' + fiatU + ',' + exchangeU + '\n'
+        cryptoUnitExchComma = cryptoU + ',' + unitU + ',' + exchangeU + '\n'
         
         with open(self.filename, 'a') as currPairFile:
-            currPairFile.write(cryptoFiatExchComma)
+            currPairFile.write(cryptoUnitExchComma)
        
     
     def _loadCurrencyPairDic(self):
@@ -55,9 +55,9 @@ class CurrencyPairTester:
         
         for line in lines:
             line = line[:-1] #removing \n
-            cryptoFiatExchList = line.split(',')
-            cryptoFiatExch = ''.join(cryptoFiatExchList)
-            dic[cryptoFiatExch] = ''
+            cryptoUnitExchList = line.split(',')
+            cryptoUnitExch = ''.join(cryptoUnitExchList)
+            dic[cryptoUnitExch] = ''
             
         return dic
             

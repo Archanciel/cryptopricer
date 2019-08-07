@@ -56,11 +56,11 @@ Comment:
 Other partial request commands
 * -t --> time
 * -c --> cryptocurrency
-* -f --> fiat currency
+* -f --> unit currency
 * -e --> exchange
 
 
-### Changing the crypto, the fiat and the exchange of the previous request
+### Changing the crypto, the unit and the exchange of the previous request
 #### Partial request: -cxmr -feth -eall
 ![](screenshots/Screenshot_2018-02-16-21-40-04.jpg)
 
@@ -68,7 +68,7 @@ Comment:
 * all for the exchange means average of all exchanges (CCCAGG)
 
 
-### Using the -v value command to obtain the counterparty value in fiat at the obtained price of the value command quantity of the cryptocurrency
+### Using the -v value command to obtain the counterparty value in unit at the obtained price of the value command quantity of the cryptocurrency
 #### Partial request: -d0 -vs100xmr -fusd to obtain the counterparty value in usdsof 100xmr, computed using the returned RT xmr price
 ![](screenshots/Screenshot_2018-02-16-21-40-41.jpg)
 
@@ -76,7 +76,7 @@ Comment:
 * the s flag of -vS means the -vs command will be saved in the command history
 
 
-### Using the -v value command to obtain the counterparty value in mryptocurrency at the obtained price of the value command quantity in fiat
+### Using the -v value command to obtain the counterparty value in mryptocurrency at the obtained price of the value command quantity in unit
 #### Partial request: -vs100usd to obtain the counterparty value of 100 usd in xmr at the returned RT xmr price
 ![](screenshots/Screenshot_2018-02-16-21-41-50.jpg)
 

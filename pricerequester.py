@@ -55,7 +55,7 @@ class PriceRequester:
         resultData = ResultData()
 
         resultData.setValue(ResultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(ResultData.RESULT_KEY_FIAT, unit)
+        resultData.setValue(ResultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
 
         if DateTimeUtil.isTimeStampOlderThan(timeStampLocalForHistoMinute, dayNumberInt=7):
@@ -165,7 +165,7 @@ class PriceRequester:
         resultData = ResultData()
 
         resultData.setValue(ResultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(ResultData.RESULT_KEY_FIAT, unit)
+        resultData.setValue(ResultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
 

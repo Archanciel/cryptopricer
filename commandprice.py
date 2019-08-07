@@ -98,7 +98,7 @@ class CommandPrice(AbstractCommand):
             return resultPriceOrBoolean
 
         cryptoUpper = self.parsedParmData[self.CRYPTO].upper()
-        fiatUpper = self.parsedParmData[self.UNIT].upper()
+        unitUpper = self.parsedParmData[self.UNIT].upper()
         exchange = self.parsedParmData[self.EXCHANGE]
 
         dayStr = self.parsedParmData[self.DAY]
@@ -187,7 +187,7 @@ class CommandPrice(AbstractCommand):
 
         priceValueSaveFlag = self.parsedParmData[self.PRICE_VALUE_SAVE]
         result = self.receiver.getCryptoPrice(cryptoUpper,
-                                              fiatUpper,
+                                              unitUpper,
                                               exchange,
                                               day,
                                               month,
@@ -230,9 +230,9 @@ class CommandPrice(AbstractCommand):
     def _validateMandatoryData(self):
         resultData = True
 
-        fiat = self.parsedParmData[self.UNIT]
+        unit = self.parsedParmData[self.UNIT]
 
-        if fiat == None or any(char.isdigit() for char in fiat):
+        if unit == None or any(char.isdigit() for char in unit):
             resultData = ResultData()
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - unit missing or invalid")
 

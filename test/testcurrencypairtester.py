@@ -30,34 +30,34 @@ class TestCurrencyPairTester(unittest.TestCase):
         currencyPairTester = CurrencyPairTester(self.filepath)
 
         crypto = 'mcap'
-        fiat = 'usd'
+        unit = 'usd'
         exchange = 'ccex'
         
-        self.assertFalse(currencyPairTester.isListed(crypto, fiat, exchange))
-        currencyPairTester.addCurrencyPair(crypto, fiat, exchange)
-        self.assertTrue(currencyPairTester.isListed(crypto, fiat, exchange))
+        self.assertFalse(currencyPairTester.isListed(crypto, unit, exchange))
+        currencyPairTester.addCurrencyPair(crypto, unit, exchange)
+        self.assertTrue(currencyPairTester.isListed(crypto, unit, exchange))
 
 
     def testAddEntryToNonEmptyFile(self):
         currencyPairTester = CurrencyPairTester(self.filepath)
 
         crypto = 'mcap'
-        fiat = 'usd'
+        unit = 'usd'
         exchange = 'ccex'
         
-        currencyPairTester.addCurrencyPair(crypto, fiat, exchange)
+        currencyPairTester.addCurrencyPair(crypto, unit, exchange)
         currencyPairTester = None
 
         # recreating a CurrencyPairTester
         currencyPairTester = CurrencyPairTester(self.filepath)
-        self.assertTrue(currencyPairTester.isListed(crypto, fiat, exchange))
+        self.assertTrue(currencyPairTester.isListed(crypto, unit, exchange))
 
         crypto = 'kmd'
-        fiat = 'usd'
+        unit = 'usd'
         exchange = 'bittrex'
         
-        currencyPairTester.addCurrencyPair(crypto, fiat, exchange)
-        self.assertTrue(currencyPairTester.isListed(crypto, fiat, exchange))
+        currencyPairTester.addCurrencyPair(crypto, unit, exchange)
+        self.assertTrue(currencyPairTester.isListed(crypto, unit, exchange))
 
         with open(self.filepath, 'r') as ff:
             lines = ff.readlines()
@@ -68,17 +68,17 @@ class TestCurrencyPairTester(unittest.TestCase):
         currencyPairTester = CurrencyPairTester(self.filepath)
 
         crypto = 'mcap'
-        fiat = 'usd'
+        unit = 'usd'
         exchange = 'ccex'
         
-        currencyPairTester.addCurrencyPair(crypto, fiat, exchange)
+        currencyPairTester.addCurrencyPair(crypto, unit, exchange)
         currencyPairTester = None
 
         # recreating a CurrencyPairTester
         currencyPairTester = CurrencyPairTester(self.filepath)
         
         #adding same pair a second time
-        currencyPairTester.addCurrencyPair(crypto, fiat, exchange)
+        currencyPairTester.addCurrencyPair(crypto, unit, exchange)
    
         with open(self.filepath, 'r') as ff:
             lines = ff.readlines()
@@ -89,13 +89,13 @@ class TestCurrencyPairTester(unittest.TestCase):
         currencyPairTester = CurrencyPairTester(self.filepath)
 
         crypto = 'mcap'
-        fiat = 'usd'
+        unit = 'usd'
         exchange = 'ccex'
         
-        currencyPairTester.addCurrencyPair(crypto, fiat, exchange)
+        currencyPairTester.addCurrencyPair(crypto, unit, exchange)
 
         #adding same pair a second time
-        currencyPairTester.addCurrencyPair(crypto, fiat, exchange)
+        currencyPairTester.addCurrencyPair(crypto, unit, exchange)
    
         with open(self.filepath, 'r') as ff:
             lines = ff.readlines()

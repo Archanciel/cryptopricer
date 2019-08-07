@@ -28,13 +28,13 @@ class TestGuiOutputFormater(unittest.TestCase):
 
     def testPrintCryptoPriceHistorical(self):
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'BitTrex'
 
         resultData = ResultData()
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
@@ -52,20 +52,20 @@ class TestGuiOutputFormater(unittest.TestCase):
 
     def testPrintCryptoPriceHistoricalPriceValue(self):
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'BitTrex'
 
         resultData = ResultData()
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, '0.01698205')
-        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, '70')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT, '70')
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -78,13 +78,13 @@ class TestGuiOutputFormater(unittest.TestCase):
 
     def testGetFullCommandStringYearDefinedDupl(self):
         crypto = 'ETH'
-        fiat = 'USD'
+        unit = 'USD'
 
         resultData = ResultData()
 
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 465.52)
@@ -101,20 +101,20 @@ class TestGuiOutputFormater(unittest.TestCase):
 
     def testPrintCryptoPriceHistoricalPriceValueDupl(self):
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'BitTrex'
 
         resultData = ResultData()
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, '0.01698205')
-        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, '70')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT, '70')
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -127,20 +127,20 @@ class TestGuiOutputFormater(unittest.TestCase):
 
     def testPrintCryptoPriceHistoricalPriceValueWarning(self):
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'BitTrex'
 
         resultData = ResultData()
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, None)
-        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT, None)
         resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
                               "WARNING - price value symbol ETH differs from both crypto (BTC) and unit (USD). -v parameter ignored !")
 
@@ -158,7 +158,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         now = DateTimeUtil.localNow('Europe/Zurich')
         recent = now.shift(days = -2)
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = recent.day
         month = recent.month
@@ -177,7 +177,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122.09)
@@ -196,7 +196,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
     def testGetCryptoPriceHistoricalWrongExchange(self):    
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'unknown'
         day = 12
         month = 9
@@ -208,7 +208,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
 
@@ -224,7 +224,7 @@ class TestGuiOutputFormater(unittest.TestCase):
     def testGetCryptoPriceRealTime(self):    
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 0
         month = 0
@@ -264,7 +264,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         #rt price not provided here !
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
@@ -282,7 +282,7 @@ class TestGuiOutputFormater(unittest.TestCase):
     def testGetCryptoPriceRealTimeWrongExchange(self):    
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'unknown'
         day = 0
         month = 0
@@ -294,7 +294,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, None)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, None)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, None)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, None)
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, None)
         resultData.setValue(resultData.RESULT_KEY_PRICE, None)
@@ -313,7 +313,7 @@ class TestGuiOutputFormater(unittest.TestCase):
     def testGetCryptoPriceRealTimeExchangeNotSupportPair(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'BTC38'
         day = 0
         month = 0
@@ -325,7 +325,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         resultData.setValue(resultData.RESULT_KEY_PRICE, None)
@@ -392,13 +392,13 @@ class TestGuiOutputFormater(unittest.TestCase):
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         crypto = 'ETH'
-        fiat = 'USD'
+        unit = 'USD'
 
         resultData = ResultData()
 
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 465.52)
@@ -416,13 +416,13 @@ class TestGuiOutputFormater(unittest.TestCase):
 
     def testGetFullCommandStringYearDefined(self):
         crypto = 'ETH'
-        fiat = 'USD'
+        unit = 'USD'
 
         resultData = ResultData()
 
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 465.52)
@@ -441,7 +441,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         #correspond to command btc usd 0 bittrex -v0.01btc
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 0
         month = 0
@@ -481,13 +481,13 @@ class TestGuiOutputFormater(unittest.TestCase):
         #rt price not provided here !
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, '0.01')
-        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, '160')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT, '160')
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
                             {'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
                              'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'PRICE_VAL_DATA': None,
@@ -508,7 +508,7 @@ class TestGuiOutputFormater(unittest.TestCase):
     def testGetCryptoPriceRealTimeWithValueFlagGenerateWarning(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 0
         month = 0
@@ -548,7 +548,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         #rt price not provided here !
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
@@ -569,7 +569,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         #correspond to command btc usd 0 bittrex -vs0.01btc
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 0
         month = 0
@@ -609,13 +609,13 @@ class TestGuiOutputFormater(unittest.TestCase):
         #rt price not provided here !
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, '0.01')
-        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, '160')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT, '160')
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE, True)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
                             {'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,

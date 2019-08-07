@@ -1,6 +1,6 @@
 class ResultData:
     RESULT_KEY_CRYPTO = 'CRYPTO'
-    RESULT_KEY_FIAT = 'UNIT'
+    RESULT_KEY_UNIT = 'UNIT'
     RESULT_KEY_EXCHANGE = 'EXCHANGE'
     RESULT_KEY_PRICE_TIME_STAMP = 'PRICE_TIMESTAMP'
     RESULT_KEY_PRICE_DATE_TIME_STRING = 'PRICE_DATE_TIME_STR'
@@ -10,7 +10,7 @@ class ResultData:
     RESULT_KEY_WARNINGS_DIC = 'WARNING_MSG'
     RESULT_KEY_INITIAL_COMMAND_PARMS = 'INIT_COMMAND_PARMS' #command parm dic denoting the user requesr
     RESULT_KEY_PRICE_VALUE_CRYPTO = 'PRICE_VAL_CRYPTO' #store the crypto price returned for -v command
-    RESULT_KEY_PRICE_VALUE_FIAT = 'PRICE_VAL_FIAT'     #store the unit price returned for -v command
+    RESULT_KEY_PRICE_VALUE_UNIT = 'PRICE_VAL_UNIT'     #store the unit price returned for -v command
     RESULT_KEY_PRICE_VALUE_SAVE = 'PRICE_VAL_SAVE'     #store True or False to indicate if the price value command is to be stored in history (-vs) or not (-v)
 
     WARNING_TYPE_FUTURE_DATE = 'FUTURE_DATE'
@@ -25,7 +25,7 @@ class ResultData:
     def __init__(self):
         self._resultDataDic = {}
         self._resultDataDic[self.RESULT_KEY_CRYPTO] = None
-        self._resultDataDic[self.RESULT_KEY_FIAT] = None
+        self._resultDataDic[self.RESULT_KEY_UNIT] = None
         self._resultDataDic[self.RESULT_KEY_EXCHANGE] = None
         self._resultDataDic[self.RESULT_KEY_PRICE_TIME_STAMP] = None
         self._resultDataDic[self.RESULT_KEY_PRICE_DATE_TIME_STRING] = None
@@ -36,7 +36,7 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_INITIAL_COMMAND_PARMS] = None
         self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None       
         self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_CRYPTO] = None
-        self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_FIAT] = None
+        self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_UNIT] = None
         self._resultDataDic[self.RESULT_KEY_PRICE_VALUE_SAVE] = None
 
         self.requestInputString = ''

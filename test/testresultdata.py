@@ -15,14 +15,14 @@ class TestResultData(unittest.TestCase):
 
     def testInit(self):
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_CRYPTO), None)
-        self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_FIAT), None)
+        self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_EXCHANGE), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_PRICE_TIME_STAMP), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_PRICE), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_PRICE_TYPE), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_ERROR_MSG), None)
-        self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_PRICE_VALUE_FIAT), None)
+        self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_PRICE_VALUE_UNIT), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_PRICE_VALUE_CRYPTO), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_PRICE_VALUE_SAVE), None)
 

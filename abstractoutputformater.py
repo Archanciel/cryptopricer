@@ -47,8 +47,8 @@ class AbstractOutputFormater(metaclass=ABCMeta):
             else:
                 dateTimeStr += 'R'  # adding RT symbol
 
-            cryptoFiatPart = self._formatCryptoFiatPart(resultData)
-            outputStr = cryptoFiatPart + ' on {}: {} {}'.format(resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
+            cryptoUnitPart = self._formatCryptoUnitPart(resultData)
+            outputStr = cryptoUnitPart + ' on {}: {} {}'.format(resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
                                                                 dateTimeStr,
                                                                 formattedPriceStr)
         else:
@@ -60,18 +60,18 @@ class AbstractOutputFormater(metaclass=ABCMeta):
         return outputStr
 
 
-    def _formatCryptoFiatPart(self, resultData):
+    def _formatCryptoUnitPart(self, resultData):
         if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO) == None:
             return '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 
-                                  resultData.getValue(resultData.RESULT_KEY_FIAT))
+                                  resultData.getValue(resultData.RESULT_KEY_UNIT))
         else:
             formattedPriceCryptoStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO)))
-            formattedPriceFiatStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT)))
+            formattedPriceUnitStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT)))
             
             return '{} {}/{} {}'.format(formattedPriceCryptoStr, 
                                         resultData.getValue(resultData.RESULT_KEY_CRYPTO),
-                                        formattedPriceFiatStr, 
-                                        resultData.getValue(resultData.RESULT_KEY_FIAT))
+                                        formattedPriceUnitStr, 
+                                        resultData.getValue(resultData.RESULT_KEY_UNIT))
                                                        
         
         

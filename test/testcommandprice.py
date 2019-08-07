@@ -42,7 +42,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
@@ -64,7 +64,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
@@ -99,7 +99,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
 
         if DateTimeUtil.isDateOlderThan(testDateTime, 7):
@@ -152,7 +152,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - Unknown market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), None)
@@ -185,7 +185,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '{}/{}/{} {}:{}'.format(nowDayStr, nowMonthStr, now.year - 2000, nowHourStr, nowMinuteStr))
@@ -236,7 +236,7 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - Unknown market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), None)
@@ -423,7 +423,7 @@ class TestCommandPrice(unittest.TestCase):
         self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_FUTURE_DATE))
         self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year".format(nowDayStr, nowMonthStr, (now.year + 1 - 2000), nowHourStr, nowMinuteStr))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), "{}/{}/{} 00:00".format(nowDayStr, nowMonthStr, (now.year - 1) - 2000))
@@ -448,7 +448,7 @@ class TestCommandPrice(unittest.TestCase):
         self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_FUTURE_DATE))
         self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year".format(nowDayStr, nowMonthStr, (now.year + 2 - 2000)))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), "{}/{}/{} 00:00".format(nowDayStr, nowMonthStr, (now.year - 1) - 2000))
@@ -483,7 +483,7 @@ class TestCommandPrice(unittest.TestCase):
         self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_FUTURE_DATE))
         self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year".format(nowDayStr, nowMonthStr, (now.year - 2000), nowHourStr, nowMinutePlusOneStr))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_FIAT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), "{}/{}/{} 00:00".format(nowDayStr, nowMonthStr, (now.year - 1 - 2000)))
@@ -569,7 +569,7 @@ class TestCommandPrice(unittest.TestCase):
                          "ERROR - invalid value: o5 violates format for minute (HH:mm)")
 
 
-    def testExecuteRealTimePriceInvalidFiat(self):
+    def testExecuteRealTimePriceInvalidUnit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
         self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd6'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'

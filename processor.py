@@ -159,12 +159,12 @@ class Processor:
             #converting priceValueAmount in crypto to equivalent value in unit
             convertedValue = priceValueAmount * conversionRate
             resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, priceValueAmount)
-            resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, convertedValue)
+            resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT, convertedValue)
         elif priceValueSymbol == unit:
             #converting priceValueAmount in unit to equivalent value in crypto
             convertedValue = priceValueAmount / conversionRate
             resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, convertedValue)
-            resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_FIAT, priceValueAmount)
+            resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT, priceValueAmount)
         else:
             if priceValueSaveFlag:
                 valueCommand = '-vs'
@@ -195,7 +195,7 @@ if __name__ == '__main__':
     proc = Processor(cm, pr, cryp)
 
     crypto = 'BTC'
-    fiat = 'USD'
+    unit = 'USD'
     exchange = 'bittrex'
     day = 12
     month = 9
@@ -205,7 +205,7 @@ if __name__ == '__main__':
 
     print('HISTORICAL')
     print(proc.getCryptoPrice(crypto,
-                              fiat,
+                              unit,
                               exchange,
                               day,
                               month,
@@ -214,7 +214,7 @@ if __name__ == '__main__':
                               minute))
 
     print(proc.getCryptoPrice(crypto,
-                              fiat,
+                              unit,
                               'unknown_exchange',
                               day,
                               month,
@@ -230,7 +230,7 @@ if __name__ == '__main__':
 
     print('\nREAL TIME')
     print(proc.getCryptoPrice(crypto,
-                              fiat,
+                              unit,
                               exchange,
                               day,
                               month,
@@ -239,7 +239,7 @@ if __name__ == '__main__':
                               minute))
 
     print(proc.getCryptoPrice(crypto,
-                              fiat,
+                              unit,
                               'unknown_exchange',
                               day,
                               month,

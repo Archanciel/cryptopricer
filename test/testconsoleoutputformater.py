@@ -18,13 +18,13 @@ class TestConsoleOutputFormater(unittest.TestCase):
 
     def testPrintCryptoPriceHistorical(self):
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
 
         resultData = ResultData()
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
@@ -45,7 +45,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
         now = DateTimeUtil.localNow('Europe/Zurich')
         recent = now.shift(days = -2)
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = recent.day
         month = recent.month
@@ -64,7 +64,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
 
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122.09)
@@ -83,7 +83,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
 
     def testGetCryptoPriceHistoricalWrongExchange(self):    
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'unknown'
         day = 12
         month = 9
@@ -95,7 +95,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
 
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
 
@@ -111,7 +111,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
     def testGetCryptoPriceRealTime(self):    
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'bittrex'
         day = 0
         month = 0
@@ -151,7 +151,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
         #rt price not provided here !
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
@@ -169,7 +169,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
     def testGetCryptoPriceRealTimeWrongExchange(self):    
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'unknown'
         day = 0
         month = 0
@@ -181,7 +181,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
         
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, None)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, None)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, None)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, None)
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, None)
         resultData.setValue(resultData.RESULT_KEY_PRICE, None)
@@ -200,7 +200,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
     def testGetCryptoPriceRealTimeExchangeNotSupportPair(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
-        fiat = 'USD'
+        unit = 'USD'
         exchange = 'BTC38'
         day = 0
         month = 0
@@ -212,7 +212,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
 
         resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
         resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         resultData.setValue(resultData.RESULT_KEY_PRICE, None)
