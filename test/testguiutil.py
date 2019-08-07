@@ -593,7 +593,23 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
     M = Minute price (precision at the minute)
 
-    C = Close price''', noEOLText)
+    C = Close price
+
+Examples: assume we are on 16/12/17 at 22:10
+
+[cy]btc usd 0 bittrex[/c] --> BTC/USD on BitTrex: 16/12/17 22:10R 19120
+
+[cy]eth btc 16/12 13:45 bitfinex[/c] --> ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+
+[cy]eth btc 13:45 bitfinex[/c] --> ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+
+[cy]eth btc 15 8:45 bitfinex[/c] --> ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
+
+[cy]eth btc 21/1 13:45 bitfinex[/c] --> ETH/BTC on Bitfinex: 21/01/17C 0.01185
+
+[cy]btc usd 0 bittrex -v0.01btc[/c] --> 0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
+
+[b][cr]WARNING[/c][/b]: <options> must be specified at the end of the full command price''', noEOLText)
 
     def testSizeParagraphsForKivyLabelnRealPartialWithBreakLinesHelpFile(self):
         '''
@@ -641,7 +657,23 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
     M = Minute price (precision at the minute)
 
-    C = Close price''', resizedText)
+    C = Close price
+
+Examples: assume we are on 16/12/17 at 22:10
+
+[color=ffff00ff]btc usd 0 bittrex[/color] --> BTC/USD on BitTrex: 16/12/17 22:10R 19120
+
+[color=ffff00ff]eth btc 16/12 13:45 bitfinex[/color] --> ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+
+[color=ffff00ff]eth btc 13:45 bitfinex[/color] --> ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+
+[color=ffff00ff]eth btc 15 8:45 bitfinex[/color] --> ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
+
+[color=ffff00ff]eth btc 21/1 13:45 bitfinex[/color] --> ETH/BTC on Bitfinex: 21/01/17C 0.01185
+
+[color=ffff00ff]btc usd 0 bittrex -v0.01btc[/color] --> 0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
+
+[b][color=ff0000]WARNING[/color][/b]: <options> must be specified at the end of the full command price''', resizedText)
 
     def testSizeParagraphsForKivyLabelnRealPartialWithNoBreakLinesHelpFile(self):
         '''

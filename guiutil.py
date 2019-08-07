@@ -212,28 +212,6 @@ class GuiUtil:
         return markupedStr
 
     @staticmethod
-    def applyRightShift(longParagraphLineStr, width, leftShiftStr):
-        replaceTupleList = [("[cr]", "[color=ff0000]"),
-                            ("[cg]", "[color=19ff52ff]"),
-                            ("[cy]", "[color=ffff00ff]"),
-                            ("[/cr]", "[/color]"),
-                            ("[/cg]", "[/color]"),
-                            ("[/cy]", "[/color]"),
-                            ("[/c]", "[/color]")]
-
-        # Iterate over the strings to be replaced
-        for code, replCode in replaceTupleList:
-            # Check if string is in the main string
-            if code in longParagraphLineStr:
-                # Replace the string
-                longParagraphLineStr = longParagraphLineStr.replace(code, replCode)
-
-        listOfLimitedWidthParagraphs = GuiUtil._splitLongLineToShorterLinesAccountingForMarkup(longParagraphLineStr,
-                                                                                               width)
-
-        return '\n' + longParagraphLineStr
-
-    @staticmethod
     def _getListOfShiftedAndMarkedUpSizedParagraphs(longParagraphLineStr, width):
         '''
         Returns a list of lines corresponding to the input longParagraphLineStr parm.
