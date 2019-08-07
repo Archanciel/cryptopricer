@@ -26,7 +26,7 @@ class PriceRequester:
             #occurs when run in QPython under Python 3.2
             self.ctx = None
       
-    def getHistoricalPriceAtUTCTimeStamp(self, crypto, fiat, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange):
+    def getHistoricalPriceAtUTCTimeStamp(self, crypto, unit, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange):
         '''
         Why do we pass two different time stamp to the method ?
         
@@ -55,18 +55,18 @@ class PriceRequester:
         resultData = ResultData()
 
         resultData.setValue(ResultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(ResultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(ResultData.RESULT_KEY_FIAT, unit)
         resultData.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
 
         if DateTimeUtil.isTimeStampOlderThan(timeStampLocalForHistoMinute, dayNumberInt=7):
-            return self._getHistoDayPriceAtUTCTimeStamp(crypto, fiat, timeStampUTCNoHHMMForHistoDay, exchange, resultData)
+            return self._getHistoDayPriceAtUTCTimeStamp(crypto, unit, timeStampUTCNoHHMMForHistoDay, exchange, resultData)
         else:
-            return self._getHistoMinutePriceAtUTCTimeStamp(crypto, fiat, timeStampLocalForHistoMinute, exchange, resultData)
+            return self._getHistoMinutePriceAtUTCTimeStamp(crypto, unit, timeStampLocalForHistoMinute, exchange, resultData)
         
         
-    def _getHistoMinutePriceAtUTCTimeStamp(self, crypto, fiat, timeStampUTC, exchange, resultData):
+    def _getHistoMinutePriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
         timeStampUTCStr = str(timeStampUTC)
-        url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, fiat, timeStampUTCStr, exchange)
+        url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, unit, timeStampUTCStr, exchange)
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
 
         try:
@@ -98,18 +98,18 @@ class PriceRequester:
                     # happens when pair coupled to exchange do not return ay data.
                     # Either the exchange does not exist or the pair is not
                     # supported by the exchange.
-                    resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
+                    resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange, isRealTime=False)
             else:
-                resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
+                resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange, isRealTime=False)
 
         return resultData
 
 
-    def _getHistoDayPriceAtUTCTimeStamp(self, crypto, fiat, timeStampUTC, exchange, resultData):
+    def _getHistoDayPriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
         '''
 
         :param crypto:
-        :param fiat:
+        :param unit:
         :param timeStampUTC:
         :param exchange:
         :param resultData:
@@ -117,7 +117,7 @@ class PriceRequester:
         :return:
         '''
         timeStampUTCStr = str(timeStampUTC)
-        url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, fiat, timeStampUTCStr, exchange)
+        url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, unit, timeStampUTCStr, exchange)
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
 
         try:
@@ -150,9 +150,9 @@ class PriceRequester:
                     # happens when pair coupled to exchange do not return ay data.
                     # Either the exchange does not exist or the pair is not
                     # supported by the exchange.
-                    resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange,isRealTime=False)
+                    resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange, isRealTime=False)
             else:
-                resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=False)
+                resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange, isRealTime=False)
 
         from seqdiagbuilder import SeqDiagBuilder
         SeqDiagBuilder.recordFlow()
@@ -160,12 +160,12 @@ class PriceRequester:
         return resultData
 
 
-    def getCurrentPrice(self, crypto, fiat, exchange):
-        url = "https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&e={}".format(crypto, fiat, exchange)
+    def getCurrentPrice(self, crypto, unit, exchange):
+        url = "https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&e={}".format(crypto, unit, exchange)
         resultData = ResultData()
 
         resultData.setValue(ResultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(ResultData.RESULT_KEY_FIAT, fiat)
+        resultData.setValue(ResultData.RESULT_KEY_FIAT, unit)
         resultData.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
         resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
 
@@ -187,23 +187,23 @@ class PriceRequester:
             soup = BeautifulSoup(page, 'html.parser')
             dic = json.loads(soup.prettify())
             
-            if fiat in dic:
+            if unit in dic:
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
-                resultData.setValue(ResultData.RESULT_KEY_PRICE, dic[fiat]) #current price is indexed by unit symbol in returned dic
+                resultData.setValue(ResultData.RESULT_KEY_PRICE, dic[unit]) #current price is indexed by unit symbol in returned dic
             else:
-                resultData = self._handleProviderError(dic, resultData, url, crypto, fiat, exchange, isRealTime=True)
+                resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange, isRealTime=True)
 
         from seqdiagbuilder import SeqDiagBuilder
         SeqDiagBuilder.recordFlow()
 
         return resultData
 
-    def _handleProviderError(self, dic, resultData, url, crypto, fiat, exchange, isRealTime):
+    def _handleProviderError(self, dic, resultData, url, crypto, unit, exchange, isRealTime):
         if 'Message' in dic.keys():
             errorMessage = dic['Message']
 
             if not isRealTime:
-                errorMessage = self._uniformiseErorMessage(errorMessage, crypto, fiat, exchange)
+                errorMessage = self._uniformiseErorMessage(errorMessage, crypto, unit, exchange)
             else:
                 errorMessage = errorMessage.rstrip(' .')
 
@@ -215,9 +215,9 @@ class PriceRequester:
         return resultData
 
 
-    def _uniformiseErorMessage(self, errorMessage, crypto, fiat, exchange):
+    def _uniformiseErorMessage(self, errorMessage, crypto, unit, exchange):
         '''
-        this method transform the provider errot msg returned by the historical price queries
+        this method transform the provider error msg returned by the historical price queries
         (histo minute and histo day so they look identical to the error msg returned for the same
         cause by the RT price request.
 
@@ -226,12 +226,12 @@ class PriceRequester:
 
         :param errorMessage:
         :param crypto:
-        :param fiat:
+        :param unit:
         :param exchange:
         :return: transformed errorMessage
         '''
 
-        return errorMessage.replace('e param is not valid the', exchange) + ' ({}-{})'.format(crypto, fiat)
+        return errorMessage.replace('e param is not valid the', exchange) + ' ({}-{})'.format(crypto, unit)
 
 
 if __name__ == '__main__':
