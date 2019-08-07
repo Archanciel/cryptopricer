@@ -87,7 +87,7 @@ class GuiUtil:
         :param text:
         :return: list of paragraphs AND their separators \n\n\n, \n\n, or \n.
         '''
-        pattern = r'([\w .,:\-\[\]/*<>=\'\(\)]+)(\n\n\n\n|\n\n\n|\n\n|\n|.*)'
+        pattern = r'([\w .,:\-\[\]/*<>=\'\(\)]+)(\n\n\n\n|\n\n\n|\n\n|\n|\[n\]|.*)'
         listOfParagraphs = []
 
         for match in re.finditer(pattern, text):
@@ -245,12 +245,16 @@ class GuiUtil:
         '''
         encodedLinesList = []
         tabMode = False
-        pattern = r'^' + TAB_SPACES
+        leftShiftPattern = r'^' + TAB_SPACES
+        leftShiftPatternWithForcedLineBreak = r'^' + TAB_SPACES + LINE_BREAK_CODE
 
         for line in lineList:
-            if re.match(pattern, line):
+            if re.match(leftShiftPattern, line):
                 tabMode = True
-                line = re.sub(pattern, TAB_CODE, line)
+                line = re.sub(leftShiftPattern, TAB_CODE, line)
+            elif re.match(leftShiftPatternWithForcedLineBreak, line):
+                tabMode = True
+                line = re.sub(leftShiftPatternWithForcedLineBreak, '\n' + TAB_CODE, line)
             else:
                 if tabMode:
                     tabMode = False
@@ -288,6 +292,7 @@ class GuiUtil:
         :return: cleverly EOL purged string
         '''
         begLineSpacePattern = r"    "
+        begLineSpacePattern = r"    \[n\]|    "
         anyAlphaNumCharPattern = r"\w+"
         isLineRightShifted = False
         isFirstLine = True
@@ -350,10 +355,13 @@ class GuiUtil:
         return GuiUtil._decodeForcedLineBreak(resizedText)
 
     @staticmethod
-    def _decodeForcedLineBreak(codedString):
+    def _decodeForcedLineBreak(codedStr):
         '''
         This method handles forced line break codes,replacing them with a \n.
-        :param codedString:
+        :param codedStr:
         :return:
         '''
-        return codedString.replace(' ' + LINE_BREAK_CODE, '\n')
+        decodedStr = codedStr.replace('    ' + LINE_BREAK_CODE, '\n    ')
+        decodedStr = decodedStr.replace(' ' + LINE_BREAK_CODE, '\n')
+
+        return decodedStr

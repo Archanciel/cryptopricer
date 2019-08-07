@@ -30,11 +30,9 @@ returned as 'close' price.
 
 [b]Output price qualifiers[/b]:
 
-    R = RT
-
-    M = Minute price (precision at the minute)
-
-    C = Close price
+    [n]R = RT
+    [n]M = Minute price (precision at the minute)
+    [n]C = Close price
 
 Examples: assume we are on 16/12/17 at 22:10
 

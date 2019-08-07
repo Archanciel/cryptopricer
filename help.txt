@@ -34,11 +34,9 @@ the last price of the date at UTC 23.59 is returned as 'close' price.
 
 [b]Output price qualifiers[/b]:
 
-    [b][cy]R[/c][/b] = RT
-
-    [b][cy]M[/c][/b] = Minute price (precision at the minute)
-
-    [b][cy]C[/c][/b] = Close price
+    [n][b][cy]R[/c][/b] = RT
+    [n][b][cy]M[/c][/b] = Minute price (precision at the minute)
+    [n][b][cy]C[/c][/b] = Close price
 
 Examples: assume we are on 16/12/17 at 22:10
 

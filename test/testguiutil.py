@@ -485,6 +485,33 @@ no tab line
 
 This section explains the preceeding section''', encodedTabbedText)
 
+    def test_encodeShiftedLinesWithTabCodeAndForcedLineBreak(self):
+        lineList = None
+
+        with open('shiftedLineBreakPopupMarkupTest.txt', 'r') as file:
+            lineList = file.read().splitlines()
+
+        encodedTabbedText = GuiUtil._encodeShiftedLinesWithTabCode(lineList)
+
+        self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
+
+btc usd 0 all
+
+Returns the current price of 1 btc in usd.
+
+[t]The price is an average of the btc quotation on all
+[t]the exchanges. It is computed by the crypto prices
+[t]provider.
+no tab line
+[t][n]* new tabbed line
+[t][n]* other tabbed line
+[t][n]* last tabbed line
+
+
+[b][color=ff0000]Next section[/color][/b]
+
+This section explains the preceeding section''', encodedTabbedText)
+
     def test_decodeMarkups(self):
         text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\n[b][color=ff0000]Next section[/color][/b]\n\nThis section explains the preceeding section'
         width = 54
