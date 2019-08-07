@@ -3,6 +3,7 @@ import re
 TAB_SPACES = '    '
 TAB_CODE = '[t]'
 TAB_SIZE = 4
+LINE_BREAK_CODE = '[n]' # code used in the help file to force a line break
 
 
 class GuiUtil:
@@ -344,4 +345,15 @@ class GuiUtil:
         noEOLText = GuiUtil._removeEOLFromFile(breakedLineFile)
 
         # resizing the text
-        return GuiUtil._sizeParagraphsForKivyLabel(noEOLText, width)
+        resizedText = GuiUtil._sizeParagraphsForKivyLabel(noEOLText, width)
+
+        return GuiUtil._decodeForcedLineBreak(resizedText)
+
+    @staticmethod
+    def _decodeForcedLineBreak(codedString):
+        '''
+        This method handles forced line break codes,replacing them with a \n.
+        :param codedString:
+        :return:
+        '''
+        return codedString.replace(' ' + LINE_BREAK_CODE, '\n')
