@@ -616,11 +616,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
 [b]Output price qualifiers[/b]:
 
-    R = RT
-
-    M = Minute price (precision at the minute)
-
-    C = Close price
+    R = RT     [n]M = Minute price (precision at the minute)     [n]C = Close price
 
 Examples: assume we are on 16/12/17 at 22:10
 
@@ -637,6 +633,33 @@ Examples: assume we are on 16/12/17 at 22:10
 [cy]btc usd 0 bittrex -v0.01btc[/c] --> [n]0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
 
 [b][cr]WARNING[/c][/b]: <options> must be specified at the end of the full command price''', noEOLText)
+
+    def test_removeEOLOnShiftedLinesContainingLineBreakCodeOnAllShiftedLinesFromFile(self):
+        '''
+        Tests correct handling of shifted lines containing a forced line break.
+        :return:
+        '''
+        noEOLText = ''
+        FILE_PATH = 'shifted_breaked_lines.txt'
+
+        with open(FILE_PATH) as breakedLineFile:
+            noEOLText = GuiUtil._removeEOLFromFile(breakedLineFile)
+
+        self.assertEqual('''    [n]R = RT     [n]M = Minute price (precision at the minute)     [n]C = Close price''', noEOLText)
+
+    def test_removeEOLOnShiftedLinesContainingLineBreakCodeOnNextShiftedLinesFromFile(self):
+        '''
+        Tests correct handling of shifted lines containing a forced line break except the first
+        shifted line.
+        :return:
+        '''
+        noEOLText = ''
+        FILE_PATH = 'shifted_breaked_lines_except_first_line.txt'
+
+        with open(FILE_PATH) as breakedLineFile:
+            noEOLText = GuiUtil._removeEOLFromFile(breakedLineFile)
+
+        self.assertEqual('''    R = RT     [n]M = Minute price (precision at the minute)     [n]C = Close price''', noEOLText)
 
     def testSizeParagraphsForKivyLabelnRealPartialWithBreakLinesHelpFile(self):
         '''
@@ -681,9 +704,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 [b]Output price qualifiers[/b]:
 
     R = RT
-
     M = Minute price (precision at the minute)
-
     C = Close price
 
 Examples: assume we are on 16/12/17 at 22:10
@@ -707,6 +728,38 @@ ETH/BTC on Bitfinex: 21/01/17C 0.01185
 0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
 
 [b][color=ff0000]WARNING[/color][/b]: <options> must be specified at the end of the full command price''', resizedText)
+
+    def testSizeParagraphsForKivyLabelAllShiftedLinesHaveForcedLineBreakCodeFile(self):
+        '''
+        This test ensures that text resizing for the Kivy label destination works
+        on a help file where the not shifted long lines are sized for better reading
+        at help write time.
+        '''
+        FILE_PATH = 'all_shifted_lines_have_break_code.txt'
+        resizedText = ''
+        width = 54
+
+        with open(FILE_PATH) as file:
+            resizedText = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
+
+        self.assertEqual('''
+<date time> possible values:
+
+    [b][color=ffff00ff]0[/color][/b] for RT
+
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is
+    specified, current year is assumed. If no time is
+    specified, current time is assumed.
+
+[b]Output price qualifiers[/b]:
+
+    R = RT
+    M = Minute price (precision at the minute)
+    C = Close price
+
+[color=ffff00ff]btc usd 0 bittrex -v0.01btc[/color] -->
+0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120''',
+                         resizedText)
 
     def testSizeParagraphsForKivyLabelnRealPartialWithNoBreakLinesHelpFile(self):
         '''

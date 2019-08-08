@@ -4,6 +4,7 @@ TAB_SPACES = '    '
 TAB_CODE = '[t]'
 TAB_SIZE = 4
 LINE_BREAK_CODE = '[n]' # code used in the help file to force a line break
+LINE_BREAK_CODE_REGEXP = '\[n\]' # regexp version
 
 
 class GuiUtil:
@@ -87,7 +88,7 @@ class GuiUtil:
         :param text:
         :return: list of paragraphs AND their separators \n\n\n, \n\n, or \n.
         '''
-        pattern = r'([\w .,:\-\[\]/*<>=\'\(\)]+)(\n\n\n\n|\n\n\n|\n\n|\n|\[n\]|.*)'
+        pattern = r'([\w .,:\-\[\]/*<>=\'\(\)]+)(\n\n\n\n|\n\n\n|\n\n|\n|.*)'
         listOfParagraphs = []
 
         for match in re.finditer(pattern, text):
@@ -240,26 +241,64 @@ class GuiUtil:
         '''
         Replaces line begin tab spaces by a tab code ([t]) in the lines contained in the lineList input
         parm. Returns a tab encoded string.
+
+        Here are example of shifted lines which are correctly handled by the method:
+
+        Shifted lines separated by a blank line:
+        <date time> possible values:
+
+            0 for RT
+
+            21/12 or 21/12/19 or 21/12/2019. If no year is specified, current year is assumed. If no time is specified, current time is assumed.
+
+        Shifted lines with no line break with forcing line break code ([n]):
+        Output price qualifiers:
+
+            [n]R = RT
+            [n]M = Minute price (precision at the minute)
+            [n]C = Close price
+
+        Shifted lines with no line break with forcing line break code ([n]) except on the first
+        shifted line:
+        [b]Output price qualifiers[/b]:
+
+            R = RT
+            [n]M = Minute price (precision at the minute)
+            [n]C = Close price
+
         :param lineList:
         :return: tab encoded string
         '''
         encodedLinesList = []
-        tabMode = False
         leftShiftPattern = r'^' + TAB_SPACES
-        leftShiftPatternWithForcedLineBreak = r'^' + TAB_SPACES + LINE_BREAK_CODE
+        leftShiftPatternWithForcedLineBreak = r' ' + TAB_SPACES + LINE_BREAK_CODE_REGEXP
+        shiftedLines = None
 
         for line in lineList:
-            if re.match(leftShiftPattern, line):
-                tabMode = True
-                line = re.sub(leftShiftPattern, TAB_CODE, line)
-            elif re.match(leftShiftPatternWithForcedLineBreak, line):
-                tabMode = True
-                line = re.sub(leftShiftPatternWithForcedLineBreak, '\n' + TAB_CODE, line)
-            else:
-                if tabMode:
-                    tabMode = False
+            if re.search(leftShiftPatternWithForcedLineBreak, line):
+                # here, the line contains shifted lines not separated by a blank line,
+                # but containing a force line break code ([n]).
+                shiftedLines = re.compile(leftShiftPatternWithForcedLineBreak).split(line)
+                for shiftedLine in shiftedLines:
+                    # adding each sub line to the result list (encodedLinesList)
+                    if re.match(leftShiftPattern, shiftedLine):
+                        if re.match(leftShiftPatternWithForcedLineBreak[1:], shiftedLine):
+                            # here, the first shifted line is tagged with the force line
+                            # break code ([n]).
+                            codedShiftedLine = re.sub(leftShiftPatternWithForcedLineBreak[1:], TAB_CODE, shiftedLine)
+                        else:
+                            # here, the first shifted line is NOT tagged with the force line
+                            # break code ([n]).
+                            codedShiftedLine = re.sub(leftShiftPattern, TAB_CODE, shiftedLine)
+                    else:
+                        codedShiftedLine = TAB_CODE + shiftedLine
 
-            encodedLinesList.append(line)
+                    encodedLinesList.append(codedShiftedLine)
+            else:
+                if re.match(leftShiftPattern, line):
+                    line = re.sub(leftShiftPattern, TAB_CODE, line)
+
+                encodedLinesList.append(line)
 
         return '\n'.join(encodedLinesList)
 
@@ -291,7 +330,6 @@ class GuiUtil:
         :param breakedLineFile: file whose long line are split on several lines
         :return: cleverly EOL purged string
         '''
-        begLineSpacePattern = r"    "
         begLineSpacePattern = r"    \[n\]|    "
         anyAlphaNumCharPattern = r"\w+"
         isLineRightShifted = False
@@ -316,7 +354,10 @@ class GuiUtil:
             elif re.match(begLineSpacePattern, line) and isLineRightShifted:
                 # handling the next right shifted line, simply concatenating it to the previous
                 # shifted lines
-                line = line[4:-1] # removing the tab spaces and the EOL \n
+                if LINE_BREAK_CODE in line:
+                    line = line[:-1]
+                else:
+                    line = line[4:-1]  # removing the tab spaces and the EOL \n
                 noEOLStr += ' ' + line
                 isFirstLine = True
             else:
