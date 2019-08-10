@@ -164,6 +164,13 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(list[9],'\n\n')
         self.assertEqual(list[10],'This section explains the preceeding section')
 
+    def test_getListOfOriginalSizeParagraphsWithExclamationPoint(self):
+        text = '[b][color=ff0000]IMPORTANT[/color][/b]: entering a full request wipes out all the previously entered partial request settings !'
+
+        list = GuiUtil._getListOfOriginalSizeParagraphs(text)
+        self.assertEqual(len(list), 1)
+        self.assertEqual('[b][color=ff0000]IMPORTANT[/color][/b]: entering a full request wipes out all the previously entered partial request settings !', list[0])
+
     def test_getListOfParagraphsSizedForKivyLabel(self):
         text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
         width = 60
