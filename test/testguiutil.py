@@ -214,6 +214,15 @@ class TestGuiUtil(unittest.TestCase):
         self.assertEqual(list[0],'[t]a first right shifted')
         self.assertEqual(list[1],'[t]paragraph')
 
+    def test_splitTabbedLineContainingMarkupsToShorterTabbedLines(self):
+        text = '[t][b][color=ffff00ff]<options>[/color][/b] options are specified using [b][color=ffff00ff]-[/color][/b], like [b][color=ffff00ff]-v[/color][/b] or [b][color=ffff00ff]-f[/color][/b]. More details below'
+
+        width = 54
+        list = GuiUtil._splitTabbedLineToShorterTabbedLines(text, width)
+        self.assertEqual(2, len(list))
+        self.assertEqual('[t][b][color=ffff00ff]<options>[/color][/b] options are specified using [b][color=ffff00ff]-[/color][/b], like [b][color=ffff00ff]-v[/color][/b]', list[0])
+        self.assertEqual('[t]or [b][color=ffff00ff]-f[/color][/b]. More details below', list[1])
+
     def test_splitTabbedLineToShorterTabbedLinesShortTabbedParagraph(self):
         text = '[t]a first right shifted'
 

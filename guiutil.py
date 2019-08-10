@@ -59,12 +59,13 @@ class GuiUtil:
         shorterLinesMaxLen -= TAB_SIZE
         wordList = longLine.split(' ')
         shortenedLine = wordList[0]
-        markupsLen = GuiUtil._calculateMarkupsLength(longLine)
-        shortenedLineLen = -markupsLen + len(shortenedLine)
+        markupsLen = GuiUtil._calculateMarkupsLength(shortenedLine)
+        shortenedLineLen = len(shortenedLine) - markupsLen
         shortenedLineList = []
 
         for word in wordList[1:]:
-            wordLen = len(word)
+            markupsLen = GuiUtil._calculateMarkupsLength(word)
+            wordLen = len(word) - markupsLen
 
             if shortenedLineLen + wordLen + 1 > shorterLinesMaxLen:
                 shortenedLineList.append(shortenedLine)
