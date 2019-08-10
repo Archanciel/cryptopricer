@@ -14,17 +14,21 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
     [b][cy]<exchange>[/c][/b] exchange name like binance or all for average price on all exchanges
 
-    [b][cy]<options>[/c][/b] more details below
+    [b][cy]<options>[/c][/b] options are specified using [b][cy]-[/c][/b],
+    like [b][cy]-v[/c][/b] or [b][cy]-f[/c][/b]. More details below
 
 <date time> possible values:
 
     [b][cy]0[/cy][/b] for RT
 
-    [b][cy]21/12[/c][/b] or [b][cy]21/12/19[/c][/b] or [b][cy]21/12/2019[/c][/b]. If no year is specified, current year is assumed. If no time is specified, current time is assumed.
+    [b][cy]21/12[/c][/b] or [b][cy]21/12/19[/c][/b] or [b][cy]21/12/2019[/c][/b].
+    If no year is specified, current year is assumed. If no time is specified, current time
+    is assumed.
 
     [b][cy]21/12 8:34[/c][/b] --> current year assumed
 
-    [b][cy]21 8:34[/c][/b] --> here, since no month is specified, current month or previous month is assumed.
+    [b][cy]21 8:34[/c][/b] --> here, since no month is specified, current month or previous
+    month is assumed.
 
     [b][cy]8:34[/c][/b] --> here, since no date is specified, current date is assumed.
 
@@ -58,36 +62,42 @@ Examples: assume we are on 16/12/17 at 22:10
 [cy]btc usd 0 bittrex -v0.01btc[/c] -->
 [n]0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
 
-[b][cr]WARNING[/c][/b]: <options> must be specified at the end of the full command price
+[b][cr]WARNING[/c][/b]: <options> MUST be specified at the end of the full command price
+and preceded by [b][cy]-[/c][/b]. They are documented later in the help.
 
 [b][cg]Partial request[/c][/b]
 
 Once a full request has been entered, it is handy to just change one or more parameters of
 the initial command. The app keeps and reuses the parameters which are not redefined.
 
-The partial request parameters are specified using the parms
+The partial request parameters are specified using the following parms:
 
--c<crypto>
--u<unit>
--d<date>
+    [b][cy]-c[/c][/b]<crypto>
+
+    [b][cy]-u[/c][/b]<unit> (unit = counterparty)
+
+    [b][cy]-d[/c][/b]<date>
     <date> can be 0 for RT, dd (current month) or
-    dd/mm (current year) or dd/mm/yy or
-    dd/mm/yyyy
--t<time>
-    <time> format: hh:mm
--e<exchange>
+    dd/mm (current year) or dd/mm/yy or dd/mm/yyyy
 
-Ex:	continuing from last full request above (eth btc 21/1 13:45 bitfinex)
-	-fusd -->
-	ETH/USD on Bitfinex: 21/01/17C 0.01185
-	
-	-d12/05 -fbtc -ekraken
-	ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
-	
-IMPORTANT: entering a full request wipes out  all the previously entered partial request settings !
-	
+    [b][cy]-t[/c][/b]<time>
+    <time> format: hh:mm
+
+    [b][cy]-e[/c][/b]<exchange>
+
+Examples: continuing from before last full request above
+(eth btc 21/1 13:45 bitfinex)
+
+[cy]-uusd[/c] -->
+[n]ETH/USD on Bitfinex: 21/01/17C 0.01185
+
+[cy]-d12/05 -ubtc -ekraken[/c]
+[n]ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
+
+[b][cr]IMPORTANT[/c][/b]: entering a full request wipes out all the previously entered partial
+request settings !
+
 Valuation command -v or -vs or -v0 (zero)
------------------------------------------
 
 Used to obtain the converted unit/crypto amount at the rate of the last request, or at an up to date RT rate
 
