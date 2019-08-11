@@ -1,8 +1,11 @@
-[b][cg]Requesting RT and historical cryptocurrency prices[/b][/c]
+[b][cg]CryptoPricer purpose[/b][/c]
 
-CryptoPricer supports two kinds of requests: full requests and partial requests.
+The CryptoPricer application offers a handy way to obtain real time (RT) and historical
+cryptocurrency prices.
 
-[b][cg]Full request[/c][/b]
+Two kinds of requests are supported: full requests and partial requests.
+
+[b][cg]Full requests[/c][/b]
 
 <crypto> <unit> <date time> <exchange> <options>
 
@@ -36,7 +39,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 than 7 days are 'close' prices. Since there is no notion of a close price for crypto's,
 the last price of the date at UTC 23.59 is returned as 'close' price.
 
-[b]Output price qualifiers[/b]:
+[b][cg]Output price qualifiers[/c][/b]:
 
     [n][b][cy]R[/c][/b] = RT
     [n][b][cy]M[/c][/b] = Minute price (precision at the minute)
@@ -65,7 +68,7 @@ Examples: assume we are on 16/12/17 at 22:10
 [b][cr]WARNING[/c][/b]: <options> MUST be specified at the end of the full command price
 and preceded by [b][cy]-[/c][/b]. They are documented later in the help.
 
-[b][cg]Partial request[/c][/b]
+[b][cg]Partial requests[/c][/b]
 
 Once a full request has been entered, it is handy to just change one or more parameters of
 the initial command. The app keeps and reuses the parameters which are not redefined.
@@ -85,35 +88,49 @@ The partial request parameters are specified using the following parms:
 
     [b][cy]-e[/c][/b]<exchange>
 
-Examples: continuing from before last full request above
-(eth btc 21/1 13:45 bitfinex)
+Examples: the next partial requests follow the before last full request described above
+([cy]eth btc 21/1 13:45 bitfinex[/c])
 
 [cy]-uusd[/c] -->
 [n]ETH/USD on Bitfinex: 21/01/17C 0.01185
 
-[cy]-d12/05 -ubtc -ekraken[/c]
+[cy]-d12/05 -ubtc -ekraken[/c] -->
+[n]ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
+
+[cy]-t22:55[/c] -->
 [n]ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
 
 [b][cr]IMPORTANT[/c][/b]: entering a full request wipes out all the previously entered partial
 request settings !
 
-Valuation command -v or -vs or -v0 (zero)
+[b][cg]Options[/c][/b]
 
-Used to obtain the converted unit/crypto amount at the rate of the last request, or at an up to date RT rate
+Options can be added to both full and partial requests in order to obtain additional
+informations.
 
-Command format: -v999.9999ZZZ or -vs999.9999ZZZ, s is a save command option which means the command will be in effect 
-across the subsequent partial requests 
+Valuation option [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] or [b][cy]-v0[/b][/c]
 
-Ex: if the last request was btc usd 0 bittrex --> BTC/USD on BitTrex: 16/12/17 22:10R 19120
-    -v705.55usd returns
-    0.003661088 BTC/700 USD on BitTrex: 16/12/17 22:10R 19120 
+The [b][cy]-v[/b][/c] option is used to obtain the converted unit or crypto amount at the rate
+of the last request if entered separately, or current request if added to it.
 
-    -v0.1btc returns (note that here the RT price went up 20 $ !
-    0.01 BTC/1914 USD on BitTrex: 16/12/17 22:10R 19140
-	
-	if the last request was eth usd 21/11/17 bitfinex --> ETH/USD on Bitfinex: 21/11/17 00:00C 360
-    -v0.1eth returns
-	0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
+Command format: [b][cy]-v[/b][/c]999.9999ZZZ or [b][cy]-vs[/b][/c]999.9999ZZZ, [b][cy]s[/b][/c]
+is a [b][cy]save[/b][/c] additional option which means the [b][cy]-v[/b][/c] option will be in
+effect across the subsequent partial requests and is saved in the request history.
+[b][cy]-v0[/b][/c] is used to cancel the preceeding [b][cy]-vs[/b][/c] option.
+
+Examples: if the last request was [cy]btc usd 0 bittrex[/c] -->
+[n]BTC/USD on BitTrex: 16/12/17 22:10R 19120
+
+[cy]-v700usd[/c] -->
+[n]0.003661088 BTC/700 USD on BitTrex: 16/12/17 22:10R 19120
+
+[cy]-v0.1btc[/c] -->
+[n]0.01 BTC/1914 USD on BitTrex: 16/12/17 22:10R 19140
+[n](note that here the RT price went up 20 $ !)
+
+if the last request was eth usd 21/11/17 bitfinex --> ETH/USD on Bitfinex: 21/11/17 00:00C 360
+-v0.1eth returns
+0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
 
 Using -vs instead of -v saves the value command, making it active for all subsequent PARTIAL requests.
 
