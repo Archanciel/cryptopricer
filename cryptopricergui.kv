@@ -274,6 +274,7 @@
     id: scr_popup
     auto_dismiss: False
     contentBox: content_box
+    scrollView: scroll_view
 
     BoxLayout:
         id: content_box
@@ -281,6 +282,7 @@
         content: content_text
 
         ScrollView:
+            id: scroll_view
             effect_cls: "ScrollEffect" # prevents overscrolling
             do_scroll_x: False # limiting to vertical scrolling
             Label:

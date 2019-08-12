@@ -166,6 +166,7 @@ class CustomDropDown(DropDown):
 
 class ScrollablePopup(Popup):
     contentBox = ObjectProperty()
+    scrollView = ObjectProperty
 
     def setContentPageList(self, formatedTextPageList):
         self.formatedTextPageList = formatedTextPageList
@@ -182,6 +183,7 @@ class ScrollablePopup(Popup):
             self.currentPage = 0
 
         self.setContentTextToCurrentPage()
+        self.scrollView.scroll_y = 0 # force scrolling to bottom
 
     def nextPage(self):
         self.currentPage += 1
@@ -190,6 +192,7 @@ class ScrollablePopup(Popup):
             self.currentPage = len(self.formatedTextPageList) - 1
 
         self.setContentTextToCurrentPage()
+        self.scrollView.scroll_y = 1 # force scrolling to top
 
 
 class CryptoPricerGUI(BoxLayout):
