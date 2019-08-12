@@ -142,7 +142,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, None)
         resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT, None)
         resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
-                              "WARNING - price value symbol ETH differs from both crypto (BTC) and unit (USD). -v parameter ignored !")
+                              "WARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD). -v parameter ignored !")
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -150,7 +150,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
-        self.assertEqual('BTC/USD on BitTrex: 12/09/17 00:00C 4122\nWARNING - price value symbol ETH differs from both crypto (BTC) and unit (USD). -v parameter ignored !\n', capturedStdout.getvalue())
+        self.assertEqual('BTC/USD on BitTrex: 12/09/17 00:00C 4122\nWARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD). -v parameter ignored !\n', capturedStdout.getvalue())
 
 
     def testGetCryptoPriceHistoricalRecent(self):
@@ -554,7 +554,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
         resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
         resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
-                              "WARNING - price value symbol ETH differs from both crypto (BTC) and unit (USD). -v parameter ignored !")
+                              "WARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD). -v parameter ignored !")
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -562,7 +562,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
-        self.assertEqual('BTC/USD on BitTrex: {}R \nWARNING - price value symbol ETH differs from both crypto (BTC) and unit (USD). -v parameter ignored !\n'.format(dateTimeString), capturedStdout.getvalue())
+        self.assertEqual('BTC/USD on BitTrex: {}R \nWARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD). -v parameter ignored !\n'.format(dateTimeString), capturedStdout.getvalue())
 
 
     def testGetCryptoPriceRealTimeWithValueSaveFlag(self):

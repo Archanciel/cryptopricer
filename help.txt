@@ -108,35 +108,62 @@ request settings !
 Options can be added to both full and partial requests in order to obtain additional
 informations.
 
-Valuation option [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] or [b][cy]-v0[/b][/c]
+Valuation options [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] or [b][cy]-v0[/b][/c]
 
 The [b][cy]-v[/b][/c] option is used to obtain the converted unit or crypto amount at the rate
 of the last request if entered separately, or current request if added to it.
 
-Command format: [b][cy]-v[/b][/c]999.9999ZZZ or [b][cy]-vs[/b][/c]999.9999ZZZ, [b][cy]s[/b][/c]
-is a [b][cy]save[/b][/c] additional option which means the [b][cy]-v[/b][/c] option will be in
-effect across the subsequent partial requests and is saved in the request history.
-[b][cy]-v0[/b][/c] is used to cancel the preceeding [b][cy]-vs[/b][/c] option.
-
 Examples: if the last request was [cy]btc usd 0 bittrex[/c] -->
 [n]BTC/USD on BitTrex: 16/12/17 22:10R 19120
 
-[cy]-v700usd[/c] -->
-[n]0.003661088 BTC/700 USD on BitTrex: 16/12/17 22:10R 19120
+then entering
 
-[cy]-v0.1btc[/c] -->
+[cy]-v700usd[/c]
+
+returns
+
+0.003661088 BTC/700 USD on BitTrex: 16/12/17 22:10R 19120
+
+next, entering
+
+[cy]-v0.1btc[/c]
+
+returns
+
 [n]0.01 BTC/1914 USD on BitTrex: 16/12/17 22:10R 19140
 [n](note that here the RT price went up 20 USD !)
 
-if the last request was eth usd 21/11/17 bitfinex --> ETH/USD on Bitfinex: 21/11/17 00:00C 360
--v0.1eth returns
-0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
+Valuation option format: [b][cy]-v[/b][/c]999.9999ZZZ or [b][cy]-vs[/b][/c]999.9999ZZZ, [b][cy]s[/b][/c]
+is a [b][cy]save[/b][/c] additional modifier which means the [b][cy]-v[/b][/c] option will be in
+effect across the subsequent partial requests and is saved in the request history.
+[b][cy]-v0[/b][/c] is used to cancel a current [b][cy]-vs[/b][/c] option.
 
-Using -vs instead of -v saves the value command, making it active for all subsequent PARTIAL requests.
+if the last request was [cy]eth usd 21/11/17 bitfinex[/c] -->
+[n]ETH/USD on Bitfinex: 21/11/17 00:00C 360
 
-There  are two ways cancelling the permanent -vs command:
+[cy]-v0.1eth[/c] -->
+[n]0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
 
-	1/ enter a full request (which wipes out  all the previously entered partial request settings)
-	2/ enter -v0 which cancels the -vs valuation command 
-	
-So, until the -vs command is cancelled, it stays in effect and impacts the new partial requests !
+Using [b][cy]-vs[/b][/c] instead of [b][cy]-v[/b][/c] saves the value option, making it
+active for all subsequent PARTIAL requests. The [b][cy]-vs[/b][/c] option is also saved
+in the request history list.
+
+There  are two ways deactivating the permanent [b][cy]-vs[/b][/c] option:
+
+    1/ enter a full request (which wipes out  all the previously entered partial request settings)
+    [n]2/ enter [b][cy]-v0[/b][/c] which cancels the [b][cy]-vs[/b][/c] valuation option
+
+So, until the [b][cy]-vs[/b][/c] command is cancelled, it stays in effect and impacts any new
+partial requests, this provided either the crypto [b][cy]-c[/b][/c] or the unit
+[b][cy]-u[/b][/c] (counterparty) specified in the new request are compatible with the
+currency attached to the [b][cy]-vs[/b][/c] option.
+
+Example:
+
+[cy]-v0.1eth[/c] -->
+[n]0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
+
+[cy]-cbtc[/c] -->
+[n]BTC/USD on Bitfinex:  21/11/17 00:00C 8096.9
+WARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD) of last request.
+-vs parameter ignored
