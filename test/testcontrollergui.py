@@ -1551,7 +1551,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'XMR/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - price value symbol USD differs from both crypto (XMR) and unit (BTC) of last request. -vs parameter ignored and removed'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+            'XMR/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - price value symbol USD differs from both crypto (XMR) and unit (BTC) of last request. -vs parameter ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                nowMinuteStr),
             UtilityForTest.removePriceFromResult(printResult))
         self.assertEqual('xmr btc 0 bitfinex', fullCommandStr)
@@ -1561,7 +1561,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - price value symbol USD differs from both crypto (ETH) and unit (BTC) of last request. -vs parameter ignored and removed'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+            'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - price value symbol USD differs from both crypto (ETH) and unit (BTC) of last request. -vs parameter ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                nowMinuteStr),
             UtilityForTest.removePriceFromResult(printResult))
         self.assertEqual('eth btc 0 bitfinex', fullCommandStr)
