@@ -411,6 +411,7 @@ class GuiUtil:
         '''
         decodedStr = codedStr.replace('    ' + LINE_BREAK_CODE, '\n    ')
         decodedStr = decodedStr.replace(' ' + LINE_BREAK_CODE, '\n')
+        decodedStr = decodedStr.replace('\n' + LINE_BREAK_CODE, '\n')
 
         return decodedStr
 

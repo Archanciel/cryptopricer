@@ -839,6 +839,12 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
         self.assertEqual('''
 text to put on nxt line''', GuiUtil._decodeForcedLineBreak(codedString))
 
+    def test_decodeForcedBreakLineAfterEOL(self):
+        codedString = '\n[n]text to put on nxt line'
+
+        self.assertEqual('''
+text to put on nxt line''', GuiUtil._decodeForcedLineBreak(codedString))
+
     def test_splitTextIntoListOfPages(self):
         codedStringWithPageBreak = '''
 [b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
