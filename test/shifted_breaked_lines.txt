@@ -1,3 +1,4 @@
     [n]R = RT
     [n]M = Minute price (precision at the minute)
+[p]
     [n]C = Close price

@@ -6,6 +6,7 @@ TAB_SIZE = 4
 LINE_BREAK_CODE = '[n]' # code used in the help file to force a line break
 LINE_BREAK_CODE_REGEXP = '\[n\]' # regexp version
 PAGE_BREAK_CODE = '[p]' # code used in the help file to indicate a page break
+PAGE_BREAK_CODE_REGEXP = '\[p\].*' # regexp version
 
 class GuiUtil:
     @staticmethod
@@ -338,7 +339,8 @@ class GuiUtil:
         noEOLStr = ''
 
         for line in breakedLineFile.readlines():
-            if not re.match(begLineSpacePattern, line) and re.search(anyAlphaNumCharPattern, line):
+            if not re.match(begLineSpacePattern, line) and re.search(anyAlphaNumCharPattern, line) and not re.match(PAGE_BREAK_CODE_REGEXP, line):
+#            if not re.match(begLineSpacePattern, line) and re.search(anyAlphaNumCharPattern, line):
                 # line is not shifted and contains char (is not only \n)
                 if isFirstLine:
                     noEOLStr += line[:-1]

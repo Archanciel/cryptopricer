@@ -27,7 +27,7 @@ and partial requests.
 7 days. Prices older than 7 days are 'close' prices. Since there is no notion
 of a close price for crypto's, the last price of the date at UTC 23.59 is
 returned as 'close' price.
-
+[p]
 [b]Output price qualifiers[/b]:
 
     R = RT

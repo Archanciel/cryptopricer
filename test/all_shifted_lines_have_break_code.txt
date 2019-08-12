@@ -1,11 +1,10 @@
 <date time> possible values:
 
     [b][cy]0[/cy][/b] for RT
-
-    [b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified,
+    [n][b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified,
     current year is assumed. If no time is specified, current
     time is assumed.
-
+[p]
 [b]Output price qualifiers[/b]:
 
     [n]R = RT
