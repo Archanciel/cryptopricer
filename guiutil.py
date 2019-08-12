@@ -5,7 +5,7 @@ TAB_CODE = '[t]'
 TAB_SIZE = 4
 LINE_BREAK_CODE = '[n]' # code used in the help file to force a line break
 LINE_BREAK_CODE_REGEXP = '\[n\]' # regexp version
-
+PAGE_BREAK_CODE = '[p]' # code used in the help file to indicate a page break
 
 class GuiUtil:
     @staticmethod
@@ -394,12 +394,16 @@ class GuiUtil:
         # resizing the text
         resizedText = GuiUtil._sizeParagraphsForKivyLabel(noEOLText, width)
 
-        return GuiUtil._decodeForcedLineBreak(resizedText)
+        # replacing forced line break codes by '\n'
+        lineBreakDecodedText = GuiUtil._decodeForcedLineBreak(resizedText)
+
+        # splitting the text into pages according to page break codes
+        return GuiUtil._splitTextIntoListOfPages(lineBreakDecodedText)
 
     @staticmethod
     def _decodeForcedLineBreak(codedStr):
         '''
-        This method handles forced line break codes,replacing them with a \n.
+        This method handles forced line break codes, replacing them with a \n.
         :param codedStr:
         :return:
         '''
@@ -407,3 +411,12 @@ class GuiUtil:
         decodedStr = decodedStr.replace(' ' + LINE_BREAK_CODE, '\n')
 
         return decodedStr
+
+    @staticmethod
+    def _splitTextIntoListOfPages(textStr):
+        '''
+        This method handles page break codes, returning a list of page string.
+        :param textStr:
+        :return:
+        '''
+        return textStr.split(PAGE_BREAK_CODE)

@@ -684,11 +684,11 @@ Examples: assume we are on 16/12/17 at 22:10
         at help write time.
         '''
         FILE_PATH = 'partial_help_breaked_lines.txt'
-        resizedText = ''
+        resizedTextPageList = ''
         width = 54
 
         with open(FILE_PATH) as file:
-            resizedText = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
+            resizedTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
 
         self.assertEqual('''
 [b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
@@ -743,7 +743,7 @@ ETH/BTC on Bitfinex: 21/01/17C 0.01185
 [color=ffff00ff]btc usd 0 bittrex -v0.01btc[/color] -->
 0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
 
-[b][color=ff0000]WARNING[/color][/b]: <options> must be specified at the end of the full command price''', resizedText)
+[b][color=ff0000]WARNING[/color][/b]: <options> must be specified at the end of the full command price''', resizedTextPageList[0])
 
     def testSizeParagraphsForKivyLabelAllShiftedLinesHaveForcedLineBreakCodeFile(self):
         '''
@@ -752,11 +752,11 @@ ETH/BTC on Bitfinex: 21/01/17C 0.01185
         at help write time.
         '''
         FILE_PATH = 'all_shifted_lines_have_break_code.txt'
-        resizedText = ''
+        resizedTextPageList = ''
         width = 54
 
         with open(FILE_PATH) as file:
-            resizedText = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
+            resizedTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
 
         self.assertEqual('''
 <date time> possible values:
@@ -775,7 +775,7 @@ ETH/BTC on Bitfinex: 21/01/17C 0.01185
 
 [color=ffff00ff]btc usd 0 bittrex -v0.01btc[/color] -->
 0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120''',
-                         resizedText)
+                         resizedTextPageList[0])
 
     def testSizeParagraphsForKivyLabelnRealPartialWithNoBreakLinesHelpFile(self):
         '''
@@ -783,11 +783,11 @@ ETH/BTC on Bitfinex: 21/01/17C 0.01185
         on a help file where the not shifted long lines do not include any break.
         '''
         FILE_PATH = 'partial_help_nobreaked_lines.txt'
-        resizedText = ''
+        resizedTextPageList = ''
         width = 54
 
         with open(FILE_PATH) as file:
-            resizedText = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
+            resizedTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
 
         self.assertEqual('''
 [b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
@@ -822,13 +822,92 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
     M = Minute price (precision at the minute)
 
-    C = Close price''', resizedText)
+    C = Close price''', resizedTextPageList[0])
 
     def test_decodeForcedBreakLine(self):
         codedString = ' [n]text to put on nxt line'
 
         self.assertEqual('''
 text to put on nxt line''', GuiUtil._decodeForcedLineBreak(codedString))
+
+    def test_splitTextIntoListOfPages(self):
+        codedStringWithPageBreak = '''
+[b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
+
+CryptoPricer supports two kinds of requests: full requests and partial requests.
+
+[b]Full request[/b]
+
+<crypto> <unit> <date time> <exchange> <options>
+[p]
+<date time> possible values:
+
+    [b][color=ffff00ff]0[/color][/b] for RT
+
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is
+    specified, current year is assumed. If no time is
+    specified, current time is assumed.
+
+    [b][color=ffff00ff]21/12 8:34[/color][/b] --> current year assumed
+
+    21 8:34 --> here, since no month is specified,
+    current month or previous month is assumed.
+
+    8:34 --> here, since no date is specified, current
+    date is assumed.
+
+[b]WARNING[/b]: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
+[p]
+[b]Output price qualifiers[/b]:
+
+    R = RT
+
+    M = Minute price (precision at the minute)
+
+    C = Close price'''
+
+        pageList = GuiUtil._splitTextIntoListOfPages(codedStringWithPageBreak)
+
+        self.assertEqual(3, len(pageList))
+
+        self.assertEqual('''
+[b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
+
+CryptoPricer supports two kinds of requests: full requests and partial requests.
+
+[b]Full request[/b]
+
+<crypto> <unit> <date time> <exchange> <options>
+''', pageList[0])
+
+        self.assertEqual('''
+<date time> possible values:
+
+    [b][color=ffff00ff]0[/color][/b] for RT
+
+    [b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is
+    specified, current year is assumed. If no time is
+    specified, current time is assumed.
+
+    [b][color=ffff00ff]21/12 8:34[/color][/b] --> current year assumed
+
+    21 8:34 --> here, since no month is specified,
+    current month or previous month is assumed.
+
+    8:34 --> here, since no date is specified, current
+    date is assumed.
+
+[b]WARNING[/b]: specifying time makes sense only for dates not older than 7 days. Prices older than 7 days are 'close' prices. Since there is no notion of a close price for crypto's, the last price of the date at UTC 23.59 is returned as 'close' price.
+''', pageList[1])
+
+        self.assertEqual('''
+[b]Output price qualifiers[/b]:
+
+    R = RT
+
+    M = Minute price (precision at the minute)
+
+    C = Close price''', pageList[2])
 
 if __name__ == '__main__':
     unittest.main()

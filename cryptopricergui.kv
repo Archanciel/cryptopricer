@@ -292,8 +292,16 @@
                 valign: "top"
                 markup: True
 
-        Button:
-            text: "Close"
+        BoxLayout:
+            orientation: 'horizontal'
             size_hint_y: None
-            height: "40dp"
-            on_press: root.dismiss()
+            height: '40dp'
+            Button:
+                text: "Previous page"
+                on_press: scr_popup.previousPage()
+            Button:
+                text: "Next page"
+                on_press: scr_popup.nextPage()
+            Button:
+                text: "Close"
+                on_press: root.dismiss()

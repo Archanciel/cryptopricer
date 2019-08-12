@@ -102,7 +102,7 @@ Examples: the next partial requests follow the before last full request describe
 
 [b][cr]IMPORTANT[/c][/b]: entering a full request wipes out all the previously entered partial
 request settings !
-
+[p]
 [b][cg]Options[/c][/b]
 
 Options can be added to both full and partial requests in order to obtain additional
@@ -126,7 +126,7 @@ Examples: if the last request was [cy]btc usd 0 bittrex[/c] -->
 
 [cy]-v0.1btc[/c] -->
 [n]0.01 BTC/1914 USD on BitTrex: 16/12/17 22:10R 19140
-[n](note that here the RT price went up 20 $ !)
+[n](note that here the RT price went up 20 USD !)
 
 if the last request was eth usd 21/11/17 bitfinex --> ETH/USD on Bitfinex: 21/11/17 00:00C 360
 -v0.1eth returns

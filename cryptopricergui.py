@@ -167,6 +167,31 @@ class CustomDropDown(DropDown):
 class ScrollablePopup(Popup):
     contentBox = ObjectProperty()
 
+    def setContentPageList(self, formatedTextPageList):
+        self.formatedTextPageList = formatedTextPageList
+        self.currentPage = 0
+        self.setContentTextToCurrentPage()
+
+    def setContentTextToCurrentPage(self):
+        self.contentBox.content.text = self.formatedTextPageList[self.currentPage]
+
+    def previousPage(self):
+        self.currentPage -= 1
+
+        if self.currentPage < 0:
+            self.currentPage = 0
+
+        self.setContentTextToCurrentPage()
+
+    def nextPage(self):
+        self.currentPage += 1
+
+        if self.currentPage == len(self.formatedTextPageList):
+            self.currentPage = len(self.formatedTextPageList) - 1
+
+        self.setContentTextToCurrentPage()
+
+
 class CryptoPricerGUI(BoxLayout):
     requestInput = ObjectProperty()
     resultOutput = ObjectProperty()
@@ -517,12 +542,12 @@ class CryptoPricerGUI(BoxLayout):
             width = 54
 
         popup = ScrollablePopup(title='CryptoPricer 2.3', size_hint=(None, None), size=popupSize)
-        formatedHelpText = '' \
-                           ''
-        with open('help.txt') as helpFile:
-            formatedHelpText = GuiUtil.sizeParagraphsForKivyLabelFromFile(helpFile, width)
+        formatedHelpTextPageList = ''
 
-        popup.contentBox.content.text = formatedHelpText
+        with open('help.txt') as helpFile:
+            formatedHelpTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(helpFile, width)
+
+        popup.setContentPageList(formatedHelpTextPageList)
         popup.open()
 
     def updateStatusBar(self, messageStr):
