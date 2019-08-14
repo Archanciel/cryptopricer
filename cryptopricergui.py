@@ -198,8 +198,8 @@ class ScrollablePopup(Popup):
 class CryptoPricerGUI(BoxLayout):
     requestInput = ObjectProperty()
     resultOutput = ObjectProperty()
-    statusBarScroller = ObjectProperty()
-    statusBar = ObjectProperty()
+    statusBarScrollView = ObjectProperty()
+    statusBarTextInput = ObjectProperty()
     showRequestList = False
     recycleViewCurrentSelIndex = -1
 
@@ -396,7 +396,7 @@ class CryptoPricerGUI(BoxLayout):
 
     def clearOutput(self):
         self.resultOutput.text = ''
-        self.statusBar.text = ''
+        self.statusBarTextInput.text = ''
         self.clearResultOutputButton.disabled = True
         self.refocusOnRequestInput()
 
@@ -554,7 +554,7 @@ class CryptoPricerGUI(BoxLayout):
         popup.open()
 
     def updateStatusBar(self, messageStr):
-        self.statusBar.text = messageStr
+        self.statusBarTextInput.text = messageStr
 
     # --- file chooser code ---
     def getStartPath(self):
@@ -653,10 +653,10 @@ class CryptoPricerGUI(BoxLayout):
         return 'Data file\n' + filePathFilename + '\nnot found. No history loaded.'
 
     def statusBarTextChanged(self):
-        width_calc = self.statusBarScroller.width
-        for line_label in self.statusBar._lines_labels:
+        width_calc = self.statusBarScrollView.width
+        for line_label in self.statusBarTextInput._lines_labels:
             width_calc = max(width_calc, line_label.width + 20)   # add 20 to avoid automatically creating a new line
-        self.statusBar.width = width_calc
+        self.statusBarTextInput.width = width_calc
 
 class CryptoPricerGUIApp(App):
     settings_cls = SettingsWithTabbedPanel
