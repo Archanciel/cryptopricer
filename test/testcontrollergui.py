@@ -1551,7 +1551,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'XMR/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - currency value symbol USD differs from both crypto (XMR) and unit (BTC) of last request. -vs parameter ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+            'XMR/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - currency value symbol USD differs from both crypto (XMR) and unit (BTC) of last request. -vs option ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                nowMinuteStr),
             UtilityForTest.removePriceFromResult(printResult))
         self.assertEqual('xmr btc 0 bitfinex', fullCommandStr)
@@ -1561,7 +1561,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - currency value symbol USD differs from both crypto (ETH) and unit (BTC) of last request. -vs parameter ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+            'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - currency value symbol USD differs from both crypto (ETH) and unit (BTC) of last request. -vs option ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                nowMinuteStr),
             UtilityForTest.removePriceFromResult(printResult))
         self.assertEqual('eth btc 0 bitfinex', fullCommandStr)
@@ -2177,6 +2177,18 @@ class TestControllerGui(unittest.TestCase):
                                                                    nowMinuteStr), fullCommandStr)
             self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
+
+    def testGetPrintableResultForInputscenarioWithInvalidSaveValueCommandAndWarning(self):
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+
+        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        inputStr = 'eth usd 0 bitfinex -vs100'
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertTrue('WARNING - currency value symbol  differs from both crypto (ETH) and unit (USD) of last request. -vs option ignored' in printResult)
+        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 if __name__ == '__main__':
     unittest.main()

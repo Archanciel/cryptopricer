@@ -3,10 +3,6 @@ from commandprice import CommandPrice
 from configurationmanager import ConfigurationManager
 from datetimeutil import DateTimeUtil
 
-REQUEST_TYPE_PARTIAL = 'partial'
-REQUEST_TYPE_FULL = 'full'
-
-
 class Requester:
     '''
     Read in commands entered by the
@@ -133,6 +129,10 @@ class Requester:
         -v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
     '''
     PRICE_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
+#    PRICE_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\D*)|(0)"
+
+    REQUEST_TYPE_PARTIAL = 'partial'
+    REQUEST_TYPE_FULL = 'full'
 
     def __init__(self, configMgr):
         self.configMgr = configMgr
@@ -404,7 +404,7 @@ class Requester:
                 # command price temporary data like unsupported command data from previous
                 # request are purged. Necessary here when handling partial command(s) since, unlike
                 # when a full command is processed, the command price is not reinitialized !
-                requestType = REQUEST_TYPE_PARTIAL
+                requestType = self.REQUEST_TYPE_PARTIAL
                 self.commandPrice.resetTemporaryData()
 
                 keys = self.inputParmParmDataDicKeyDic.keys()
@@ -450,7 +450,7 @@ class Requester:
         else: #full request entered. Here, parms were entered in an order reflected in the
               # pattern: crypto unit in this mandatory order, then date time exchange, of which order
               # can be different.
-            requestType = REQUEST_TYPE_FULL
+            requestType = self.REQUEST_TYPE_FULL
             self.commandPrice.initialiseParsedParmData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
             self.commandPrice.parsedParmData[CommandPrice.UNIT] = groupList[1] #mandatory unit parm, its order is fixed
@@ -620,9 +620,15 @@ class Requester:
             priceValueSymbol = match.group(3)
             priceValueErase =  match.group(4)
             if priceValueErase == None:
+                if priceValueSymbol.isdigit():
+                    # case when no currency synbol entered, like -v100 instead of -v100usd
+                    priceValueAmount += priceValueSymbol
+                    priceValueSymbol = ''
+
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = priceValueAmount
                 self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = priceValueSymbol
-                if requestType == REQUEST_TYPE_PARTIAL:
+
+                if requestType == self.REQUEST_TYPE_PARTIAL:
                     # only in case of partial request containing a value command may the passed
                     # priceValueData contain a s option.
                     # for full requesst containing a value command, the s option if present is parsed

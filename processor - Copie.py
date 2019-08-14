@@ -117,9 +117,19 @@ class Processor:
 
                 resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
                 
-        if priceValueSymbol != None and not resultData.isError():
-            resultData = self._computePriceValue(resultData, crypto, unit, priceValueSymbol, priceValueAmount, priceValueSaveFlag)
-            
+        if priceValueSymbol != None:
+            if not resultData.isError():
+                resultData = self._computePriceValue(resultData, crypto, unit, priceValueSymbol, priceValueAmount, priceValueSaveFlag)
+        elif priceValueAmount != None:
+            if priceValueSaveFlag:
+                valueCommand = '-vs'
+            else:
+                valueCommand = '-v'
+
+            resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+                                  "WARNING - currency value symbol empty. {} option ignored".format(
+                                      priceValueSymbol, crypto, unit, valueCommand))
+
         return resultData
 
 
@@ -174,7 +184,7 @@ class Processor:
             resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
                                   "WARNING - currency value symbol {} differs from both crypto ({}) and unit ({}) of last request. {} option ignored".format(
                                       priceValueSymbol, crypto, unit, valueCommand))
-            
+
         return resultData
 
             

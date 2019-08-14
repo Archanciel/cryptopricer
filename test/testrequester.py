@@ -2624,6 +2624,121 @@ class TestRequester(unittest.TestCase):
 
         sys.stdin = stdin
 
+    def test_fillPriceValueInfoRequestTypeFullAmountIntegerCurrencySymbolOk(self):
+        tstPriceValueData = '10.55usd'
+        tstPriceValueData = '0'
+        tstPriceValueData = '12.'
+        tstPriceValueData = '100'
+        tstPriceValueData = '100usd'
+        requestType = Requester.REQUEST_TYPE_FULL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypePartialAmountIntegerCurrencySymbolOk(self):
+        tstPriceValueData = '10.55usd'
+        tstPriceValueData = '0'
+        tstPriceValueData = '12.'
+        tstPriceValueData = '100'
+        tstPriceValueData = '100usd'
+        requestType = Requester.REQUEST_TYPE_PARTIAL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypeFullAmountFloatCurrencySymbolOk(self):
+        tstPriceValueData = '10.55usd'
+        requestType = Requester.REQUEST_TYPE_FULL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual('10.55', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypePartialAmountFloatCurrencySymbolOk(self):
+        tstPriceValueData = '10.55usd'
+        requestType = Requester.REQUEST_TYPE_PARTIAL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual('10.55', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypeFullCancelValueOption(self):
+        tstPriceValueData = '0'
+        requestType = Requester.REQUEST_TYPE_FULL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypePartialCancelValueOption(self):
+        tstPriceValueData = '0'
+        requestType = Requester.REQUEST_TYPE_PARTIAL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypeFullAmountIntegerCurrencySymbolMissing(self):
+        tstPriceValueData = '100'
+        requestType = Requester.REQUEST_TYPE_FULL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypePartialAmountIntegerCurrencySymbolMissing(self):
+        tstPriceValueData = '100'
+        requestType = Requester.REQUEST_TYPE_PARTIAL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypeFullAmountFloatIncompleteCurrencySymbolMissing(self):
+        tstPriceValueData = '12.'
+        requestType = Requester.REQUEST_TYPE_FULL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual('12', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypePartialAmountFloatIncompleteCurrencySymbolMissing(self):
+        tstPriceValueData = '12.'
+        requestType = Requester.REQUEST_TYPE_PARTIAL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual('12', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypeFullAmountFloatCurrencySymbolMissing(self):
+        tstPriceValueData = '12.5'
+        requestType = Requester.REQUEST_TYPE_FULL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual('12.5', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+
+    def test_fillPriceValueInfoRequestTypePartialAmountFloatCurrencySymbolMissing(self):
+        tstPriceValueData = '12.5'
+        requestType = Requester.REQUEST_TYPE_PARTIAL
+        commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
+
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
+        self.assertEqual('12.5', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
 
     def runTests(self):
         unittest.main()
