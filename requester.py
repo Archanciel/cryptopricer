@@ -129,7 +129,6 @@ class Requester:
         -v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
     '''
     PRICE_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
-#    PRICE_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\D*)|(0)"
 
     REQUEST_TYPE_PARTIAL = 'partial'
     REQUEST_TYPE_FULL = 'full'
