@@ -167,6 +167,10 @@ class CustomDropDown(DropDown):
 
 
 class CryptoPricerGUI_LVRV(BoxLayout):
+    '''
+    This is a working version of CryptoPricer with both depracated ListView and up-to-date
+    RecycleView. Requires environment with kivy1.10 to run !
+    '''
     requestInput = ObjectProperty()
     requestList = ObjectProperty()
     resultOutput = ObjectProperty()
