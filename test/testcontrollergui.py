@@ -2186,7 +2186,7 @@ class TestControllerGui(unittest.TestCase):
         inputStr = 'eth usd 0 bitfinex -vs100'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
-        self.assertTrue('WARNING - currency value symbol  differs from both crypto (ETH) and unit (USD) of last request. -vs option ignored' in printResult)
+        self.assertTrue('WARNING - currency value symbol missing. -vs option ignored' in printResult)
         self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
