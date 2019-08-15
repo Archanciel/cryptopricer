@@ -305,11 +305,8 @@ class CryptoPricerGUI(BoxLayout):
             # showing RecycleView list
             listItemNumber = len(self.requestListRV.data)
             self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
-
             self.showRequestList = True
-
             self.resetListViewScrollToEnd()
-
             self.refocusOnRequestInput()
 
     def submitRequest(self):
@@ -401,22 +398,6 @@ class CryptoPricerGUI(BoxLayout):
         self.refocusOnRequestInput()
 
     def resetListViewScrollToEnd(self):
-        # listView = self.requestList
-        # maxVisibleItemNumber = self.histoListMaxVisibleItems
-        # listLength = len(listView.adapter.data)
-        #
-        # if listLength > maxVisibleItemNumber:
-        #     listView.scroll_to(listLength - maxVisibleItemNumber)
-        # else:
-        #     if self.showRequestList:
-        #         listItemNumber = len(self.requestList.adapter.data)
-        #         self.requestList.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
-        #         if listItemNumber == 0:
-        #             self.showRequestList = False
-        #             self.manageStateOfRequestListButtons()
-        #
-        # listView._trigger_reset_populate()
-
         maxVisibleItemNumber = self.histoListMaxVisibleItems
         listLength = len(self.requestListRV.data)
 
