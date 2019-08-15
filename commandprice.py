@@ -204,7 +204,7 @@ class CommandPrice(AbstractCommand):
         #The historry list can be replayed, stored on disk, edited ...
         result.setValue(ResultData.RESULT_KEY_INITIAL_COMMAND_PARMS, initialParsedParmDataDic)
 
-        result.setValue(ResultData.RESULT_KEY_PRICE_VALUE_SAVE, priceValueSaveFlag)
+        result.setValue(ResultData.RESULT_KEY_OPTION_VALUE_SAVE, priceValueSaveFlag)
 
         if wasDateInFutureSetToLastYear:
             result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,

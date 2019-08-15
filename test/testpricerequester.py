@@ -34,10 +34,10 @@ class TestPriceRequester(unittest.TestCase):
                                                                           utcArrowDateTimeObj_endOfDay.timestamp,
                                                                           exchange,
                                                                           resultData)
-        self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP),
+        self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP),
                                                                        'UTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
         self.assertEqual(4360.62, resultData.getValue(resultData.RESULT_KEY_PRICE))
 
@@ -54,10 +54,10 @@ class TestPriceRequester(unittest.TestCase):
                                                                           utcArrowDateTimeObj_midOfDay.timestamp,
                                                                           exchange,
                                                                           resultData)
-        self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP),
+        self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP),
                                                                        'UTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
         self.assertEqual(4360.62, resultData.getValue(resultData.RESULT_KEY_PRICE))
 
@@ -74,10 +74,10 @@ class TestPriceRequester(unittest.TestCase):
                                                                              timeStampLocal,
                                                                              timeStampUtcNoHHMM,
                                                                              exchange)
-        self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP),
+        self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP),
                                                                        'UTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
         self.assertEqual(4360.62, resultData.getValue(resultData.RESULT_KEY_PRICE))
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
@@ -99,10 +99,10 @@ class TestPriceRequester(unittest.TestCase):
                                                                              timeStampUtcNoHHMM,
                                                                              exchange)
 
-        self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP),
+        self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP),
                                                                        'UTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
         self.assertEqual(4360.62, resultData.getValue(resultData.RESULT_KEY_PRICE))
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
@@ -124,10 +124,10 @@ class TestPriceRequester(unittest.TestCase):
                                                                              timeStampLocalMidDay,
                                                                              timeStampUtcNoHHMM,
                                                                              exchange)
-        self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
-        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP),
+        self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP))
+        priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP),
                                                                        'UTC')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual('30/09/17', priceArrowUTCDateTime.format(self.configMgr.dateOnlyFormat))
         self.assertEqual(4360.62, resultData.getValue(resultData.RESULT_KEY_PRICE))
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
@@ -147,7 +147,7 @@ class TestPriceRequester(unittest.TestCase):
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
         self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -159,7 +159,7 @@ class TestPriceRequester(unittest.TestCase):
         exchange = 'CCCAGG'
 
         resultData = self.priceRequester.getCurrentPrice(crypto, unit, exchange)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_RT)
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
         self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -178,7 +178,7 @@ class TestPriceRequester(unittest.TestCase):
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
@@ -198,7 +198,7 @@ class TestPriceRequester(unittest.TestCase):
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
@@ -218,7 +218,7 @@ class TestPriceRequester(unittest.TestCase):
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              utcArrowDateTimeObj.timestamp,
                                                                              exchange)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
@@ -246,7 +246,7 @@ class TestPriceRequester(unittest.TestCase):
                                                                            timeStampLocalNow,
                                                                            timeStampUtcNow,
                                                                            exchange)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
@@ -268,7 +268,7 @@ class TestPriceRequester(unittest.TestCase):
                                                                            timeStampLocalMidDay,
                                                                            timeStampUtcNoHHMM,
                                                                            exchange)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
@@ -281,7 +281,7 @@ class TestPriceRequester(unittest.TestCase):
         exchange = 'unknown'
 
         resultData = self.priceRequester.getCurrentPrice(crypto, unit, exchange)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_RT)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD)")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
@@ -294,7 +294,7 @@ class TestPriceRequester(unittest.TestCase):
         exchange = 'all'
 
         resultData = self.priceRequester.getCurrentPrice(crypto, unit, exchange)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_RT)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - There is no data for the symbol BTa")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
@@ -307,7 +307,7 @@ class TestPriceRequester(unittest.TestCase):
         exchange = 'all'
 
         resultData = self.priceRequester.getCurrentPrice(crypto, unit, exchange)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_RT)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - There is no data for any of the toSymbols USL")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))

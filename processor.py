@@ -95,10 +95,10 @@ class Processor:
 
             if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 #adding date time info if no error returned
-                timeStamp = resultData.getValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP)
+                timeStamp = resultData.getValue(ResultData.RESULT_KEY_OPTION_TIME_STAMP)
                 requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, localTz)
                 requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
-                resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
+                resultData.setValue(ResultData.RESULT_KEY_OPTION_DATE_TIME_STRING, requestedDateTimeStr)
         else:
             #getting historical price, either histo day or histo minute
             timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
@@ -107,7 +107,7 @@ class Processor:
 
             if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 #adding date time info if no error returned
-                if resultData.getValue(ResultData.RESULT_KEY_PRICE_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
+                if resultData.getValue(ResultData.RESULT_KEY_OPTION_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
                     #histoday price returned
                     requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
                     requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(self.configManager.dateTimeFormat)
@@ -115,7 +115,7 @@ class Processor:
                     requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 
-                resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
+                resultData.setValue(ResultData.RESULT_KEY_OPTION_DATE_TIME_STRING, requestedDateTimeStr)
                 
         if priceValueSymbol != None and not resultData.isError():
             resultData = self._computePriceValue(resultData, crypto, unit, priceValueSymbol, priceValueAmount, priceValueSaveFlag)
@@ -158,13 +158,13 @@ class Processor:
         if priceValueSymbol == crypto:
             #converting priceValueAmount in crypto to equivalent value in unit
             convertedValue = priceValueAmount * conversionRate
-            resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, priceValueAmount)
-            resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT, convertedValue)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, priceValueAmount)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, convertedValue)
         elif priceValueSymbol == unit:
             #converting priceValueAmount in unit to equivalent value in crypto
             convertedValue = priceValueAmount / conversionRate
-            resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_CRYPTO, convertedValue)
-            resultData.setValue(resultData.RESULT_KEY_PRICE_VALUE_UNIT, priceValueAmount)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, convertedValue)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, priceValueAmount)
         else:
             if priceValueSaveFlag:
                 valueCommand = '-vs'

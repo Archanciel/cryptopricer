@@ -82,7 +82,7 @@ class GuiOutputFormater(AbstractOutputFormater):
             return '', None, None
             
         commandDic = resultData.getValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS)
-        priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
+        priceType = resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE)
         
         if priceType == resultData.PRICE_TYPE_RT:      
             fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
@@ -100,7 +100,7 @@ class GuiOutputFormater(AbstractOutputFormater):
         fullCommandStrWithSaveModeOptions = None
         fullCommandStrWithOptions = None
 
-        if resultData.getValue(resultData.RESULT_KEY_PRICE_VALUE_SAVE):
+        if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE):
             if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
                 #in case the value command generated a warning, if the value command data contains a crypto or unit
                 #different from the crypto or unit of tthe request, the fullCommandStrWithSaveModeOptions remains

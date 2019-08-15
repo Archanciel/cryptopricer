@@ -67,7 +67,7 @@ class PriceRequester:
     def _getHistoMinutePriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, unit, timeStampUTCStr, exchange)
-        resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(ResultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
 
         try:
             if self.ctx == None:
@@ -90,7 +90,7 @@ class PriceRequester:
             if dataListOrDic != []:
                 try:
                     dataEntryDic = dataListOrDic[IDX_DATA_ENTRY_TO]
-                    resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataEntryDic['time'])
+                    resultData.setValue(ResultData.RESULT_KEY_OPTION_TIME_STAMP, dataEntryDic['time'])
                     resultData.setValue(ResultData.RESULT_KEY_PRICE, dataEntryDic['close'])
 #                except IndexError: # does not happen in any test case
 #                    resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange, isRealTime=False)
@@ -118,7 +118,7 @@ class PriceRequester:
         '''
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, unit, timeStampUTCStr, exchange)
-        resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(ResultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
 
         try:
             if self.ctx == None:
@@ -142,7 +142,7 @@ class PriceRequester:
             if dataListOrDic != []:
                 try:
                     dataEntryDic = dataListOrDic[IDX_DATA_ENTRY_TO]
-                    resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, dataEntryDic['time'])
+                    resultData.setValue(ResultData.RESULT_KEY_OPTION_TIME_STAMP, dataEntryDic['time'])
                     resultData.setValue(ResultData.RESULT_KEY_PRICE, dataEntryDic['close'])
 #                except IndexError: # does not happen in any test case
 #                    resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange,isRealTime=False)
@@ -167,7 +167,7 @@ class PriceRequester:
         resultData.setValue(ResultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(ResultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
-        resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
+        resultData.setValue(ResultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_RT)
 
         try:
             if self.ctx == None:
@@ -188,7 +188,7 @@ class PriceRequester:
             dic = json.loads(soup.prettify())
             
             if unit in dic:
-                resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
+                resultData.setValue(ResultData.RESULT_KEY_OPTION_TIME_STAMP, DateTimeUtil.utcNowTimeStamp())
                 resultData.setValue(ResultData.RESULT_KEY_PRICE, dic[unit]) #current price is indexed by unit symbol in returned dic
             else:
                 resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange, isRealTime=True)
