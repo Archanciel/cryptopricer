@@ -24,14 +24,14 @@ class CommandPrice(AbstractCommand):
     PRICE_TYPE_HISTO = 'HISTO'
     PRICE_TYPE_RT = 'REAL_TIME'
     
-    PRICE_VALUE_DATA = 'PRICE_VAL_DATA'     #temporary store the data specified with -v. Ex: -v0.0044254btc
-    PRICE_VALUE_AMOUNT = 'PRICE_VAL_AMOUNT' #store the price target specified with -v. Ex: 0.0044354
-    PRICE_VALUE_SYMBOL = 'PRICE_VAL_SYMBOL' #store the price symbol specified with -v. Ex: BTC
+    OPTION_VALUE_DATA = 'OPTION_VALUE_DATA'     #temporary store the data specified with -v. Ex: -v0.0044254btc
+    OPTION_VALUE_AMOUNT = 'OPTION_VALUE_AMOUNT' #store the price target specified with -v. Ex: 0.0044354
+    OPTION_VALUE_SYMBOL = 'OPTION_VALUE_SYMBOL' #store the price symbol specified with -v. Ex: BTC
 
-    PRICE_VALUE_SAVE = 'PRICE_VAL_SAVE'     #store s or S or None to indicate if the price value command is to be stored in history (-vs) or not (-v) --> None
+    OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'     #store s or S or None to indicate if the price value command is to be stored in history (-vs) or not (-v) --> None
 
-    UNSUPPORTED_COMMAND = "UNSUPPORTED_COMMAND"             #store an unsupported command specification
-    UNSUPPORTED_COMMAND_DATA = "UNSUPPORTED_COMMAND_DATA"   #store any unsupported command specification data
+    UNSUPPORTED_OPTION = "UNSUPPORTED_OPTION"             #store an unsupported option specification
+    UNSUPPORTED_OPTION_DATA = "UNSUPPORTED_OPTION_DATA"   #store any unsupported option specification data
 
     def __init__(self, receiver = None, configManager = None):
         super().__init__(receiver, 'CommandPrice')
@@ -62,10 +62,10 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.DAY_MONTH_YEAR] = None
         self.parsedParmData[self.HOUR_MINUTE] = None
         self.parsedParmData[self.PRICE_TYPE] = None
-        self.parsedParmData[self.PRICE_VALUE_DATA] = None
-        self.parsedParmData[self.PRICE_VALUE_AMOUNT] = None
-        self.parsedParmData[self.PRICE_VALUE_SYMBOL] = None
-        self.parsedParmData[self.PRICE_VALUE_SAVE] = None
+        self.parsedParmData[self.OPTION_VALUE_DATA] = None
+        self.parsedParmData[self.OPTION_VALUE_AMOUNT] = None
+        self.parsedParmData[self.OPTION_VALUE_SYMBOL] = None
+        self.parsedParmData[self.OPTION_VALUE_SAVE] = None
         self.resetTemporaryData()
 
 
@@ -74,8 +74,8 @@ class CommandPrice(AbstractCommand):
         This method cleans up any data which are not to be kept between user requessts
         :return:
         '''
-        self.parsedParmData[self.UNSUPPORTED_COMMAND] = None
-        self.parsedParmData[self.UNSUPPORTED_COMMAND_DATA] = None
+        self.parsedParmData[self.UNSUPPORTED_OPTION] = None
+        self.parsedParmData[self.UNSUPPORTED_OPTION_DATA] = None
 
 
     def execute(self):
@@ -176,16 +176,16 @@ class CommandPrice(AbstractCommand):
                 year = localNow.year - 1
                 wasDateInFutureSetToLastYear = True
 
-        priceValueSymbol = self.parsedParmData[self.PRICE_VALUE_SYMBOL]
-        priceValueAmount = self.parsedParmData[self.PRICE_VALUE_AMOUNT]
+        optionValueSymbol = self.parsedParmData[self.OPTION_VALUE_SYMBOL]
+        optionValueAmount = self.parsedParmData[self.OPTION_VALUE_AMOUNT]
 
-        if priceValueSymbol:
-            priceValueSymbol = priceValueSymbol.upper()
+        if optionValueSymbol:
+            optionValueSymbol = optionValueSymbol.upper()
 
-        if priceValueAmount:
-            priceValueAmount = float(priceValueAmount)
+        if optionValueAmount:
+            optionValueAmount = float(optionValueAmount)
 
-        priceValueSaveFlag = self.parsedParmData[self.PRICE_VALUE_SAVE]
+        optionValueSaveFlag = self.parsedParmData[self.OPTION_VALUE_SAVE]
         result = self.receiver.getCryptoPrice(cryptoUpper,
                                               unitUpper,
                                               exchange,
@@ -194,9 +194,9 @@ class CommandPrice(AbstractCommand):
                                               year,
                                               hour,
                                               minute,
-                                              priceValueSymbol,
-                                              priceValueAmount,
-                                              priceValueSaveFlag,
+                                              optionValueSymbol,
+                                              optionValueAmount,
+                                              optionValueSaveFlag,
                                               self.requestInputString)
 
         #the command components	denoting the user request will be used to recreate
@@ -204,18 +204,18 @@ class CommandPrice(AbstractCommand):
         #The historry list can be replayed, stored on disk, edited ...
         result.setValue(ResultData.RESULT_KEY_INITIAL_COMMAND_PARMS, initialParsedParmDataDic)
 
-        result.setValue(ResultData.RESULT_KEY_OPTION_VALUE_SAVE, priceValueSaveFlag)
+        result.setValue(ResultData.RESULT_KEY_OPTION_VALUE_SAVE, optionValueSaveFlag)
 
         if wasDateInFutureSetToLastYear:
             result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,
                               "Warning - request date {} can not be in the future and was shifted back to last year".format(
                                   localRequestDateTime.format(self.configManager.dateTimeFormat)))
 
-        unsupportedCommand = self.parsedParmData[self.UNSUPPORTED_COMMAND]
+        unsupportedOption = self.parsedParmData[self.UNSUPPORTED_OPTION]
 
-        if unsupportedCommand:
-            result.setWarning(ResultData.WARNING_TYPE_UNSUPPORTED_COMMAND,
-                              "Warning - unsupported command {}{} in request {}".format(unsupportedCommand, self.parsedParmData[self.UNSUPPORTED_COMMAND_DATA], self.requestInputString))
+        if unsupportedOption:
+            result.setWarning(ResultData.WARNING_TYPE_UNSUPPORTED_OPTION,
+                              "Warning - unsupported option {}{} in request {}".format(unsupportedOption, self.parsedParmData[self.UNSUPPORTED_OPTION_DATA], self.requestInputString))
 
         return result
 

@@ -105,10 +105,10 @@ class GuiOutputFormater(AbstractOutputFormater):
                 #in case the value command generated a warning, if the value command data contains a crypto or unit
                 #different from the crypto or unit of tthe request, the fullCommandStrWithSaveModeOptions remains
                 #None and wont't be stored in the request history list of the GUI !
-                fullCommandStrWithSaveModeOptions = fullCommandStr + ' -vs' + commandDic[CommandPrice.PRICE_VALUE_AMOUNT] + commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
+                fullCommandStrWithSaveModeOptions = fullCommandStr + ' -vs' + commandDic[CommandPrice.OPTION_VALUE_AMOUNT] + commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
         else:
-            valueCommandAmountStr = commandDic[CommandPrice.PRICE_VALUE_AMOUNT]
-            valueCommandSymbolStr = commandDic[CommandPrice.PRICE_VALUE_SYMBOL]
+            valueCommandAmountStr = commandDic[CommandPrice.OPTION_VALUE_AMOUNT]
+            valueCommandSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
             if valueCommandAmountStr and valueCommandSymbolStr:
                 #even in case the value command generated a warning, it will be displayed in the status bar !
                 fullCommandStrWithOptions = fullCommandStr + ' -v' + valueCommandAmountStr + valueCommandSymbolStr

@@ -1490,7 +1490,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported command -ebitfinex in request btc usd 0 all -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                 nowMinuteStr), UtilityForTest.removePriceFromResult(printResult))  #removing \n from contentList entry !
         self.assertEqual('btc usd 0 all', fullCommandStr) #empty string since request caused an error !
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1516,7 +1516,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported command -ebitfinex in request btc usd 0 all -vs100.2usd -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -vs100.2usd -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                 nowMinuteStr), UtilityForTest.removeAllPricesFromCommandValueResult(printResult))  #removing \n from contentList entry !
         self.assertEqual('btc usd 0 all', fullCommandStr)
         self.assertEqual('btc usd 0 all -vs100.2usd', fullCommandStrWithSaveModeOptions)
@@ -1588,7 +1588,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported command -zooo in request btc usd 0 all -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+        self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request btc usd 0 all -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                 nowMinuteStr), UtilityForTest.removePriceFromResult(printResult))  #removing \n from contentList entry !
         self.assertEqual('btc usd 0 all', fullCommandStr) #empty string since request caused an error !
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1598,7 +1598,7 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
-        self.assertEqual('BTC/ETH on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported command -zooo in request -ueth -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+        self.assertEqual('BTC/ETH on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request -ueth -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                 nowMinuteStr), UtilityForTest.removePriceFromResult(printResult))  #removing \n from contentList entry !
         self.assertEqual('btc eth 0 all', fullCommandStr) #empty string since request caused an error !
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1894,7 +1894,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported command -eall in request btc eth 0 binance -eall', printResult)
+            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported option -eall in request btc eth 0 binance -eall', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1906,7 +1906,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported command -eall in request btc eth 0 binance -eall', printResult)
+            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported option -eall in request btc eth 0 binance -eall', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1924,7 +1924,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported command -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
+            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported option -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1936,7 +1936,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported command -eall in request btc eth 0 binance -eall', printResult)
+            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported option -eall in request btc eth 0 binance -eall', printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1954,7 +1954,7 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported command -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
+            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported option -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
         self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 

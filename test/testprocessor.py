@@ -61,8 +61,8 @@ class TestProcessor(unittest.TestCase):
         year = 2017
         hour = 10
         minute = 5
-        priceValueSymbol = 'BTC' # -v0.001BTC
-        priceValueAmount = 0.001
+        optionValueSymbol = 'BTC' # -v0.001BTC
+        optionValueAmount = 0.001
 
         resultData = self.processor.getCryptoPrice(crypto,
                                                unit,
@@ -72,8 +72,8 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute,
-                                               priceValueSymbol,
-                                               priceValueAmount)
+                                               optionValueSymbol,
+                                               optionValueAmount)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
@@ -82,7 +82,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), priceValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), optionValueAmount)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), 4.122)
 
 
@@ -95,8 +95,8 @@ class TestProcessor(unittest.TestCase):
         year = 2017
         hour = 10
         minute = 5
-        priceValueSymbol = 'ETH' #-v0.001ETH
-        priceValueAmount = 0.001
+        optionValueSymbol = 'ETH' #-v0.001ETH
+        optionValueAmount = 0.001
 
         resultData = self.processor.getCryptoPrice(crypto,
                                                unit,
@@ -106,8 +106,8 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute,
-                                               priceValueSymbol,
-                                               priceValueAmount)
+                                               optionValueSymbol,
+                                               optionValueAmount)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
@@ -130,8 +130,8 @@ class TestProcessor(unittest.TestCase):
         year = 2017
         hour = 10
         minute = 5
-        priceValueSymbol = 'USD' #-v70USD
-        priceValueAmount = 70
+        optionValueSymbol = 'USD' #-v70USD
+        optionValueAmount = 70
 
         resultData = self.processor.getCryptoPrice(crypto,
                                                unit,
@@ -141,8 +141,8 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute,
-                                               priceValueSymbol,
-                                               priceValueAmount)
+                                               optionValueSymbol,
+                                               optionValueAmount)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
@@ -164,7 +164,7 @@ class TestProcessor(unittest.TestCase):
             outputFormater = GuiOutputFormater(self.configMgr)
 
         self.assertEqual(outputFormater.formatFloatToStr(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)), outputFormater.formatFloatToStr(0.01698205))
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), priceValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), optionValueAmount)
 
 
     def testGetCryptoPriceHistoricalPriceValueFromBadUnitToCrypto(self):    
@@ -176,8 +176,8 @@ class TestProcessor(unittest.TestCase):
         year = 2017
         hour = 10
         minute = 5
-        priceValueSymbol = 'EUR' #-v70EUR
-        priceValueAmount = 70
+        optionValueSymbol = 'EUR' #-v70EUR
+        optionValueAmount = 70
 
         resultData = self.processor.getCryptoPrice(crypto,
                                                unit,
@@ -187,8 +187,8 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute,
-                                               priceValueSymbol,
-                                               priceValueAmount)
+                                               optionValueSymbol,
+                                               optionValueAmount)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)

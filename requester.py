@@ -128,7 +128,7 @@ class Requester:
     Ex: -v0.004325btc is splitted into 0.00432, btc, None
         -v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
     '''
-    PRICE_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
+    OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
 
     REQUEST_TYPE_PARTIAL = 'partial'
     REQUEST_TYPE_FULL = 'full'
@@ -150,7 +150,7 @@ class Requester:
                                            '-D': CommandPrice.DAY_MONTH_YEAR,
                                            '-T': CommandPrice.HOUR_MINUTE,
                                            '-E': CommandPrice.EXCHANGE,
-                                           '-V': CommandPrice.PRICE_VALUE_DATA}
+                                           '-V': CommandPrice.OPTION_VALUE_DATA}
 
 
     def request(self):
@@ -311,10 +311,10 @@ class Requester:
         patternCommandDic = {r"\d+/\d+(?:/\d+)*|^\d+$" : CommandPrice.DAY_MONTH_YEAR,
                              r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
                              r"[A-Za-z]+": CommandPrice.EXCHANGE,
-                             r"(?:-[vV])([sS]?)([\w\d/:\.]+)": CommandPrice.PRICE_VALUE_DATA,
-                             r"(?:-[vV])([sS]?)([\w\d/:\.]+)" + COMMAND_OR_OPTION: CommandPrice.PRICE_VALUE_SAVE,
-                             r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)": CommandPrice.UNSUPPORTED_COMMAND_DATA, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-                             r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)" + COMMAND_OR_OPTION: CommandPrice.UNSUPPORTED_COMMAND}
+                             r"(?:-[vV])([sS]?)([\w\d/:\.]+)": CommandPrice.OPTION_VALUE_DATA,
+                             r"(?:-[vV])([sS]?)([\w\d/:\.]+)" + COMMAND_OR_OPTION: CommandPrice.OPTION_VALUE_SAVE,
+                             r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)": CommandPrice.UNSUPPORTED_OPTION_DATA,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+                             r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)" + COMMAND_OR_OPTION: CommandPrice.UNSUPPORTED_OPTION}
 
         optionalParsedParmDataDic = {}
 
@@ -417,8 +417,8 @@ class Requester:
                             self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = value
                         else:
                             # unknown partial command symbol
-                            self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_COMMAND] = command
-                            self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_COMMAND_DATA] = value
+                            self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION] = command
+                            self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION_DATA] = value
 
                 if self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == '0':
                     #-d0 which means RT entered. In this case, the previous
@@ -548,7 +548,7 @@ class Requester:
 
         self._fillDayMonthYearInfo(day, month, year)
 
-        priceValueData = self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_DATA]
+        priceValueData = self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_DATA]
 
         if priceValueData != None:
             return self._fillPriceValueInfo(priceValueData, requestType)
@@ -611,7 +611,7 @@ class Requester:
         :return: self.commandPrice or self.commandError in case -v invalid
         '''
 
-        match = re.match(self.PRICE_VALUE_PARM_DATA_PATTERN, priceValueData)
+        match = re.match(self.OPTION_VALUE_PARM_DATA_PATTERN, priceValueData)
 
         if match:
             priceValueSaveFlag = match.group(1)
@@ -624,8 +624,8 @@ class Requester:
                     priceValueAmount += priceValueSymbol
                     priceValueSymbol = ''
 
-                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = priceValueAmount
-                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = priceValueSymbol
+                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = priceValueAmount
+                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = priceValueSymbol
 
                 if requestType == self.REQUEST_TYPE_PARTIAL:
                     # only in case of partial request containing a value command may the passed
@@ -633,16 +633,16 @@ class Requester:
                     # for full requesst containing a value command, the s option if present is parsed
                     # differently and is never contained in the passed priceValueData !
                     if priceValueSaveFlag.upper() == 'S':
-                        self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = True
+                        self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = True
                     else:
-                        self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = None
+                        self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = None
             elif priceValueErase == '0':
                 #here, -v0 was entered to stop price value calculation
-                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = None
-                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = None
-                self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = None
+                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = None
+                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = None
+                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = None
 
-            self.commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_DATA] = None
+            self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_DATA] = None
 
             return self.commandPrice
         else:
@@ -650,7 +650,7 @@ class Requester:
             self.commandError
             self.commandError.parsedParmData[
                 self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_PRICE_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + priceValueData, priceValueData)
+            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + priceValueData, priceValueData)
 
             return self.commandError
 

@@ -1197,12 +1197,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.0044256')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '0.0044256')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'btc')
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearCommandUppercasePriceValue(self):
@@ -1236,11 +1236,11 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.0044256')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '0.0044256')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'btc')
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearWithPartialYearPriceValue(self):
@@ -1274,12 +1274,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '500')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'gbp')
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '500')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'gbp')
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPricePriceValuePreviouslySet(self):
@@ -1298,8 +1298,8 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
         parsedParmData[CommandPrice.HOUR_MINUTE] = None
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
-        parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
 
         inputStr = "-ceth -ugbp -d11/8/15 -t22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1315,12 +1315,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '500')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'gbp')
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '500')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'gbp')
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceErasePriceValue(self):
@@ -1339,8 +1339,8 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
         parsedParmData[CommandPrice.HOUR_MINUTE] = None
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
-        parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
 
         inputStr = "-ceth -v0 -ugbp -d11/8/15 -t22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1356,12 +1356,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceIneffectivePriceValueSpec(self):
@@ -1380,9 +1380,9 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
         parsedParmData[CommandPrice.HOUR_MINUTE] = None
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
-        parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
-        parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = False
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+        parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = False
 
         inputStr = "-ceth -v -ugbp -d11/8/15 -t22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1398,10 +1398,10 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '500')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'gbp')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], False)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '500')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'gbp')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], False)
 
 
     def test_parseAndFillPartialCommandPriceInvalidPriceValueSpec(self):
@@ -1420,11 +1420,11 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
         parsedParmData[CommandPrice.HOUR_MINUTE] = None
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
-        parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
         inputStr = "-ceth -vooo -ugbp -d11/8/15 -t22:46 -eKraken"
         commandError = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1466,10 +1466,10 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.0044256')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], True)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '0.0044256')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], True)
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSaveAndUnsupportedCommand(self):
@@ -1492,8 +1492,8 @@ class TestRequester(unittest.TestCase):
         inputStr = "-ceth -ugbp -d11/8 -t22:46 -eKraken -vs0.0044256btc -zunsupported"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandPrice, self.commandPrice)
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND], '-z')
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA], 'unsupported')
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION], '-z')
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA], 'unsupported')
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearCommandUppercasePriceValueSave(self):
@@ -1527,9 +1527,9 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.0044256')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], True)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '0.0044256')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], True)
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearWithPartialYearPriceValueSave(self):
@@ -1563,10 +1563,10 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '500')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'gbp')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], True)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '500')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'gbp')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], True)
 
 
     def test_parseAndFillPartialCommandPricePriceValueSavePreviouslySet(self):
@@ -1585,9 +1585,9 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
         parsedParmData[CommandPrice.HOUR_MINUTE] = None
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
-        parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
-        parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = True
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+        parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = True
 
         inputStr = "-ceth -ugbp -d11/8/15 -t22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1603,10 +1603,10 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '500')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'gbp')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SAVE], True)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '500')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'gbp')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], True)
 
 
     def test_parseAndFillPartialCommandPriceErasePriceValueSave(self):
@@ -1625,9 +1625,9 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
         parsedParmData[CommandPrice.HOUR_MINUTE] = None
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
-        parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
-        parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = True
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+        parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = True
 
         inputStr = "-ceth -v0 -ugbp -d11/8/15 -t22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1643,12 +1643,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceIneffectivePriceValueSaveSpec(self):
@@ -1667,9 +1667,9 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
         parsedParmData[CommandPrice.HOUR_MINUTE] = None
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
-        parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
-        parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = False
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+        parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = False
 
         inputStr = "-ceth -vs -ugbp -d11/8/15 -t22:46 -eKraken"
         commandError = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1696,9 +1696,9 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
         parsedParmData[CommandPrice.HOUR_MINUTE] = None
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = '500'
-        parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = 'gbp'
-        parsedParmData[CommandPrice.PRICE_VALUE_SAVE] = True
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+        parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = True
 
         inputStr = "-ceth -vsooo -ugbp -d11/8/15 -t22:46 -eKraken"
         commandError = self.requester._parseAndFillCommandPrice(inputStr)
@@ -1740,12 +1740,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceWithInitYearNoPartialYear(self):
@@ -1779,12 +1779,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceWithInitYearWithPartialDateDayOnly(self):
@@ -1818,12 +1818,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearNoExchange(self):
@@ -1857,12 +1857,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearNoExchangeNoTime(self):
@@ -1896,12 +1896,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearNoExchangeNoMinute(self):
@@ -1989,12 +1989,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceWrongCommand(self):
@@ -2017,8 +2017,8 @@ class TestRequester(unittest.TestCase):
         inputStr = "-ceth -ugbp -d11/8 -h22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandPrice, self.commandPrice)
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND], '-h')
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA], '22:46')
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION], '-h')
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA], '22:46')
 
         # formatting of request input string has been moved to end of Requester.getCommand !
 
@@ -2039,9 +2039,9 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
         parsedParmData[CommandPrice.HOUR_MINUTE] = None
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_DATA] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT] = None
-        parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL] = None
+        parsedParmData[CommandPrice.OPTION_VALUE_DATA] = None
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = None
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = None
 
         inputStr = "-ceth fgbp -d11/8 -t22:46 -eKraken"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
@@ -2057,12 +2057,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def testRequestPriceCommandFull(self):
@@ -2083,12 +2083,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
         sys.stdin = stdin
 
@@ -2111,12 +2111,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.01')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '0.01')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'btc')
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
         sys.stdin = stdin
 
@@ -2139,10 +2139,10 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.01')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertIsNotNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '0.01')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'btc')
+        self.assertIsNotNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
         sys.stdin = stdin
 
@@ -2165,12 +2165,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.01')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertIsNotNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND], '-z')
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA], 'unsupported')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '0.01')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'btc')
+        self.assertIsNotNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION], '-z')
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA], 'unsupported')
 
         sys.stdin = stdin
 
@@ -2193,12 +2193,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], '0.01')
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], 'btc')
-        self.assertIsNotNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND], '-z')
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA], 'unsupported')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], '0.01')
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], 'btc')
+        self.assertIsNotNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION], '-z')
+        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA], 'unsupported')
 
         sys.stdin = stdin
 
@@ -2319,12 +2319,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
         sys.stdin = stdin
 
@@ -2347,12 +2347,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
         sys.stdin = stdin
 
@@ -2375,12 +2375,12 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
         self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_DATA], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT], None)
-        self.assertEqual(parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL], None)
-        self.assertIsNone(parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND])
-        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_COMMAND_DATA])
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL], None)
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
         sys.stdin = stdin
 
@@ -2633,9 +2633,9 @@ class TestRequester(unittest.TestCase):
         requestType = Requester.REQUEST_TYPE_FULL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypePartialAmountIntegerCurrencySymbolOk(self):
         tstPriceValueData = '10.55usd'
@@ -2646,99 +2646,99 @@ class TestRequester(unittest.TestCase):
         requestType = Requester.REQUEST_TYPE_PARTIAL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypeFullAmountFloatCurrencySymbolOk(self):
         tstPriceValueData = '10.55usd'
         requestType = Requester.REQUEST_TYPE_FULL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual('10.55', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual('10.55', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypePartialAmountFloatCurrencySymbolOk(self):
         tstPriceValueData = '10.55usd'
         requestType = Requester.REQUEST_TYPE_PARTIAL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual('10.55', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual('10.55', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypeFullCancelValueOption(self):
         tstPriceValueData = '0'
         requestType = Requester.REQUEST_TYPE_FULL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypePartialCancelValueOption(self):
         tstPriceValueData = '0'
         requestType = Requester.REQUEST_TYPE_PARTIAL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypeFullAmountIntegerCurrencySymbolMissing(self):
         tstPriceValueData = '100'
         requestType = Requester.REQUEST_TYPE_FULL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypePartialAmountIntegerCurrencySymbolMissing(self):
         tstPriceValueData = '100'
         requestType = Requester.REQUEST_TYPE_PARTIAL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypeFullAmountFloatIncompleteCurrencySymbolMissing(self):
         tstPriceValueData = '12.'
         requestType = Requester.REQUEST_TYPE_FULL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual('12', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual('12', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypePartialAmountFloatIncompleteCurrencySymbolMissing(self):
         tstPriceValueData = '12.'
         requestType = Requester.REQUEST_TYPE_PARTIAL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual('12', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual('12', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypeFullAmountFloatCurrencySymbolMissing(self):
         tstPriceValueData = '12.5'
         requestType = Requester.REQUEST_TYPE_FULL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual('12.5', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual('12.5', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillPriceValueInfoRequestTypePartialAmountFloatCurrencySymbolMissing(self):
         tstPriceValueData = '12.5'
         requestType = Requester.REQUEST_TYPE_PARTIAL
         commandPrice = self.requester._fillPriceValueInfo(tstPriceValueData, requestType)
 
-        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SYMBOL])
-        self.assertEqual('12.5', commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_AMOUNT])
-        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.PRICE_VALUE_SAVE])
+        self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertEqual('12.5', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def runTests(self):
         unittest.main()
