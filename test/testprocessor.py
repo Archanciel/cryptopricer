@@ -118,7 +118,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), None)
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD) of last request. -v option ignored")
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol ETH currently in effect differs from both crypto (BTC) and unit (USD) of last request. -v option ignored")
 
 
     def testGetCryptoPriceHistoricalPriceValueUnitToCrypto(self):    
@@ -199,7 +199,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), None)
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value symbol EUR differs from both crypto (BTC) and unit (USD) of last request. -v option ignored")
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol EUR currently in effect differs from both crypto (BTC) and unit (USD) of last request. -v option ignored")
 
 
     def testGetCryptoPriceHistoricalRecent(self):    
