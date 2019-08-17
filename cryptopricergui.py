@@ -32,6 +32,7 @@ from guioutputformater import GuiOutputFormater
 from guiutil import GuiUtil
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
+CRYPTOPRICER_VERSION = 'CryptoPricer 1.5'
 fromAppBuilt = False
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
@@ -525,7 +526,7 @@ class CryptoPricerGUI(BoxLayout):
             popupSize = (400, 450)
             width = 54
 
-        popup = ScrollablePopup(title='CryptoPricer 2.3', size_hint=(None, None), size=popupSize)
+        popup = ScrollablePopup(title=CRYPTOPRICER_VERSION, size_hint=(None, None), size=popupSize)
         formatedHelpTextPageList = ''
 
         with open('help.txt') as helpFile:
