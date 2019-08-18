@@ -36,7 +36,7 @@ class CommandError(AbstractCommand):
 
         if errorType == self.COMMAND_ERROR_TYPE_FULL_REQUEST:
             errorTypeLabelStr = 'full request'
-            errorMsgTail = ' violates format <crypto> <unit> <date|time> <exchange> <opt commands>'
+            errorMsgTail = ' violates format <crypto> <unit> <date|time> <exchange> <options>'
         elif errorType == self.COMMAND_ERROR_TYPE_PARTIAL_REQUEST:
             errorTypeLabelStr = 'invalid partial request'
         elif errorType == self.COMMAND_ERROR_TYPE_INVALID_COMMAND:
