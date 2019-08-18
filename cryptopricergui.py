@@ -304,11 +304,15 @@ class CryptoPricerGUI(BoxLayout):
             self.showRequestList = False
         else:
             # showing RecycleView list
-            listItemNumber = len(self.requestListRV.data)
-            self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
+            self.adjustRequestListSize()
             self.showRequestList = True
             self.resetListViewScrollToEnd()
             self.refocusOnRequestInput()
+
+    def adjustRequestListSize(self):
+        listItemNumber = len(self.requestListRV.data)
+        self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
+        return listItemNumber
 
     def submitRequest(self):
         '''
@@ -355,6 +359,9 @@ class CryptoPricerGUI(BoxLayout):
 
             # Reset the ListView
             self.resetListViewScrollToEnd()
+
+        if self.showRequestList:
+            self.adjustRequestListSize()
 
         self.manageStateOfRequestListButtons()
         self.requestInput.text = ''
@@ -408,8 +415,7 @@ class CryptoPricerGUI(BoxLayout):
             pass
         else:
             if self.showRequestList:
-                listItemNumber = len(self.requestListRV.data)
-                self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
+                listItemNumber = self.adjustRequestListSize()
                 if listItemNumber == 0:
                     self.showRequestList = False
                     self.manageStateOfRequestListButtons()
@@ -465,7 +471,11 @@ class CryptoPricerGUI(BoxLayout):
         if len(self.requestListRV.data) == 0:
             self.disableRequestListItemButtons()
             self.toggleHistoButton.disabled = True
+            self.showRequestList = False
             self.requestInput.text = ''
+
+        if self.showRequestList:
+            self.adjustRequestListSize()
 
         self.manageStateOfRequestListButtons()
 
