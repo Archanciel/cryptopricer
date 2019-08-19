@@ -391,12 +391,12 @@ class Requester:
         :seqdiag_return CommandPrice or CommandError
         :return: self.commandPrice or self.commandError or None, which will cause an error to be raised
         '''
-        groupList = self._tryMatchFullPriceCommand(inputStr)
+        groupList = self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
         requestType = None
 
         if groupList == (): #full command pattern not matched --> try match partial command pattern
-            groupList = self._tryMatchPartialPriceCommand(inputStr)
+            groupList = self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
             if groupList != ():
                 # partial request entered. Here, parms are associated to parrm tag (i.e -c or -d).
                 # Means they have been entered in any order and are all optional ensuring
@@ -668,24 +668,6 @@ class Requester:
 
         if match:
             return match.group(1), match.group(2)
-
-
-    def _tryMatchFullPriceCommand(self, inputStr):
-        '''
-        Try matching a full price command like btc usd 0 bittrex
-        :param inputStr:
-        :return: None or a Match object
-        '''
-        return self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
-
-
-    def _tryMatchPartialPriceCommand(self, inputStr):
-        '''
-        Try matching a partial price command like -d21/12 or -eccex
-        :param inputStr:
-        :return: None or a Match object
-        '''
-        return self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 
 
     def _wipeOutDateTimeInfoFromCommandPrice(self):
