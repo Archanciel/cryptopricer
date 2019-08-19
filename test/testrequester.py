@@ -309,7 +309,7 @@ class TestRequester(unittest.TestCase):
 
         self.assertEqual(('btc', 'usd', '10/9', '12:45', 'Kraken', '-v100usd', None), groupList)
 
-    def test_parseGroupsFullDayMonthHHMMValueOptionPartial(self):
+    def test_parseGroupsFullDayMonthHHMMValueOptionIncomplete(self):
         inputStr = "btc usd 10/9 12:45 Kraken -v100"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
