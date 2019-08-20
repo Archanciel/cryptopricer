@@ -296,7 +296,7 @@ class Requester:
                            01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected. 
         '''
 
-        COMMAND_OR_OPTION = 'commandOrOption'
+        OPTION_MODIFIER = 'optionModifier'
 
         # changed r"\d+/\d+(?:/\d+)*|^0$" into r"\d+/\d+(?:/\d+)*|^\d+$" was required so
         # that a full request like btc usd 1 12:45 bitfinex does generate an ERROR - date not valid
@@ -312,9 +312,9 @@ class Requester:
                              r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
                              r"[A-Za-z]+": CommandPrice.EXCHANGE,
                              r"(?:-[vV])([sS]?)([\w\d/:\.]+)": CommandPrice.OPTION_VALUE_DATA,
-                             r"(?:-[vV])([sS]?)([\w\d/:\.]+)" + COMMAND_OR_OPTION: CommandPrice.OPTION_VALUE_SAVE,
+                             r"(?:-[vV])([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
                              r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)": CommandPrice.UNSUPPORTED_OPTION_DATA,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-                             r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)" + COMMAND_OR_OPTION: CommandPrice.UNSUPPORTED_OPTION}
+                             r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION}
 
         optionalParsedParmDataDic = {}
 
@@ -325,12 +325,12 @@ class Requester:
                         #if for example DMY already found in optional full command parms,
                         #it will not be overwritten ! Ex: 12/09/17 0: both token match DMY
                         #pattern !
-                        data, optionalCommandModifier = self._extractData(pattern, group)
+                        data, optionModifier = self._extractData(pattern, group)
                         if data != None:
                             optionalParsedParmDataDic[patternCommandDic[pattern]] = data
-                            patternCommandModifierKey = pattern + COMMAND_OR_OPTION
-                            if optionalCommandModifier != None and optionalCommandModifier != '':
-                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = optionalCommandModifier
+                            patternCommandModifierKey = pattern + OPTION_MODIFIER
+                            if optionModifier != None and optionModifier != '':
+                                optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = optionModifier
                             elif patternCommandModifierKey in optionalParsedParmDataDic.keys():
                                 optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = None
 
@@ -345,43 +345,42 @@ class Requester:
         return optionalParsedParmDataDic
 
 
-    def _extractData(self, pattern, dataOrCommandStr):
+    def _extractData(self, pattern, dataOrOptionStr):
         '''
-        Applies the passed pattern to the passed dataOrCommandStr. If the pasaed dataOrCommandStr
-        is a command of type -v0.1btc or -vs0.1btc, the passed pattern will extract the data part of the
-        dataOrCommandStr, i.e. 0.01btc in this case and the optional command modifier part of the
-        dataOrCommandStr, i.e. s in this case.
+        Applies the passed pattern to the passed dataOrOptionStr. If the passed dataOrOptionStr
+        is an option of type -v0.1btc or -vs0.1btc, the passed pattern will extract the data part of the
+        dataOrOptionStr, i.e. 0.01btc in this case and the option modifier part of the dataOrOptionStr,
+        i.e. s in this case.
 
-        Else if the dataOrCommandStr does contain data only, without a command symbol, the passed
-        pattern does not extract any group and the data is returned as is
+        Else if the dataOrOptionStr does contain data only, without an option symbol, the passed
+        pattern does not extract any group and the data is returned as is.
 
         :param pattern:
-        :param dataOrCommandStr:
-        :return: passed data or data part of the passed command + data aswell as the optional command
-                 modifier. If -v0.1btc is passed as dataOrCommandStr, 0.1btc is returned.
-                 If -vs0.1btc is passed as dataOrCommandStr, 0.1btc and s is returned.
+        :param dataOrOptionStr:
+        :return: passed data or data part of the passed option + data aswell as the option modifier.
+                 If -v0.1btc is passed as dataOrOptionStr, 0.1btc is returned. If -vs0.1btc is passed as
+                 dataOrOptionStr, 0.1btc and s is returned.
 
-                 In case of syntax error,
-                 None is returned
+                 In case of syntax error, None is returned
         '''
-        match = re.match(pattern, dataOrCommandStr)
+        match = re.match(pattern, dataOrOptionStr)
 
         if match == None:
             #denotes a syntax error !
             return None, None
 
-        commandModifierValue = None
+        optionModifierValue = None
         grpNumber = len(match.groups())
 
         if grpNumber == 1:
             data = match.group(1)
         elif grpNumber == 2:
-            commandModifierValue = match.group(1)
+            optionModifierValue = match.group(1)
             data = match.group(2)
         else:
-            data = dataOrCommandStr
+            data = dataOrOptionStr
 
-        return data, commandModifierValue
+        return data, optionModifierValue
 
     def _parseAndFillCommandPrice(self, inputStr):
         '''
