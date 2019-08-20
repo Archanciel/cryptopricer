@@ -272,13 +272,16 @@ class Requester:
             return ()
 
 
-    def _buildFullCommandPriceOptionalParmsDic(self, optionalParmList):
+    def _buildFullCommandPriceOptionalParmsDic(self, orderFreeParmList):
         '''
         Since DAY_MONTH_YEAR, HOUR_MINUTE and EXCHANGE can be provided in any order after CRYPTO
         and UNIT, this method differentiate them build an optional command price parm data dictionary
         with the right key. This dictionary will be added to the CommandPrice parmData dictionary.
 
         :seqdiag_return optionalParsedParmDataDic
+
+        :param orderFreeParmList: contains the request parms entered after the CRYPTO and UNIT
+                                  specification aswell as any request option (namely -v, -f or -p).
         :return optionalParsedParmDataDic or None in case of syntax error.
         '''
 
@@ -297,6 +300,7 @@ class Requester:
         '''
 
         OPTION_MODIFIER = 'optionModifier'
+        UNSUPPORTED_OPTION = 'unsupportedOption'
 
         # changed r"\d+/\d+(?:/\d+)*|^0$" into r"\d+/\d+(?:/\d+)*|^\d+$" was required so
         # that a full request like btc usd 1 12:45 bitfinex does generate an ERROR - date not valid
@@ -313,19 +317,20 @@ class Requester:
                              r"[A-Za-z]+": CommandPrice.EXCHANGE,
                              r"(?:-[vV])([sS]?)([\w\d/:\.]+)": CommandPrice.OPTION_VALUE_DATA,
                              r"(?:-[vV])([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
-                             r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)": CommandPrice.UNSUPPORTED_OPTION_DATA,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-                             r"(-[^vV]{1}[sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION}
+                             r"(-[^vVfFpP]{1})([sS]?)([\w\d/:\.]+)": CommandPrice.UNSUPPORTED_OPTION_DATA,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+                             r"(-[^vVfFpP]{1})([sS]?)([\w\d/:\.]+)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+                             r"(-[^vVfFpP]{1})([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER}
 
         optionalParsedParmDataDic = {}
 
         for pattern in patternCommandDic.keys():
-            for group in optionalParmList:
+            for group in orderFreeParmList:
                 if group and re.search(pattern, group):
                     if patternCommandDic[pattern] not in optionalParsedParmDataDic:
                         #if for example DMY already found in optional full command parms,
                         #it will not be overwritten ! Ex: 12/09/17 0: both token match DMY
                         #pattern !
-                        data, optionModifier = self._extractData(pattern, group)
+                        data, option, optionModifier = self._extractData(pattern, group)
                         if data != None:
                             optionalParsedParmDataDic[patternCommandDic[pattern]] = data
                             patternCommandModifierKey = pattern + OPTION_MODIFIER
@@ -333,7 +338,10 @@ class Requester:
                                 optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = optionModifier
                             elif patternCommandModifierKey in optionalParsedParmDataDic.keys():
                                 optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = None
-
+                            if option:
+                                # here, handling an unsupported option
+                                patternUnsupportedOptionKey = pattern + UNSUPPORTED_OPTION
+                                optionalParsedParmDataDic[patternCommandDic[patternUnsupportedOptionKey]] = option
                         else:
                             #full command syntax error !
                             return None
@@ -367,20 +375,25 @@ class Requester:
 
         if match == None:
             #denotes a syntax error !
-            return None, None
+            return None, None, None
 
-        optionModifierValue = None
+        option = None
+        optionModifier = None
         grpNumber = len(match.groups())
 
         if grpNumber == 1:
             data = match.group(1)
         elif grpNumber == 2:
-            optionModifierValue = match.group(1)
+            optionModifier = match.group(1)
             data = match.group(2)
+        elif grpNumber == 3:
+            option = match.group(1)
+            optionModifier = match.group(2)
+            data = match.group(3)
         else:
             data = dataOrOptionStr
 
-        return data, optionModifierValue
+        return data, option, optionModifier
 
     def _parseAndFillCommandPrice(self, inputStr):
         '''

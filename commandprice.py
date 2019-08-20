@@ -30,8 +30,9 @@ class CommandPrice(AbstractCommand):
 
     OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'     #store s or S or None to indicate if the price value command is to be stored in history (-vs) or not (-v) --> None
 
-    UNSUPPORTED_OPTION = "UNSUPPORTED_OPTION"             #store an unsupported option specification
-    UNSUPPORTED_OPTION_DATA = "UNSUPPORTED_OPTION_DATA"   #store any unsupported option specification data
+    UNSUPPORTED_OPTION = "UNSUPPORTED_OPTION"                   #store an unsupported option specification
+    UNSUPPORTED_OPTION_MODIFIER = "UNSUPPORTED_OPTION_MODIFIER" #store an unsupported option modifier specification
+    UNSUPPORTED_OPTION_DATA = "UNSUPPORTED_OPTION_DATA"         #store any unsupported option specification data
 
     def __init__(self, receiver = None, configManager = None):
         super().__init__(receiver, 'CommandPrice')
@@ -66,6 +67,9 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.OPTION_VALUE_AMOUNT] = None
         self.parsedParmData[self.OPTION_VALUE_SYMBOL] = None
         self.parsedParmData[self.OPTION_VALUE_SAVE] = None
+        self.parsedParmData[self.UNSUPPORTED_OPTION_DATA] = None
+        self.parsedParmData[self.UNSUPPORTED_OPTION] = None
+        self.parsedParmData[self.UNSUPPORTED_OPTION_MODIFIER] = None
         self.resetTemporaryData()
 
 
