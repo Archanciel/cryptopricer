@@ -24,15 +24,18 @@ class CommandPrice(AbstractCommand):
     PRICE_TYPE_HISTO = 'HISTO'
     PRICE_TYPE_RT = 'REAL_TIME'
     
-    OPTION_VALUE_DATA = 'OPTION_VALUE_DATA'     #temporary store the data specified with -v. Ex: -v0.0044254btc
+    OPTION_VALUE_DATA = 'OPTION_VALUE_DATA'     #temporary store the data specified with -v. Ex: 0.0044254btc
     OPTION_VALUE_AMOUNT = 'OPTION_VALUE_AMOUNT' #store the price target specified with -v. Ex: 0.0044354
     OPTION_VALUE_SYMBOL = 'OPTION_VALUE_SYMBOL' #store the price symbol specified with -v. Ex: BTC
-
-    OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'     #store s or S or None to indicate if the price value command is to be stored in history (-vs) or not (-v) --> None
+    OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'     #store s or S or None to indicate if the value option is to be stored in history (-vs) or not (-v) --> None
 
     UNSUPPORTED_OPTION = "UNSUPPORTED_OPTION"                   #store an unsupported option specification
     UNSUPPORTED_OPTION_MODIFIER = "UNSUPPORTED_OPTION_MODIFIER" #store an unsupported option modifier specification
     UNSUPPORTED_OPTION_DATA = "UNSUPPORTED_OPTION_DATA"         #store any unsupported option specification data
+
+    OPTION_FIAT_DATA = 'OPTION_FIAT_DATA'     #temporary store the data specified with -f. Ex: usd
+    OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL' #store the price symbol specified with -f. Ex: usd
+    OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'     #store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
 
     def __init__(self, receiver = None, configManager = None):
         super().__init__(receiver, 'CommandPrice')

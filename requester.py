@@ -339,7 +339,9 @@ class Requester:
                             elif patternCommandModifierKey in optionalParsedParmDataDic.keys():
                                 optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = None
                             if option:
-                                # here, handling an unsupported option
+                                # here, handling an unsupported option. If handling a supported option, option
+                                # is None. The correct option symbol will be set later in the command price
+                                # in _fillPriceValueInfo() !
                                 patternUnsupportedOptionKey = pattern + UNSUPPORTED_OPTION
                                 optionalParsedParmDataDic[patternCommandDic[patternUnsupportedOptionKey]] = option
                         else:
@@ -569,7 +571,7 @@ class Requester:
         priceValueData = self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_DATA]
 
         if priceValueData != None:
-            return self._fillPriceValueInfo(priceValueData, requestType)
+            return self._fillOptionValueInfo(priceValueData, requestType)
         else:
             #no partial command -v specified here !
             return self.commandPrice
@@ -621,40 +623,40 @@ class Requester:
         self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
 
-    def _fillPriceValueInfo(self, priceValueData, requestType):
+    def _fillOptionValueInfo(self, optionValueData, requestType):
         '''
         Fill parsed parm data price amount and price symbol fields and empty combined price data field
-        :param priceValueData: the data following thce -v partial command specification
+        :param optionValueData: the data following thce -v partial command specification
         :param requestType: indicate if we are handling a full or a partial request
         :return: self.commandPrice or self.commandError in case -v invalid
         '''
 
-        match = re.match(self.OPTION_VALUE_PARM_DATA_PATTERN, priceValueData)
+        match = re.match(self.OPTION_VALUE_PARM_DATA_PATTERN, optionValueData)
 
         if match:
-            priceValueSaveFlag = match.group(1)
-            priceValueAmount = match.group(2)
-            priceValueSymbol = match.group(3)
-            priceValueErase =  match.group(4)
-            if priceValueErase == None:
-                if priceValueSymbol.isdigit():
+            optionValueSaveFlag = match.group(1)
+            optionValueAmount = match.group(2)
+            optionValueSymbol = match.group(3)
+            optionValueErase =  match.group(4)
+            if optionValueErase == None:
+                if optionValueSymbol.isdigit():
                     # case when no currency synbol entered, like -v100 instead of -v100usd
-                    priceValueAmount += priceValueSymbol
-                    priceValueSymbol = ''
+                    optionValueAmount += optionValueSymbol
+                    optionValueSymbol = ''
 
-                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = priceValueAmount
-                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = priceValueSymbol
+                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = optionValueAmount
+                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = optionValueSymbol
 
                 if requestType == self.REQUEST_TYPE_PARTIAL:
                     # only in case of partial request containing a value command may the passed
-                    # priceValueData contain a s option.
+                    # optionValueData contain a s option.
                     # for full requesst containing a value command, the s option if present is parsed
-                    # differently and is never contained in the passed priceValueData !
-                    if priceValueSaveFlag.upper() == 'S':
+                    # differently and is never contained in the passed optionValueData !
+                    if optionValueSaveFlag.upper() == 'S':
                         self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = True
                     else:
                         self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = None
-            elif priceValueErase == '0':
+            elif optionValueErase == '0':
                 #here, -v0 was entered to stop price value calculation
                 self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = None
                 self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = None
@@ -668,7 +670,7 @@ class Requester:
             self.commandError
             self.commandError.parsedParmData[
                 self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + priceValueData, priceValueData)
+            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + optionValueData, optionValueData)
 
             return self.commandError
 
