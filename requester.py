@@ -430,7 +430,13 @@ class Requester:
                         else:
                             # unknown partial command symbol
                             self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION] = command
-                            self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION_DATA] = value
+                            if value[0].upper() == 'S':
+                                self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION_DATA] = value[1:]
+                                self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION_MODIFIER] = value[0]
+                            else:
+                                self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION_DATA] = value
+                                self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION_MODIFIER] = None
+
 
                 if self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == '0':
                     #-d0 which means RT entered. In this case, the previous

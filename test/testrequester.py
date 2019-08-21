@@ -1483,30 +1483,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], True)
 
 
-    def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSaveAndUnsupportedCommand(self):
-        commandPrice = self.requester.commandPrice
-
-        parsedParmData = commandPrice.parsedParmData
-
-        #prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
-        parsedParmData[CommandPrice.CRYPTO] = 'btc'
-        parsedParmData[CommandPrice.UNIT] = 'usd'
-        parsedParmData[CommandPrice.DAY] = '10'
-        parsedParmData[CommandPrice.MONTH] = '9'
-        parsedParmData[CommandPrice.YEAR] = None
-        parsedParmData[CommandPrice.HOUR] = '12'
-        parsedParmData[CommandPrice.MINUTE] = '45'
-        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
-        parsedParmData[CommandPrice.HOUR_MINUTE] = None
-        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-
-        inputStr = "-ceth -ugbp -d11/8 -t22:46 -eKraken -vs0.0044256btc -zunsupported"
-        commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-        self.assertEqual(commandPrice, self.commandPrice)
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION], '-z')
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA], 'unsupported')
-
-    def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSaveAndUnsupportedCommandWithSaveOptionModifier(self):
+    def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSaveAndUnsupportedOptionWithSaveOptionModifier(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1530,7 +1507,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER], 's')
         self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA], 'unsupported')
 
-    def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSaveAndUnsupportedCommandWithSaveOptionModifier(self):
+    def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSaveAndUnsupportedOption(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1547,12 +1524,12 @@ class TestRequester(unittest.TestCase):
         parsedParmData[CommandPrice.HOUR_MINUTE] = None
         parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
-        inputStr = "-ceth -ugbp -d11/8 -t22:46 -eKraken -vs0.0044256btc -zsunsupported"
+        inputStr = "-ceth -ugbp -d11/8 -t22:46 -eKraken -vs0.0044256btc -zunsupported100"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
         self.assertEqual(commandPrice, self.commandPrice)
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION], '-z')
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER], 's')
-        self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA], 'unsupported')
+        self.assertEqual('-z', parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
+        self.assertEqual('unsupported100', parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
     def test_parseAndFillPartialCommandPriceNoInitYearCommandUppercasePriceValueSave(self):
@@ -2206,7 +2183,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def testRequestPriceCommandFullEndingWithPriceValueSaveCommandAndUnsupportedCommand(self):
+    def testRequestPriceCommandFullEndingWithPriceValueSaveCommandAndUnsupportedOption(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01btc -zunsupported")
         commandPrice = self.requester.request()
@@ -2234,7 +2211,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def testRequestPriceCommandFullEndingWithPriceUnsupportedCommandAndValueSaveCommand(self):
+    def testRequestPriceCommandFullEndingWithPriceUnsupportedOptionAndValueSaveCommand(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -zunsupported -vs0.01btc")
         commandPrice = self.requester.request()
@@ -2316,7 +2293,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def testRequestPriceCommandFullWithPriceValueSaveCommandInInvalidPosThreeAndUnsupportedCommand(self):
+    def testRequestPriceCommandFullWithPriceValueSaveCommandInInvalidPosThreeAndUnsupportedOption(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd -vs0.01btc 10/9/17 12:45 Kraken -zunsupported")
         commandPrice = self.requester.request()
