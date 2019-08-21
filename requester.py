@@ -319,7 +319,11 @@ class Requester:
                              r"(?:-[vV])([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
                              r"(-[^vVfFpP]{1})([sS]?)([\w\d/:\.]+)": CommandPrice.UNSUPPORTED_OPTION_DATA,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
                              r"(-[^vVfFpP]{1})([sS]?)([\w\d/:\.]+)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-                             r"(-[^vVfFpP]{1})([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER}
+                             r"(-[^vVfFpP]{1})([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,
+                             r"(?:-[fF])([sS]?)([\w\d/:\.]+)": CommandPrice.OPTION_FIAT_DATA,
+                             r"(?:-[fF])([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
+                             r"(?:-[pP])([sS]?)([\w\d/:\.]+)": CommandPrice.OPTION_PRICE_DATA,
+                             r"(?:-[pP])([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE}
 
         optionalParsedParmDataDic = {}
 
@@ -568,10 +572,10 @@ class Requester:
 
         self._fillDayMonthYearInfo(day, month, year)
 
-        priceValueData = self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_DATA]
+        optionValueData = self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_DATA]
 
-        if priceValueData != None:
-            return self._fillOptionValueInfo(priceValueData, requestType)
+        if optionValueData != None:
+            return self._fillOptionValueInfo(optionValueData, requestType)
         else:
             #no partial command -v specified here !
             return self.commandPrice

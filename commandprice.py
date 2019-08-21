@@ -26,7 +26,7 @@ class CommandPrice(AbstractCommand):
     
     OPTION_VALUE_DATA = 'OPTION_VALUE_DATA'     #temporary store the data specified with -v. Ex: 0.0044254btc
     OPTION_VALUE_AMOUNT = 'OPTION_VALUE_AMOUNT' #store the price target specified with -v. Ex: 0.0044354
-    OPTION_VALUE_SYMBOL = 'OPTION_VALUE_SYMBOL' #store the price symbol specified with -v. Ex: BTC
+    OPTION_VALUE_SYMBOL = 'OPTION_VALUE_SYMBOL' #store the price symbol specified with -v. Ex: btc
     OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'     #store s or S or None to indicate if the value option is to be stored in history (-vs) or not (-v) --> None
 
     UNSUPPORTED_OPTION = "UNSUPPORTED_OPTION"                   #store an unsupported option specification
@@ -36,6 +36,11 @@ class CommandPrice(AbstractCommand):
     OPTION_FIAT_DATA = 'OPTION_FIAT_DATA'     #temporary store the data specified with -f. Ex: usd
     OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL' #store the price symbol specified with -f. Ex: usd
     OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'     #store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
+
+    OPTION_PRICE_DATA = 'OPTION_PRICE_DATA'     #temporary store the data specified with -p. Ex: 230usd
+    OPTION_PRICE_AMOUNT = 'OPTION_PRICE_AMOUNT' #store the price target specified with -p. Ex: 230
+    OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL' #store the price symbol specified with -p. Ex: usd
+    OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'     #store s or S or None to indicate if the value option is to be stored in history (-ps) or not (-p) --> None
 
     def __init__(self, receiver = None, configManager = None):
         super().__init__(receiver, 'CommandPrice')
@@ -73,6 +78,13 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.UNSUPPORTED_OPTION_DATA] = None
         self.parsedParmData[self.UNSUPPORTED_OPTION] = None
         self.parsedParmData[self.UNSUPPORTED_OPTION_MODIFIER] = None
+        self.parsedParmData[self.OPTION_FIAT_DATA] = None
+        self.parsedParmData[self.OPTION_FIAT_SYMBOL] = None
+        self.parsedParmData[self.OPTION_FIAT_SAVE] = None
+        self.parsedParmData[self.OPTION_PRICE_DATA] = None
+        self.parsedParmData[self.OPTION_PRICE_AMOUNT] = None
+        self.parsedParmData[self.OPTION_PRICE_SYMBOL] = None
+        self.parsedParmData[self.OPTION_PRICE_SAVE] = None
         self.resetTemporaryData()
 
 
@@ -82,6 +94,7 @@ class CommandPrice(AbstractCommand):
         :return:
         '''
         self.parsedParmData[self.UNSUPPORTED_OPTION] = None
+        self.parsedParmData[self.UNSUPPORTED_OPTION_MODIFIER] = None
         self.parsedParmData[self.UNSUPPORTED_OPTION_DATA] = None
 
 

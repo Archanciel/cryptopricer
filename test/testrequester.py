@@ -2877,6 +2877,15 @@ class TestRequester(unittest.TestCase):
         self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
         self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
+        self.assertEqual('usd', parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
+        self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
+
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+
         sys.stdin = stdin
 
     def testRequestPriceCommandFullEndingWithUnsupportedOption(self):
