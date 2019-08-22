@@ -1177,7 +1177,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
 
 
-    def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValue(self):
+    def test_parseAndFillPartialCommandPriceNoInitYearThenOptionValue(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1216,7 +1216,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
-    def test_parseAndFillPartialCommandPriceNoInitYearCommandUppercasePriceValue(self):
+    def test_parseAndFillPartialCommandPriceNoInitYearCommandUppercaseOptionValue(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1254,7 +1254,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
-    def test_parseAndFillPartialCommandPriceNoInitYearWithPartialYearPriceValue(self):
+    def test_parseAndFillPartialCommandPriceNoInitYearWithPartialYearOptionValue(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1293,7 +1293,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
-    def test_parseAndFillPartialCommandPricePriceValuePreviouslySet(self):
+    def test_parseAndFillPartialCommandPriceOptionValuePreviouslySet(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1334,7 +1334,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
-    def test_parseAndFillPartialCommandPriceErasePriceValue(self):
+    def test_parseAndFillPartialCommandPriceEraseOptionValue(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1375,7 +1375,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
-    def test_parseAndFillPartialCommandPriceIneffectivePriceValueSpec(self):
+    def test_parseAndFillPartialCommandPriceIneffectiveOptionValueSpec(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1415,7 +1415,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], False)
 
 
-    def test_parseAndFillPartialCommandPriceInvalidPriceValueSpec(self):
+    def test_parseAndFillPartialCommandPriceInvalidOptionValueSpec(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1446,7 +1446,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual("ERROR - invalid partial request : in -vooo, ooo must respect 99.99999zzz <price><symbol> format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
-    def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSave(self):
+    def test_parseAndFillPartialCommandPriceNoInitYearThenOptionValueSave(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1483,7 +1483,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], True)
 
 
-    def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSaveAndUnsupportedOptionWithSaveOptionModifier(self):
+    def test_parseAndFillPartialCommandPriceNoInitYearThenOptionValueSaveAndUnsupportedOptionWithSaveOptionModifier(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1507,7 +1507,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER], 's')
         self.assertEqual(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA], 'unsupported')
 
-    def test_parseAndFillPartialCommandPriceNoInitYearThenPriceValueSaveAndUnsupportedOption(self):
+    def test_parseAndFillPartialCommandPriceNoInitYearThenOptionValueSaveAndUnsupportedOption(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1532,7 +1532,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual('unsupported100', parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
-    def test_parseAndFillPartialCommandPriceNoInitYearCommandUppercasePriceValueSave(self):
+    def test_parseAndFillPartialCommandPriceNoInitYearCommandUppercaseOptionValueSave(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1568,7 +1568,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], True)
 
 
-    def test_parseAndFillPartialCommandPriceNoInitYearWithPartialYearPriceValueSave(self):
+    def test_parseAndFillPartialCommandPriceNoInitYearWithPartialYearOptionValueSave(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1605,7 +1605,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], True)
 
 
-    def test_parseAndFillPartialCommandPricePriceValueSavePreviouslySet(self):
+    def test_parseAndFillPartialCommandPriceOptionValueSavePreviouslySet(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1645,7 +1645,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_SAVE], True)
 
 
-    def test_parseAndFillPartialCommandPriceErasePriceValueSave(self):
+    def test_parseAndFillPartialCommandPriceEraseOptionValueSave(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1687,7 +1687,7 @@ class TestRequester(unittest.TestCase):
         self.assertIsNone(parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 
 
-    def test_parseAndFillPartialCommandPriceIneffectivePriceValueSaveSpec(self):
+    def test_parseAndFillPartialCommandPriceIneffectiveOptionValueSaveSpec(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -1716,7 +1716,7 @@ class TestRequester(unittest.TestCase):
         self.assertEqual("ERROR - invalid partial request : in -vs, s must respect 99.99999zzz <price><symbol> format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
-    def test_parseAndFillPartialCommandPriceInvalidPriceValueSaveSpec(self):
+    def test_parseAndFillPartialCommandPriceInvalidOptionValueSaveSpec(self):
         commandPrice = self.requester.commandPrice
 
         parsedParmData = commandPrice.parsedParmData
@@ -2157,7 +2157,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def testRequestPriceCommandFullEndingWithPriceValueSaveCommand(self):
+    def testRequestPriceCommandFullEndingWithOptionValueSaveCommand(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01btc")
         commandPrice = self.requester.request()
@@ -2183,7 +2183,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def testRequestPriceCommandFullEndingWithPriceValueSaveCommandAndUnsupportedOption(self):
+    def testRequestPriceCommandFullEndingWithOptionValueSaveCommandAndUnsupportedOption(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01btc -zunsupported")
         commandPrice = self.requester.request()
@@ -2278,7 +2278,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def testRequestPriceCommandFullWithPriceValueSaveCommandInInvalidPosThree(self):
+    def testRequestPriceCommandFullWithOptionValueSaveCommandInInvalidPosThree(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd -vs0.01btc 10/9/17 12:45 Kraken")
         commandPrice = self.requester.request()
@@ -2293,7 +2293,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def testRequestPriceCommandFullWithPriceValueSaveCommandInInvalidPosThreeAndUnsupportedOption(self):
+    def testRequestPriceCommandFullWithOptionValueSaveCommandInInvalidPosThreeAndUnsupportedOption(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd -vs0.01btc 10/9/17 12:45 Kraken -zunsupported")
         commandPrice = self.requester.request()
@@ -2308,7 +2308,7 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
 
-    def testRequestPriceCommandFullWithPriceValueSaveCommandInInvalidPosFour(self):
+    def testRequestPriceCommandFullWithOptionValueSaveCommandInInvalidPosFour(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd 10/9/17 -vs0.01btc 12:45 Kraken")
         commandPrice = self.requester.request()
@@ -2322,7 +2322,7 @@ class TestRequester(unittest.TestCase):
 
         sys.stdin = stdin
 
-    def testRequestPriceCommandFullWithPriceValueSaveCommandInInvalidPosFive(self):
+    def testRequestPriceCommandFullWithOptionValueSaveCommandInInvalidPosFive(self):
         stdin = sys.stdin
         sys.stdin = StringIO("btc usd 10/9/17 12:45 -vs0.01btc Kraken")
         commandPrice = self.requester.request()
@@ -2661,116 +2661,120 @@ class TestRequester(unittest.TestCase):
         sys.stdin = stdin
 
     def test_fillOptionValueInfoRequestTypeFullAmountIntegerCurrencySymbolOk(self):
-        tstPriceValueData = '10.55usd'
-        tstPriceValueData = '0'
-        tstPriceValueData = '12.'
-        tstPriceValueData = '100'
-        tstPriceValueData = '100usd'
+        optionType = 'VALUE'
+        tstOptionValueData = '100usd'
         requestType = Requester.REQUEST_TYPE_FULL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypePartialAmountIntegerCurrencySymbolOk(self):
-        tstPriceValueData = '10.55usd'
-        tstPriceValueData = '0'
-        tstPriceValueData = '12.'
-        tstPriceValueData = '100'
-        tstPriceValueData = '100usd'
+        optionType = 'VALUE'
+        tstOptionValueData = '100usd'
         requestType = Requester.REQUEST_TYPE_PARTIAL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypeFullAmountFloatCurrencySymbolOk(self):
-        tstPriceValueData = '10.55usd'
+        optionType = 'VALUE'
+        tstOptionValueData = '10.55usd'
         requestType = Requester.REQUEST_TYPE_FULL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual('10.55', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypePartialAmountFloatCurrencySymbolOk(self):
-        tstPriceValueData = '10.55usd'
+        optionType = 'VALUE'
+        tstOptionValueData = '10.55usd'
         requestType = Requester.REQUEST_TYPE_PARTIAL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual('usd', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual('10.55', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypeFullCancelValueOption(self):
-        tstPriceValueData = '0'
+        optionType = 'VALUE'
+        tstOptionValueData = '0'
         requestType = Requester.REQUEST_TYPE_FULL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypePartialCancelValueOption(self):
-        tstPriceValueData = '0'
+        optionType = 'VALUE'
+        tstOptionValueData = '0'
         requestType = Requester.REQUEST_TYPE_PARTIAL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypeFullAmountIntegerCurrencySymbolMissing(self):
-        tstPriceValueData = '100'
+        optionType = 'VALUE'
+        tstOptionValueData = '100'
         requestType = Requester.REQUEST_TYPE_FULL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypePartialAmountIntegerCurrencySymbolMissing(self):
-        tstPriceValueData = '100'
+        optionType = 'VALUE'
+        tstOptionValueData = '100'
         requestType = Requester.REQUEST_TYPE_PARTIAL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual('100', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypeFullAmountFloatIncompleteCurrencySymbolMissing(self):
-        tstPriceValueData = '12.'
+        optionType = 'VALUE'
+        tstOptionValueData = '12.'
         requestType = Requester.REQUEST_TYPE_FULL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual('12', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypePartialAmountFloatIncompleteCurrencySymbolMissing(self):
-        tstPriceValueData = '12.'
+        optionType = 'VALUE'
+        tstOptionValueData = '12.'
         requestType = Requester.REQUEST_TYPE_PARTIAL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual('12', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypeFullAmountFloatCurrencySymbolMissing(self):
-        tstPriceValueData = '12.5'
+        optionType = 'VALUE'
+        tstOptionValueData = '12.5'
         requestType = Requester.REQUEST_TYPE_FULL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual('12.5', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
 
     def test_fillOptionValueInfoRequestTypePartialAmountFloatCurrencySymbolMissing(self):
-        tstPriceValueData = '12.5'
+        optionType = 'VALUE'
+        tstOptionValueData = '12.5'
         requestType = Requester.REQUEST_TYPE_PARTIAL
-        commandPrice = self.requester._fillOptionValueInfo(tstPriceValueData, requestType)
+        commandPrice = self.requester._fillOptionValueInfo(optionType, tstOptionValueData, requestType)
 
         self.assertEqual('', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertEqual('12.5', commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
@@ -2802,13 +2806,13 @@ class TestRequester(unittest.TestCase):
 
         self.assertEqual(('btc', 'eth', '10/9', '12:45', 'Kraken', '-p200', None), groupList)
 
-    def test_parseGroupsFullDayMonthHHMMPriceValueOption(self):
+    def test_parseGroupsFullDayMonthHHMMOptionPrice(self):
         inputStr = "btc eth 10/9 12:45 Kraken -p200.453usd -v100.675usd"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
         self.assertEqual(('btc', 'eth', '10/9', '12:45', 'Kraken', '-p200.453usd', '-v100.675usd'), groupList)
 
-    def test_parseGroupsFullDayMonthHHMMPriceValueOptionIncomplete(self):
+    def test_parseGroupsFullDayMonthHHMMOptionPriceIncomplete(self):
         inputStr = "btc eth 10/9 12:45 Kraken -p200usd -v100"
         groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 

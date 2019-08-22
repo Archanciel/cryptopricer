@@ -4,9 +4,9 @@ from resultdata import ResultData
 
 class CommandPrice(AbstractCommand):
     '''
-    This command handles RT and historidal price requests. In respect of the Command pattern,
-    it calls the getCryptoPrice method on its receiver, a Processor instance linked to the Command
-    by the Controller
+    This command handles RT and historical full and partial price requests. In respect of the
+    Command pattern, it calls the getCryptoPrice method on its receiver, a Processor instance
+    linked to the Command by the Controller.
     '''
     CRYPTO = "CRYPTO"
     UNIT = "UNIT"

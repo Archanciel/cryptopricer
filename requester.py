@@ -581,10 +581,13 @@ class Requester:
 
         self._fillDayMonthYearInfo(day, month, year)
 
-        optionValueData = self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_DATA]
+        optionType = 'VALUE'
+        commandPriceOptionDataConstantName = 'OPTION_' + optionType + '_DATA'
+        commandPriceOptionDataConstantValue = CommandPrice.__getattribute__(CommandPrice, commandPriceOptionDataConstantName)
+        optionData = self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue]
 
-        if optionValueData != None:
-            return self._fillOptionValueInfo(optionValueData, requestType)
+        if optionData != None:
+            return self._fillOptionValueInfo(optionType, optionData, requestType)
         else:
             #no partial command -v specified here !
             return self.commandPrice
@@ -636,60 +639,82 @@ class Requester:
         self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
 
 
-    def _fillOptionValueInfo(self, optionValueData, requestType):
+    def _fillOptionValueInfo(self, optionType, optionData, requestType):
         '''
         This method is called in case of both full and partial request handling in order to
         complete filling the option value info in the CommandPrice parsed parm data dictionary.
         It fills the parsed parm data option value amount and option value symbol fields and
         erases the combined option value data field.
 
-        :param optionValueData: the data following thce -v partial command specification
+        :param optionData: the data following thce -v partial command specification
         :param requestType: indicate if we are handling a full or a partial request
         :return: self.commandPrice or self.commandError in case the -v option is invalid
         '''
 
-        match = re.match(self.OPTION_VALUE_PARM_DATA_PATTERN, optionValueData)
+        requesterOptionPatternConstantName = 'OPTION_' + optionType + '_PARM_DATA_PATTERN'
+        requesterOptionPattern = getattr(self, requesterOptionPatternConstantName)
+
+        match = re.match(requesterOptionPattern, optionData)
 
         if match:
-            optionValueSaveFlag = match.group(1)
-            optionValueAmount = match.group(2)
-            optionValueSymbol = match.group(3)
-            optionValueErase =  match.group(4)
-            if optionValueErase == None:
-                if optionValueSymbol.isdigit():
+            optionSaveFlag = match.group(1)
+            optionAmount = match.group(2)
+            optionSymbol = match.group(3)
+            optionErase =  match.group(4)
+            if optionErase == None:
+                if optionSymbol.isdigit():
                     # case when no currency synbol entered, like -v100 instead of -v100usd
-                    optionValueAmount += optionValueSymbol
-                    optionValueSymbol = ''
+                    optionAmount += optionSymbol
+                    optionSymbol = ''
 
-                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = optionValueAmount
-                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = optionValueSymbol
+                commandPriceOptionAmountConstantName = 'OPTION_' + optionType + '_AMOUNT'
+                commandPriceOptionAmountConstantValue = CommandPrice.__getattribute__(CommandPrice, commandPriceOptionAmountConstantName)
+                self.commandPrice.parsedParmData[commandPriceOptionAmountConstantValue] = optionAmount
+
+                commandPriceOptionSymbolConstantName = 'OPTION_' + optionType + '_SYMBOL'
+                commandPriceOptionSymbolConstantValue = CommandPrice.__getattribute__(CommandPrice, commandPriceOptionSymbolConstantName)
+                self.commandPrice.parsedParmData[commandPriceOptionSymbolConstantValue] = optionSymbol
 
                 if requestType == self.REQUEST_TYPE_PARTIAL:
                     # only in case of partial request containing a value command may the passed
                     # optionValueData contain a s option.
-                    # for full requests containing a value command, the s option if present is parsed
+                    # for full requests containing a value command, the s option if present was parsed
                     # in _buildFullCommandPriceOrderFreeParmsDic() and is not contained in the passed
                     # optionValueData !
-                    if optionValueSaveFlag.upper() == 'S':
-                        self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = True
+                    commandPriceOptionSaveConstantName = 'OPTION_' + optionType + '_SAVE'
+                    commandPriceOptionSaveConstantValue = CommandPrice.__getattribute__(CommandPrice, commandPriceOptionSaveConstantName)
+
+                    if optionSaveFlag.upper() == 'S':
+                        self.commandPrice.parsedParmData[commandPriceOptionSaveConstantValue] = True
                     else:
-                        self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = None
-            elif optionValueErase == '0':
+                        self.commandPrice.parsedParmData[commandPriceOptionSaveConstantValue] = None
+            elif optionErase == '0':
                 # here, -v0 was entered to deactivate option value calculation
-                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = None
-                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = None
-                self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = None
+                commandPriceOptionAmountConstantName = 'OPTION_' + optionType + '_AMOUNT'
+                commandPriceOptionAmountConstantValue = CommandPrice.__getattribute__(CommandPrice, commandPriceOptionAmountConstantName)
+                self.commandPrice.parsedParmData[commandPriceOptionAmountConstantValue] = None
+
+                commandPriceOptionSymbolConstantName = 'OPTION_' + optionType + '_SYMBOL'
+                commandPriceOptionSymbolConstantValue = CommandPrice.__getattribute__(CommandPrice, commandPriceOptionSymbolConstantName)
+                self.commandPrice.parsedParmData[commandPriceOptionSymbolConstantValue] = None
+
+                commandPriceOptionSaveConstantName = 'OPTION_' + optionType + '_SAVE'
+                commandPriceOptionSaveConstantValue = CommandPrice.__getattribute__(CommandPrice, commandPriceOptionSaveConstantName)
+                self.commandPrice.parsedParmData[commandPriceOptionSaveConstantValue] = None
 
             # cleaning option value data which is no longer usefull
-            self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_DATA] = None
+            commandPriceOptionDataConstantName = 'OPTION_' + optionType + '_DATA'
+            commandPriceOptionDataConstantValue = CommandPrice.__getattribute__(CommandPrice, commandPriceOptionDataConstantName)
+
+            self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue] = None
 
             return self.commandPrice
         else:
-            #here, invalid -v command
+            #here, invalid option
             self.commandError
             self.commandError.parsedParmData[
                 self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + optionValueData, optionValueData)
+            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + optionData, optionData)
 
             return self.commandError
 
