@@ -257,9 +257,9 @@ class Requester:
 
     def _parseGroups(self, pattern, inputStr):
         '''
-        Embeding this trivial code in a method enables to
-        specifically test the correct functioning of the
-        used patterns
+        Embedding this trivial code in a method enables to specifically test the correct
+        functioning of the used patterns.
+
         :param pattern:     pattern to parse
         :param inputStr:    string to parse
         :return:
@@ -272,11 +272,17 @@ class Requester:
             return ()
 
 
-    def _buildFullCommandPriceOptionalParmsDic(self, orderFreeParmList):
+    def _buildFullCommandPriceOrderFreeParmsDic(self, orderFreeParmList):
         '''
-        Since DAY_MONTH_YEAR, HOUR_MINUTE and EXCHANGE can be provided in any order after CRYPTO
-        and UNIT, this method differentiate them build an optional command price parm data dictionary
-        with the right key. This dictionary will be added to the CommandPrice parmData dictionary.
+        This method is called only on full requests. A full request starts with 2 mandatory parameters,
+        CRYPTO and UNIT provided in this mandatory order. The other full request parameters, date, time,
+        exchange and any additional options can be specified in any order.
+
+        The purpose of this method is precisely to acquire those order free full request parameters.
+
+        Since DAY_MONTH_YEAR, HOUR_MINUTE, EXCHANGE and additional OPTIONS can be provided in any order
+        after CRYPTO and UNIT, this method differentiate them build an optional command price parm data
+        dictionary with the right key. This dictionary will be added to the CommandPrice parmData dictionary.
 
         :seqdiag_return optionalParsedParmDataDic
 
@@ -344,8 +350,8 @@ class Requester:
                                 optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = None
                             if option:
                                 # here, handling an unsupported option. If handling a supported option, option
-                                # is None. The correct option symbol will be set later in the command price
-                                # in _fillPriceValueInfo() !
+                                # is None. For valid options, the correct option symbol will be set later in the
+                                # command price in _fillOptionValueInfo() like methods !
                                 patternUnsupportedOptionKey = pattern + UNSUPPORTED_OPTION
                                 optionalParsedParmDataDic[patternCommandDic[patternUnsupportedOptionKey]] = option
                         else:
@@ -413,7 +419,8 @@ class Requester:
 
         requestType = None
 
-        if groupList == (): #full command pattern not matched --> try match partial command pattern
+        if groupList == ():
+            # full command pattern not matched --> try match partial command pattern
             groupList = self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
             if groupList != ():
                 # partial request entered. Here, parms are associated to parrm tag (i.e -c or -d).
@@ -470,14 +477,15 @@ class Requester:
                     
             else: #neither full nor parrial pattern matched
                 return None # will cause an error.
-        else: #full request entered. Here, parms were entered in an order reflected in the
-              # pattern: crypto unit in this mandatory order, then date time exchange, of which order
-              # can be different.
+        else:
+            # full request entered. Here, parms were entered in an order reflected in the
+            # pattern: crypto unit in this mandatory order, then date time exchange, of which order
+            # can be different.
             requestType = self.REQUEST_TYPE_FULL
             self.commandPrice.initialiseParsedParmData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
             self.commandPrice.parsedParmData[CommandPrice.UNIT] = groupList[1] #mandatory unit parm, its order is fixed
-            optionalParsedParmDataDic = self._buildFullCommandPriceOptionalParmsDic(groupList[2:])
+            optionalParsedParmDataDic = self._buildFullCommandPriceOrderFreeParmsDic(groupList[2:])
 
             if optionalParsedParmDataDic != None:
                 self.commandPrice.parsedParmData.update(optionalParsedParmDataDic)
@@ -629,10 +637,14 @@ class Requester:
 
     def _fillOptionValueInfo(self, optionValueData, requestType):
         '''
-        Fill parsed parm data price amount and price symbol fields and empty combined price data field
+        This method is called in case of both full and partial request handling in order to
+        complete filling the option value info in the CommandPrice parsed parm data dictionary.
+        It fills the parsed parm data option value amount and option value symbol fields and
+        erases the combined option value data field.
+
         :param optionValueData: the data following thce -v partial command specification
         :param requestType: indicate if we are handling a full or a partial request
-        :return: self.commandPrice or self.commandError in case -v invalid
+        :return: self.commandPrice or self.commandError in case the -v option is invalid
         '''
 
         match = re.match(self.OPTION_VALUE_PARM_DATA_PATTERN, optionValueData)
@@ -654,18 +666,20 @@ class Requester:
                 if requestType == self.REQUEST_TYPE_PARTIAL:
                     # only in case of partial request containing a value command may the passed
                     # optionValueData contain a s option.
-                    # for full requesst containing a value command, the s option if present is parsed
-                    # differently and is never contained in the passed optionValueData !
+                    # for full requests containing a value command, the s option if present is parsed
+                    # in _buildFullCommandPriceOrderFreeParmsDic() and is not contained in the passed
+                    # optionValueData !
                     if optionValueSaveFlag.upper() == 'S':
                         self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = True
                     else:
                         self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = None
             elif optionValueErase == '0':
-                #here, -v0 was entered to stop price value calculation
+                # here, -v0 was entered to deactivate option value calculation
                 self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = None
                 self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = None
                 self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = None
 
+            # cleaning option value data which is no longer usefull
             self.commandPrice.parsedParmData[CommandPrice.OPTION_VALUE_DATA] = None
 
             return self.commandPrice

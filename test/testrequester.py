@@ -416,82 +416,82 @@ class TestRequester(unittest.TestCase):
                            01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected.
          '''
         optionalParmList = ['01:10', 'Kraken', '10/9/17']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '10/9/17')
         self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '01:10')
         self.assertEqual(optionalParmDic[CommandPrice.EXCHANGE], 'Kraken')
 
         optionalParmList = ['1', 'kraken', '10/9/2017']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
 #        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '10/9/2017')
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1')
         self.assertNotIn(CommandPrice.HOUR_MINUTE, optionalParmDic)
         self.assertEqual(optionalParmDic[CommandPrice.EXCHANGE], 'kraken')
 
         optionalParmList = ['1', 'kraken', '1']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1')
         self.assertNotIn(CommandPrice.HOUR_MINUTE, optionalParmDic)
         self.assertEqual(optionalParmDic[CommandPrice.EXCHANGE], 'kraken')
 
         optionalParmList = ['kraken', '0', '10:12']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '0')
         self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '10:12')
         self.assertEqual(optionalParmDic[CommandPrice.EXCHANGE], 'kraken')
 
         optionalParmList = ['kraken', '0', '1']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '0')
         self.assertNotIn(CommandPrice.HOUR_MINUTE, optionalParmDic)
         self.assertEqual(optionalParmDic[CommandPrice.EXCHANGE], 'kraken')
 
         optionalParmList = [ '1', 'kraken', '0']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1')
         self.assertNotIn(CommandPrice.HOUR_MINUTE, optionalParmDic)
         self.assertEqual(optionalParmDic[CommandPrice.EXCHANGE], 'kraken')
 
         optionalParmList = ['10', '10:09']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '10')
         self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '10:09')
 
         optionalParmList = ['01', '1:09']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '01')
         self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '1:09')
 
         optionalParmList = ['01/1', '00:00']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '01/1')
         self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '00:00')
 
         optionalParmList = ['1/1', '00:00']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1/1')
         self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '00:00')
 
         optionalParmList = ['1/10', '0:00']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1/10')
         self.assertEqual(optionalParmDic[CommandPrice.HOUR_MINUTE], '0:00')
 
         optionalParmList = ['1/10', '0:0']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1/10')
         self.assertNotIn(CommandPrice.HOUR_MINUTE, optionalParmDic)
 
     def test_buildFullCommandPriceOptionalParmsDicExoticExchangeName(self):
         optionalParmList = [ '1', 'BTC38', '0']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
 #        self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '0')
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1')
         self.assertNotIn(CommandPrice.HOUR_MINUTE, optionalParmDic)
         self.assertEqual(optionalParmDic[CommandPrice.EXCHANGE], 'BTC38')
 
         optionalParmList = ['1', 'Bit2C', '0']
-        optionalParmDic = self.requester._buildFullCommandPriceOptionalParmsDic(optionalParmList)
+        optionalParmDic = self.requester._buildFullCommandPriceOrderFreeParmsDic(optionalParmList)
         self.assertEqual(optionalParmDic[CommandPrice.DAY_MONTH_YEAR], '1')
         self.assertNotIn(CommandPrice.HOUR_MINUTE, optionalParmDic)
         self.assertEqual(optionalParmDic[CommandPrice.EXCHANGE], 'Bit2C')
