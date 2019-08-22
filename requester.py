@@ -269,7 +269,8 @@ class Requester:
         if match != None:
             return match.groups()
         else:
-            return ()
+            return () # returning () instead of none since an iterator will be activated
+                      # on the returned result !
 
 
     def _buildFullCommandPriceOrderFreeParmsDic(self, orderFreeParmList):
