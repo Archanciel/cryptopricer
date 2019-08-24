@@ -719,12 +719,10 @@ class Requester:
             else:
                 self.commandError.parsedParmData[
                     self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION
-                optionSaveModifier = self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_SAVE]
-                if optionSaveModifier == None:
-                    optionSaveModifier =''
+                optionSaveModifier = self.getCommandPriceOptionKeyword(optionType)
                 self.commandError.parsedParmData[
                     self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_FORMAT_INVALID_MSG.format(
-                    '-v' + optionSaveModifier, optionData, '-v' + optionSaveModifier)
+                    optionSaveModifier, optionData, optionSaveModifier)
 
             return self.commandError
 
@@ -745,6 +743,25 @@ class Requester:
         commandPriceOptionComponentConstantValue = CommandPrice.__getattribute__(CommandPrice,
                                                                               commandPriceOptionComponentConstantName)
         return commandPriceOptionComponentConstantValue
+
+    def getCommandPriceOptionKeyword(self, optionType):
+        '''
+        This method is used as helper when building an invalid full request error msg. Unlike when building such
+        an error msg when handling an invalid  partial request, in a full request context, the faulty option
+        keyword is not available and so must be rebuilt. The method accepts as input an option type constant name
+        part like 'VALUE', 'FIAT' or 'PRICE'.
+
+        :param optionType: currently, 'VALUE', 'FIAT' or 'PRICE'
+        :return: -v or -vs or -f or -fs or -p or -ps
+        '''
+        optionKeywordDic = {'VALUE':'-v', 'FIAT':'-f', 'PRICE':'-p'}
+        commandPriceOptionSaveConstantName = 'OPTION_' + optionType + '_SAVE'
+        commandPriceOptionSaveConstantNameValue = self.commandPrice.parsedParmData[commandPriceOptionSaveConstantName]
+
+        if commandPriceOptionSaveConstantNameValue == None:
+            commandPriceOptionSaveConstantNameValue = ''
+
+        return optionKeywordDic[optionType] + commandPriceOptionSaveConstantNameValue
 
     def getRequesterOptionPattern(self, optionType):
         '''
