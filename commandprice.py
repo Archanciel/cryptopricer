@@ -90,7 +90,7 @@ class CommandPrice(AbstractCommand):
 
     def resetTemporaryData(self):
         '''
-        This method cleans up any data which are not to be kept between user requessts
+        This method cleans up any data which are not to be kept between user requests
         :return:
         '''
         self.parsedParmData[self.UNSUPPORTED_OPTION] = None

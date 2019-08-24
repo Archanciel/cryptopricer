@@ -131,8 +131,8 @@ class Requester:
     OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
     OPTION_FIAT_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
 
-    REQUEST_TYPE_PARTIAL = 'partial'
-    REQUEST_TYPE_FULL = 'full'
+    REQUEST_TYPE_PARTIAL = 'PARTIAL'
+    REQUEST_TYPE_FULL = 'FULL'
 
     def __init__(self, configMgr):
         self.configMgr = configMgr
@@ -591,12 +591,13 @@ class Requester:
             if optionData:
                 command = self._fillOptionValueInfo(optionType, optionData, requestType)
                 if isinstance(command, CommandError):
+                    # in case an error was detected, we do not continue handling the options
                     break
 
         if command:
             return command
         else:
-            #no partial command -v specified here !
+            # here, no option -v, -f or -p specified !
             return self.commandPrice
 
     def _rebuildPreviousRequestDateTimeValues(self):
@@ -708,11 +709,22 @@ class Requester:
 
             return self.commandPrice
         else:
-            #here, invalid option
-            self.commandError
-            self.commandError.parsedParmData[
-                self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-            self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_VALUE_COMMAND_FORMAT_INVALID_MSG.format('-v' + optionData, optionData)
+            #here, invalid option format
+            if requestType == self.REQUEST_TYPE_PARTIAL:
+                self.commandError.parsedParmData[
+                    self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
+                self.commandError.parsedParmData[
+                    self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_FORMAT_INVALID_MSG.format(
+                    '-v', optionData, '-v')
+            else:
+                self.commandError.parsedParmData[
+                    self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION
+                optionSaveModifier = self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_SAVE]
+                if optionSaveModifier == None:
+                    optionSaveModifier =''
+                self.commandError.parsedParmData[
+                    self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_FORMAT_INVALID_MSG.format(
+                    '-v' + optionSaveModifier, optionData, '-v' + optionSaveModifier)
 
             return self.commandError
 

@@ -7,12 +7,13 @@ class CommandError(AbstractCommand):
     UNIT_LIST_MISSING_MSG = 'unit list missing'
     COMMAND_NOT_SUPPORTED_MSG = '{} not supported'
     PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG = 'in {}, {} must respect {} format'
-    PARTIAL_OPTION_VALUE_COMMAND_FORMAT_INVALID_MSG = 'in {}, {} must respect 99.99999zzz <price><symbol> format'
+    PARTIAL_OPTION_FORMAT_INVALID_MSG = '{}{} option violates the {} option format. See help for more information.'
     FULL_COMMAND_PRICE_FORMAT_INVALID_MSG = 'full command price format invalid'
 
     COMMAND_ERROR_TYPE_KEY = 'COMMAND_ERROR_TYPE'
 
     COMMAND_ERROR_TYPE_FULL_REQUEST = 'FULL_REQUEST_ERROR'
+    COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION = 'FULL_REQUEST_OPTION_ERROR'
     COMMAND_ERROR_TYPE_PARTIAL_REQUEST = 'PARTIAL_REQUEST_ERROR'
     COMMAND_ERROR_TYPE_INVALID_COMMAND = 'INVALID_COMMAND_ERROR'
 
@@ -37,6 +38,9 @@ class CommandError(AbstractCommand):
         if errorType == self.COMMAND_ERROR_TYPE_FULL_REQUEST:
             errorTypeLabelStr = 'full request'
             errorMsgTail = ' violates format <crypto> <unit> <date|time> <exchange> <options>'
+        elif errorType == self.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION:
+            errorTypeLabelStr = 'full request'
+            errorMsgTail = ''
         elif errorType == self.COMMAND_ERROR_TYPE_PARTIAL_REQUEST:
             errorTypeLabelStr = 'invalid partial request'
         elif errorType == self.COMMAND_ERROR_TYPE_INVALID_COMMAND:
