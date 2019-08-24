@@ -2187,13 +2187,26 @@ class TestRequester(unittest.TestCase):
         sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vsooo")
         commandError = self.requester.request()
 
-        self.assertEqual(commandError, self.commandError)
+        self.assertEqual(self.commandError, commandError)
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
         self.assertEqual('ERROR - full request btc usd 10/9/17 12:45 Kraken -vsooo: -vsooo option violates the -vs option format. See help for more information.', resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
         sys.stdin = stdin
 
+    def testRequestPriceCommandFullEndingWithInvalidOptionValueSaveCommandWithAmount(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01")
+        commandError = self.requester.request()
+
+        self.assertEqual(self.commandError, commandError)
+        resultData = self.commandError.execute()
+
+        # formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual(
+            'ERROR - full request btc usd 10/9/17 12:45 Kraken -vsooo: -vsooo option violates the -vs option format. See help for more information.',
+            resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        sys.stdin = stdin
 
     def testRequestPriceCommandFullEndingWithOptionValueSaveCommandAndUnsupportedOption(self):
         stdin = sys.stdin
