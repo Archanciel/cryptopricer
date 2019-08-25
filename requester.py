@@ -339,9 +339,9 @@ class Requester:
             for group in orderFreeParmList:
                 if group and re.search(pattern, group):
                     if patternCommandDic[pattern] not in optionalParsedParmDataDic:
-                        #if for example DMY already found in optional full command parms,
-                        #it will not be overwritten ! Ex: 12/09/17 0: both token match DMY
-                        #pattern !
+                        # if for example DMY already found in optional full command parms,
+                        # it will not be overwritten ! Ex: 12/09/17 0: both token match DMY
+                        # pattern !
                         data, option, optionModifier = self._extractData(pattern, group)
                         if data != None:
                             optionalParsedParmDataDic[patternCommandDic[pattern]] = data
@@ -713,16 +713,17 @@ class Requester:
             if requestType == self.REQUEST_TYPE_PARTIAL:
                 self.commandError.parsedParmData[
                     self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-                self.commandError.parsedParmData[
-                    self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_FORMAT_INVALID_MSG.format(
-                    '-v', optionData, '-v')
+                optionSaveModifier = self.getCommandPriceOptionKeyword(optionType)
+                if 'S' in optionData.upper() and 'S' in optionSaveModifier.upper():
+                    optionData = optionData[1:]
             else:
                 self.commandError.parsedParmData[
                     self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION
                 optionSaveModifier = self.getCommandPriceOptionKeyword(optionType)
-                self.commandError.parsedParmData[
-                    self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_OPTION_FORMAT_INVALID_MSG.format(
-                    optionSaveModifier, optionData, optionSaveModifier)
+
+            self.commandError.parsedParmData[
+                self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.OPTION_FORMAT_INVALID_MSG.format(
+                optionSaveModifier, optionData, optionSaveModifier)
 
             return self.commandError
 
@@ -756,12 +757,14 @@ class Requester:
         '''
         optionKeywordDic = {'VALUE':'-v', 'FIAT':'-f', 'PRICE':'-p'}
         commandPriceOptionSaveConstantName = 'OPTION_' + optionType + '_SAVE'
-        commandPriceOptionSaveConstantNameValue = self.commandPrice.parsedParmData[commandPriceOptionSaveConstantName]
+        commandPriceOptionSaveValue = self.commandPrice.parsedParmData[commandPriceOptionSaveConstantName]
 
-        if commandPriceOptionSaveConstantNameValue == None:
-            commandPriceOptionSaveConstantNameValue = ''
+        if commandPriceOptionSaveValue:
+            commandPriceOptionSaveValue = 's'
+        else:
+            commandPriceOptionSaveValue = ''
 
-        return optionKeywordDic[optionType] + commandPriceOptionSaveConstantNameValue
+        return optionKeywordDic[optionType] + commandPriceOptionSaveValue
 
     def getRequesterOptionPattern(self, optionType):
         '''

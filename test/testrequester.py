@@ -1742,7 +1742,7 @@ class TestRequester(unittest.TestCase):
         resultData = self.commandError.execute()
 
         #formatting of request input string has been moved to end of Requester.getCommand !
-        self.assertEqual("ERROR - invalid partial request : -vsooo option violates the -v option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request : -vsooo option violates the -vs option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
     def test_parseAndFillPartialCommandPriceWithInitYearWithPartialYear(self):
         commandPrice = self.requester.commandPrice
@@ -2204,7 +2204,21 @@ class TestRequester(unittest.TestCase):
 
         # formatting of request input string has been moved to end of Requester.getCommand !
         self.assertEqual(
-            'ERROR - full request btc usd 10/9/17 12:45 Kraken -vsooo: -vsooo option violates the -vs option format. See help for more information.',
+            'ERROR - full request btc usd 10/9/17 12:45 Kraken -vs0.01: -vs0.01 option violates the -vs option format. See help for more information.',
+            resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        sys.stdin = stdin
+
+    def testRequestPriceCommandFullEndingWithInvalidOptionValueCommandWithAmount(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -v0.01")
+        commandError = self.requester.request()
+
+        self.assertEqual(self.commandError, commandError)
+        resultData = self.commandError.execute()
+
+        # formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual(
+            'ERROR - full request btc usd 10/9/17 12:45 Kraken -v0.01: -v0.01 option violates the -v option format. See help for more information.',
             resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
         sys.stdin = stdin
 

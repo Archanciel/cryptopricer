@@ -7,7 +7,7 @@ class CommandError(AbstractCommand):
     UNIT_LIST_MISSING_MSG = 'unit list missing'
     COMMAND_NOT_SUPPORTED_MSG = '{} not supported'
     PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG = 'in {}, {} must respect {} format'
-    PARTIAL_OPTION_FORMAT_INVALID_MSG = '{}{} option violates the {} option format. See help for more information.'
+    OPTION_FORMAT_INVALID_MSG = '{}{} option violates the {} option format. See help for more information.'
     FULL_COMMAND_PRICE_FORMAT_INVALID_MSG = 'full command price format invalid'
 
     COMMAND_ERROR_TYPE_KEY = 'COMMAND_ERROR_TYPE'
