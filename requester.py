@@ -707,7 +707,7 @@ class Requester:
             commandPriceOptionDataConstantValue = self.getCommandPricePattern(optionType, optionComponent='_DATA')
             self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue] = None
 
-            return self.commandPrice
+            return self.ensureOptionMandatoryComponents(optionType)
         else:
             #here, invalid option format
             if requestType == self.REQUEST_TYPE_PARTIAL:
@@ -726,6 +726,9 @@ class Requester:
                 optionSaveModifier, optionData, optionSaveModifier)
 
             return self.commandError
+
+    def ensureOptionMandatoryComponents(self, optionType):
+        return self.commandPrice
 
     def getCommandPricePattern(self, optionType, optionComponent):
         '''
