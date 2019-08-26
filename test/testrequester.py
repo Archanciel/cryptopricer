@@ -1744,6 +1744,62 @@ class TestRequester(unittest.TestCase):
         #formatting of request input string has been moved to end of Requester.getCommand !
         self.assertEqual("ERROR - invalid partial request : -vsooo option violates the -vs option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
+    def test_parseAndFillPartialCommandPriceInvalidOptionValueSaveSpecNoFiatWithAmount(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        # prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.UNIT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = '16'
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+        parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = True
+
+        inputStr = "-ceth -vs0.01 -ugbp -d11/8/15 -t22:46 -eKraken"
+        commandError = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandError, self.commandError)
+        resultData = self.commandError.execute()
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid partial request : -vs0.01 option violates the -vs option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+    def test_parseAndFillPartialCommandPriceInvalidOptionValueNoFiatWithAmount(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        # prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.UNIT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = '16'
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+        parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = True
+
+        inputStr = "-ceth -v0.01 -ugbp -d11/8/15 -t22:46 -eKraken"
+        commandError = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandError, self.commandError)
+        resultData = self.commandError.execute()
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid partial request : -v0.01 option violates the -v option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
     def test_parseAndFillPartialCommandPriceWithInitYearWithPartialYear(self):
         commandPrice = self.requester.commandPrice
 
@@ -2181,6 +2237,31 @@ class TestRequester(unittest.TestCase):
 
         sys.stdin = stdin
 
+    def testRequestPriceCommandFullEndingWithOptionValueEraseCommand(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -v0")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandPrice)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], '17')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+        self.assertEqual(parsedParmData[CommandPrice.OPTION_VALUE_DATA], None)
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertIsNone(parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+
+        sys.stdin = stdin
+
     def testRequestPriceCommandFullEndingWithInvalidOptionValueSaveCommand(self):
         stdin = sys.stdin
 #        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01")
@@ -2192,6 +2273,36 @@ class TestRequester(unittest.TestCase):
 
         #formatting of request input string has been moved to end of Requester.getCommand !
         self.assertEqual('ERROR - full request btc usd 10/9/17 12:45 Kraken -vsooo: -vsooo option violates the -vs option format. See help for more information.', resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        sys.stdin = stdin
+
+    def testRequestPriceCommandFullEndingWithInvalidOptionValueCommand(self):
+        stdin = sys.stdin
+        #        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01")
+        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vooo")
+        commandError = self.requester.request()
+
+        self.assertEqual(self.commandError, commandError)
+        resultData = self.commandError.execute()
+
+        # formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual(
+            'ERROR - full request btc usd 10/9/17 12:45 Kraken -vooo: -vooo option violates the -v option format. See help for more information.',
+            resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        sys.stdin = stdin
+
+    def testRequestPriceCommandFullEndingWithIneffectiveOptionValueSaveSpec(self):
+        stdin = sys.stdin
+        #        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01")
+        sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs")
+        commandError = self.requester.request()
+
+        self.assertEqual(self.commandError, commandError)
+        resultData = self.commandError.execute()
+
+        # formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual(
+            'ERROR - full request btc usd 10/9/17 12:45 Kraken -vs: -vs option violates the -vs option format. See help for more information.',
+            resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
         sys.stdin = stdin
 
     def testRequestPriceCommandFullEndingWithInvalidOptionValueSaveNoFiatWithAmount(self):
