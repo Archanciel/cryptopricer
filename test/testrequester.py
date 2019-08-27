@@ -2301,7 +2301,7 @@ class TestRequester(unittest.TestCase):
 
         # formatting of request input string has been moved to end of Requester.getCommand !
         self.assertEqual(
-            'ERROR - full request btc usd 10/9/17 12:45 Kraken -vs: -vs option violates the -vs option format. See help for more information.',
+            'ERROR - full request btc usd 10/9/17 12:45 Kraken -vs: -vs option violates the -v option format. See help for more information.',
             resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
         sys.stdin = stdin
 

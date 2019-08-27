@@ -2186,8 +2186,9 @@ class TestControllerGui(unittest.TestCase):
         inputStr = 'eth usd 0 bitfinex -vs100'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
-        self.assertTrue('WARNING - currency value option symbol missing. -vs option ignored' in printResult)
-        self.assertEqual('eth usd 0 bitfinex', fullCommandStr)
+#        self.assertTrue('WARNING - currency value option symbol missing. -vs option ignored' in printResult)
+        self.assertEqual('ERROR - full request eth usd 0 bitfinex -vs100: -vs100 option violates the -vs option format. See help for more information.', printResult)
+        self.assertEqual('', fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 if __name__ == '__main__':

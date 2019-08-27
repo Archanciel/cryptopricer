@@ -670,7 +670,7 @@ class Requester:
             optionErase =  match.group(4)
             if optionErase == None:
                 if optionSymbol.isdigit():
-                    # case when no currency synbol entered, like -v100 instead of -v100usd
+                    # case when no currency symbol entered, like -v100 instead of -v100usd
                     optionAmount += optionSymbol
                     optionSymbol = ''
 
@@ -704,23 +704,22 @@ class Requester:
                 self.commandPrice.parsedParmData[commandPriceOptionSaveConstantValue] = None
 
             # cleaning option value data which is no longer usefull
-            command = self.ensureOptionMandatoryComponents(optionType)
+            command = self.ensureOptionMandatoryComponents(requestType, optionType)
             commandPriceOptionDataConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_DATA')
             self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue] = None
 
             return command
         else:
             #here, invalid option format
+            optionKeyword = self.getCommandPriceOptionKeyword(optionType)
+
             if requestType == self.REQUEST_TYPE_PARTIAL:
                 self.commandError.parsedParmData[
                     self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-                optionKeyword = self.getCommandPriceOptionKeyword(optionType)
-                if 'S' in optionData.upper() and 'S' in optionKeyword.upper():
-                    optionData = optionData[1:]
+                optionData = self.correctOptionDataForErrorMessage(optionData, optionKeyword)
             else:
                 self.commandError.parsedParmData[
                     self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION
-                optionKeyword = self.getCommandPriceOptionKeyword(optionType)
 
             self.commandError.parsedParmData[
                 self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.OPTION_FORMAT_INVALID_MSG.format(
@@ -728,7 +727,7 @@ class Requester:
 
             return self.commandError
 
-    def ensureOptionMandatoryComponents(self, optionType):
+    def ensureOptionMandatoryComponents(self, requestType, optionType):
         commandPriceOptionDataConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType,'_DATA')
         commandPriceOptionMandatoryComponentsList = self.getCommandPriceOptionComponentConstantValue(optionType,'_MANDATORY_COMPONENTS')
         returnedCommand = self.commandPrice
@@ -737,11 +736,17 @@ class Requester:
         if optionData and optionData != '0':    # in case option cancel like -v0, -f0 or -p0, checking
                                                 # mandatory components has no sense
             for optionMandatoryComponentKey in commandPriceOptionMandatoryComponentsList:
-                if self.commandPrice.parsedParmData[optionMandatoryComponentKey] == None:
-                    self.commandError.parsedParmData[
-                        self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION
+                optionMandatoryComponentValue = self.commandPrice.parsedParmData[optionMandatoryComponentKey]
+                if optionMandatoryComponentValue == None or optionMandatoryComponentValue == '':
                     optionKeyword = self.getCommandPriceOptionKeyword(optionType)
 
+                    if requestType == self.REQUEST_TYPE_PARTIAL:
+                        self.commandError.parsedParmData[
+                            self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
+                        optionData = self.correctOptionDataForErrorMessage(optionData, optionKeyword)
+                    else:
+                        self.commandError.parsedParmData[
+                            self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION
                     self.commandError.parsedParmData[
                         self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.OPTION_FORMAT_INVALID_MSG.format(
                         optionKeyword, optionData, optionKeyword)
@@ -750,6 +755,11 @@ class Requester:
                     break
 
         return returnedCommand
+
+    def correctOptionDataForErrorMessage(self, optionData, optionKeyword):
+        if 'S' in optionData.upper() and 'S' in optionKeyword.upper():
+            optionData = optionData[1:]
+        return optionData
 
     def getCommandPriceOptionComponentConstantValue(self, optionType, optionComponent):
         '''
