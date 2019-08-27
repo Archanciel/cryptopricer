@@ -586,7 +586,7 @@ class Requester:
         command = None
 
         for optionType in optionTypeList:
-            commandPriceOptionDataConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_DATA')
+            commandPriceOptionDataConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_DATA')
             optionData = self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue]
             if optionData:
                 command = self._fillOptionValueInfo(optionType, optionData, requestType)
@@ -659,7 +659,7 @@ class Requester:
         :return: self.commandPrice or self.commandError in case the -v option is invalid
         '''
 
-        requesterOptionPattern = self.getRequesterOptionPattern(optionType)
+        requesterOptionPattern = self._getRequesterOptionPattern(optionType)
 
         match = re.match(requesterOptionPattern, optionData)
 
@@ -674,10 +674,10 @@ class Requester:
                     optionAmount += optionSymbol
                     optionSymbol = ''
 
-                commandPriceOptionAmountConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_AMOUNT')
+                commandPriceOptionAmountConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_AMOUNT')
                 self.commandPrice.parsedParmData[commandPriceOptionAmountConstantValue] = optionAmount
 
-                commandPriceOptionSymbolConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_SYMBOL')
+                commandPriceOptionSymbolConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_SYMBOL')
                 self.commandPrice.parsedParmData[commandPriceOptionSymbolConstantValue] = optionSymbol
 
                 if requestType == self.REQUEST_TYPE_PARTIAL:
@@ -686,7 +686,7 @@ class Requester:
                     # for full requests containing a value command, the s option if present was parsed
                     # in _buildFullCommandPriceOrderFreeParmsDic() and is not contained in the passed
                     # optionValueData !
-                    commandPriceOptionSaveConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_SAVE')
+                    commandPriceOptionSaveConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_SAVE')
 
                     if optionSaveFlag.upper() == 'S':
                         self.commandPrice.parsedParmData[commandPriceOptionSaveConstantValue] = True
@@ -694,29 +694,29 @@ class Requester:
                         self.commandPrice.parsedParmData[commandPriceOptionSaveConstantValue] = None
             elif optionErase == '0':
                 # here, -v0 was entered to deactivate option value calculation
-                commandPriceOptionAmountConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_AMOUNT')
+                commandPriceOptionAmountConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_AMOUNT')
                 self.commandPrice.parsedParmData[commandPriceOptionAmountConstantValue] = None
 
-                commandPriceOptionSymbolConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_SYMBOL')
+                commandPriceOptionSymbolConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_SYMBOL')
                 self.commandPrice.parsedParmData[commandPriceOptionSymbolConstantValue] = None
 
-                commandPriceOptionSaveConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_SAVE')
+                commandPriceOptionSaveConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_SAVE')
                 self.commandPrice.parsedParmData[commandPriceOptionSaveConstantValue] = None
 
             # cleaning option value data which is no longer usefull
-            command = self.ensureOptionMandatoryComponents(requestType, optionType)
-            commandPriceOptionDataConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_DATA')
+            command = self._validateOptionMandatoryComponents(requestType, optionType)
+            commandPriceOptionDataConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_DATA')
             self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue] = None
 
             return command
         else:
             #here, invalid option format
-            optionKeyword = self.getCommandPriceOptionKeyword(optionType)
+            optionKeyword = self.commandPrice.getCommandPriceOptionKeyword(optionType)
 
             if requestType == self.REQUEST_TYPE_PARTIAL:
                 self.commandError.parsedParmData[
                     self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-                optionData = self.correctOptionDataForErrorMessage(optionData, optionKeyword)
+                optionData = self._correctOptionDataForErrorMessage(optionData, optionKeyword)
             else:
                 self.commandError.parsedParmData[
                     self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION
@@ -727,9 +727,9 @@ class Requester:
 
             return self.commandError
 
-    def ensureOptionMandatoryComponents(self, requestType, optionType):
-        commandPriceOptionDataConstantValue = self.getCommandPriceOptionComponentConstantValue(optionType,'_DATA')
-        commandPriceOptionMandatoryComponentsList = self.getCommandPriceOptionComponentConstantValue(optionType,'_MANDATORY_COMPONENTS')
+    def _validateOptionMandatoryComponents(self, requestType, optionType):
+        commandPriceOptionDataConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType,'_DATA')
+        commandPriceOptionMandatoryComponentsList = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType,'_MANDATORY_COMPONENTS')
         returnedCommand = self.commandPrice
         optionData = self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue]
 
@@ -738,12 +738,12 @@ class Requester:
             for optionMandatoryComponentKey in commandPriceOptionMandatoryComponentsList:
                 optionMandatoryComponentValue = self.commandPrice.parsedParmData[optionMandatoryComponentKey]
                 if optionMandatoryComponentValue == None or optionMandatoryComponentValue == '':
-                    optionKeyword = self.getCommandPriceOptionKeyword(optionType)
+                    optionKeyword = self.commandPrice.getCommandPriceOptionKeyword(optionType)
 
                     if requestType == self.REQUEST_TYPE_PARTIAL:
                         self.commandError.parsedParmData[
                             self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-                        optionData = self.correctOptionDataForErrorMessage(optionData, optionKeyword)
+                        optionData = self._correctOptionDataForErrorMessage(optionData, optionKeyword)
                     else:
                         self.commandError.parsedParmData[
                             self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION
@@ -756,51 +756,12 @@ class Requester:
 
         return returnedCommand
 
-    def correctOptionDataForErrorMessage(self, optionData, optionKeyword):
+    def _correctOptionDataForErrorMessage(self, optionData, optionKeyword):
         if 'S' in optionData.upper() and 'S' in optionKeyword.upper():
             optionData = optionData[1:]
         return optionData
 
-    def getCommandPriceOptionComponentConstantValue(self, optionType, optionComponent):
-        '''
-        This method accepts as input an option type constant name part like 'VALUE', 'FIAT' or 'PRICE' as well as
-        an option component constant name part like '_DATA', '_AMOUNT' or '_SAVE'. It returns the CommandPrice
-        corresponding constant value which is used later as key for the CommandPrice parsed parm data dictionary.
-
-        This technique enables its _fillOptionValueInfo() caller method to be generalized to different option types
-        and option components.
-
-        :param optionType: currently, 'VALUE', 'FIAT' or 'PRICE'
-        :param optionComponent: currently, '_DATA', '_AMOUNT' '_SYMBOL' or '_SAVE'
-        :return:
-        '''
-        commandPriceOptionComponentConstantName = 'OPTION_' + optionType + optionComponent
-        commandPriceOptionComponentConstantValue = CommandPrice.__getattribute__(CommandPrice,
-                                                                              commandPriceOptionComponentConstantName)
-        return commandPriceOptionComponentConstantValue
-
-    def getCommandPriceOptionKeyword(self, optionType):
-        '''
-        This method is used as helper when building an invalid full request error msg. Unlike when building such
-        an error msg when handling an invalid  partial request, in a full request context, the faulty option
-        keyword is not available and so must be rebuilt. The method accepts as input an option type constant name
-        part like 'VALUE', 'FIAT' or 'PRICE'.
-
-        :param optionType: currently, 'VALUE', 'FIAT' or 'PRICE'
-        :return: -v or -vs or -f or -fs or -p or -ps
-        '''
-        optionKeywordDic = {'VALUE':'-v', 'FIAT':'-f', 'PRICE':'-p'}
-        commandPriceOptionSaveConstantName = 'OPTION_' + optionType + '_SAVE'
-        commandPriceOptionSaveValue = self.commandPrice.parsedParmData[commandPriceOptionSaveConstantName]
-
-        if commandPriceOptionSaveValue:
-            commandPriceOptionSaveValue = 's'
-        else:
-            commandPriceOptionSaveValue = ''
-
-        return optionKeywordDic[optionType] + commandPriceOptionSaveValue
-
-    def getRequesterOptionPattern(self, optionType):
+    def _getRequesterOptionPattern(self, optionType):
         '''
         This method accepts as input an option type constant name part like 'VALUE', 'FIAT' or 'PRICE'. It
         returns the Requester corresponding pattern constant value which is used later for parsing the

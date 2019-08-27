@@ -259,11 +259,6 @@ class CommandPrice(AbstractCommand):
             resultData = ResultData()
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - unit missing or invalid")
 
-        # debug code useful on phone !
-        #        dateTimeList = [dayStr, monthStr, yearStr, hourStr, minuteStr]
-        #        with open('/sdcard/compri.txt', 'a') as f:
-        #            f.write(str(dateTimeList) + '\n')
-                
         return resultData
 
 
@@ -393,6 +388,44 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.HOUR] = str(localNow.hour)
         self.parsedParmData[self.MINUTE] = str(localNow.minute)
 
+    def getCommandPriceOptionKeyword(self, optionType):
+        '''
+        This method is used as helper when building an invalid full request error msg. Unlike when building such
+        an error msg when handling an invalid  partial request, in a full request context, the faulty option
+        keyword is not available and so must be rebuilt. The method accepts as input an option type constant name
+        part like 'VALUE', 'FIAT' or 'PRICE'.
+
+        :param optionType: currently, 'VALUE', 'FIAT' or 'PRICE'
+        :return: -v or -vs or -f or -fs or -p or -ps
+        '''
+        optionKeywordDic = {'VALUE':'-v', 'FIAT':'-f', 'PRICE':'-p'}
+        commandPriceOptionSaveConstantName = 'OPTION_' + optionType + '_SAVE'
+        commandPriceOptionSaveValue = self.parsedParmData[commandPriceOptionSaveConstantName]
+
+        if commandPriceOptionSaveValue:
+            commandPriceOptionSaveValue = 's'
+        else:
+            commandPriceOptionSaveValue = ''
+
+        return optionKeywordDic[optionType] + commandPriceOptionSaveValue
+
+    def getCommandPriceOptionComponentConstantValue(self, optionType, optionComponent):
+        '''
+        This method accepts as input an option type constant name part like 'VALUE', 'FIAT' or 'PRICE' as well as
+        an option component constant name part like '_DATA', '_AMOUNT' or '_SAVE'. It returns the CommandPrice
+        corresponding constant value which is used later as key for the CommandPrice parsed parm data dictionary.
+
+        This technique enables its _fillOptionValueInfo() caller method to be generalized to different option types
+        and option components.
+
+        :param optionType: currently, 'VALUE', 'FIAT' or 'PRICE'
+        :param optionComponent: currently, '_DATA', '_AMOUNT' '_SYMBOL' or '_SAVE'
+        :return:
+        '''
+        commandPriceOptionComponentConstantName = 'OPTION_' + optionType + optionComponent
+        commandPriceOptionComponentConstantValue = self.__getattribute__(commandPriceOptionComponentConstantName)
+
+        return commandPriceOptionComponentConstantValue
 
 if __name__ == '__main__':
     from configurationmanager import ConfigurationManager
