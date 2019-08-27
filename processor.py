@@ -171,13 +171,10 @@ class Processor:
             else:
                 valueCommand = '-v'
 
-            if optionValueSymbol != '':
-                resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
-                                      "WARNING - currency value option symbol {} currently in effect differs from both crypto ({}) and unit ({}) of last request. {} option ignored".format(
-                                          optionValueSymbol, crypto, unit, valueCommand))
-            else:
-                resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
-                                      "WARNING - currency value option symbol missing. {} option ignored".format(valueCommand))
+            resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+                                  "WARNING - currency value option symbol {} currently in effect differs from both crypto ({}) and unit ({}) of last request. {} option ignored".format(
+                                      optionValueSymbol, crypto, unit, valueCommand))
+
         return resultData
 
             
