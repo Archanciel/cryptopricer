@@ -106,7 +106,7 @@ request settings !
 [b][cg]Options[/c][/b]
 
 Options can be added to both full and partial requests in order to obtain additional
-informations.
+informations. [i]Remember that options added to a full request must be specified at the end of the request[/i].
 
 Currently, CryptoPricer supports only one option: the
 valuation [b][cy]-v[/b][/c] option. In the next version, two new options
