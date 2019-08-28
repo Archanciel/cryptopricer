@@ -673,8 +673,9 @@ class Requester:
             if optionErase == None:
                 if optionSymbol.isdigit():
                     # case when no currency symbol entered, like -v100 instead of -v100usd
-                    optionAmount += optionSymbol
-                    optionSymbol = ''
+                    if optionAmount != '':
+                        optionAmount += optionSymbol
+                        optionSymbol = ''
 
                 if optionAmount != '':
                     # if optionType == FIAT, optionAmount == '' !

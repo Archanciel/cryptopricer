@@ -2284,10 +2284,80 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
         self.assertEqual('usd', parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
         self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
+        self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
+
+        sys.stdin = stdin
+
+    def testRequestPriceCommandFullEndingWithFiatOptionSave(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc eth 10/9/17 12:45 Kraken -fsusd")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandPrice)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.UNIT], 'eth')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], '17')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
         self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
         self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
         self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
         self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
+        self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
+        self.assertEqual('usd', parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
+        self.assertTrue(parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
+        self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
+
+        sys.stdin = stdin
+
+    def testRequestPriceCommandFullEndingWithFiatOptionErase(self):
+        stdin = sys.stdin
+        sys.stdin = StringIO("btc eth 10/9/17 12:45 Kraken -f0")
+        commandPrice = self.requester.request()
+
+        self.assertIsInstance(commandPrice, CommandPrice)
+        self.assertEqual(commandPrice, self.commandPrice)
+        parsedParmData = commandPrice.parsedParmData
+        self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'btc')
+        self.assertEqual(parsedParmData[CommandPrice.UNIT], 'eth')
+        self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+        self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+        self.assertEqual(parsedParmData[CommandPrice.YEAR], '17')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+        self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
+        self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+        self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+        self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+        self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+        self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+        self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
+        self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
+        self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
+        self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
 
         sys.stdin = stdin
 
