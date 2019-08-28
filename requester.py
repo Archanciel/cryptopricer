@@ -129,7 +129,7 @@ class Requester:
         -v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
     '''
     OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
-    OPTION_FIAT_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
+    OPTION_FIAT_PARM_DATA_PATTERN = r"([sS]?)([\d\.]?)(\w+)|(0)"
 
     REQUEST_TYPE_PARTIAL = 'PARTIAL'
     REQUEST_TYPE_FULL = 'FULL'
@@ -273,12 +273,12 @@ class Requester:
             return () # returning () instead of none since an iterator will be activated
                       # on the returned result !
 
-
     def _buildFullCommandPriceOrderFreeParmsDic(self, orderFreeParmList):
         '''
         This method is called only on full requests. A full request starts with 2 mandatory parameters,
         CRYPTO and UNIT provided in this mandatory order. The other full request parameters, date, time,
-        exchange and any additional options can be specified in any order.
+        and exchange can be specified in any order. A full request can be ended by options whose order
+        is free.
 
         The purpose of this method is precisely to acquire those order free full request parameters.
 
@@ -366,7 +366,6 @@ class Requester:
 
         return optionalParsedParmDataDic
 
-
     def _extractData(self, pattern, dataOrOptionStr):
         '''
         Applies the passed pattern to the passed dataOrOptionStr. If the passed dataOrOptionStr
@@ -401,6 +400,9 @@ class Requester:
             optionModifier = match.group(1)
             data = match.group(2)
         elif grpNumber == 3:
+            # here, handling an unsupported option. If handling a supported option, option
+            # is None. For valid options, the correct option symbol will be set later in the
+            # command price in _fillOptionValueInfo() like methods !
             option = match.group(1)
             optionModifier = match.group(2)
             data = match.group(3)
@@ -582,7 +584,7 @@ class Requester:
 
         self._fillDayMonthYearInfo(day, month, year)
 
-        optionTypeList = ['VALUE']
+        optionTypeList = ['VALUE', 'FIAT']
         command = None
 
         for optionType in optionTypeList:
@@ -674,8 +676,10 @@ class Requester:
                     optionAmount += optionSymbol
                     optionSymbol = ''
 
-                commandPriceOptionAmountConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_AMOUNT')
-                self.commandPrice.parsedParmData[commandPriceOptionAmountConstantValue] = optionAmount
+                if optionAmount != '':
+                    # if optionType == FIAT, optionAmount == '' !
+                    commandPriceOptionAmountConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_AMOUNT')
+                    self.commandPrice.parsedParmData[commandPriceOptionAmountConstantValue] = optionAmount
 
                 commandPriceOptionSymbolConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_SYMBOL')
                 self.commandPrice.parsedParmData[commandPriceOptionSymbolConstantValue] = optionSymbol
