@@ -35,6 +35,7 @@ class CommandPrice(AbstractCommand):
     UNSUPPORTED_OPTION_DATA = "UNSUPPORTED_OPTION_DATA"         #store any unsupported option specification data
 
     OPTION_FIAT_DATA = 'OPTION_FIAT_DATA'     #temporary store the data specified with -f. Ex: usd
+    OPTION_FIAT_AMOUNT = 'OPTION_FIAT_AMOUNT' #not used for fiat option, but must exist due to generic code needs
     OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL' #store the price symbol specified with -f. Ex: usd
     OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'     #store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
     OPTION_FIAT_MANDATORY_COMPONENTS = [OPTION_FIAT_SYMBOL]

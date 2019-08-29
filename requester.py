@@ -669,13 +669,16 @@ class Requester:
             optionSaveFlag = match.group(1)
             optionAmount = match.group(2)
             optionSymbol = match.group(3)
-            optionErase =  match.group(4)
+            optionErase = match.group(4)
+
+            if optionType == 'FIAT' and optionSymbol.isdigit() and optionSymbol == '0':
+                optionErase = '0'
+
             if optionErase == None:
                 if optionSymbol.isdigit():
-                    # case when no currency symbol entered, like -v100 instead of -v100usd
-                    if optionAmount != '':
-                        optionAmount += optionSymbol
-                        optionSymbol = ''
+                    # case when no currency symbol entered, like -v0.01 instead of -v0.01btc
+                    optionAmount += optionSymbol
+                    optionSymbol = ''
 
                 if optionAmount != '':
                     # if optionType == FIAT, optionAmount == '' !
