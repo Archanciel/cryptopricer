@@ -3,6 +3,9 @@ from commandprice import CommandPrice
 from commanderror import CommandError
 from datetimeutil import DateTimeUtil
 
+CURRENCY_SYMBOL_MIN_LENGTH = 3
+
+
 class Requester:
     '''
     Read in commands entered by the
@@ -671,8 +674,12 @@ class Requester:
             optionSymbol = match.group(3)
             optionErase = match.group(4)
 
-            if optionType == 'FIAT' and optionSymbol.isdigit() and optionSymbol == '0':
-                optionErase = '0'
+            if optionType == 'FIAT':
+                if optionSymbol.isdigit():
+                    if optionSymbol == '0':
+                        optionErase = '0'
+                elif len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH:
+                    return self.handleInvalidOptionFormat(optionData, optionType, requestType)
 
             if optionErase == None:
                 if optionSymbol.isdigit():
@@ -719,21 +726,22 @@ class Requester:
             return command
         else:
             #here, invalid option format
-            optionKeyword = self.commandPrice.getCommandPriceOptionKeyword(optionType)
+            return self.handleInvalidOptionFormat(optionData, optionType, requestType)
 
-            if requestType == self.REQUEST_TYPE_PARTIAL:
-                self.commandError.parsedParmData[
-                    self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-                optionData = self._correctOptionDataForErrorMessage(optionData, optionKeyword)
-            else:
-                self.commandError.parsedParmData[
-                    self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION
-
+    def handleInvalidOptionFormat(self, optionData, optionType, requestType):
+        optionKeyword = self.commandPrice.getCommandPriceOptionKeyword(optionType)
+        if requestType == self.REQUEST_TYPE_PARTIAL:
             self.commandError.parsedParmData[
-                self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.OPTION_FORMAT_INVALID_MSG.format(
-                optionKeyword, optionData, optionKeyword)
+                self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
+            optionData = self._correctOptionDataForErrorMessage(optionData, optionKeyword)
+        else:
+            self.commandError.parsedParmData[
+                self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION
+        self.commandError.parsedParmData[
+            self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.OPTION_FORMAT_INVALID_MSG.format(
+            optionKeyword, optionData, optionKeyword)
 
-            return self.commandError
+        return self.commandError
 
     def _validateOptionMandatoryComponents(self, requestType, optionType):
         commandPriceOptionDataConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType,'_DATA')
