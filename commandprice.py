@@ -79,11 +79,9 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.OPTION_VALUE_AMOUNT] = None
         self.parsedParmData[self.OPTION_VALUE_SYMBOL] = None
         self.parsedParmData[self.OPTION_VALUE_SAVE] = None
-        self.parsedParmData[self.UNSUPPORTED_OPTION_DATA] = None
-        self.parsedParmData[self.UNSUPPORTED_OPTION] = None
-        self.parsedParmData[self.UNSUPPORTED_OPTION_MODIFIER] = None
         self.parsedParmData[self.OPTION_FIAT_DATA] = None
         self.parsedParmData[self.OPTION_FIAT_SYMBOL] = None
+        self.parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT] = None
         self.parsedParmData[self.OPTION_FIAT_SAVE] = None
         self.parsedParmData[self.OPTION_PRICE_DATA] = None
         self.parsedParmData[self.OPTION_PRICE_AMOUNT] = None
