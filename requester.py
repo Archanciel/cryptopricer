@@ -492,10 +492,10 @@ class Requester:
             self.commandPrice.initialiseParsedParmData()
             self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
             self.commandPrice.parsedParmData[CommandPrice.UNIT] = groupList[1] #mandatory unit parm, its order is fixed
-            optionalParsedParmDataDic = self._buildFullCommandPriceOrderFreeParmsDic(groupList[2:])
+            orderFreeParmDic = self._buildFullCommandPriceOrderFreeParmsDic(groupList[2:])
 
-            if optionalParsedParmDataDic != None:
-                self.commandPrice.parsedParmData.update(optionalParsedParmDataDic)
+            if orderFreeParmDic != None:
+                self.commandPrice.parsedParmData.update(orderFreeParmDic)
             else:
                 # invalid full command format
                 self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_FULL_REQUEST
@@ -683,7 +683,7 @@ class Requester:
 
             if optionErase == None:
                 if optionSymbol.isdigit():
-                    # case when no currency symbol entered, like -v0.01 instead of -v0.01btc
+                    # case when no currency symbol entered, like -v0.01 or -vs0.01 instead of -v0.01btc/-vs0.01btc
                     optionAmount += optionSymbol
                     optionSymbol = ''
 
