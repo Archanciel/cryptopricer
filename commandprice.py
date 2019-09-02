@@ -87,10 +87,10 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.OPTION_PRICE_AMOUNT] = None
         self.parsedParmData[self.OPTION_PRICE_SYMBOL] = None
         self.parsedParmData[self.OPTION_PRICE_SAVE] = None
-        self.resetTemporaryData()
+        self.resetUnsupportedOptionData()
 
 
-    def resetTemporaryData(self):
+    def resetUnsupportedOptionData(self):
         '''
         This method cleans up any data which are not to be kept between user requests
         :return:

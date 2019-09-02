@@ -154,7 +154,9 @@ class Requester:
                                            '-D': CommandPrice.DAY_MONTH_YEAR,
                                            '-T': CommandPrice.HOUR_MINUTE,
                                            '-E': CommandPrice.EXCHANGE,
-                                           '-V': CommandPrice.OPTION_VALUE_DATA}
+                                           '-V': CommandPrice.OPTION_VALUE_DATA,
+                                           '-F': CommandPrice.OPTION_FIAT_DATA,
+                                           '-P': CommandPrice.OPTION_PRICE_DATA}
 
 
     def request(self):
@@ -436,7 +438,7 @@ class Requester:
                 # request are purged. Necessary here when handling partial command(s) since, unlike
                 # when a full command is processed, the command price is not reinitialized !
                 requestType = self.REQUEST_TYPE_PARTIAL
-                self.commandPrice.resetTemporaryData()
+                self.commandPrice.resetUnsupportedOptionData()
 
                 keys = self.inputParmParmDataDicKeyDic.keys()
                 it = iter(groupList)

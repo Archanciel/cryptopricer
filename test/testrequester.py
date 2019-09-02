@@ -3904,7 +3904,7 @@ class TestRequester(unittest.TestCase):
 
         inputStr = "-ceth -ugbp -d11/8 -t22:46 -eKraken -fbtc"
         commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-        self.assertEqual(commandPrice, self.commandPrice)
+        self.assertIsInstance(commandPrice, CommandPrice)
         parsedParmData = commandPrice.parsedParmData
         self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
         self.assertEqual(parsedParmData[CommandPrice.UNIT], 'gbp')
