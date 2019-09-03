@@ -133,6 +133,7 @@ class Requester:
     '''
     OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
     OPTION_FIAT_PARM_DATA_PATTERN = r"([sS]?)([\d\.]?)(\w+)|(0)"
+    OPTION_PRICE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
 
     REQUEST_TYPE_PARTIAL = 'PARTIAL'
     REQUEST_TYPE_FULL = 'FULL'
@@ -589,10 +590,9 @@ class Requester:
 
         self._fillDayMonthYearInfo(day, month, year)
 
-        optionTypeList = ['VALUE', 'FIAT']
         command = None
 
-        for optionType in optionTypeList:
+        for optionType in CommandPrice.OPTION_TYPE_LIST:
             commandPriceOptionDataConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_DATA')
             optionData = self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue]
             if optionData:
