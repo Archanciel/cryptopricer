@@ -64,8 +64,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
         resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, '12/09/17 00:00')
         resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, 1505174400)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, '0.01698205')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, '70')
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT, '0.01698205')
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL, '70')
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -113,8 +113,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
         resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, '12/09/17 00:00')
         resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, 1505174400)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, '0.01698205')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, '70')
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT, '0.01698205')
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL, '70')
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -139,8 +139,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
         resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, '12/09/17 00:00')
         resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, 1505174400)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, None)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, None)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT, None)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL, None)
         resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
                               "WARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD). -v option ignored !")
 
@@ -486,8 +486,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
         resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, dateTimeString)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, '0.01')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, '160')
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT, '0.01')
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL, '160')
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
                             {'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
                              'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
@@ -614,8 +614,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
         resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, dateTimeString)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, '0.01')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, '160')
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT, '0.01')
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL, '160')
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE, True)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
                             {'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,

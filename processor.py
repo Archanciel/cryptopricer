@@ -158,13 +158,13 @@ class Processor:
         if optionValueSymbol == crypto:
             #converting optionValueAmount in crypto to equivalent value in unit
             convertedValue = optionValueAmount * conversionRate
-            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, optionValueAmount)
-            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, convertedValue)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT, optionValueAmount)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL, convertedValue)
         elif optionValueSymbol == unit:
             #converting optionValueAmount in unit to equivalent value in crypto
             convertedValue = optionValueAmount / conversionRate
-            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, convertedValue)
-            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, optionValueAmount)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT, convertedValue)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL, optionValueAmount)
         else:
             if optionValueSaveFlag:
                 valueCommand = '-vs'
