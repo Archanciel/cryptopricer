@@ -52,7 +52,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
 
 
-    def testGetCryptoPriceHistoricalPriceValueCryptoToUnit(self):    
+    def testGetCryptoPriceHistoricalOptionValueCryptoToUnit(self):
         crypto = 'BTC'
         unit = 'USD'
         exchange = 'bittrex'
@@ -86,7 +86,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL), 4.122)
 
 
-    def testGetCryptoPriceHistoricalPriceValueFromBadCryptoToUnit(self):    
+    def testGetCryptoPriceHistoricalOptionValueFromBadCryptoToUnit(self):
         crypto = 'BTC'
         unit = 'USD'
         exchange = 'bittrex'
@@ -121,7 +121,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol ETH currently in effect differs from both crypto (BTC) and unit (USD) of last request. -v option ignored")
 
 
-    def testGetCryptoPriceHistoricalPriceValueUnitToCrypto(self):    
+    def testGetCryptoPriceHistoricalOptionValueUnitToCrypto(self):
         crypto = 'BTC'
         unit = 'USD'
         exchange = 'bittrex'
@@ -167,7 +167,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL), optionValueAmount)
 
 
-    def testGetCryptoPriceHistoricalPriceValueFromBadUnitToCrypto(self):    
+    def testGetCryptoPriceHistoricalOptionValueFromBadUnitToCrypto(self):
         crypto = 'BTC'
         unit = 'USD'
         exchange = 'bittrex'
@@ -389,6 +389,46 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), None)
 
+
+    def testGetCryptoPriceHistoricalOptionValueCryptoToUnitOptionFiat(self):
+        crypto = 'BTC'
+        unit = 'USD'
+        exchange = 'bittrex'
+        day = 12
+        month = 9
+        year = 2017
+        hour = 10
+        minute = 5
+        optionValueSymbol = 'BTC' # -v0.001BTC
+        optionValueAmount = 0.001
+        optionFiatSymbol = 'CHF' # -fCHF
+
+
+        resultData = self.processor.getCryptoPrice(crypto,
+                                               unit,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
+                                               minute,
+                                               optionValueSymbol,
+                                               optionValueAmount,
+                                               requestInputString='',
+                                               optionFiatSymbol=optionFiatSymbol)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), '12/09/17 00:00')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT), optionValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL), 4.122)
+        self.assertEqual(4126.122, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
 
 if __name__ == '__main__':
     unittest.main()
