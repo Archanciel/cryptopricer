@@ -14,10 +14,10 @@ class CommandPrice(AbstractCommand):
     DAY = "DAY"
     MONTH = "MONTH"
     YEAR = "YEAR"
-    HOUR = "HOUR"           #store HH user input
-    MINUTE = "MINUTE"       #store MM user input
-    HOUR_MINUTE = "HM"      #temporary store HH:MM user input
-    DAY_MONTH_YEAR = "DMY"  #temporary store DD/MM/YY user input
+    HOUR = "HOUR"           # store HH user input
+    MINUTE = "MINUTE"       # store MM user input
+    HOUR_MINUTE = "HM"      # temporary store HH:MM user input
+    DAY_MONTH_YEAR = "DMY"  # temporary store DD/MM/YY user input
 
     PRICE_TYPE = 'PRICE_TYPE'
 
@@ -26,26 +26,26 @@ class CommandPrice(AbstractCommand):
 
     OPTION_TYPE_LIST = ['VALUE', 'FIAT', 'PRICE']
 
-    OPTION_VALUE_DATA = 'OPTION_VALUE_DATA'     #temporary store the data specified with -v. Ex: 0.0044254btc
-    OPTION_VALUE_AMOUNT = 'OPTION_VALUE_AMOUNT' #store the price target specified with -v. Ex: 0.0044354
-    OPTION_VALUE_SYMBOL = 'OPTION_VALUE_SYMBOL' #store the price symbol specified with -v. Ex: btc
-    OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'     #store s or S or None to indicate if the value option is to be stored in history (-vs) or not (-v) --> None
+    OPTION_VALUE_DATA = 'OPTION_VALUE_DATA'     # temporary store the data specified with -v. Ex: 0.0044254btc
+    OPTION_VALUE_AMOUNT = 'OPTION_VALUE_AMOUNT' # store the crypto or unit amount specified with -v. Ex: 100 in -v100usd
+    OPTION_VALUE_SYMBOL = 'OPTION_VALUE_SYMBOL' # store the crypto or unit symbol specified with -v. Ex: usd
+    OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'     # store s or S or None to indicate if the value option is to be stored in history (-vs) or not (-v) --> None
     OPTION_VALUE_MANDATORY_COMPONENTS = [OPTION_VALUE_AMOUNT, OPTION_VALUE_SYMBOL]
 
-    UNSUPPORTED_OPTION = "UNSUPPORTED_OPTION"                   #store an unsupported option specification
-    UNSUPPORTED_OPTION_MODIFIER = "UNSUPPORTED_OPTION_MODIFIER" #store an unsupported option modifier specification
-    UNSUPPORTED_OPTION_DATA = "UNSUPPORTED_OPTION_DATA"         #store any unsupported option specification data
+    UNSUPPORTED_OPTION = "UNSUPPORTED_OPTION"                   # store an unsupported option specification
+    UNSUPPORTED_OPTION_MODIFIER = "UNSUPPORTED_OPTION_MODIFIER" # store an unsupported option modifier specification
+    UNSUPPORTED_OPTION_DATA = "UNSUPPORTED_OPTION_DATA"         # store any unsupported option specification data
 
-    OPTION_FIAT_DATA = 'OPTION_FIAT_DATA'     #temporary store the data specified with -f. Ex: usd
-    OPTION_FIAT_AMOUNT = 'OPTION_FIAT_AMOUNT' #not used for fiat option, but must exist due to generic code needs
-    OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL' #store the price symbol specified with -f. Ex: usd
-    OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'     #store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
+    OPTION_FIAT_DATA = 'OPTION_FIAT_DATA'     # temporary store the data specified with -f. Ex: usd
+    OPTION_FIAT_AMOUNT = 'OPTION_FIAT_AMOUNT' # not used for fiat option, but must exist due to generic code needs
+    OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL' # store the price symbol specified with -f. Ex: usd
+    OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'     # store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
     OPTION_FIAT_MANDATORY_COMPONENTS = [OPTION_FIAT_SYMBOL]
 
-    OPTION_PRICE_DATA = 'OPTION_PRICE_DATA'     #temporary store the data specified with -p. Ex: 230usd
-    OPTION_PRICE_AMOUNT = 'OPTION_PRICE_AMOUNT' #store the price target specified with -p. Ex: 230
-    OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL' #store the price symbol specified with -p. Ex: usd
-    OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'     #store s or S or None to indicate if the value option is to be stored in history (-ps) or not (-p) --> None
+    OPTION_PRICE_DATA = 'OPTION_PRICE_DATA'     # temporary store the data specified with -p. Ex: 230usd
+    OPTION_PRICE_AMOUNT = 'OPTION_PRICE_AMOUNT' # store the price target specified with -p. Ex: 230
+    OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL' # store the price symbol specified with -p. Ex: usd
+    OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'     # store s or S or None to indicate if the value option is to be stored in history (-ps) or not (-p) --> None
     OPTION_PRICE_MANDATORY_COMPONENTS = [OPTION_PRICE_AMOUNT, OPTION_PRICE_SYMBOL]
 
     def __init__(self, receiver = None, configManager = None):
@@ -165,14 +165,14 @@ class CommandPrice(AbstractCommand):
         else:
             minute = 0
 
-        #storing the parsed parm gata dicèionary before it
-        #may be modified in case the user requested a RT
-        #price. The initial dictionary wiLl be added to the
-        #returned resultData so the client can have access
-        #to the full command request, even if only a partial
-        #request like -d or -c was entered. This is necessary
-        #bcecause if the client is a GUI, it stores the list
-        #of requests in order to be able to replay them !
+        # storing the parsed parm gata dictionary before it
+        # may be modified in case the user requested a RT
+        # price. The initial dictionary wiLl be added to the
+        # returned resultData so the client can have access
+        # to the full command request, even if only a partial
+        # request like -d or -c was entered. This is necessary
+        # because if the client is a GUI, it stores the list
+        # of requests in order to be able to replay them !
         initialParsedParmDataDic = self.parsedParmData.copy()
 
         wasDateInFutureSetToLastYear = False
@@ -223,9 +223,9 @@ class CommandPrice(AbstractCommand):
                                               optionValueSaveFlag,
                                               self.requestInputString)
 
-        #the command components	denoting the user request will be used to recreate
-        #a full command request which will be stored in the command history list.
-        #The historry list can be replayed, stored on disk, edited ...
+        # the command components	denoting the user request will be used to recreate
+        # a full command request which will be stored in the command history list.
+        # The historry list can be replayed, stored on disk, edited ...
         result.setValue(ResultData.RESULT_KEY_INITIAL_COMMAND_PARMS, initialParsedParmDataDic)
 
         result.setValue(ResultData.RESULT_KEY_OPTION_VALUE_SAVE, optionValueSaveFlag)
