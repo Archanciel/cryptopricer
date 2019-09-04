@@ -24,13 +24,23 @@ class Processor:
                        year,
                        hour,
                        minute,
-                       optionValueSymbol = None,
-                       optionValueAmount = None,
-                       optionValueSaveFlag = None,
-                       requestInputString = ''):
+                       optionValueSymbol=None,
+                       optionValueAmount=None,
+                       optionValueSaveFlag=None,
+                       requestInputString='',
+                       optionFiatSymbol=None,
+                       optionFiatSaveFlag=None,
+                       optionPriceSymbol=None,
+                       optionPriceAmount=None,
+                       optionPriceSaveFlag=None):
         '''
         Ask the PriceRequester either a RT price or a historical price. Then, in case a price value parm (-v)
         was specified, does the conversion and add its result to the returned ResultData
+        :param optionFiatSymbol:
+        :param optionFiatSaveFlag:
+        :param optionPriceSymbol:
+        :param optionPriceAmount:
+        :param optionPriceSaveFlag:
         :param crypto: upper case crypto symbol
         :param unit: upper case counter party symbol
         :param exchange: exchange name
@@ -39,11 +49,11 @@ class Processor:
         :param year: int year number
         :param hour: int hour number
         :param minute: int minute number
-        :param optionValueSymbol: upper case price value symbol. If == crypto, this means that optionValueAmount provided
+        :param optionValueSymbol: upper case currency value symbol. If == crypto, this means that optionValueAmount provided
                                  is in crypto and must be converted into unit (counter party) at the rate returned by
                                  the PriceRequester.
 
-                                 If the price value symbol == unit, this means that optionValueAmount provided
+                                 If the currency value symbol == unit, this means that optionValueAmount provided
                                  is in the counter party (unit or an other crypto) and must be converted into crypto at
                                  the rate returned by the PriceRequester.
 
@@ -65,9 +75,15 @@ class Processor:
                                         if returned rate (stored in ResultData.RESULT_KEY_PRICE entry) is 20000,
                                         converted value will be 1 / 20000 USD * 500 USD => 0.025 BTC
 
-        :param optionValueAmount: float price value amount
-        :param optionValueSaveFlag: used to refine warning if value command not applicable
+        :param optionValueAmount:   float specified value option amount
+        :param optionValueSaveFlag: used to refine warning if value option not applicable
         :param requestInputString): used for better error msg !
+        :param optionFiatSymbol:    stores the fiat symbol, i.e. the fiat into which the returned
+                                    unit amount is converted
+        :param optionFiatSaveFlag:  used to refine warning if fiat option not applicable. May be suppressed if not used
+        :param optionPriceSymbol:   upper case currency price symbol
+        :param optionPriceAmount:   float specified price option amount
+        :param optionPriceSaveFlag: used to refine warning if price option not applicable
 
         :seqdiag_return ResultData
         :return: a ResultData filled with result values
@@ -204,23 +220,9 @@ if __name__ == '__main__':
     minute = 5
 
     print('HISTORICAL')
-    print(proc.getCryptoPrice(crypto,
-                              unit,
-                              exchange,
-                              day,
-                              month,
-                              year,
-                              hour,
-                              minute))
+    print(proc.getCryptoPrice(crypto, unit, exchange, day, month, year, hour, minute))
 
-    print(proc.getCryptoPrice(crypto,
-                              unit,
-                              'unknown_exchange',
-                              day,
-                              month,
-                              year,
-                              hour,
-                              minute))
+    print(proc.getCryptoPrice(crypto, unit, 'unknown_exchange', day, month, year, hour, minute))
 
     day = 0
     month = 0
@@ -229,20 +231,6 @@ if __name__ == '__main__':
     minute = 0
 
     print('\nREAL TIME')
-    print(proc.getCryptoPrice(crypto,
-                              unit,
-                              exchange,
-                              day,
-                              month,
-                              year,
-                              hour,
-                              minute))
+    print(proc.getCryptoPrice(crypto, unit, exchange, day, month, year, hour, minute))
 
-    print(proc.getCryptoPrice(crypto,
-                              unit,
-                              'unknown_exchange',
-                              day,
-                              month,
-                              year,
-                              hour,
-                              minute))
+    print(proc.getCryptoPrice(crypto, unit, 'unknown_exchange', day, month, year, hour, minute))
