@@ -134,12 +134,15 @@ class Processor:
                 resultData.setValue(ResultData.RESULT_KEY_OPTION_DATE_TIME_STRING, requestedDateTimeStr)
                 
         if optionValueSymbol != None and not resultData.isError():
-            resultData = self._computePriceValue(resultData, crypto, unit, optionValueSymbol, optionValueAmount, optionValueSaveFlag)
-            
+            resultData = self._computeOptionValueAmount(resultData, crypto, unit, optionValueSymbol, optionValueAmount, optionValueSaveFlag)
+
+        if optionFiatSymbol != None and not resultData.isError():
+            resultData = self._computeOptionFiatAmount(resultData, crypto, unit, optionFiatSymbol, optionFiatSaveFlag)
+
         return resultData
 
 
-    def _computePriceValue(self, resultData, crypto, unit, optionValueSymbol, optionValueAmount, optionValueSaveFlag):
+    def _computeOptionValueAmount(self, resultData, crypto, unit, optionValueSymbol, optionValueAmount, optionValueSaveFlag):
         '''
         Compute the optionValueAmount according to the passed parms and put the result in
         the passed resultData.
@@ -193,7 +196,61 @@ class Processor:
 
         return resultData
 
-            
+    def _computeOptionFiatAmount(self, resultData, crypto, unit, optionValueSymbol, optionValueSaveFlag):
+        '''
+        Compute the optionValueAmount according to the passed parms and put the result in
+        the passed resultData.
+        :param optionValueSymbol: upper case price value symbol. If == crypto, this means that optionValueAmount provided
+                                 is in crypto and must be converted into unit at the rate returned by the PriceRequester.
+
+                                 If the price value symbol == unit, this means that optionValueAmount provided
+                                 is in unit and must be converted into crypto at the rate returned by the PriceRequester.
+
+                                 Ex 1:  crypto == BTC
+                                        unit == USD
+                                        optionValueSymbol == BTC
+                                        optionValueAmount == 0.001
+
+                                        if returned rate (stored in ResultData.RESULT_KEY_PRICE entry) is 20000,
+                                        converted value will be 20000 USD * 0.001 BTC => 200 USD
+
+                                 Ex 2:  crypto == BTC
+                                        unit == USD
+                                        optionValueSymbol == USD
+                                        optionValueAmount == 500
+
+                                        if returned rate (stored in ResultData.RESULT_KEY_PRICE entry) is 20000,
+                                        converted value will be 1 / 20000 USD * 500 USD => 0.025 BTC
+
+        :param optionValueAmount: float price value amount
+        :param optionValueSaveFlag: used to refine warning if value command not applicable
+        :return: a ResultData in which price value info has been added.
+        '''
+        conversionRate = resultData.getValue(resultData.RESULT_KEY_PRICE)
+        optionValueAmount = 0 # only for compile !
+        if optionValueSymbol == crypto:
+            # converting optionValueAmount in crypto to equivalent value in unit
+            convertedValue = optionValueAmount * conversionRate
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT, optionValueAmount)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL, convertedValue)
+        elif optionValueSymbol == unit:
+            # converting optionValueAmount in unit to equivalent value in crypto
+            convertedValue = optionValueAmount / conversionRate
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT, convertedValue)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL, optionValueAmount)
+        else:
+            if optionValueSaveFlag:
+                valueCommand = '-vs'
+            else:
+                valueCommand = '-v'
+
+            resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+                                  "WARNING - currency value option symbol {} currently in effect differs from both crypto ({}) and unit ({}) of last request. {} option ignored".format(
+                                      optionValueSymbol, crypto, unit, valueCommand))
+
+        return resultData
+
+
 if __name__ == '__main__':
     from configurationmanager import ConfigurationManager
     from pricerequester import PriceRequester
