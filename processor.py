@@ -142,7 +142,13 @@ class Processor:
         return resultData
 
 
-    def _computeOptionValueAmount(self, resultData, crypto, unit, optionValueSymbol, optionValueAmount, optionValueSaveFlag):
+    def _computeOptionValueAmount(self,
+                                  resultData,
+                                  crypto,
+                                  unit,
+                                  optionValueSymbol,
+                                  optionValueAmount,
+                                  optionValueSaveFlag):
         '''
         Compute the optionValueAmount according to the passed parms and put the result in
         the passed resultData.
@@ -196,7 +202,12 @@ class Processor:
 
         return resultData
 
-    def _computeOptionFiatAmount(self, resultData, crypto, unit, optionValueSymbol, optionValueSaveFlag):
+    def _computeOptionFiatAmount(self,
+                                 resultData,
+                                 crypto,
+                                 unit,
+                                 optionValueSymbol,
+                                 optionValueSaveFlag):
         '''
         Compute the optionValueAmount according to the passed parms and put the result in
         the passed resultData.
