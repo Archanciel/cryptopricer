@@ -82,8 +82,8 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT), optionValueAmount)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL), 4.122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), optionValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), 4.122)
 
 
     def testGetCryptoPriceHistoricalOptionValueFromBadCryptoToUnit(self):
@@ -116,8 +116,8 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), None)
         self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol ETH currently in effect differs from both crypto (BTC) and unit (USD) of last request. -v option ignored")
 
 
@@ -163,8 +163,8 @@ class TestProcessor(unittest.TestCase):
             from guioutputformater import GuiOutputFormater
             outputFormater = GuiOutputFormater(self.configMgr)
 
-        self.assertEqual(outputFormater.formatFloatToStr(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT)), outputFormater.formatFloatToStr(0.01698205))
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL), optionValueAmount)
+        self.assertEqual(outputFormater.formatFloatToStr(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)), outputFormater.formatFloatToStr(0.01698205))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), optionValueAmount)
 
 
     def testGetCryptoPriceHistoricalOptionValueFromBadUnitToCrypto(self):
@@ -197,8 +197,8 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), None)
         self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol EUR currently in effect differs from both crypto (BTC) and unit (USD) of last request. -v option ignored")
 
 
@@ -424,8 +424,8 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT), optionValueAmount)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SYMBOL), 4.122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), optionValueAmount)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), 4.122)
         self.assertEqual(4126.122, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))

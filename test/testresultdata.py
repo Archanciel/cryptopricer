@@ -22,8 +22,8 @@ class TestResultData(unittest.TestCase):
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_PRICE), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_OPTION_TYPE), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_ERROR_MSG), None)
-        self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_OPTION_VALUE_SYMBOL), None)
-        self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT), None)
+        self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_OPTION_VALUE_UNIT), None)
+        self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), None)
         self.assertEqual(self.resultData.getValue(self.resultData.RESULT_KEY_OPTION_VALUE_SAVE), None)
 
 

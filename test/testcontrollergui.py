@@ -1578,6 +1578,24 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
+    def testGetPrintableResultForHistoricalRequestWithSaveValueCommandUnitAmountSpecified(self):
+        inputStr = 'btc usd 12/09/17 bitfinex -vs70usd'
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            '0.01686991 BTC/70 USD on Bitfinex: 12/09/17 00:00C 4149.4',printResult)
+        self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStr)
+        self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs70usd', fullCommandStrWithSaveModeOptions)
+
+    def testGetPrintableResultForHistoricalRequestWithSaveValueCommandCryptoAmountSpecified(self):
+        inputStr = 'btc usd 12/09/17 bitfinex -vs0.1btc'
+        printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            '0.1 BTC/414.94 USD on Bitfinex: 12/09/17 00:00C 4149.4',printResult)
+        self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStr)
+        self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs0.1btc', fullCommandStrWithSaveModeOptions)
+
     def testGetPrintableResultForInputscenarioWithInvalidCommandInFullAndPartialRequests(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 

@@ -10,9 +10,9 @@ class ResultData:
     RESULT_KEY_WARNINGS_DIC = 'WARNING_MSG'
     RESULT_KEY_INITIAL_COMMAND_PARMS = 'INIT_COMMAND_PARMS'                 # command parm dic denoting the user requesr
 
-    RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT = 'OPTION_VALUE_COMPUTED_AMOUNT'# store the crypto or unit computed value returned for -v option
-    RESULT_KEY_OPTION_VALUE_SYMBOL = 'OPTION_VALUE_SYMBOL'                  # store the currency or unit symbol returned for -v option
-    RESULT_KEY_OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'                      # store True or False to indicate if the value option is to be stored in history (-vs) or not (-v)
+    RESULT_KEY_OPTION_VALUE_CRYPTO = 'OPTION_VALUE_COMPUTED_AMOUNT' # store the crypto price returned for -v option
+    RESULT_KEY_OPTION_VALUE_UNIT = 'OPTION_VALUE_SYMBOL'            # store the unit price returned for -v option
+    RESULT_KEY_OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'              # store True or False to indicate if the value option is to be stored in history (-vs) or not (-v)
 
     RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT = 'OPTION_FIAT_COMPUTED_AMOUNT'# store the crypto price converted to fiat returned for the -f option
     RESULT_KEY_OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL'                  # store the fiat symbol of the -f option
@@ -45,8 +45,8 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC] = {}
         self._resultDataDic[self.RESULT_KEY_INITIAL_COMMAND_PARMS] = None
         self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None       
-        self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_COMPUTED_AMOUNT] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_SYMBOL] = None
+        self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_CRYPTO] = None
+        self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_UNIT] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_SAVE] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SYMBOL] = None
