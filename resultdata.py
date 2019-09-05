@@ -10,18 +10,20 @@ class ResultData:
     RESULT_KEY_WARNINGS_DIC = 'WARNING_MSG'
     RESULT_KEY_INITIAL_COMMAND_PARMS = 'INIT_COMMAND_PARMS'                 # command parm dic denoting the user requesr
 
-    RESULT_KEY_OPTION_VALUE_CRYPTO = 'OPTION_VALUE_COMPUTED_AMOUNT' # store the crypto price returned for -v option
-    RESULT_KEY_OPTION_VALUE_UNIT = 'OPTION_VALUE_SYMBOL'            # store the unit price returned for -v option
-    RESULT_KEY_OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'              # store True or False to indicate if the value option is to be stored in history (-vs) or not (-v)
+    RESULT_KEY_OPTION_VALUE_CRYPTO = 'OPTION_VALUE_CRYPTO'  # store the crypto price returned for -v option
+    RESULT_KEY_OPTION_VALUE_UNIT = 'OPTION_VALUE_UNIT'      # store the unit price returned for -v option
+    RESULT_KEY_OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'      # store True or False to indicate if the value option is to be stored in history (-vs) or not (-v)
 
     RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT = 'OPTION_FIAT_COMPUTED_AMOUNT'# store the crypto price converted to fiat returned for the -f option
     RESULT_KEY_OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL'                  # store the fiat symbol of the -f option
     RESULT_KEY_OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'                      # store True or False to indicate if the fiat option is to be stored in history (-fs) or not (-f)
 
-    RESULT_KEY_OPTION_PRICE_COMPUTED_AMOUNT = 'OPTION_PRICE_COMPUTED_AMOUNT'# store the price in unit corresponding to the amount specified in the currency synbol specified
-                                                                            # for the -p option
-    RESULT_KEY_OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL'                  # store the currency symbol of the -p option
-    RESULT_KEY_OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'                      # store True or False to indicate if the price option is to be stored in history (-ps) or not (-p)
+    RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT = 'OPTION_PRICE_SPECIFIED_AMOUNT'          # store the crypto or unit user entered value for -v option. Ex: 0.1 if -v0.1btc
+    RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT = 'OPTION_PRICE_COMPUTED_UNIT_AMOUNT'  # store the price in unit corresponding to the amount specified in the option synbol specified
+                                                                                        # for the -p option. Ex: if crypto is eth and unit is btc and option is -p300usd,
+                                                                                        # store the price in btc if 1 eth is 300 usd
+    RESULT_KEY_OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL'  # store the currency symbol of the -p option, usd if otion is -p300usd
+    RESULT_KEY_OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'      # store True or False to indicate if the price option is to be stored in history (-ps) or not (-p)
 
     WARNING_TYPE_FUTURE_DATE = 'FUTURE_DATE'
     WARNING_TYPE_COMMAND_VALUE = 'VALUE_COMMAND'
@@ -51,7 +53,8 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SYMBOL] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SAVE] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_COMPUTED_AMOUNT] = None
+        self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT] = None
+        self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SYMBOL] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SAVE] = None
 
