@@ -391,6 +391,8 @@ class TestProcessor(unittest.TestCase):
 
 
     def testGetCryptoPriceHistoricalOptionValueCryptoToUnitOptionFiat(self):
+        # full requet: btc usd 12/09/17 10:05 bittrex -v0.001BTC -fCHF
+        # exp result: 0.001 BTC/4.122 USD on BitTrex: 12/09/17 00:00C 4122 4126.122
         crypto = 'BTC'
         unit = 'USD'
         exchange = 'bittrex'
@@ -424,8 +426,8 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), '12/09/17 00:00')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), optionValueAmount)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT), 4.122)
+        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(4.122, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
         self.assertEqual(4126.122, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))

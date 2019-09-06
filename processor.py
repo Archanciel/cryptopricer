@@ -14,7 +14,6 @@ class Processor:
         self.priceRequester = priceRequester
         self.crypCompExchanges = crypCompExchanges
 
-
     def getCryptoPrice(self,
                        crypto,
                        unit,
@@ -103,28 +102,93 @@ class Processor:
         localTz = self.configManager.localTimeZone
         dateTimeFormat = self.configManager.dateTimeFormat
 
+        resultData = self._getPrice(crypto,
+                                    unit,
+                                    validExchangeSymbol,
+                                    year,
+                                    month,
+                                    day,
+                                    hour,
+                                    minute,
+                                    dateTimeFormat,
+                                    localTz)
+                
+        if optionValueSymbol != None and not resultData.isError():
+            resultData = self._computeOptionValueAmount(resultData,
+                                                        crypto,
+                                                        unit,
+                                                        optionValueSymbol,
+                                                        optionValueAmount,
+                                                        optionValueSaveFlag)
+
+        if optionFiatSymbol != None and not resultData.isError():
+            resultData = self._computeOptionFiatAmount(resultData,
+                                                       optionFiatSymbol,
+                                                       unit,
+                                                       year,
+                                                       month,
+                                                       day,
+                                                       hour,
+                                                       minute,
+                                                       dateTimeFormat,
+                                                       localTz,
+                                                       optionFiatSaveFlag)
+
+        return resultData
+
+    def _getPrice(self,
+                  currency,
+                  targetCurrency,
+                  exchange,
+                  year,
+                  month,
+                  day,
+                  hour,
+                  minute,
+                  dateTimeFormat,
+                  localTz):
+        '''
+        Returns the price of 1 unit of currency in targetCurrency. Ex: currency == btc,
+        targetCurrency == usd --> returned price: 1 btc == 10000 usd. Or currency == chf,
+        targetCurrency == huf (Hungarian Forint) --> returned price: 1 chf == 330 huf.
+        :param currency:
+        :param targetCurrency:
+        :param exchange:
+        :param year:
+        :param month:
+        :param day:
+        :param hour:
+        :param minute:
+        :param dateTimeFormat:
+        :param localTz:
+
+        :seqdiag_return ResultData
+
+        :return:
+        '''
         if (day + month + year) == 0:
             # when the user specifies 0 for either the date,
             # this means current price is asked and date components
             # are set to zero !
-            resultData = self.priceRequester.getCurrentPrice(crypto, unit, validExchangeSymbol)
+            resultData = self.priceRequester.getCurrentPrice(currency, targetCurrency, exchange)
 
             if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
-                #adding date time info if no error returned
+                # adding date time info if no error returned
                 timeStamp = resultData.getValue(ResultData.RESULT_KEY_OPTION_TIME_STAMP)
                 requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, localTz)
                 requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
                 resultData.setValue(ResultData.RESULT_KEY_OPTION_DATE_TIME_STRING, requestedDateTimeStr)
         else:
-            #getting historical price, either histo day or histo minute
+            # getting historical price, either histo day or histo minute
             timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
             timeStampUtcNoHHMM = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, 0, 0, 0, 'UTC')
-            resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, unit, timeStampLocal, timeStampUtcNoHHMM, validExchangeSymbol)
+            resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(currency, targetCurrency, timeStampLocal,
+                                                                              timeStampUtcNoHHMM, exchange)
 
             if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
-                #adding date time info if no error returned
+                # adding date time info if no error returned
                 if resultData.getValue(ResultData.RESULT_KEY_OPTION_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
-                    #histoday price returned
+                    # histoday price returned
                     requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
                     requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(self.configManager.dateTimeFormat)
                 else:
@@ -132,15 +196,7 @@ class Processor:
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 
                 resultData.setValue(ResultData.RESULT_KEY_OPTION_DATE_TIME_STRING, requestedDateTimeStr)
-                
-        if optionValueSymbol != None and not resultData.isError():
-            resultData = self._computeOptionValueAmount(resultData, crypto, unit, optionValueSymbol, optionValueAmount, optionValueSaveFlag)
-
-        if optionFiatSymbol != None and not resultData.isError():
-            resultData = self._computeOptionFiatAmount(resultData, crypto, unit, optionFiatSymbol, optionFiatSaveFlag)
-
         return resultData
-
 
     def _computeOptionValueAmount(self,
                                   resultData,
@@ -204,12 +260,18 @@ class Processor:
 
     def _computeOptionFiatAmount(self,
                                  resultData,
-                                 crypto,
+                                 fiat,
                                  unit,
-                                 optionValueSymbol,
-                                 optionValueSaveFlag):
+                                 year,
+                                 month,
+                                 day,
+                                 hour,
+                                 minute,
+                                 dateTimeFormat,
+                                 localTz,
+                                 optionFiatSaveFlag):
         '''
-        Compute the optionValueAmount according to the passed parms and put the result in
+        Compute the optionFiatAmount according to the passed parms and put the result in
         the passed resultData.
         :param optionValueSymbol: upper case price value symbol. If == crypto, this means that optionValueAmount provided
                                  is in crypto and must be converted into unit at the rate returned by the PriceRequester.
@@ -234,33 +296,31 @@ class Processor:
                                         converted value will be 1 / 20000 USD * 500 USD => 0.025 BTC
 
         :param optionValueAmount: float price value amount
-        :param optionValueSaveFlag: used to refine warning if value command not applicable
+        :param optionFiatSaveFlag: used to refine warning if value command not applicable
         :return: a ResultData in which price value info has been added.
         '''
-        conversionRate = resultData.getValue(resultData.RESULT_KEY_PRICE)
-        optionValueAmount = 0 # only for compile !
-        if optionValueSymbol == crypto:
-            # converting optionValueAmount in crypto to equivalent value in unit
-            convertedValue = optionValueAmount * conversionRate
-            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, optionValueAmount)
-            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, convertedValue)
-        elif optionValueSymbol == unit:
-            # converting optionValueAmount in unit to equivalent value in crypto
-            convertedValue = optionValueAmount / conversionRate
-            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, convertedValue)
-            resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, optionValueAmount)
+        fiatResultData = self._getPrice(unit,
+                                        fiat,
+                                        'CCCAGG',
+                                        year,
+                                        month,
+                                        day,
+                                        hour,
+                                        minute,
+                                        dateTimeFormat,
+                                        localTz)
+
+        if not fiatResultData.isError():
+            fiatConversionRate = fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
+            fiatConversionPrice = resultData.getValue(resultData.RESULT_KEY_PRICE) * fiatConversionRate
+
+            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, round(fiatConversionPrice, 4))
+            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSaveFlag)
+
+            return resultData
         else:
-            if optionValueSaveFlag:
-                valueCommand = '-vs'
-            else:
-                valueCommand = '-v'
-
-            resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
-                                  "WARNING - currency value option symbol {} currently in effect differs from both crypto ({}) and unit ({}) of last request. {} option ignored".format(
-                                      optionValueSymbol, crypto, unit, valueCommand))
-
-        return resultData
-
+            return fiatResultData
 
 if __name__ == '__main__':
     from configurationmanager import ConfigurationManager
