@@ -131,8 +131,7 @@ class Processor:
                                                        hour,
                                                        minute,
                                                        dateTimeFormat,
-                                                       localTz,
-                                                       optionFiatSaveFlag)
+                                                       localTz)
 
         return resultData
 
@@ -231,7 +230,8 @@ class Processor:
                                         converted value will be 1 / 20000 USD * 500 USD => 0.025 BTC
 
         :param optionValueAmount: float price value amount
-        :param optionValueSaveFlag: used to refine warning if value command not applicable
+        :param optionValueSaveFlag: used to refine warning if value command not applicable.
+                                    The flag is set in the ResultData in CommandPrice.execute().
         :return: a ResultData in which price value info has been added.
         '''
         conversionRate = resultData.getValue(resultData.RESULT_KEY_PRICE)
@@ -268,8 +268,7 @@ class Processor:
                                  hour,
                                  minute,
                                  dateTimeFormat,
-                                 localTz,
-                                 optionFiatSaveFlag):
+                                 localTz):
         '''
         Compute the optionFiatAmount according to the passed parms and put the result in
         the passed resultData.
@@ -312,11 +311,16 @@ class Processor:
 
         if not fiatResultData.isError():
             fiatConversionRate = fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
-            fiatConversionPrice = resultData.getValue(resultData.RESULT_KEY_PRICE) * fiatConversionRate
+            fiatConvertedPrice = resultData.getValue(resultData.RESULT_KEY_PRICE) * fiatConversionRate
 
-            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, round(fiatConversionPrice, 4))
+            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, round(fiatConvertedPrice, 4))
             resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
-            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSaveFlag)
+
+            unitValuePrice = resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)
+
+            if unitValuePrice:
+                fiatConvertedUnitValuePrice = unitValuePrice * fiatConversionRate
+                resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, fiatConvertedUnitValuePrice)
 
             return resultData
         else:

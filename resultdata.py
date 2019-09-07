@@ -12,6 +12,8 @@ class ResultData:
 
     RESULT_KEY_OPTION_VALUE_CRYPTO = 'OPTION_VALUE_CRYPTO'  # store the crypto price returned for -v option
     RESULT_KEY_OPTION_VALUE_UNIT = 'OPTION_VALUE_UNIT'      # store the unit price returned for -v option
+    RESULT_KEY_OPTION_VALUE_FIAT = 'OPTION_VALUE_FIAT'      # store the fiat price returned for -v option
+                                                            # provided the -f fiat option is specified
     RESULT_KEY_OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'      # store True or False to indicate if the value option is to be stored in history (-vs) or not (-v)
 
     RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT = 'OPTION_FIAT_COMPUTED_AMOUNT'# store the crypto price converted to fiat returned for the -f option
@@ -49,6 +51,7 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None       
         self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_CRYPTO] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_UNIT] = None
+        self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_FIAT] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_SAVE] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SYMBOL] = None

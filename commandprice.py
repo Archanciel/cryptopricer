@@ -229,6 +229,7 @@ class CommandPrice(AbstractCommand):
         result.setValue(ResultData.RESULT_KEY_INITIAL_COMMAND_PARMS, initialParsedParmDataDic)
 
         result.setValue(ResultData.RESULT_KEY_OPTION_VALUE_SAVE, optionValueSaveFlag)
+#        result.setValue(ResultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSaveFlag)
 
         if wasDateInFutureSetToLastYear:
             result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,
