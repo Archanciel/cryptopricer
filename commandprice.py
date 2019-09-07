@@ -210,6 +210,7 @@ class CommandPrice(AbstractCommand):
             optionValueAmount = float(optionValueAmount)
 
         optionValueSaveFlag = self.parsedParmData[self.OPTION_VALUE_SAVE]
+
         result = self.receiver.getCryptoPrice(cryptoUpper,
                                               unitUpper,
                                               exchange,
@@ -221,7 +222,12 @@ class CommandPrice(AbstractCommand):
                                               optionValueSymbol,
                                               optionValueAmount,
                                               optionValueSaveFlag,
-                                              self.requestInputString)
+                                              self.requestInputString,
+                                              optionFiatSymbol=None,
+                                              optionFiatSaveFlag=None,
+                                              optionPriceSymbol=None,
+                                              optionPriceAmount=None,
+                                              optionPriceSaveFlag=None)
 
         # the command components	denoting the user request will be used to recreate
         # a full command request which will be stored in the command history list.
@@ -229,7 +235,7 @@ class CommandPrice(AbstractCommand):
         result.setValue(ResultData.RESULT_KEY_INITIAL_COMMAND_PARMS, initialParsedParmDataDic)
 
         result.setValue(ResultData.RESULT_KEY_OPTION_VALUE_SAVE, optionValueSaveFlag)
-#        result.setValue(ResultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSaveFlag)
+        result.setValue(ResultData.RESULT_KEY_OPTION_FIAT_SAVE, self.parsedParmData[self.OPTION_FIAT_SAVE])
 
         if wasDateInFutureSetToLastYear:
             result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,
