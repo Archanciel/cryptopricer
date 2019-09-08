@@ -437,7 +437,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.assertEqual(fullCommandString, "eth usd 05/12/17 09:30 bittrex")
 
 
-    def testGetCryptoPriceRealTimeWithValueFlag(self):
+    def testGetCryptoPriceRealTimeWithOptionValue(self):
         #correspond to command btc usd 0 bittrex -v0.01btc
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
@@ -505,7 +505,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.assertEqual('btc usd 0 bittrex', fullCommandString)
 
 
-    def testGetCryptoPriceRealTimeWithValueFlagGenerateWarning(self):
+    def testGetCryptoPriceRealTimeWithOptionValueGenerateWarning(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
         unit = 'USD'
