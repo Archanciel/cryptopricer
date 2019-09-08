@@ -647,7 +647,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForReplayRealTimeThenValueCommand(self):
+    def testGetPrintableResultForReplayRealTimeThenOptionValue(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         requestYearStr, requestMonthStr, requestDayStr, requestHourStr, requestMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -766,7 +766,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForReplayHistoMinuteThenValueCommand(self):
+    def testGetPrintableResultForReplayHistoMinuteThenOptionValue(self):
         timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
@@ -899,7 +899,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForReplayHistoDayThenValueCommand(self):
+    def testGetPrintableResultForReplayHistoDayThenOptionValue(self):
         timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         eightDaysBeforeArrowDate = now.shift(days=-8)
@@ -1464,7 +1464,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithInvalidValueCommand(self):
+    def testGetPrintableResultForInputscenarioWithInvalidOptionValue(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -1480,7 +1480,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithInvalidCommand(self):
+    def testGetPrintableResultForInputscenarioWithInvalidOption(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -1506,7 +1506,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithValueCommandAndInvalidCommand(self):
+    def testGetPrintableResultForInputscenarioWithOptionValueAndInvalidOption(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -1522,7 +1522,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('btc usd 0 all -vs100.2usd', fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithSaveValueCommandAndWarning(self):
+    def testGetPrintableResultForInputscenarioWithSaveOptionValueAndWarning(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -1578,7 +1578,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForHistoricalRequestWithSaveValueCommandUnitAmountSpecified(self):
+    def testGetPrintableResultForHistoricalRequestWithSaveOptionValueUnitAmountSpecified(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs70usd'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -1587,7 +1587,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStr)
         self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs70usd', fullCommandStrWithSaveModeOptions)
 
-    def testGetPrintableResultForHistoricalRequestWithSaveValueCommandCryptoAmountSpecified(self):
+    def testGetPrintableResultForHistoricalRequestWithSaveOptionValueCryptoAmountSpecified(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs0.1btc'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -1596,7 +1596,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStr)
         self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs0.1btc', fullCommandStrWithSaveModeOptions)
 
-    def testGetPrintableResultForInputscenarioWithInvalidCommandInFullAndPartialRequests(self):
+    def testGetPrintableResultForInputscenarioWithInvalidOptionInFullAndPartialRequests(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -1756,7 +1756,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithValueCommandVAfterValueCommandVS(self):
+    def testGetPrintableResultForInputscenarioWithOptionValueVAfterOptionValueVS(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -1905,7 +1905,7 @@ class TestControllerGui(unittest.TestCase):
                                                                requestMinuteStr), fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForRealTimeWithMarketNotExistForCoinPairAndInvalidCommandCausingErrorAndWarning(self):
+    def testGetPrintableResultForRealTimeWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning(self):
         #first command: RT price command
         inputStr = 'btc eth 0 binance -eall'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
@@ -1917,7 +1917,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForHistoMinuteWithMarketNotExistForCoinPairAndInvalidCommandCausingErrorAndWarning(self):
+    def testGetPrintableResultForHistoMinuteWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning(self):
         #first command: RT price command
         inputStr = 'btc eth 0 binance -eall'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
@@ -1947,7 +1947,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForHistoDayWithMarketNotExistForCoinPairAndInvalidCommandCausingErrorAndWarning(self):
+    def testGetPrintableResultForHistoDayWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning(self):
         #first command: RT price command
         inputStr = 'btc eth 0 binance -eall'
         printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
@@ -2196,7 +2196,7 @@ class TestControllerGui(unittest.TestCase):
             self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithInvalidSaveValueCommandAndWarning(self):
+    def testGetPrintableResultForInputscenarioWithInvalidSaveOptionValueAndWarning(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
