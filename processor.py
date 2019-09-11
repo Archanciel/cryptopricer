@@ -195,6 +195,12 @@ class Processor:
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 
                 resultData.setValue(ResultData.RESULT_KEY_OPTION_DATE_TIME_STRING, requestedDateTimeStr)
+
+
+        if resultData.getValue(ResultData.RESULT_KEY_PRICE) == 0:
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
+                                'PROVIDER ERROR - Requesting {}/{} price for date {}/{}/{} {}:{} returned invalid value 0'.format(currency, targetCurrency, day, month, year, hour, minute))
+
         return resultData
 
     def _computeOptionValueAmount(self,

@@ -203,6 +203,8 @@ class CommandPrice(AbstractCommand):
         optionValueSymbol = self.parsedParmData[self.OPTION_VALUE_SYMBOL]
         optionValueAmount = self.parsedParmData[self.OPTION_VALUE_AMOUNT]
 
+        # option value
+
         if optionValueSymbol:
             optionValueSymbol = optionValueSymbol.upper()
 
@@ -210,6 +212,15 @@ class CommandPrice(AbstractCommand):
             optionValueAmount = float(optionValueAmount)
 
         optionValueSaveFlag = self.parsedParmData[self.OPTION_VALUE_SAVE]
+
+        # option fiat
+
+        optionFiatSymbol = self.parsedParmData[self.OPTION_FIAT_SYMBOL]
+
+        if optionFiatSymbol:
+            optionFiatSymbol = optionFiatSymbol.upper()
+
+        optionFiatSaveFlag = self.parsedParmData[self.OPTION_FIAT_SAVE]
 
         result = self.receiver.getCryptoPrice(cryptoUpper,
                                               unitUpper,
@@ -223,8 +234,8 @@ class CommandPrice(AbstractCommand):
                                               optionValueAmount,
                                               optionValueSaveFlag,
                                               self.requestInputString,
-                                              optionFiatSymbol=None,
-                                              optionFiatSaveFlag=None,
+                                              optionFiatSymbol=optionFiatSymbol,
+                                              optionFiatSaveFlag=optionFiatSaveFlag,
                                               optionPriceSymbol=None,
                                               optionPriceAmount=None,
                                               optionPriceSaveFlag=None)
@@ -235,7 +246,7 @@ class CommandPrice(AbstractCommand):
         result.setValue(ResultData.RESULT_KEY_INITIAL_COMMAND_PARMS, initialParsedParmDataDic)
 
         result.setValue(ResultData.RESULT_KEY_OPTION_VALUE_SAVE, optionValueSaveFlag)
-        result.setValue(ResultData.RESULT_KEY_OPTION_FIAT_SAVE, self.parsedParmData[self.OPTION_FIAT_SAVE])
+        result.setValue(ResultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSaveFlag)
 
         if wasDateInFutureSetToLastYear:
             result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,

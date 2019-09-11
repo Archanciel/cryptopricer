@@ -9,6 +9,9 @@ from bs4 import BeautifulSoup
 from datetimeutil import DateTimeUtil
 from resultdata import ResultData
 
+MINUTE_PRICE_DAY_NUMBER_LIMIT = 7   # if the request date is older than current time - this value,
+                                    # the price returned is a day close price, not a minute price !
+
 IDX_DATA_ENTRY_TO = 1
 
 class PriceRequester:
@@ -58,12 +61,12 @@ class PriceRequester:
         resultData.setValue(ResultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
 
-        if DateTimeUtil.isTimeStampOlderThan(timeStampLocalForHistoMinute, dayNumberInt=7):
+        if DateTimeUtil.isTimeStampOlderThan(timeStampLocalForHistoMinute, dayNumberInt=MINUTE_PRICE_DAY_NUMBER_LIMIT):
             return self._getHistoDayPriceAtUTCTimeStamp(crypto, unit, timeStampUTCNoHHMMForHistoDay, exchange, resultData)
         else:
             return self._getHistoMinutePriceAtUTCTimeStamp(crypto, unit, timeStampLocalForHistoMinute, exchange, resultData)
-        
-        
+
+
     def _getHistoMinutePriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histominute?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, unit, timeStampUTCStr, exchange)
@@ -144,8 +147,8 @@ class PriceRequester:
                     dataEntryDic = dataListOrDic[IDX_DATA_ENTRY_TO]
                     resultData.setValue(ResultData.RESULT_KEY_OPTION_TIME_STAMP, dataEntryDic['time'])
                     resultData.setValue(ResultData.RESULT_KEY_PRICE, dataEntryDic['close'])
-#                except IndexError: # does not happen in any test case
-#                    resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange,isRealTime=False)
+                except IndexError: # does not happen in any test case
+                    resultData = self._handleProviderError(dic, resultData, url, crypto, unit, exchange,isRealTime=False)
                 except KeyError:
                     # happens when pair coupled to exchange do not return ay data.
                     # Either the exchange does not exist or the pair is not
