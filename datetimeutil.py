@@ -340,13 +340,13 @@ class DateTimeUtil:
             hourInt = 0
             minuteInt = 0
 
-        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntCompionents(dayInt, monthInt, yearInt, hourInt,
+        dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(dayInt, monthInt, yearInt, hourInt,
                                                                              minuteInt, timezoneStr, dateTimeFormat)
 
         return dateDMY, dateHM
 
     @staticmethod
-    def formatPrintDateTimeFromIntCompionents(dayInt,
+    def _formatPrintDateTimeFromIntComponents(dayInt,
                                               monthInt,
                                               yearInt,
                                               hourInt,

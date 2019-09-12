@@ -409,8 +409,8 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertEqual('08:07', dateHM)
 
     def testFormatPrintDateFromStringComponentsTimeDayMonthTwoDigitsYearHourMinute(self):
-        dayStr = '07'
-        monthStr = '09'
+        dayStr = '17'
+        monthStr = '11'
         yearStr = '18'
         hourStr = '8'
         minuteStr = '7'
@@ -419,8 +419,36 @@ class TestDateTimeUtil(unittest.TestCase):
 
         dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromStringComponents(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
 
+        self.assertEqual('17/11/18', dateDMY)
+        self.assertEqual('08:07', dateHM)
+
+    def test_formatPrintDateFromIntComponentsTimeDayMonthTwoDigitsYearHourMinute(self):
+        day = 7
+        month = 9
+        year = 18
+        hour = 8
+        minute = 7
+        timezone = LOCAL_TIME_ZONE
+        dateTimeFormat = 'DD/MM/YY HH:mm'
+
+        dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
+
         self.assertEqual('07/09/18', dateDMY)
         self.assertEqual('08:07', dateHM)
+
+    def test_formatPrintDateFromIntComponentsTimeDayMonthFourDigitsYearHourMinute(self):
+        day = 17
+        month = 11
+        year = 2018
+        hour = 18
+        minute = 27
+        timezone = LOCAL_TIME_ZONE
+        dateTimeFormat = 'DD/MM/YY HH:mm'
+
+        dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
+
+        self.assertEqual('17/11/18', dateDMY)
+        self.assertEqual('18:27', dateHM)
 
 if __name__ == '__main__':
     unittest.main()

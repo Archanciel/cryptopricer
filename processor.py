@@ -199,7 +199,7 @@ class Processor:
         price = resultData.getValue(ResultData.RESULT_KEY_PRICE)
 
         if price == 0:
-            dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntCompionents(day,
+            dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day,
                                                                                  month,
                                                                                  year,
                                                                                  hour,
