@@ -7,6 +7,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from datetimeutil import DateTimeUtil
+from utilityfortest import UtilityForTest
 import arrow
 
 US_DATE_TIME_FORMAT_ARROW = 'YYYY/MM/DD HH:mm:ss'
@@ -18,6 +19,8 @@ FR_DATE_TIME_FORMAT_ARROW = 'DD/MM/YYYY HH:mm:ss'
 FR_YY_DATE_TIME_FORMAT_ARROW = 'DD/MM/YY HH:mm:ss'
 FR_DATE_TIME_FORMAT_TZ_ARROW = FR_DATE_TIME_FORMAT_ARROW + ' ZZ'
 FR_YY_DATE_TIME_FORMAT_TZ_ARROW = FR_YY_DATE_TIME_FORMAT_ARROW + ' ZZ'
+
+LOCAL_TIME_ZONE = 'Europe/Zurich'
 
 class TestDateTimeUtil(unittest.TestCase):
     def setUp(self):
@@ -340,6 +343,84 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertEqual('MM-DD', formatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY])
         self.assertEqual('HH.mm', formatDic[DateTimeUtil.TIME_FORMAT_KEY])
 
+    def testFormatPrintDateTimeDayMonthOnly(self):
+        dayStr = '1'
+        monthStr = '1'
+        yearStr = None
+        hourStr = None
+        minuteStr = None
+        timezoneStr = LOCAL_TIME_ZONE
+        dateTimeFormat = 'DD/MM/YY HH:mm'
+
+        now = DateTimeUtil.localNow(timezoneStr)
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
+
+        self.assertEqual('01/01/' + nowYearStr, dateDMY)
+        self.assertEqual('00:00', dateHM)
+
+    def testFormatPrintDateTimeDayMonthOnlyWithZero(self):
+        dayStr = '04'
+        monthStr = '09'
+        yearStr = None
+        hourStr = None
+        minuteStr = None
+        timezoneStr = LOCAL_TIME_ZONE
+        dateTimeFormat = 'DD/MM/YY HH:mm'
+
+        now = DateTimeUtil.localNow(timezoneStr)
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
+
+        self.assertEqual('04/09/' + nowYearStr, dateDMY)
+        self.assertEqual('00:00', dateHM)
+
+    def testFormatPrintDateTimeDayMonthHourMinuteOnly(self):
+        dayStr = '07'
+        monthStr = '09'
+        yearStr = None
+        hourStr = '18'
+        minuteStr = '47'
+        timezoneStr = LOCAL_TIME_ZONE
+        dateTimeFormat = 'DD/MM/YY HH:mm'
+
+        now = DateTimeUtil.localNow(timezoneStr)
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
+
+        self.assertEqual('07/09/' + nowYearStr, dateDMY)
+        self.assertEqual('18:47', dateHM)
+
+    def testFormatPrintDateTimeDayMonthFourDigitsYearHourMinute(self):
+        dayStr = '07'
+        monthStr = '09'
+        yearStr = '2018'
+        hourStr = '8'
+        minuteStr = '7'
+        timezoneStr = LOCAL_TIME_ZONE
+        dateTimeFormat = 'DD/MM/YY HH:mm'
+
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
+
+        self.assertEqual('07/09/18', dateDMY)
+        self.assertEqual('08:07', dateHM)
+
+    def testFormatPrintDateTimeDayMonthTwoDigitsYearHourMinute(self):
+        dayStr = '07'
+        monthStr = '09'
+        yearStr = '18'
+        hourStr = '8'
+        minuteStr = '7'
+        timezoneStr = LOCAL_TIME_ZONE
+        dateTimeFormat = 'DD/MM/YY HH:mm'
+
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
+
+        self.assertEqual('07/09/18', dateDMY)
+        self.assertEqual('08:07', dateHM)
 
 if __name__ == '__main__':
     unittest.main()
