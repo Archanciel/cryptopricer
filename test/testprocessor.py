@@ -627,15 +627,17 @@ class TestProcessor(unittest.TestCase):
 
     def testGetCryptoPriceHistoricalOptionFiatRateNotFound(self):
         # full request: btc usd 12/09/17 10:05 bittrex -fCHF
-        # exp result: BTC/USD/CHF on CCCAGG: 12/09/17 00:00C 4122 4126.122
+        # exp result: BTC/USD/CHF on BitTrex: 12/09/17 00:00C 4122 4126.122
         crypto = 'BTC'
         unit = 'USD'
-        exchange = 'CCCAGG'
+        exchange = 'bittrex'
         day = 12
         month = 9
         year = 2017
         hour = 10
         minute = 5
+        optionValueSymbol = 'BTC'  # -v0.001BTC
+        optionValueAmount = 0.001
         optionFiatSymbol = 'CHF' # -fCHF
 
 
@@ -647,11 +649,31 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute,
-                                               optionValueSymbol=None,
-                                               optionValueAmount=None,
+                                               optionValueSymbol,
+                                               optionValueAmount,
                                                requestInputString='',
                                                optionFiatSymbol=optionFiatSymbol)
-        self.assertEqual('PROVIDER ERROR - Requesting USD/CHF price for date 12/09/2017 10:05 returned invalid value 0', resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+# in case of provider error: happened from 9 t0 11 sept 2019 !!
+#        self.assertEqual('PROVIDER ERROR - Requesting USD/CHF price for date 12/09/17 10:05 returned invalid value 0', resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), '12/09/17 00:00')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
+        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(4.122, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+        self.assertEqual(4.126122, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
+        self.assertEqual(4126.122, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
 if __name__ == '__main__':
     unittest.main()

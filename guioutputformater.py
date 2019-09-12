@@ -143,7 +143,7 @@ class GuiOutputFormater(AbstractOutputFormater):
         hour = commandDic[CommandPrice.HOUR]
         minute = commandDic[CommandPrice.MINUTE]
 
-        requestDateDMY, requestDateHM = DateTimeUtil.formatPrintDateTime(day, month, year, hour, minute, timezoneStr, self.configurationMgr.dateTimeFormat)
+        requestDateDMY, requestDateHM = DateTimeUtil.formatPrintDateTimeFromStringComponents(day, month, year, hour, minute, timezoneStr, self.configurationMgr.dateTimeFormat)
 
         from seqdiagbuilder import SeqDiagBuilder
         SeqDiagBuilder.recordFlow()

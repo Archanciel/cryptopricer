@@ -189,17 +189,26 @@ class Processor:
                 if resultData.getValue(ResultData.RESULT_KEY_OPTION_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
                     # histoday price returned
                     requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
-                    requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(self.configManager.dateTimeFormat)
+                    requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(dateTimeFormat)
                 else:
                     requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 
                 resultData.setValue(ResultData.RESULT_KEY_OPTION_DATE_TIME_STRING, requestedDateTimeStr)
 
+        price = resultData.getValue(ResultData.RESULT_KEY_PRICE)
 
-        if resultData.getValue(ResultData.RESULT_KEY_PRICE) == 0:
+        if price == 0:
+            dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntCompionents(day,
+                                                                                 month,
+                                                                                 year,
+                                                                                 hour,
+                                                                                 minute,
+                                                                                 localTz,
+                                                                                 dateTimeFormat)
+
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-                                'PROVIDER ERROR - Requesting {}/{} price for date {}/{}/{} {}:{} returned invalid value 0'.format(currency, targetCurrency, day, month, year, hour, minute))
+                                'PROVIDER ERROR - Requesting {}/{} price for date {} {} returned invalid value 0'.format(currency, targetCurrency, dateDMY, dateHM))
 
         return resultData
 

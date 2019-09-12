@@ -303,7 +303,13 @@ class DateTimeUtil:
         return str.strip('\\')
 
     @staticmethod
-    def formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat):
+    def formatPrintDateTimeFromStringComponents(dayStr,
+                                                monthStr,
+                                                yearStr,
+                                                hourStr,
+                                                minuteStr,
+                                                timezoneStr,
+                                                dateTimeFormat):
         '''
         Accept string date/time components and return them as formatted date and time
         according to the passed dateTimeFormat (comes from the ConfigurationManager).
@@ -334,6 +340,32 @@ class DateTimeUtil:
             hourInt = 0
             minuteInt = 0
 
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntCompionents(dayInt, monthInt, yearInt, hourInt,
+                                                                             minuteInt, timezoneStr, dateTimeFormat)
+
+        return dateDMY, dateHM
+
+    @staticmethod
+    def formatPrintDateTimeFromIntCompionents(dayInt,
+                                              monthInt,
+                                              yearInt,
+                                              hourInt,
+                                              minuteInt,
+                                              timezoneStr,
+                                              dateTimeFormat):
+        '''
+        Accept integer date/time components and return them as formatted date and time
+        according to the passed dateTimeFormat (comes from the ConfigurationManager).
+
+        :param dayInt:
+        :param monthInt:
+        :param yearInt:
+        :param hourInt:
+        :param minuteInt:
+        :param timezoneStr:
+        :param dateTimeFormat:
+        :return:
+        '''
         arrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(dayInt,
                                                                     monthInt,
                                                                     yearInt,
@@ -347,10 +379,11 @@ class DateTimeUtil:
         timeSeparator = separatorsList[1]
 
         dateDMY = dateTimeComponentValueList[0] + dateSeparator + dateTimeComponentValueList[1] + dateSeparator + \
-                         dateTimeComponentValueList[2]
+                  dateTimeComponentValueList[2]
         dateHM = dateTimeComponentValueList[3] + timeSeparator + dateTimeComponentValueList[4]
 
         return dateDMY, dateHM
+
 
 if __name__ == '__main__':
     utcArrowDateTimeObj_endOfPreviousDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/29 23:59:59", 'UTC',

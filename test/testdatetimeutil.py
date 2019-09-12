@@ -343,7 +343,7 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertEqual('MM-DD', formatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY])
         self.assertEqual('HH.mm', formatDic[DateTimeUtil.TIME_FORMAT_KEY])
 
-    def testFormatPrintDateTimeDayMonthOnly(self):
+    def testFormatPrintDateFromStringComponentsTimeDayMonthOnly(self):
         dayStr = '1'
         monthStr = '1'
         yearStr = None
@@ -355,12 +355,12 @@ class TestDateTimeUtil(unittest.TestCase):
         now = DateTimeUtil.localNow(timezoneStr)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
-        dateDMY, dateHM = DateTimeUtil.formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromStringComponents(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
 
         self.assertEqual('01/01/' + nowYearStr, dateDMY)
         self.assertEqual('00:00', dateHM)
 
-    def testFormatPrintDateTimeDayMonthOnlyWithZero(self):
+    def testFormatPrintDateFromStringComponentsTimeDayMonthOnlyWithZero(self):
         dayStr = '04'
         monthStr = '09'
         yearStr = None
@@ -372,12 +372,12 @@ class TestDateTimeUtil(unittest.TestCase):
         now = DateTimeUtil.localNow(timezoneStr)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
-        dateDMY, dateHM = DateTimeUtil.formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromStringComponents(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
 
         self.assertEqual('04/09/' + nowYearStr, dateDMY)
         self.assertEqual('00:00', dateHM)
 
-    def testFormatPrintDateTimeDayMonthHourMinuteOnly(self):
+    def testFormatPrintDateFromStringComponentsTimeDayMonthHourMinuteOnly(self):
         dayStr = '07'
         monthStr = '09'
         yearStr = None
@@ -389,12 +389,12 @@ class TestDateTimeUtil(unittest.TestCase):
         now = DateTimeUtil.localNow(timezoneStr)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
-        dateDMY, dateHM = DateTimeUtil.formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromStringComponents(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
 
         self.assertEqual('07/09/' + nowYearStr, dateDMY)
         self.assertEqual('18:47', dateHM)
 
-    def testFormatPrintDateTimeDayMonthFourDigitsYearHourMinute(self):
+    def testFormatPrintDateFromStringComponentsTimeDayMonthFourDigitsYearHourMinute(self):
         dayStr = '07'
         monthStr = '09'
         yearStr = '2018'
@@ -403,12 +403,12 @@ class TestDateTimeUtil(unittest.TestCase):
         timezoneStr = LOCAL_TIME_ZONE
         dateTimeFormat = 'DD/MM/YY HH:mm'
 
-        dateDMY, dateHM = DateTimeUtil.formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromStringComponents(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
 
         self.assertEqual('07/09/18', dateDMY)
         self.assertEqual('08:07', dateHM)
 
-    def testFormatPrintDateTimeDayMonthTwoDigitsYearHourMinute(self):
+    def testFormatPrintDateFromStringComponentsTimeDayMonthTwoDigitsYearHourMinute(self):
         dayStr = '07'
         monthStr = '09'
         yearStr = '18'
@@ -417,7 +417,7 @@ class TestDateTimeUtil(unittest.TestCase):
         timezoneStr = LOCAL_TIME_ZONE
         dateTimeFormat = 'DD/MM/YY HH:mm'
 
-        dateDMY, dateHM = DateTimeUtil.formatPrintDateTime(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromStringComponents(dayStr, monthStr, yearStr, hourStr, minuteStr, timezoneStr, dateTimeFormat)
 
         self.assertEqual('07/09/18', dateDMY)
         self.assertEqual('08:07', dateHM)
