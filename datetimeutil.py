@@ -302,6 +302,33 @@ class DateTimeUtil:
     def _unescape(str):
         return str.strip('\\')
 
+    @staticmethod
+    def formatPrintDateTime(day, month, year, hour, minute, timezoneStr, dateTimeFormat):
+        dayInt = int(day)
+        monthInt = int(month)
+        if year == None:
+            now = DateTimeUtil.localNow(timezoneStr)
+            yearInt = now.year
+        else:
+            yearInt = int(year)
+        if hour != None and minute != None:
+            # hour can not exist without minute and vice versa !
+            hourInt = int(hour)
+            minuteInt = int(minute)
+        else:
+            hourInt = 0
+            minuteInt = 0
+        requestArrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(dayInt, monthInt, yearInt, hourInt,
+                                                                           minuteInt, 0, timezoneStr)
+        dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(
+            requestArrowDate, dateTimeFormat)
+        dateSeparator = separatorsList[0]
+        timeSeparator = separatorsList[1]
+        requestDateDMY = dateTimeComponentValueList[0] + dateSeparator + dateTimeComponentValueList[1] + dateSeparator + \
+                         dateTimeComponentValueList[2]
+        requestDateHM = dateTimeComponentValueList[3] + timeSeparator + dateTimeComponentValueList[4]
+
+        return requestDateDMY, requestDateHM
 
 if __name__ == '__main__':
     utcArrowDateTimeObj_endOfPreviousDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/29 23:59:59", 'UTC',

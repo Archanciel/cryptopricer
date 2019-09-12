@@ -137,42 +137,18 @@ class GuiOutputFormater(AbstractOutputFormater):
         :seqdiag_return requestDateDMY, requestDateHM
         :return:
         '''
-        dayInt = int(commandDic[CommandPrice.DAY])
-        monthInt = int(commandDic[CommandPrice.MONTH])
+        day = commandDic[CommandPrice.DAY]
+        month = commandDic[CommandPrice.MONTH]
         year = commandDic[CommandPrice.YEAR]
-
-        if year == None:
-            now = DateTimeUtil.localNow(timezoneStr)
-            yearInt = now.year
-        else:
-            yearInt = int(year)
-
         hour = commandDic[CommandPrice.HOUR]
         minute = commandDic[CommandPrice.MINUTE]
 
-        if hour != None and minute != None:
-            # hour can not exist without minute and vice versa !
-            hourInt = int(hour)
-            minuteInt = int(minute)
-        else:
-            hourInt = 0
-            minuteInt = 0
-
-        requestArrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(dayInt, monthInt, yearInt, hourInt,
-                                                                           minuteInt, 0, timezoneStr)
-        dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(
-            requestArrowDate, self.configurationMgr.dateTimeFormat)
-        dateSeparator = separatorsList[0]
-        timeSeparator = separatorsList[1]
-        requestDateDMY = dateTimeComponentValueList[0] + dateSeparator + dateTimeComponentValueList[1] + dateSeparator + \
-                         dateTimeComponentValueList[2]
-        requestDateHM = dateTimeComponentValueList[3] + timeSeparator + dateTimeComponentValueList[4]
+        requestDateDMY, requestDateHM = DateTimeUtil.formatPrintDateTime(day, month, year, hour, minute, timezoneStr, self.configurationMgr.dateTimeFormat)
 
         from seqdiagbuilder import SeqDiagBuilder
         SeqDiagBuilder.recordFlow()
 
         return requestDateDMY, requestDateHM
-
 
     def toClipboard(self, numericVal):
         if os.name == 'posix':
