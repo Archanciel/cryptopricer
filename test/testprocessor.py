@@ -653,27 +653,33 @@ class TestProcessor(unittest.TestCase):
                                                optionValueAmount,
                                                requestInputString='',
                                                optionFiatSymbol=optionFiatSymbol)
-# in case of provider error: happened from 9 t0 11 sept 2019 !!
-#        self.assertEqual('PROVIDER ERROR - Requesting USD/CHF price for date 12/09/17 10:05 returned invalid value 0', resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), '12/09/17 00:00')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
-        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
-        self.assertEqual(4.122, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
-        self.assertEqual(4.126122, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
-        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
-        self.assertEqual(4126.122, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
-        self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
-        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+
+
+        if resultData.getValue(resultData.RESULT_KEY_PRICE) == 0:
+            # in case of provider error: happened from 9 t0 11 sept 2019 !!
+            errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
+            print(errorMsg)
+            self.assertEqual('PROVIDER ERROR - Requesting USD/CHF price for date 12/09/17 10:05 returned invalid value 0',
+                             errorMsg)
+        else:
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4122)
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING), '12/09/17 00:00')
+            self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_TIME_STAMP), 1505174400)
+            self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+            self.assertEqual(4.122, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+            self.assertEqual(4.126122, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+            self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
+            self.assertEqual(4126.122, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+            self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+            self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
+            self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
+            self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
+            self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
+            self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
 if __name__ == '__main__':
     unittest.main()
