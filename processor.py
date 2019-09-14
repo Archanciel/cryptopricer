@@ -173,10 +173,10 @@ class Processor:
 
             if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 # adding date time info if no error returned
-                timeStamp = resultData.getValue(ResultData.RESULT_KEY_OPTION_TIME_STAMP)
+                timeStamp = resultData.getValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP)
                 requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, localTz)
                 requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
-                resultData.setValue(ResultData.RESULT_KEY_OPTION_DATE_TIME_STRING, requestedDateTimeStr)
+                resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
         else:
             # getting historical price, either histo day or histo minute
             timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
@@ -186,7 +186,7 @@ class Processor:
 
             if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 # adding date time info if no error returned
-                if resultData.getValue(ResultData.RESULT_KEY_OPTION_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
+                if resultData.getValue(ResultData.RESULT_KEY_PRICE_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
                     # histoday price returned
                     requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
                     requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(dateTimeFormat)
@@ -194,7 +194,7 @@ class Processor:
                     requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 
-                resultData.setValue(ResultData.RESULT_KEY_OPTION_DATE_TIME_STRING, requestedDateTimeStr)
+                resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
 
         price = resultData.getValue(ResultData.RESULT_KEY_PRICE)
 

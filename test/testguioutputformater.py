@@ -36,10 +36,10 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, '12/09/17 00:00')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, 1505174400)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -60,10 +60,10 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, '12/09/17 00:00')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, 1505174400)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, '0.01698205')
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, '70')
 
@@ -86,10 +86,10 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 465.52)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, '5/12/17 09:30')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, 1512462600)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '5/12/17 09:30')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
                             {'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
                              'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'OPTION_VALUE_AMOUNT': None, 'OPTION_VALUE_SYMBOL': None})
@@ -109,10 +109,10 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, '12/09/17 00:00')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, 1505174400)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, '0.01698205')
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, '70')
 
@@ -135,10 +135,10 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, '12/09/17 00:00')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, 1505174400)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, None)
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, None)
         resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
@@ -179,11 +179,11 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 4122.09)
 
         dateTimeString = '{}/{}/{} 10:05'.format(recentDayStr, month, year - 2000)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, dateTimeString)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -210,7 +210,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -266,9 +266,9 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_RT)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, dateTimeString)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -296,10 +296,10 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, None)
         resultData.setValue(resultData.RESULT_KEY_UNIT, None)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, None)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, None)
         resultData.setValue(resultData.RESULT_KEY_PRICE, None)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, None)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, None)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -327,10 +327,10 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_RT)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         resultData.setValue(resultData.RESULT_KEY_PRICE, None)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, None)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, None)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, None)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -400,10 +400,10 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 465.52)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, '5/12/17 09:30')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, 1512462600)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '5/12/17 09:30')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': None, 'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None})
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
                             {'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
@@ -424,10 +424,10 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
         resultData.setValue(resultData.RESULT_KEY_PRICE, 465.52)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, '5/12/17 09:30')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TIME_STAMP, 1512462600)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '5/12/17 09:30')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1512462600)
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
                             {'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
                              'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'OPTION_VALUE_AMOUNT': None, 'OPTION_VALUE_SYMBOL': None})
@@ -483,9 +483,9 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_RT)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, dateTimeString)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, '0.01')
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, '160')
         resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
@@ -550,9 +550,9 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_RT)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, dateTimeString)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
         resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
                               "WARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD). -v option ignored !")
 
@@ -611,9 +611,9 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_RT)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, dateTimeString)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, '0.01')
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, '160')
         resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE, True)
@@ -679,9 +679,9 @@ class TestGuiOutputFormater(unittest.TestCase):
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_TYPE, resultData.PRICE_TYPE_RT)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
         dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING, dateTimeString)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
 
         stdout = sys.stdout
         capturedStdout = StringIO()
@@ -690,6 +690,29 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('BTC/USD/CHF on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
+
+    def testPrintCryptoPriceHistoricalOptionFiat(self):
+        crypto = 'BTC'
+        unit = 'USD'
+        exchange = 'BitTrex'
+
+        resultData = ResultData()
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
+
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
+
+        self.printer.printDataToConsole(resultData)
+        sys.stdout = stdout
+        self.assertEqual('BTC/USD on BitTrex: 12/09/17 00:00C 4122\n', capturedStdout.getvalue())
 
 if __name__ == '__main__':
     unittest.main()

@@ -37,8 +37,8 @@ class AbstractOutputFormater(metaclass=ABCMeta):
             price = resultData.getValue(resultData.RESULT_KEY_PRICE)
             formattedPriceStr = self.formatFloatToStr(price)
             self.toClipboard(formattedPriceStr)
-            dateTimeStr = resultData.getValue(resultData.RESULT_KEY_OPTION_DATE_TIME_STRING)
-            priceType = resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE)
+            dateTimeStr = resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING)
+            priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
 
             if priceType == resultData.PRICE_TYPE_HISTO_DAY:
                 dateTimeStr += 'C'  # adding close symbol

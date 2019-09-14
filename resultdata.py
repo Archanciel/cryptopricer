@@ -2,10 +2,10 @@ class ResultData:
     RESULT_KEY_CRYPTO = 'CRYPTO'
     RESULT_KEY_UNIT = 'UNIT'
     RESULT_KEY_EXCHANGE = 'EXCHANGE'
-    RESULT_KEY_OPTION_TIME_STAMP = 'PRICE_TIMESTAMP'
-    RESULT_KEY_OPTION_DATE_TIME_STRING = 'PRICE_DATE_TIME_STR'
+    RESULT_KEY_PRICE_TIME_STAMP = 'PRICE_TIMESTAMP'
+    RESULT_KEY_PRICE_DATE_TIME_STRING = 'PRICE_DATE_TIME_STR'
     RESULT_KEY_PRICE = 'PRICE'
-    RESULT_KEY_OPTION_TYPE = 'PRICE_TYPE'
+    RESULT_KEY_PRICE_TYPE = 'PRICE_TYPE'
     RESULT_KEY_ERROR_MSG = 'ERROR_MSG'
     RESULT_KEY_WARNINGS_DIC = 'WARNING_MSG'
     RESULT_KEY_INITIAL_COMMAND_PARMS = 'INIT_COMMAND_PARMS'                 # command parm dic denoting the user requesr
@@ -41,10 +41,10 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_CRYPTO] = None
         self._resultDataDic[self.RESULT_KEY_UNIT] = None
         self._resultDataDic[self.RESULT_KEY_EXCHANGE] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_TIME_STAMP] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_DATE_TIME_STRING] = None
+        self._resultDataDic[self.RESULT_KEY_PRICE_TIME_STAMP] = None
+        self._resultDataDic[self.RESULT_KEY_PRICE_DATE_TIME_STRING] = None
         self._resultDataDic[self.RESULT_KEY_PRICE] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_TYPE] = None
+        self._resultDataDic[self.RESULT_KEY_PRICE_TYPE] = None
         self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None
         self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC] = {}
         self._resultDataDic[self.RESULT_KEY_INITIAL_COMMAND_PARMS] = None

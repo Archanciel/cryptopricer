@@ -82,7 +82,7 @@ class GuiOutputFormater(AbstractOutputFormater):
             return '', None, None
             
         commandDic = resultData.getValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS)
-        priceType = resultData.getValue(resultData.RESULT_KEY_OPTION_TYPE)
+        priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
         
         if priceType == resultData.PRICE_TYPE_RT:      
             fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
