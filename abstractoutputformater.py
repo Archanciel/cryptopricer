@@ -62,8 +62,13 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 
     def _formatCryptoUnitPart(self, resultData):
         if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO) == None:
-            return '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 
-                                  resultData.getValue(resultData.RESULT_KEY_UNIT))
+            if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL) == None:
+                return '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+                                      resultData.getValue(resultData.RESULT_KEY_UNIT))
+            else:
+                return '{}/{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+                                         resultData.getValue(resultData.RESULT_KEY_UNIT),
+                                         resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
         else:
             formattedPriceCryptoStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)))
             formattedPriceUnitStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)))
