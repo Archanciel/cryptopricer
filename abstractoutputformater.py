@@ -48,7 +48,19 @@ class AbstractOutputFormater(metaclass=ABCMeta):
                 dateTimeStr += 'R'  # adding RT symbol
 
             cryptoUnitPart = self._formatCryptoUnitPart(resultData)
-            outputStr = cryptoUnitPart + ' on {}: {} {}'.format(resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
+
+            fiatComputedAmount = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
+
+            if fiatComputedAmount != None:
+                formattedFiatComputedAmountStr = self.formatFloatToStr(fiatComputedAmount)
+                outputStr = cryptoUnitPart + ' on {}: {} {} {}'.format(
+                                                                    resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
+                                                                    dateTimeStr,
+                                                                    formattedPriceStr,
+                                                                    formattedFiatComputedAmountStr)
+            else:
+                outputStr = cryptoUnitPart + ' on {}: {} {}'.format(
+                                                                resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
                                                                 dateTimeStr,
                                                                 formattedPriceStr)
         else:

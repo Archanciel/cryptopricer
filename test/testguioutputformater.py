@@ -717,5 +717,32 @@ class TestGuiOutputFormater(unittest.TestCase):
         sys.stdout = stdout
         self.assertEqual('BTC/USD/EUR on BitTrex: 12/09/17 00:00C 4122 3463.7166\n', capturedStdout.getvalue())
 
+    def testPrintCryptoPriceHistoricalOptionFiatSave(self):
+        crypto = 'BTC'
+        unit = 'USD'
+        fiat = 'EUR'
+        exchange = 'BitTrex'
+
+        resultData = ResultData()
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 4122)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, 3463.7166)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, True)
+
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
+
+        self.printer.printDataToConsole(resultData)
+        sys.stdout = stdout
+        self.assertEqual('BTC/USD/EUR on BitTrex: 12/09/17 00:00C 4122 3463.7166\n', capturedStdout.getvalue())
+
 if __name__ == '__main__':
     unittest.main()
