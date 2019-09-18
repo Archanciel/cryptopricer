@@ -131,7 +131,10 @@ class Requester:
     Ex: -v0.004325btc is splitted into 0.00432, btc, None
         -v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
     '''
-    OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
+#    OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
+    OPTION_VALUE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
+
+
 #    OPTION_FIAT_PARM_DATA_PATTERN = r"([sS]?)([\d\.]?)(\w+)|(0)"
     OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
     OPTION_PRICE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
