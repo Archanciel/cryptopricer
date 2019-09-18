@@ -4822,6 +4822,34 @@ class TestRequester(unittest.TestCase):
         self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
         self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
 
+    def test_parseAndFillPartialCommandPriceInvalidOptionFiatSaveSpecNoFiatWithLargeAmount(self):
+        commandPrice = self.requester.commandPrice
+
+        parsedParmData = commandPrice.parsedParmData
+
+        # prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+        parsedParmData[CommandPrice.CRYPTO] = 'btc'
+        parsedParmData[CommandPrice.UNIT] = 'usd'
+        parsedParmData[CommandPrice.DAY] = '10'
+        parsedParmData[CommandPrice.MONTH] = '9'
+        parsedParmData[CommandPrice.YEAR] = '16'
+        parsedParmData[CommandPrice.HOUR] = '12'
+        parsedParmData[CommandPrice.MINUTE] = '45'
+        parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+        parsedParmData[CommandPrice.HOUR_MINUTE] = None
+        parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+        parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+        parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+        parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = True
+
+        inputStr = "-ceth -fs1.01 -ugbp -d11/8/15 -t22:46 -eKraken"
+        commandError = self.requester._parseAndFillCommandPrice(inputStr)
+        self.assertEqual(commandError, self.commandError)
+        resultData = self.commandError.execute()
+
+        #formatting of request input string has been moved to end of Requester.getCommand !
+        self.assertEqual("ERROR - invalid partial request : -fs1.01 option violates the -f option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
     def test_parseAndFillPartialCommandPriceInvalidOptionFiatSaveSpecNoFiatWithAmount(self):
         commandPrice = self.requester.commandPrice
 

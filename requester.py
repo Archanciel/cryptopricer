@@ -132,7 +132,8 @@ class Requester:
         -v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
     '''
     OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
-    OPTION_FIAT_PARM_DATA_PATTERN = r"([sS]?)([\d\.]?)(\w+)|(0)"
+#    OPTION_FIAT_PARM_DATA_PATTERN = r"([sS]?)([\d\.]?)(\w+)|(0)"
+    OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
     OPTION_PRICE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
 
     REQUEST_TYPE_PARTIAL = 'PARTIAL'
@@ -671,16 +672,20 @@ class Requester:
         match = re.match(requesterOptionPattern, optionData)
 
         if match:
-            optionSaveFlag = match.group(1)
-            optionAmount = match.group(2)
-            optionSymbol = match.group(3)
-            optionErase = match.group(4)
+            if len(match.groups()) == 5:
+                optionSaveFlag = match.group(1)
+                optionAmount = match.group(2)
+                optionSymbol = match.group(3)
+                optionExchange = match.group(4)
+                optionErase = match.group(5)
+            else:
+                optionSaveFlag = match.group(1)
+                optionAmount = match.group(2)
+                optionSymbol = match.group(3)
+                optionErase = match.group(4)
 
             if optionType == 'FIAT':
-                if optionSymbol.isdigit():
-                    if optionSymbol == '0':
-                        optionErase = '0'
-                elif len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH:
+                if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
                     return self.handleInvalidOptionFormat(optionData, optionType, requestType)
 
             if optionErase == None:
