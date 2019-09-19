@@ -131,11 +131,7 @@ class Requester:
     Ex: -v0.004325btc is splitted into 0.00432, btc, None
         -v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
     '''
-#    OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
-    OPTION_VALUE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
-
-
-#    OPTION_FIAT_PARM_DATA_PATTERN = r"([sS]?)([\d\.]?)(\w+)|(0)"
+    OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
     OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
     OPTION_PRICE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
 
@@ -676,6 +672,7 @@ class Requester:
 
         if match:
             if len(match.groups()) == 5:
+                # case if OPTION_FIAT_PARM_DATA_PATTERN
                 optionSaveFlag = match.group(1)
                 optionAmount = match.group(2)
                 optionSymbol = match.group(3)
@@ -688,6 +685,7 @@ class Requester:
                 optionErase = match.group(4)
 
             if optionType == 'FIAT':
+                self.commandPrice.parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE] = optionExchange
                 if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
                     return self.handleInvalidOptionFormat(optionData, optionType, requestType)
 

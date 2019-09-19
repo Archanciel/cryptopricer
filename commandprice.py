@@ -38,7 +38,8 @@ class CommandPrice(AbstractCommand):
 
     OPTION_FIAT_DATA = 'OPTION_FIAT_DATA'     # temporary store the data specified with -f. Ex: usd
     OPTION_FIAT_AMOUNT = 'OPTION_FIAT_AMOUNT' # not used for fiat option, but must exist due to generic code needs
-    OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL' # store the price symbol specified with -f. Ex: usd
+    OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL' # store the fiat symbol specified with -f. Ex: usd if -fusd
+    OPTION_FIAT_EXCHANGE = 'OPTION_FIAT_EXCHANGE' # store the exchange specified with -f. Ex: bittrex if feth.bittrex
     OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'     # store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
     OPTION_FIAT_MANDATORY_COMPONENTS = [OPTION_FIAT_SYMBOL]
 
@@ -83,6 +84,7 @@ class CommandPrice(AbstractCommand):
         self.parsedParmData[self.OPTION_VALUE_SAVE] = None
         self.parsedParmData[self.OPTION_FIAT_DATA] = None
         self.parsedParmData[self.OPTION_FIAT_SYMBOL] = None
+        self.parsedParmData[self.OPTION_FIAT_EXCHANGE] = None
         self.parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT] = None
         self.parsedParmData[self.OPTION_FIAT_SAVE] = None
         self.parsedParmData[self.OPTION_PRICE_DATA] = None
