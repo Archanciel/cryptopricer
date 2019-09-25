@@ -17,6 +17,7 @@ from consoleoutputformater import ConsoleOutputFormater
 from configurationmanager import ConfigurationManager
 from utilityfortest import UtilityForTest
 
+LOCAL_TIME_ZONE = 'Europe/Zurich'
 
 class TestController(unittest.TestCase):
     '''
@@ -910,12 +911,23 @@ class TestController(unittest.TestCase):
             self.assertEqual('ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[7][:-1])) #removing \n from contentList entry !
 
 
-    def testControllerHistoDayPriceIncompleteCommandScenario(self):
-        now = DateTimeUtil.localNow('Europe/Zurich')
-        nextRequestDay = '23'
-        nextRequestMonth = '9'
+    def testControllerHistoDayPriceIncompleteCommandScenarioWithDateInFuture(self):
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            now)
+
+        oneDaysAfterArrowDate = now.shift(days=1)
+
+        oneDaysAfterYearStr, oneDaysAfterMonthStr, oneDaysAfterDayStr, oneDaysAfterHourStr, oneDaysAfterMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneDaysAfterArrowDate)
+
+        oneYearBeforeArrowDate = now.shift(years=-1)
+
+        oneYearBeforeYearStr, oneYearBeforeMonthStr, oneYearBeforeDayStr, oneYearBeforeHourStr, oneYearBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearBeforeArrowDate)
+
+
         stdin = sys.stdin
-        sys.stdin = StringIO('btc 23/9 2:56 bittrex\n-uusd 2:56\n-d23/9\nq\ny')
+        multiRequestStr = 'btc {}/{} 2:56 bittrex\n-uusd 2:56\n-d{}/{}\nq\ny'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, oneDaysAfterDayStr, oneDaysAfterMonthStr)
+        sys.stdin = StringIO(multiRequestStr)
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -935,14 +947,18 @@ class TestController(unittest.TestCase):
         sys.stdin = stdin
         sys.stdout = stdout
 
-        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
-
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('ERROR - unit missing or invalid\n', contentList[1])
             self.assertEqual('ERROR - invalid partial request -uusd 2:56\n', contentList[3])
-            self.assertEqual('BTC/USD on BitTrex: ' + '{}/0{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[5][:-1]))
-            self.assertEqual('Warning - request date {}/0{}/{} 02:56 can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[6][:-1])
+
+            if nowMonthStr == oneDaysAfterMonthStr:
+            # this test can only be performed on a day which is not the last day of the mnnth.
+            # othervise, the test which assumes that we try a full request with only day and time
+            # specified, but with the day number set to tomorrow - in the future can not be
+            # run.
+                self.assertEqual('BTC/USD on BitTrex: ' + '{}/{}/{} 00:00C'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, oneYearBeforeYearStr), UtilityForTest.removePriceFromResult(contentList[5][:-1]))
+                self.assertEqual('Warning - request date {}/{}/{} 02:56 can not be in the future and was shifted back to last year'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[6][:-1])
 
 
     def testControllerHistoDayPriceWrongCommand(self):
