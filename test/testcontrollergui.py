@@ -2073,7 +2073,7 @@ class TestControllerGui(unittest.TestCase):
             self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForDayOnlyAndTimeullRequest_1daysAfter(self):
+    def testGetPrintableResultForDayOnlyAndTimeFullRequest_1daysAfter(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
             now)
