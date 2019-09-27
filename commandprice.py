@@ -222,6 +222,7 @@ class CommandPrice(AbstractCommand):
         if optionFiatSymbol:
             optionFiatSymbol = optionFiatSymbol.upper()
 
+        optionFiatExchange = self.parsedParmData[self.OPTION_FIAT_EXCHANGE]
         optionFiatSaveFlag = self.parsedParmData[self.OPTION_FIAT_SAVE]
 
         result = self.receiver.getCryptoPrice(cryptoUpper,
@@ -237,6 +238,7 @@ class CommandPrice(AbstractCommand):
                                               optionValueSaveFlag,
                                               self.requestInputString,
                                               optionFiatSymbol=optionFiatSymbol,
+                                              optionFiatExchange=optionFiatExchange,
                                               optionFiatSaveFlag=optionFiatSaveFlag,
                                               optionPriceSymbol=None,
                                               optionPriceAmount=None,

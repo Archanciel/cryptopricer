@@ -28,6 +28,7 @@ class Processor:
                        optionValueSaveFlag=None,
                        requestInputString='',
                        optionFiatSymbol=None,
+                       optionFiatExchange=None,
                        optionFiatSaveFlag=None,
                        optionPriceSymbol=None,
                        optionPriceAmount=None,
@@ -99,6 +100,17 @@ class Processor:
                 resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, unit))
                 return resultData
 
+        if optionFiatExchange:
+            try:
+                validFiatExchangeSymbol = self.crypCompExchanges.getExchange(optionFiatExchange)
+            except(KeyError):
+                resultData = ResultData()
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
+                                    "ERROR - {} market does not exist for this coin pair ({}-{})".format(optionFiatExchange,
+                                                                                                         unit,
+                                                                                                         optionFiatSymbol))
+                return resultData
+
         localTz = self.configManager.localTimeZone
         dateTimeFormat = self.configManager.dateTimeFormat
 
@@ -124,6 +136,7 @@ class Processor:
         if optionFiatSymbol != None and not resultData.isError():
             resultData = self._computeOptionFiatAmount(resultData,
                                                        optionFiatSymbol,
+                                                       validFiatExchangeSymbol,
                                                        unit,
                                                        year,
                                                        month,
@@ -276,6 +289,7 @@ class Processor:
     def _computeOptionFiatAmount(self,
                                  resultData,
                                  fiat,
+                                 fiatExchange,
                                  unit,
                                  year,
                                  month,
@@ -313,9 +327,12 @@ class Processor:
         :param optionFiatSaveFlag: used to refine warning if value command not applicable
         :return: a ResultData in which price value info has been added.
         '''
+        if fiatExchange == None:
+            fiatExchange == 'CCCAGG'
+
         fiatResultData = self._getPrice(unit,
                                         fiat,
-                                        'CCCAGG',
+                                        fiatExchange,
                                         year,
                                         month,
                                         day,
@@ -328,14 +345,14 @@ class Processor:
             fiatConversionRate = fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
             fiatConvertedPrice = resultData.getValue(resultData.RESULT_KEY_PRICE) * fiatConversionRate
 
-            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, round(fiatConvertedPrice, 4))
+            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, round(fiatConvertedPrice, 6))
             resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
 
             unitValuePrice = resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)
 
             if unitValuePrice:
                 fiatConvertedUnitValuePrice = unitValuePrice * fiatConversionRate
-                resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, fiatConvertedUnitValuePrice)
+                resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, round(fiatConvertedUnitValuePrice,6))
 
             return resultData
         else:
