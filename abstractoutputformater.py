@@ -58,6 +58,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
                                                                     dateTimeStr,
                                                                     formattedPriceStr,
                                                                     formattedFiatComputedAmountStr)
+                a = 0
             else:
                 outputStr = cryptoUnitPart + ' on {}: {} {}'.format(
                                                                 resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
@@ -78,9 +79,10 @@ class AbstractOutputFormater(metaclass=ABCMeta):
                 return '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
                                       resultData.getValue(resultData.RESULT_KEY_UNIT))
             else:
-                return '{}/{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+                return '{}/{}/{}.{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
                                          resultData.getValue(resultData.RESULT_KEY_UNIT),
-                                         resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+                                         resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
+                                         resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         else:
             formattedPriceCryptoStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)))
             formattedPriceUnitStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)))

@@ -57,6 +57,7 @@ class ResultData:
         self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SYMBOL] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SAVE] = None
+        self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_EXCHANGE] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT] = None
         self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SYMBOL] = None

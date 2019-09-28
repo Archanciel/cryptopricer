@@ -834,6 +834,45 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
+    def testExecuteHistoricalPriceOptionValueOptionFiatNoExchange(self):
+        optionValueAmount = 0.1
+
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'mco'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'eth'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'binance'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_SYMBOL] = 'eth'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_AMOUNT] = optionValueAmount
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_SYMBOL] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_EXCHANGE] = None
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'MCO')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'ETH')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'Binance')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(0.02802, resultData.getValue(resultData.RESULT_KEY_PRICE))
+        self.assertEqual('12/09/17 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual(1505174400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
+        self.assertEqual(3.5688793718772307, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+        self.assertEqual(0.007082, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
+        self.assertEqual(0.001984, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual('BTC', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+
     def testExecuteHistoricalPriceOptionValueOptionFiatExchangeNotSupported(self):
         optionValueAmount = 0.1
 
