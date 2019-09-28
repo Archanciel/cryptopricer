@@ -16,8 +16,9 @@ class ResultData:
                                                             # provided the -f fiat option is specified
     RESULT_KEY_OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'      # store True or False to indicate if the value option is to be stored in history (-vs) or not (-v)
 
-    RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT = 'OPTION_FIAT_COMPUTED_AMOUNT'# store the crypto price converted to fiat returned for the -f option
+    RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT = 'OPTION_FIAT_COMPUTED_AMOUNT'# store the crypto price in unit converted to fiat returned for the -f option
     RESULT_KEY_OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL'                  # store the fiat symbol of the -f option
+    RESULT_KEY_OPTION_FIAT_EXCHANGE = 'OPTION_FIAT_EXCHANGE'              # store the fiat exchange of the -f option
     RESULT_KEY_OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'                      # store True or False to indicate if the fiat option is to be stored in history (-fs) or not (-f)
 
     RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT = 'OPTION_PRICE_SPECIFIED_AMOUNT'          # store the crypto or unit user entered value for -v option. Ex: 0.1 if -v0.1btc

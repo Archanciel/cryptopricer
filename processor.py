@@ -1,6 +1,8 @@
 from datetimeutil import DateTimeUtil
 from resultdata import ResultData
 
+FIAT_RATE_PRECISION = 6
+
 
 class Processor:
     '''
@@ -99,6 +101,8 @@ class Processor:
                 resultData = ResultData()
                 resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, unit))
                 return resultData
+
+        validFiatExchangeSymbol = None
 
         if optionFiatExchange:
             try:
@@ -328,7 +332,7 @@ class Processor:
         :return: a ResultData in which price value info has been added.
         '''
         if fiatExchange == None:
-            fiatExchange == 'CCCAGG'
+            fiatExchange = 'CCCAGG'
 
         fiatResultData = self._getPrice(unit,
                                         fiat,
@@ -345,14 +349,16 @@ class Processor:
             fiatConversionRate = fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
             fiatConvertedPrice = resultData.getValue(resultData.RESULT_KEY_PRICE) * fiatConversionRate
 
-            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, round(fiatConvertedPrice, 6))
+            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, round(fiatConvertedPrice, FIAT_RATE_PRECISION))
             resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
+            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
 
             unitValuePrice = resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)
 
             if unitValuePrice:
                 fiatConvertedUnitValuePrice = unitValuePrice * fiatConversionRate
-                resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, round(fiatConvertedUnitValuePrice,6))
+                resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, round(fiatConvertedUnitValuePrice,
+                                                                                   FIAT_RATE_PRECISION))
 
             return resultData
         else:
