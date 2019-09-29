@@ -363,37 +363,13 @@ class Processor:
 
             return resultData
         else:
-            # since fiat/unit is not supported by the exchange, we try to request the unit/fiat inverted rate
-            fiatResultData = self._getPrice(fiat,
-                                            unit,
-                                            fiatExchange,
-                                            year,
-                                            month,
-                                            day,
-                                            hour,
-                                            minute,
-                                            dateTimeFormat,
-                                            localTz)
-            if not fiatResultData.isError():
-                fiatConversionRate = fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
-                price = resultData.getValue(resultData.RESULT_KEY_PRICE)
-                fiatConvertedPrice = price * fiatConversionRate
+            errorMsg = fiatResultData.getValue(fiatResultData.RESULT_KEY_ERROR_MSG)
 
-                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT,
-                                    round(fiatConvertedPrice, FIAT_RATE_PRECISION))
-                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
-                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
+            # making the error msg specific to the fiat option
+            errorMsg = errorMsg.replace('coin pair', 'fiat option coin pair')
+            fiatResultData.setValue(fiatResultData.RESULT_KEY_ERROR_MSG, errorMsg)
 
-                unitValuePrice = resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)
-
-                if unitValuePrice:
-                    fiatConvertedUnitValuePrice = unitValuePrice * fiatConversionRate
-                    resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, round(fiatConvertedUnitValuePrice,
-                                                                                       FIAT_RATE_PRECISION))
-
-                return resultData
-            else:
-                return fiatResultData
+            return fiatResultData
 
 if __name__ == '__main__':
     from configurationmanager import ConfigurationManager
