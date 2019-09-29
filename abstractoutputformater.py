@@ -58,7 +58,6 @@ class AbstractOutputFormater(metaclass=ABCMeta):
                                                                     dateTimeStr,
                                                                     formattedPriceStr,
                                                                     formattedFiatComputedAmountStr)
-                a = 0
             else:
                 outputStr = cryptoUnitPart + ' on {}: {} {}'.format(
                                                                 resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
