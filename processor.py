@@ -363,13 +363,36 @@ class Processor:
 
             return resultData
         else:
-            errorMsg = fiatResultData.getValue(fiatResultData.RESULT_KEY_ERROR_MSG)
+            # since fiat/unit is not supported by the exchange, we try to request the unit/fiat inverted rate
+            fiatResultData = self._getPrice(fiat,
+                                            unit,
+                                            fiatExchange,
+                                            year,
+                                            month,
+                                            day,
+                                            hour,
+                                            minute,
+                                            dateTimeFormat,
+                                            localTz)
+            if not fiatResultData.isError():
+                fiatConversionRate = fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
+                price = resultData.getValue(resultData.RESULT_KEY_PRICE)
+                fiatConvertedPrice = price / fiatConversionRate
 
-            # making the error msg specific to the fiat option
-            errorMsg = errorMsg.replace('coin pair', 'fiat option coin pair')
-            fiatResultData.setValue(fiatResultData.RESULT_KEY_ERROR_MSG, errorMsg)
+                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT,
+                                    round(fiatConvertedPrice, FIAT_RATE_PRECISION))
+                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
+                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
 
-            return fiatResultData
+                return resultData
+            else:
+                errorMsg = fiatResultData.getValue(fiatResultData.RESULT_KEY_ERROR_MSG)
+
+                # making the error msg specific to the fiat option
+                errorMsg = errorMsg.replace('coin pair', 'fiat option coin pair')
+                fiatResultData.setValue(fiatResultData.RESULT_KEY_ERROR_MSG, errorMsg)
+
+                return fiatResultData
 
 if __name__ == '__main__':
     from configurationmanager import ConfigurationManager
