@@ -913,26 +913,6 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
 
-    def testExecuteHistoricalPriceOptionValueOptionFiatExchangeNotSupported(self):
-        optionValueAmount = 0.1
-
-        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'mco'
-        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'binance'
-        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
-        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
-        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
-        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
-        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
-        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_SYMBOL] = 'btc'
-        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_AMOUNT] = optionValueAmount
-        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_SYMBOL] = 'eth'
-        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_EXCHANGE] = 'kraken'
-
-        resultData = self.commandPrice.execute()
-
-        self.assertEqual('PROVIDER ERROR - Kraken market does not exist for this fiat option coin pair (BTC-ETH)', resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
-
     def testExecuteHistoricalPriceOptionValueOptionFiatSave(self):
         optionValueAmount = 0.001
 
