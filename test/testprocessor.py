@@ -715,7 +715,7 @@ class TestProcessor(unittest.TestCase):
             # in case of provider error: happened from 9 t0 11 sept 2019 !!
             errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
             print(errorMsg)
-            self.assertEqual('PROVIDER ERROR - Requesting USD/CHF price for date 12/09/17 10:05 returned invalid value 0',
+            self.assertEqual('PROVIDER ERROR - Requesting fiat option coin pair USD/CHF or CHF/USD price for date 12/09/17 10:05 on exchange CCCAGG returned invalid value 0',
                              errorMsg)
         else:
             self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)

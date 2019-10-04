@@ -823,9 +823,9 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(1505174400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
         self.assertEqual(3.5688793718772307, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
         self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
-        self.assertEqual(0.007047, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+        self.assertEqual(0.007047000000000001, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
-        self.assertEqual(0.001975, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual(0.0019745694, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual('BTC', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual('Kraken', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
@@ -864,7 +864,7 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
         self.assertEqual(0.007082, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
-        self.assertEqual(0.001984, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual(0.0019843763999999996, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual('BTC', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
@@ -892,18 +892,18 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'MCO')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'ETH')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'Binance')
+        self.assertEqual('MCO', resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual('BTC', resultData.getValue(resultData.RESULT_KEY_UNIT))
+        self.assertEqual('Binance', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
-        self.assertEqual(0.02802, resultData.getValue(resultData.RESULT_KEY_PRICE))
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
-        self.assertEqual(3.5688793718772307, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(0.002049, resultData.getValue(resultData.RESULT_KEY_PRICE))
+        self.assertEqual('12/09/17 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual(1505174400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
+        self.assertEqual(48.80429477794046, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
         self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
-        self.assertEqual(0.007047, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+#        self.assertEqual(0.007047000000000001, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
-        self.assertEqual(0.001975, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual(0.0019745694, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual('BTC', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE), 'Kraken')
@@ -973,7 +973,8 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
-    def testExecuteHistoricalPriceOptionValueOptionFiatRateNotFound(self):
+    def testExecuteHistoricalPriceOptionValueOptionFiatRateNotFoundNoExchangeSpecified(self):
+        # btc usd 12/9/17 10:05 -fchf -v0.001btc
         optionValueAmount = 0.001
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -994,7 +995,7 @@ class TestCommandPrice(unittest.TestCase):
             # in case of provider error: happened from 9 t0 11 sept 2019 !!
             errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
             print(errorMsg)
-            self.assertEqual('PROVIDER ERROR - Requesting USD/CHF price for date 12/09/17 10:05 returned invalid value 0',
+            self.assertEqual('PROVIDER ERROR - Requesting fiat option coin pair USD/CHF or CHF/USD price for date 12/09/17 10:05 on exchange CCCAGG returned invalid value 0',
                              errorMsg)
         else:
             self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
@@ -1016,6 +1017,30 @@ class TestCommandPrice(unittest.TestCase):
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+
+    def testExecuteHistoricalPriceOptionValueOptionFiatRateNotFoundExchangeSpecified(self):
+        # btc usd 12/9/17 10:05 -fchf -v0.001btc
+        optionValueAmount = 0.001
+
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_SYMBOL] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_AMOUNT] = optionValueAmount
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_SYMBOL] = 'chf'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_EXCHANGE] = 'kraken'
+
+        resultData = self.commandPrice.execute()
+
+        errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
+        print(errorMsg)
+        self.assertEqual('PROVIDER ERROR - fiat option coin pair CHF/USD or USD/CHF not supported by exchange Kraken',
+                         errorMsg)
 
 if __name__ == '__main__':
     unittest.main()

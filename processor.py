@@ -1,9 +1,6 @@
 from datetimeutil import DateTimeUtil
 from resultdata import ResultData
 
-FIAT_RATE_PRECISION = 6
-
-
 class Processor:
     '''
     This class is used as Receiver by the Command component in the Command pattern.
@@ -225,7 +222,7 @@ class Processor:
                                                                                  dateTimeFormat)
 
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-                                'PROVIDER ERROR - Requesting {}/{} price for date {} {} returned invalid value 0'.format(currency, targetCurrency, dateDMY, dateHM))
+                                'PROVIDER ERROR - Requesting {}/{} price for date {} {} on exchange {} returned invalid value 0'.format(currency, targetCurrency, dateDMY, dateHM, exchange))
 
         return resultData
 
@@ -350,7 +347,7 @@ class Processor:
             price = resultData.getValue(resultData.RESULT_KEY_PRICE)
             fiatConvertedPrice = price * fiatConversionRate
 
-            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, round(fiatConvertedPrice, FIAT_RATE_PRECISION))
+            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, fiatConvertedPrice)
             resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
             resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
 
@@ -358,8 +355,7 @@ class Processor:
 
             if unitValuePrice:
                 fiatConvertedUnitValuePrice = unitValuePrice * fiatConversionRate
-                resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, round(fiatConvertedUnitValuePrice,
-                                                                                   FIAT_RATE_PRECISION))
+                resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, fiatConvertedUnitValuePrice)
 
             return resultData
         else:
@@ -379,8 +375,7 @@ class Processor:
                 price = resultData.getValue(resultData.RESULT_KEY_PRICE)
                 fiatConvertedPrice = price / fiatConversionRate
 
-                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT,
-                                    round(fiatConvertedPrice, FIAT_RATE_PRECISION))
+                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, fiatConvertedPrice)
                 resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
                 resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
 
@@ -388,8 +383,12 @@ class Processor:
             else:
                 errorMsg = fiatResultData.getValue(fiatResultData.RESULT_KEY_ERROR_MSG)
 
-                # making the error msg specific to the fiat option
-                errorMsg = errorMsg.replace('coin pair', 'fiat option coin pair')
+                if 'PROVIDER ERROR - There was an error with the parameters' in errorMsg:
+                    errorMsg = 'PROVIDER ERROR - fiat option coin pair {}/{} or {}/{} not supported by exchange {}'.format(fiat, unit, unit, fiat, fiatExchange)
+                else:
+                    # making the error msg specific to the fiat option
+                    errorMsg = errorMsg.replace('Requesting', 'Requesting fiat option coin pair {}/{} or'.format(unit, fiat))
+
                 fiatResultData.setValue(fiatResultData.RESULT_KEY_ERROR_MSG, errorMsg)
 
                 return fiatResultData
