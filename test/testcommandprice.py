@@ -684,6 +684,7 @@ class TestCommandPrice(unittest.TestCase):
                          "ERROR - unit missing or invalid")
 
     def testExecuteHistoricalPriceOptionValue(self):
+        # btc usd 12/9/17 10:05 bittrex -v0.001btc
         optionValueAmount = 0.001
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -720,6 +721,7 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testExecuteHistoricalPriceOptionValueSave(self):
+        # btc usd 12/9/17 10:05 bittrex -vs0.001btc
         optionValueAmount = 0.001
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -757,6 +759,7 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testExecuteHistoricalPriceOptionValueOptionFiat(self):
+        # btc usd 12/9/17 10:05 bittrex -feur -v0.001btc
         optionValueAmount = 0.001
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -789,6 +792,7 @@ class TestCommandPrice(unittest.TestCase):
         value = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
         self.assertTrue(value >= 3440.2212 and value <= 3463.7166)
         self.assertEqual('EUR', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
@@ -796,6 +800,7 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testExecuteHistoricalPriceOptionValueOptionFiatExchange(self):
+        # mco eth 12/9/17 10:05 binance -fbtc.kraken -v0.1eth
         optionValueAmount = 0.1
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'mco'
@@ -835,6 +840,7 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testExecuteHistoricalPriceOptionValueOptionFiatNoExchange(self):
+        # mco eth 12/9/17 10:05 binance -fbtc -v0.1eth
         optionValueAmount = 0.1
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'mco'
@@ -874,7 +880,8 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testExecuteHistoricalPriceOptionValueOptionFiatExchangeInvertingFiatUnit(self):
-        optionValueAmount = 0.1
+        # mco btc 12/9/17 10:05 binance -feth.kraken -v1eth
+        optionValueAmount = 1
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'mco'
         self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'btc'
@@ -884,7 +891,7 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
         self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
         self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
-        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_SYMBOL] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_SYMBOL] = 'eth'
         self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_AMOUNT] = optionValueAmount
         self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_SYMBOL] = 'eth'
         self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_EXCHANGE] = 'kraken'
@@ -914,6 +921,7 @@ class TestCommandPrice(unittest.TestCase):
 
 
     def testExecuteHistoricalPriceOptionValueOptionFiatSave(self):
+        # btc usd 12/9/17 10:05 bittrex -fseur -v0.001btc
         optionValueAmount = 0.001
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -954,7 +962,7 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testExecuteHistoricalPriceOptionValueOptionFiatRateNotFoundNoExchangeSpecified(self):
-        # btc usd 12/9/17 10:05 -fchf -v0.001btc
+        # btc usd 12/9/17 10:05 bittrex -fchf -v0.001btc
         optionValueAmount = 0.001
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -990,7 +998,7 @@ class TestCommandPrice(unittest.TestCase):
             self.assertEqual(4.122, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
             self.assertEqual(4.126122, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
-            self.assertEqual(4126.122, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+            self.assertEqual(4126.121999999999, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
             self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
@@ -999,7 +1007,7 @@ class TestCommandPrice(unittest.TestCase):
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testExecuteHistoricalPriceOptionValueOptionFiatRateNotFoundExchangeSpecified(self):
-        # btc usd 12/9/17 10:05 -fchf -v0.001btc
+        # btc usd 12/9/17 10:05 bittrex -fchf.kraken -v0.001btc
         optionValueAmount = 0.001
 
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
