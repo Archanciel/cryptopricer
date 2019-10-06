@@ -737,5 +737,152 @@ class TestProcessor(unittest.TestCase):
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
+    def testGetCryptoPriceHistoricalOptionValueCryptoToUnitOptionFiatCHF(self):
+        # full request: eth usd 12/09/18 all -v10eth -fchf
+        # exp result: 10 ETH/1830.3 USD/1780.51584 CHF.CCCAGG on CCCAGG: 12/09/18 00:00C 183.03 178.051584
+        crypto = 'ETH'
+        unit = 'USD'
+        exchange = 'all'
+        day = 12
+        month = 9
+        year = 2018
+        hour = 0
+        minute = 0
+        optionValueSymbol = 'ETH'
+        optionValueAmount = 10
+        optionFiatSymbol = 'CHF'
+
+        resultData = self.processor.getCryptoPrice(crypto,
+                                               unit,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
+                                               minute,
+                                               optionValueSymbol,
+                                               optionValueAmount,
+                                               requestInputString='',
+                                               optionFiatSymbol=optionFiatSymbol)
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+        self.assertFalse(resultData.getValue(resultData.RESULT_KEY_WARNINGS_DIC))
+        self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+        self.assertEqual(resultData.PRICE_TYPE_HISTO_DAY, resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE))
+        self.assertEqual(183.03, resultData.getValue(resultData.RESULT_KEY_PRICE))
+        self.assertEqual('12/09/18 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual(1536710400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
+        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(1830.3, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+        self.assertEqual(1780.51584, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
+        self.assertEqual(178.051584, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        # The savebflag is set in the ResultData in CommandPrice.execute()
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+
+    def testGetCryptoPriceHistoricalOptionValueUnitToCryptoOptionFiatCHF(self):
+        # full request: eth usd 12/09/18 all -v10usd -fchf
+        # exp result: 0.05463585204611266 ETH/10 USD/9.728 CHF.CCCAGG on CCCAGG: 12/09/18 00:00C 183.03 178.051584
+        crypto = 'ETH'
+        unit = 'USD'
+        exchange = 'all'
+        day = 12
+        month = 9
+        year = 2018
+        hour = 0
+        minute = 0
+        optionValueSymbol = 'USD'
+        optionValueAmount = 10
+        optionFiatSymbol = 'CHF'
+
+        resultData = self.processor.getCryptoPrice(crypto,
+                                               unit,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
+                                               minute,
+                                               optionValueSymbol,
+                                               optionValueAmount,
+                                               requestInputString='',
+                                               optionFiatSymbol=optionFiatSymbol)
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+        self.assertFalse(resultData.getValue(resultData.RESULT_KEY_WARNINGS_DIC))
+        self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+        self.assertEqual(resultData.PRICE_TYPE_HISTO_DAY, resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE))
+        self.assertEqual(183.03, resultData.getValue(resultData.RESULT_KEY_PRICE))
+        self.assertEqual('12/09/18 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual(1536710400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
+        self.assertEqual(0.05463585204611266, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+        self.assertEqual(9.728, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
+        self.assertEqual(178.051584, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        # The savebflag is set in the ResultData in CommandPrice.execute()
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+
+    def testGetCryptoPriceHistoricalOptionValueFiatOptionFiatCHF(self):
+        # full request: eth usd 12/09/18 all -v10chf -fchf
+        # exp result: 0.056163499225033574 ETH/10.279605263157896 USD/10 CHF.CCCAGG on CCCAGG: 12/09/18 00:00C 183.03 178.051584
+        crypto = 'ETH'
+        unit = 'USD'
+        exchange = 'all'
+        day = 12
+        month = 9
+        year = 2018
+        hour = 0
+        minute = 0
+        optionValueSymbol = 'CHF'
+        optionValueAmount = 10
+        optionFiatSymbol = 'CHF'
+
+        resultData = self.processor.getCryptoPrice(crypto,
+                                               unit,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
+                                               minute,
+                                               optionValueSymbol,
+                                               optionValueAmount,
+                                               requestInputString='',
+                                               optionFiatSymbol=optionFiatSymbol)
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+        self.assertFalse(resultData.getValue(resultData.RESULT_KEY_WARNINGS_DIC))
+        self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+        self.assertEqual(resultData.PRICE_TYPE_HISTO_DAY, resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE))
+        self.assertEqual(183.03, resultData.getValue(resultData.RESULT_KEY_PRICE))
+        self.assertEqual('12/09/18 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual(1536710400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
+        self.assertEqual(0.056163499225033574, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(10.279605263157896, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
+        self.assertEqual(178.051584, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        # The savebflag is set in the ResultData in CommandPrice.execute()
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+
 if __name__ == '__main__':
     unittest.main()
