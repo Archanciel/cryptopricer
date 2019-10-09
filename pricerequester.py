@@ -21,7 +21,7 @@ class PriceRequester:
     def __init__(self):
         try:
             #since ssl prevents requesting the data from CryptoCompare
-            #when run from Kivy GUI, it must be be disabled
+            #when run from Kivy GUI, it must be disabled
             self.ctx = ssl.create_default_context()
             self.ctx.check_hostname = False
             self.ctx.verify_mode = ssl.CERT_NONE

@@ -7,7 +7,7 @@ sys.path.insert(0, parentdir)
 
 from processor import Processor
 from configurationmanager import ConfigurationManager
-from pricerequester import PriceRequester
+from pricerequesterteststub import PriceRequesterTestStub
 from crypcompexchanges import CrypCompExchanges
 from datetimeutil import DateTimeUtil
 
@@ -19,7 +19,7 @@ class TestProcessor(unittest.TestCase):
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         self.configMgr = ConfigurationManager(FILE_PATH)
-        self.priceRequester = PriceRequester()
+        self.priceRequester = PriceRequesterTestStub()
         self.crypCompExchanges = CrypCompExchanges()
         self.processor = Processor(self.configMgr, self.priceRequester, self.crypCompExchanges)
 
