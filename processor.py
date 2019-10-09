@@ -391,9 +391,9 @@ class Processor:
                                             dateTimeFormat,
                                             localTz)
             if not fiatResultData.isError():
-                fiatConversionRate = fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
+                fiatConversionRate = 1 / fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
                 price = resultData.getValue(resultData.RESULT_KEY_PRICE)
-                fiatConvertedPrice = price / fiatConversionRate
+                fiatConvertedPrice = price * fiatConversionRate
 
                 resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, fiatConvertedPrice)
                 resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)

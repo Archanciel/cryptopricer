@@ -906,19 +906,18 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(0.002049, resultData.getValue(resultData.RESULT_KEY_PRICE))
         self.assertEqual('12/09/17 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
         self.assertEqual(1505174400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
-        self.assertEqual(48.80429477794046, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
-        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
-#        self.assertEqual(0.007047000000000001, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+        self.assertEqual(34.39238653001464, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(0.07047, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
-        self.assertEqual(0.0019745694, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
-        self.assertEqual('BTC', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual(0.02907620263942103, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual('ETH', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE), 'Kraken')
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
-
 
     def testExecuteHistoricalPriceOptionValueOptionFiatSave(self):
         # btc usd 12/9/17 10:05 bittrex -fseur -v0.001btc
