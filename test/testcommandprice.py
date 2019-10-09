@@ -919,6 +919,89 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
+    def testExecuteHistoricalPriceOptionValueOptionFiatSaveExchangeInvertingFiatUnit(self):
+        # mco btc 12/9/17 10:05 binance -fseth.kraken -v1eth
+        optionValueAmount = 1
+
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'mco'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'binance'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_SYMBOL] = 'eth'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_AMOUNT] = optionValueAmount
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_SYMBOL] = 'eth'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_EXCHANGE] = 'kraken'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_SAVE] = 's'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual('MCO', resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual('BTC', resultData.getValue(resultData.RESULT_KEY_UNIT))
+        self.assertEqual('Binance', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(0.002049, resultData.getValue(resultData.RESULT_KEY_PRICE))
+        self.assertEqual('12/09/17 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual(1505174400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
+        self.assertEqual(34.39238653001464, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(0.07047, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
+        self.assertEqual(0.02907620263942103, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual('ETH', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertTrue(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE), 'Kraken')
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+
+    def testExecuteHistoricalPriceOptionValueSaveOptionFiatSaveExchangeInvertingFiatUnit(self):
+        # mco btc 12/9/17 10:05 binance -fseth.kraken -vs1eth
+        optionValueAmount = 1
+
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'mco'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'binance'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '12'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '9'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_SYMBOL] = 'eth'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_SAVE] = 's'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_VALUE_AMOUNT] = optionValueAmount
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_SYMBOL] = 'eth'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_EXCHANGE] = 'kraken'
+        self.commandPrice.parsedParmData[self.commandPrice.OPTION_FIAT_SAVE] = 's'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+        self.assertEqual('MCO', resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual('BTC', resultData.getValue(resultData.RESULT_KEY_UNIT))
+        self.assertEqual('Binance', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
+        self.assertEqual(0.002049, resultData.getValue(resultData.RESULT_KEY_PRICE))
+        self.assertEqual('12/09/17 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual(1505174400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
+        self.assertEqual(34.39238653001464, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(0.07047, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+        self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+        self.assertTrue(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
+        self.assertEqual(0.02907620263942103, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual('ETH', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertTrue(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE), 'Kraken')
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+
     def testExecuteHistoricalPriceOptionValueOptionFiatSave(self):
         # btc usd 12/9/17 10:05 bittrex -fseur -v0.001btc
         optionValueAmount = 0.001
