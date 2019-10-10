@@ -4,7 +4,7 @@ from abstractoutputformater import AbstractOutputFormater
 
 
 class ConsoleOutputFormater(AbstractOutputFormater):
-    FLOAT_FORMAT = '%.8f'
+    PRICE_FLOAT_FORMAT = '%.8f'
     
     def __init__(self, activateClipboard = False):
         '''
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     print()
     print('No formatting:                 ' + str(y))
     print('With formatting:               ' + yFormatted)
-    print('With formatting no trailing 0: ' + pr.formatFloatToStr(y))
+    print('With formatting no trailing 0: ' + pr._formatPriceFloatToStr(y))
     print()
 
     a = 12.56

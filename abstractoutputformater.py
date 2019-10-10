@@ -1,15 +1,15 @@
 from abc import ABCMeta
 from abc import abstractmethod
 
+
 class AbstractOutputFormater(metaclass=ABCMeta):
     '''
     '''
-    FLOAT_FORMAT = '%.8f'
-    
+    PRICE_FLOAT_FORMAT = '%.8f' # format of crypto, unit or fiat prices returned by provider
+    VALUE_FLOAT_FORMAT = '%.8f' # format of -v value option computed values
 
     def __init__(self, receiver=None, name='', rawParmData='', parsedParmData={}):
         pass
-
 
     @abstractmethod
     def printDataToConsole(self):
@@ -19,23 +19,20 @@ class AbstractOutputFormater(metaclass=ABCMeta):
         '''
         pass
 
-
     @abstractmethod
     def toClipboard(self, numericVal):
         pass
 
-
     @abstractmethod
     def fromClipboard(self):
         pass
-
 
     def getPrintableData(self, resultData):
         errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
 
         if errorMsg == None:
             price = resultData.getValue(resultData.RESULT_KEY_PRICE)
-            formattedPriceStr = self.formatFloatToStr(price)
+            formattedPriceStr = self._formatPriceFloatToStr(price)
             self.toClipboard(formattedPriceStr)
             dateTimeStr = resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING)
             priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
@@ -52,50 +49,80 @@ class AbstractOutputFormater(metaclass=ABCMeta):
             fiatComputedAmount = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
 
             if fiatComputedAmount != None:
-                formattedFiatComputedAmountStr = self.formatFloatToStr(fiatComputedAmount)
+                formattedFiatComputedAmountStr = self._formatPriceFloatToStr(fiatComputedAmount)
                 outputStr = cryptoUnitPart + ' on {}: {} {} {}'.format(
-                                                                    resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
-                                                                    dateTimeStr,
-                                                                    formattedPriceStr,
-                                                                    formattedFiatComputedAmountStr)
+                    resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
+                    dateTimeStr,
+                    formattedPriceStr,
+                    formattedFiatComputedAmountStr)
             else:
                 outputStr = cryptoUnitPart + ' on {}: {} {}'.format(
-                                                                resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
-                                                                dateTimeStr,
-                                                                formattedPriceStr)
+                    resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
+                    dateTimeStr,
+                    formattedPriceStr)
         else:
             outputStr = '{}'.format(errorMsg)
 
         if resultData.containsWarnings():
             outputStr = outputStr + '\n' + '\n'.join(resultData.getAllWarningMessages())
-            
+
         return outputStr
 
-
     def _formatCryptoUnitPart(self, resultData):
-        if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO) == None:
-            if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL) == None:
+        if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO) is None:
+            if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL) is None:
                 return '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
                                       resultData.getValue(resultData.RESULT_KEY_UNIT))
             else:
                 return '{}/{}/{}.{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
-                                         resultData.getValue(resultData.RESULT_KEY_UNIT),
-                                         resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
-                                         resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+                                            resultData.getValue(resultData.RESULT_KEY_UNIT),
+                                            resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
+                                            resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         else:
-            formattedPriceCryptoStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)))
-            formattedPriceUnitStr = self.formatFloatToStr(float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)))
-            
-            return '{} {}/{} {}'.format(formattedPriceCryptoStr, 
-                                        resultData.getValue(resultData.RESULT_KEY_CRYPTO),
-                                        formattedPriceUnitStr, 
-                                        resultData.getValue(resultData.RESULT_KEY_UNIT))
-                                                       
-        
-        
-    def formatFloatToStr(self, floatNb):
+            formattedPriceCryptoStr = self._formatValueFloatToStr(
+                float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)))
+            formattedPriceUnitStr = self._formatValueFloatToStr(
+                float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)))
+            if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL) is None:
+                return '{} {}/{} {}'.format(formattedPriceCryptoStr,
+                                            resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+                                            formattedPriceUnitStr,
+                                            resultData.getValue(resultData.RESULT_KEY_UNIT))
+            else:
+                formattedPriceFiatStr = self._formatValueFloatToStr(
+                    float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT)))
+                return '{} {}/{} {}/{} {}.{}'.format(formattedPriceCryptoStr,
+                                                  resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+                                                  formattedPriceUnitStr,
+                                                  resultData.getValue(resultData.RESULT_KEY_UNIT),
+                                                  formattedPriceFiatStr,
+                                                  resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
+                                                  resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+
+    def _formatPriceFloatToStr(self, floatNb):
+        '''
+        Format prices returned by crypto price provider.
+
+        :param floatNb:
+        :return:
+        '''
         try:
-            floatNbFormatted = self.FLOAT_FORMAT % floatNb
+            floatNbFormatted = self.PRICE_FLOAT_FORMAT % floatNb
+        except TypeError:
+            return ''
+
+        floatNbFormattedStripZero = floatNbFormatted.rstrip('0')
+        return floatNbFormattedStripZero.rstrip('.')
+
+    def _formatValueFloatToStr(self, floatNb):
+        '''
+        Format -v value option computed values.
+
+        :param floatNb:
+        :return:
+        '''
+        try:
+            floatNbFormatted = self.VALUE_FLOAT_FORMAT % floatNb
         except TypeError:
             return ''
 

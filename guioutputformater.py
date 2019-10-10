@@ -6,9 +6,8 @@ from datetimeutil import DateTimeUtil
 
 
 class GuiOutputFormater(AbstractOutputFormater):
-    
-    
-    def __init__(self, configurationMgr, activateClipboard = False):
+
+    def __init__(self, configurationMgr, activateClipboard=False):
         '''
         Ctor. The parm activateClipboard with default value set to False was added to prevent SeqDiagBuilder
         unit tests in TestSeqDiagBuilder where the CryptoPricer Condtroller class were implied to crash the Pycharm
@@ -32,17 +31,15 @@ class GuiOutputFormater(AbstractOutputFormater):
 
         self.configurationMgr = configurationMgr
 
-
     def printDataToConsole(self, resultData):
         '''
         print the result to the console and 
         paste it to the clipboard
         '''
         outputStr = super(GuiOutputFormater, self).getPrintableData(resultData)
-                                        	                                  	
+
         print(outputStr)
-        
-        
+
     def getFullCommandString(self, resultData):
         '''
         Recreate the full command string corresponding to a full or partial price request entered by the user.
@@ -80,16 +77,17 @@ class GuiOutputFormater(AbstractOutputFormater):
         '''
         if resultData.isError():
             return '', None, None
-            
+
         commandDic = resultData.getValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS)
         priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
-        
-        if priceType == resultData.PRICE_TYPE_RT:      
+
+        if priceType == resultData.PRICE_TYPE_RT:
             fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
                              commandDic[CommandPrice.UNIT] + ' 0 ' + \
                              commandDic[CommandPrice.EXCHANGE]
         else:
-            requestDateDMY, requestDateHM = self._buildFullDateAndTimeStrings(commandDic, self.configurationMgr.localTimeZone)
+            requestDateDMY, requestDateHM = self._buildFullDateAndTimeStrings(commandDic,
+                                                                              self.configurationMgr.localTimeZone)
 
             fullCommandStr = commandDic[CommandPrice.CRYPTO] + ' ' + \
                              commandDic[CommandPrice.UNIT] + ' ' + \
@@ -102,22 +100,22 @@ class GuiOutputFormater(AbstractOutputFormater):
 
         if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE):
             if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
-                #in case the value command generated a warning, if the value command data contains a crypto or unit
-                #different from the crypto or unit of tthe request, the fullCommandStrWithSaveModeOptions remains
-                #None and wont't be stored in the request history list of the GUI !
-                fullCommandStrWithSaveModeOptions = fullCommandStr + ' -vs' + commandDic[CommandPrice.OPTION_VALUE_AMOUNT] + commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
+                # in case the value command generated a warning, if the value command data contains a crypto or unit
+                # different from the crypto or unit of tthe request, the fullCommandStrWithSaveModeOptions remains
+                # None and wont't be stored in the request history list of the GUI !
+                fullCommandStrWithSaveModeOptions = fullCommandStr + ' -vs' + commandDic[
+                    CommandPrice.OPTION_VALUE_AMOUNT] + commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
         else:
             valueCommandAmountStr = commandDic[CommandPrice.OPTION_VALUE_AMOUNT]
             valueCommandSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
             if valueCommandAmountStr and valueCommandSymbolStr:
-                #even in case the value command generated a warning, it will be displayed in the status bar !
+                # even in case the value command generated a warning, it will be displayed in the status bar !
                 fullCommandStrWithOptions = fullCommandStr + ' -v' + valueCommandAmountStr + valueCommandSymbolStr
 
         from seqdiagbuilder import SeqDiagBuilder
         SeqDiagBuilder.recordFlow()
 
         return fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
-
 
     def _buildFullDateAndTimeStrings(self, commandDic, timezoneStr):
         '''
@@ -143,7 +141,9 @@ class GuiOutputFormater(AbstractOutputFormater):
         hour = commandDic[CommandPrice.HOUR]
         minute = commandDic[CommandPrice.MINUTE]
 
-        requestDateDMY, requestDateHM = DateTimeUtil.formatPrintDateTimeFromStringComponents(day, month, year, hour, minute, timezoneStr, self.configurationMgr.dateTimeFormat)
+        requestDateDMY, requestDateHM = DateTimeUtil.formatPrintDateTimeFromStringComponents(day, month, year, hour,
+                                                                                             minute, timezoneStr,
+                                                                                             self.configurationMgr.dateTimeFormat)
 
         from seqdiagbuilder import SeqDiagBuilder
         SeqDiagBuilder.recordFlow()
@@ -158,7 +158,6 @@ class GuiOutputFormater(AbstractOutputFormater):
                 pass
             else:
                 self._clipboard.copy(str(numericVal))
-
 
     def fromClipboard(self):
         if not self.activateClipboard:
@@ -177,7 +176,7 @@ if __name__ == '__main__':
     print()
     print('No formatting:                 ' + str(y))
     print('With formatting:               ' + yFormatted)
-    print('With formatting no trailing 0: ' + pr.formatFloatToStr(y))
+    print('With formatting no trailing 0: ' + pr._formatPriceFloatToStr(y))
     print()
 
     a = 12.56

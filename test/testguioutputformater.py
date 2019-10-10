@@ -343,37 +343,37 @@ class TestGuiOutputFormater(unittest.TestCase):
 
     def testFormatFloatToStrRoundedFloat(self):
         y = round(5.59, 1)
-        self.assertEqual('5.6', self.printer.formatFloatToStr(y))
+        self.assertEqual('5.6', self.printer._formatPriceFloatToStr(y))
 
     
     def testFormatFloatToStrEmptystr(self):
         y = ''
-        self.assertEqual('', self.printer.formatFloatToStr(y))
+        self.assertEqual('', self.printer._formatPriceFloatToStr(y))
 
 
     def testFormatFloatToStrNone(self):
         y = None
-        self.assertEqual('', self.printer.formatFloatToStr(y))
+        self.assertEqual('', self.printer._formatPriceFloatToStr(y))
 
     
     def testFormatFloatToStrNineDigits(self):
         y = 	0.999999999
-        self.assertEqual('1', self.printer.formatFloatToStr(y))
+        self.assertEqual('1', self.printer._formatPriceFloatToStr(y))
 
     
     def testFormatFloatToStrFourDigits(self):
         y = 0.9084   
-        self.assertEqual('0.9084', self.printer.formatFloatToStr(y))
+        self.assertEqual('0.9084', self.printer._formatPriceFloatToStr(y))
 
     
     def testFormatFloatToStrinteger(self):
         y = 40 
-        self.assertEqual('40', self.printer.formatFloatToStr(y))
+        self.assertEqual('40', self.printer._formatPriceFloatToStr(y))
 
 
     def testFormatFloatToStrNormal(self):
         y = 2000.085  
-        self.assertEqual('2000.085', self.printer.formatFloatToStr(y)) 
+        self.assertEqual('2000.085', self.printer._formatPriceFloatToStr(y))
 
 
     def testToFromClipboard(self):
@@ -814,7 +814,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
-        self.assertEqual('34.39239 MCO/0.07047 BTC/1 ETH.Kraken on Binance: 12/09/17 00:00C 0.002049 0.029076\n', capturedStdout.getvalue())
+        self.assertEqual('34.39238653 MCO/0.07047 BTC/1 ETH.Kraken on Binance: 12/09/17 00:00C 0.002049 0.0290762\n', capturedStdout.getvalue())
 
 if __name__ == '__main__':
     unittest.main()
