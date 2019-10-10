@@ -633,6 +633,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.assertEqual('btc usd 0 bittrex', fullCommandString)
 
     def testGetCryptoPriceRealTimeOptionFiat(self):
+        # btc usd 0 bittrex -fchf
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
         unit = 'USD'
@@ -693,6 +694,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.assertEqual('BTC/USD/CHF.CCCAGG on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
 
     def testPrintCryptoPriceHistoricalOptionFiat(self):
+        # btc usd 12/9/17 bittrex -feur
         crypto = 'BTC'
         unit = 'USD'
         fiat = 'EUR'
@@ -720,6 +722,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.assertEqual('BTC/USD/EUR.CCCAGG on BitTrex: 12/09/17 00:00C 4122 3463.7166\n', capturedStdout.getvalue())
 
     def testPrintCryptoPriceHistoricalOptionFiatSave(self):
+        # btc usd 12/9/17 bittrex -fseur
         crypto = 'BTC'
         unit = 'USD'
         fiat = 'EUR'
@@ -748,6 +751,7 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.assertEqual('BTC/USD/EUR.CCCAGG on BitTrex: 12/09/17 00:00C 4122 3463.7166\n', capturedStdout.getvalue())
 
     def testPrintCryptoPriceHistoricalOptionFiatExchange(self):
+        # mco eth 12/9/17 binance -fbtc.kraken
         crypto = 'MCO'
         unit = 'ETH'
         fiat = 'BTC'
@@ -774,6 +778,43 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('MCO/ETH/BTC.Kraken on Binance: 12/09/17 00:00C 0.02802 0.001975\n', capturedStdout.getvalue())
+
+    def testPrintCryptoPriceHistoricalOptionValueAndFiatExchange(self):
+        # mco btc 12/9/17 binance -feth.kraken -v1eth
+        # 34.39239 MCO/0.07047 BTC/1 ETH.Kraken on Binance: 12/09/17 00:00C 0.002049 0.029076
+        crypto = 'MCO'
+        unit = 'BTC'
+        fiat = 'ETH'
+        exchange = 'Binance'
+        fiatExchange = 'Kraken'
+
+        resultData = ResultData()
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+        resultData.setValue(resultData.RESULT_KEY_PRICE, 0.002049)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, '12/09/17 00:00')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, 34.39238653001464)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, 0.07047)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, 1)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, 0.02907620263942103)
+        resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
+                            {'CRYPTO': crypto, 'UNIT': unit, 'EXCHANGE': exchange, 'DAY': '12', 'MONTH': '9', 'YEAR': '17', 'HOUR': None,
+                             'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'HISTO', 'OPTION_VALUE_DATA': None,
+                             'OPTION_VALUE_AMOUNT': '1', 'OPTION_VALUE_SYMBOL': 'eth', 'OPTION_VALUE_SAVE': False})
+
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
+
+        self.printer.printDataToConsole(resultData)
+        sys.stdout = stdout
+        self.assertEqual('34.39239 MCO/0.07047 BTC/1 ETH.Kraken on Binance: 12/09/17 00:00C 0.002049 0.029076\n', capturedStdout.getvalue())
 
 if __name__ == '__main__':
     unittest.main()
