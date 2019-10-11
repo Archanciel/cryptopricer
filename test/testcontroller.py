@@ -224,10 +224,24 @@ class TestController(unittest.TestCase):
 
     def testControllerRegressionOnDDMMDate(self):
         # error msg not optimal in this case !!
-        requestDay = '11'
-        requestMonth = '10'
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        oneDayAfterNow = now.shift(days=+1)
+        oneDayAfterNowYearStr, oneDayAfterNowMonthStr, oneDayAfterNowDayStr, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneDayAfterNow)
+
+        oneYearBeforeArrowDate = now.shift(years=-1)
+        oneYearBeforeYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearBeforeArrowDate)
+
+        oneYearAfterArrowDate = now.shift(years=+1)
+        oneYearAfterYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearAfterArrowDate)
+
+        if oneDayAfterNowYearStr == oneYearAfterYearStr:
+            # test is run on december 31st and so, the dd/mm request date will not be in the future,
+            # but will be 01/01 and test will fail !
+            return
+
         stdin = sys.stdin
-        sys.stdin = StringIO('neo btc {}/{} bitfinex\nq\ny'.format(requestDay, requestMonth))
+        sys.stdin = StringIO('neo btc {}/{} bitfinex\nq\ny'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -262,9 +276,8 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('NEO/BTC on Bitfinex: ' + '{}/{}/{} 00:00C'.format(requestDay, requestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[1][:-1]))
-            self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(requestDay, requestMonth, now.year - 2000), contentList[2][:-1])
-         #   self.assertEqual('NEO/BTC on Bitfinex: 11/10/17 00:00C 0.006228\n', contentList[1])
+            self.assertEqual('NEO/BTC on Bitfinex: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[1][:-1]))
+            self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2000), contentList[2][:-1])
 
 
     def testControllerBugSpecifyTimeAfterAskedRT0001(self):
@@ -387,9 +400,23 @@ class TestController(unittest.TestCase):
 
     def testControllerBugSpecifyDateAfterAskedRT2910(self):
         stdin = sys.stdin
-        nextRequestDay = '29'
-        nextRequestMonth = '10'
-        sys.stdin = StringIO('btc usd 0 all\n-d{}/{}\nq\ny'.format(nextRequestDay, nextRequestMonth))
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        oneDayAfterNow = now.shift(days=+1)
+        oneDayAfterNowYearStr, oneDayAfterNowMonthStr, oneDayAfterNowDayStr, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneDayAfterNow)
+
+        oneYearBeforeArrowDate = now.shift(years=-1)
+        oneYearBeforeYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearBeforeArrowDate)
+
+        oneYearAfterArrowDate = now.shift(years=+1)
+        oneYearAfterYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearAfterArrowDate)
+
+        if oneDayAfterNowYearStr == oneYearAfterYearStr:
+            # test is run on december 31st and so, the dd/mm request date will not be in the future,
+            # but will be 01/01 and test will fail !
+            return
+
+        sys.stdin = StringIO('btc usd 0 all\n-d{}/{}\nq\ny'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -415,8 +442,8 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
-            self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
 
 
     def testControllerBugSpecifyDate10DaysBeforeAfterAskedRTThenAskRTAgain(self):
@@ -456,9 +483,23 @@ class TestController(unittest.TestCase):
 
     def testControllerBugSpecifyFutureDateAfterAskedRTThenAskRTAgain(self):
         stdin = sys.stdin
-        nextRequestDay = '29'
-        nextRequestMonth = '10'
-        sys.stdin = StringIO('btc usd 0 all\n-d{}/{}\n-d0\nq\ny'.format(nextRequestDay, nextRequestMonth))
+
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        oneDayAfterNow = now.shift(days=+1)
+        oneDayAfterNowYearStr, oneDayAfterNowMonthStr, oneDayAfterNowDayStr, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneDayAfterNow)
+
+        oneYearBeforeArrowDate = now.shift(years=-1)
+        oneYearBeforeYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearBeforeArrowDate)
+
+        oneYearAfterArrowDate = now.shift(years=+1)
+        oneYearAfterYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearAfterArrowDate)
+
+        if oneDayAfterNowYearStr == oneYearAfterYearStr:
+            # test is run on december 31st and so, the dd/mm request date will not be in the future,
+            # but will be 01/01 and test will fail !
+            return
+
+        sys.stdin = StringIO('btc usd 0 all\n-d{}/{}\n-d0\nq\ny'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr))
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -484,8 +525,8 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(nextRequestDay, nextRequestMonth, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
-            self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(nextRequestDay, nextRequestMonth, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[6][:-1])) #removing \n from contentList entry !
 
 
