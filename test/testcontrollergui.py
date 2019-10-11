@@ -143,7 +143,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithOptionValueV0InFullCommand(self):
+    def testGetPrintableResultForInputscenarioWithOptionValueV0InFullRequest(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         yesterday = now.shift(days=-2)
 
@@ -174,7 +174,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithValueSaveCommandWipedOutByFullCommand(self):
+    def testGetPrintableResultForInputscenarioWithOptionValueSaveWipedOutByFullRequest(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         yesterday = now.shift(days=-2)
 
@@ -1522,7 +1522,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('btc usd 0 all -vs100.2usd', fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithSaveOptionValueAndWarning(self):
+    def testGetPrintableResultForInputscenarioWithOptionValueSaveAndWarning(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
