@@ -565,73 +565,6 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.assertEqual('BTC/USD on BitTrex: {}R \nWARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD). -v option ignored !\n'.format(dateTimeString), capturedStdout.getvalue())
 
 
-    def testGetCryptoPriceRealTimeWithValueSaveFlag(self):
-        #correspond to command btc usd 0 bittrex -vs0.01btc
-        now = DateTimeUtil.localNow('Europe/Zurich')
-        crypto = 'BTC'
-        unit = 'USD'
-        exchange = 'bittrex'
-        day = 0
-        month = 0
-        year = 0
-        hour = 1
-        minute = 1
-
-        resultData = ResultData()
-
-        nowMinute = now.minute
-
-        if nowMinute < 10:
-            if nowMinute > 0:
-                nowMinuteStr = '0' + str(nowMinute)
-            else:
-                nowMinuteStr = '00'
-        else:
-            nowMinuteStr = str(nowMinute)
-
-        nowHour = now.hour
-
-        if nowHour < 10:
-            if nowHour > 0:
-                nowHourStr = '0' + str(nowHour)
-            else:
-                nowHourStr = '00'
-        else:
-            nowHourStr = str(nowHour)
-
-        nowDay = now.day
-
-        if nowDay < 10:
-            nowDayStr = '0' + str(nowDay)
-        else:
-            nowDayStr = str(nowDay)
-
-        #rt price not provided here !
-        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
-        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
-        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
-        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
-        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
-        dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
-        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, '0.01')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, '160')
-        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE, True)
-        resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
-                            {'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
-                             'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
-                             'OPTION_VALUE_AMOUNT': '0.01', 'OPTION_VALUE_SYMBOL': 'btc', 'OPTION_VALUE_SAVE': True})
-        stdout = sys.stdout
-        capturedStdout = StringIO()
-        sys.stdout = capturedStdout
-
-        self.printer.printDataToConsole(resultData)
-        sys.stdout = stdout
-        self.assertEqual('0.01 BTC/160 USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
-        fullCommandString, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
-        self.assertEqual('btc usd 0 bittrex -vs0.01btc', fullCommandStrWithSaveModeOptions)
-        self.assertEqual('btc usd 0 bittrex', fullCommandString)
-
     def testGetCryptoPriceRealTimeOptionFiat(self):
         # btc usd 0 bittrex -fchf
         now = DateTimeUtil.localNow('Europe/Zurich')
@@ -815,6 +748,75 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('34.39238653 MCO/0.07047 BTC/1 ETH.Kraken on Binance: 12/09/17 00:00C 0.002049 0.0290762\n', capturedStdout.getvalue())
+
+# testing value option
+
+    def testGetCryptoPriceRealTimeWithValueSaveFlag(self):
+        #correspond to command btc usd 0 bittrex -vs0.01btc
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        crypto = 'BTC'
+        unit = 'USD'
+        exchange = 'bittrex'
+        day = 0
+        month = 0
+        year = 0
+        hour = 1
+        minute = 1
+
+        resultData = ResultData()
+
+        nowMinute = now.minute
+
+        if nowMinute < 10:
+            if nowMinute > 0:
+                nowMinuteStr = '0' + str(nowMinute)
+            else:
+                nowMinuteStr = '00'
+        else:
+            nowMinuteStr = str(nowMinute)
+
+        nowHour = now.hour
+
+        if nowHour < 10:
+            if nowHour > 0:
+                nowHourStr = '0' + str(nowHour)
+            else:
+                nowHourStr = '00'
+        else:
+            nowHourStr = str(nowHour)
+
+        nowDay = now.day
+
+        if nowDay < 10:
+            nowDayStr = '0' + str(nowDay)
+        else:
+            nowDayStr = str(nowDay)
+
+        #rt price not provided here !
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+        resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+        resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
+        resultData.setValue(resultData.RESULT_KEY_EXCHANGE, 'BitTrex')
+        resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
+        dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
+        resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, '0.01')
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, '160')
+        resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE, True)
+        resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
+                            {'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
+                             'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
+                             'OPTION_VALUE_AMOUNT': '0.01', 'OPTION_VALUE_SYMBOL': 'btc', 'OPTION_VALUE_SAVE': True})
+        stdout = sys.stdout
+        capturedStdout = StringIO()
+        sys.stdout = capturedStdout
+
+        self.printer.printDataToConsole(resultData)
+        sys.stdout = stdout
+        self.assertEqual('0.01 BTC/160 USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
+        fullCommandString, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(resultData)
+        self.assertEqual('btc usd 0 bittrex -vs0.01btc', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('btc usd 0 bittrex', fullCommandString)
 
 if __name__ == '__main__':
     unittest.main()
