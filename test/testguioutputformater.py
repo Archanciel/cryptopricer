@@ -341,39 +341,39 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.assertEqual("ERROR - BTC38 market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
 
 
-    def testFormatFloatToStrRoundedFloat(self):
+    def test_formatPriceFloatToStrRoundedFloat(self):
         y = round(5.59, 1)
-        self.assertEqual('5.6', self.printer._formatPriceFloatToStr(y))
+        self.assertEqual('5.6', self.printer._formatPriceFloatToStr(y, self.printer.PRICE_FLOAT_FORMAT))
 
     
-    def testFormatFloatToStrEmptystr(self):
+    def test_formatPriceFloatToStrEmptystr(self):
         y = ''
-        self.assertEqual('', self.printer._formatPriceFloatToStr(y))
+        self.assertEqual('', self.printer._formatPriceFloatToStr(y, self.printer.PRICE_FLOAT_FORMAT))
 
 
-    def testFormatFloatToStrNone(self):
+    def test_formatPriceFloatToStrNone(self):
         y = None
-        self.assertEqual('', self.printer._formatPriceFloatToStr(y))
+        self.assertEqual('', self.printer._formatPriceFloatToStr(y, self.printer.PRICE_FLOAT_FORMAT))
 
     
-    def testFormatFloatToStrNineDigits(self):
+    def test_formatPriceFloatToStrNineDigits(self):
         y = 	0.999999999
-        self.assertEqual('1', self.printer._formatPriceFloatToStr(y))
+        self.assertEqual('1', self.printer._formatPriceFloatToStr(y, self.printer.PRICE_FLOAT_FORMAT))
 
     
-    def testFormatFloatToStrFourDigits(self):
+    def test_formatPriceFloatToStrFourDigits(self):
         y = 0.9084   
-        self.assertEqual('0.9084', self.printer._formatPriceFloatToStr(y))
+        self.assertEqual('0.9084', self.printer._formatPriceFloatToStr(y, self.printer.PRICE_FLOAT_FORMAT))
 
     
-    def testFormatFloatToStrinteger(self):
+    def test_formatPriceFloatToStrinteger(self):
         y = 40 
-        self.assertEqual('40', self.printer._formatPriceFloatToStr(y))
+        self.assertEqual('40', self.printer._formatPriceFloatToStr(y, self.printer.PRICE_FLOAT_FORMAT))
 
 
-    def testFormatFloatToStrNormal(self):
+    def test_formatPriceFloatToStrNormal(self):
         y = 2000.085  
-        self.assertEqual('2000.085', self.printer._formatPriceFloatToStr(y))
+        self.assertEqual('2000.085', self.printer._formatPriceFloatToStr(y, self.printer.PRICE_FLOAT_FORMAT))
 
 
     def testToFromClipboard(self):

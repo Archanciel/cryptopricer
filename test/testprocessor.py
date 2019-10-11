@@ -192,7 +192,8 @@ class TestProcessor(unittest.TestCase):
             from guioutputformater import GuiOutputFormater
             outputFormater = GuiOutputFormater(self.configMgr)
 
-        self.assertEqual(outputFormater._formatPriceFloatToStr(0.01698205), outputFormater._formatPriceFloatToStr(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)))
+        self.assertEqual(outputFormater._formatPriceFloatToStr(0.01698205, outputFormater.PRICE_FLOAT_FORMAT),
+                         outputFormater._formatPriceFloatToStr(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), outputFormater.PRICE_FLOAT_FORMAT))
         self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))

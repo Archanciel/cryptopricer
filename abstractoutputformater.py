@@ -32,7 +32,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 
         if errorMsg == None:
             price = resultData.getValue(resultData.RESULT_KEY_PRICE)
-            formattedPriceStr = self._formatPriceFloatToStr(price)
+            formattedPriceStr = self._formatPriceFloatToStr(price, self.PRICE_FLOAT_FORMAT)
             self.toClipboard(formattedPriceStr)
             dateTimeStr = resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING)
             priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
@@ -49,7 +49,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
             fiatComputedAmount = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
 
             if fiatComputedAmount != None:
-                formattedFiatComputedAmountStr = self._formatPriceFloatToStr(fiatComputedAmount)
+                formattedFiatComputedAmountStr = self._formatPriceFloatToStr(fiatComputedAmount, self.PRICE_FLOAT_FORMAT)
                 outputStr = cryptoUnitPart + ' on {}: {} {} {}'.format(
                     resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
                     dateTimeStr,
@@ -79,18 +79,18 @@ class AbstractOutputFormater(metaclass=ABCMeta):
                                             resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
                                             resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         else:
-            formattedPriceCryptoStr = self._formatValueFloatToStr(
-                float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)))
-            formattedPriceUnitStr = self._formatValueFloatToStr(
-                float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)))
+            formattedPriceCryptoStr = self._formatPriceFloatToStr(
+                float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)), self.PRICE_FLOAT_FORMAT)
+            formattedPriceUnitStr = self._formatPriceFloatToStr(
+                float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)), self.PRICE_FLOAT_FORMAT)
             if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL) is None:
                 return '{} {}/{} {}'.format(formattedPriceCryptoStr,
                                             resultData.getValue(resultData.RESULT_KEY_CRYPTO),
                                             formattedPriceUnitStr,
                                             resultData.getValue(resultData.RESULT_KEY_UNIT))
             else:
-                formattedPriceFiatStr = self._formatValueFloatToStr(
-                    float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT)))
+                formattedPriceFiatStr = self._formatPriceFloatToStr(
+                    float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT)), self.PRICE_FLOAT_FORMAT)
                 return '{} {}/{} {}/{} {}.{}'.format(formattedPriceCryptoStr,
                                                   resultData.getValue(resultData.RESULT_KEY_CRYPTO),
                                                   formattedPriceUnitStr,
@@ -99,30 +99,16 @@ class AbstractOutputFormater(metaclass=ABCMeta):
                                                   resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
                                                   resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
 
-    def _formatPriceFloatToStr(self, floatNb):
+    def _formatPriceFloatToStr(self, floatNb, floatFormat):
         '''
         Format prices returned by crypto price provider.
 
+        :param floatFormat:
         :param floatNb:
         :return:
         '''
         try:
-            floatNbFormatted = self.PRICE_FLOAT_FORMAT % floatNb
-        except TypeError:
-            return ''
-
-        floatNbFormattedStripZero = floatNbFormatted.rstrip('0')
-        return floatNbFormattedStripZero.rstrip('.')
-
-    def _formatValueFloatToStr(self, floatNb):
-        '''
-        Format -v value option computed values.
-
-        :param floatNb:
-        :return:
-        '''
-        try:
-            floatNbFormatted = self.VALUE_FLOAT_FORMAT % floatNb
+            floatNbFormatted = floatFormat % floatNb
         except TypeError:
             return ''
 
