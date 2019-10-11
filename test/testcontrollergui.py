@@ -70,7 +70,7 @@ class TestControllerGui(unittest.TestCase):
             self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
 
 
-    def testGetPrintableResultForInputscenarioWithValueCommand(self):
+    def testGetPrintableResultForInputscenarioWithOptionValue(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -143,7 +143,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithValueCommandV0InFullCommand(self):
+    def testGetPrintableResultForInputscenarioWithOptionValueV0InFullCommand(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         yesterday = now.shift(days=-2)
 
@@ -204,7 +204,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForInputscenarioWithValueCommandAndError(self):
+    def testGetPrintableResultForInputscenarioWithOptionValueAndError(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -286,7 +286,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testControllerBugSpecifyValueCommandAfterAskHistoDay(self):
+    def testControllerBugSpecifyOptionValueAfterAskHistoDay(self):
         timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         eightDaysBeforeArrowDate = now.shift(days=-8)
@@ -326,7 +326,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testControllerBugSpecifySaveValueCommandAfterAskHistoDay(self):
+    def testControllerBugSpecifySaveOptionValueAfterAskHistoDay(self):
         timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         eightDaysBeforeArrowDate = now.shift(days=-8)
@@ -366,7 +366,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('mcap btc {}/{}/{} {}:{} all -vs12mcap'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
 
 
-    def testControllerBugSpecifyValueCommandAfterAskHistoMinute(self):
+    def testControllerBugSpecifyOptionValueAfterAskHistoMinute(self):
         timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
@@ -408,7 +408,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testControllerBugSpecifySaveValueCommandAfterAskHistoMinute(self):
+    def testControllerBugSpecifySaveOptionValueAfterAskHistoMinute(self):
         timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
@@ -450,7 +450,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth btc {}/{}/{} {}:{} binance -vs12eth'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
 
 
-    def testControllerBugSpecifyValueCommandAfterAskHistoMinuteYearSupplied(self):
+    def testControllerBugSpecifyOptionValueAfterAskHistoMinuteYearSupplied(self):
         timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
@@ -492,7 +492,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
-    def testControllerBugSpecifySaveValueCommandAfterAskHistoMinuteYearSupplied(self):
+    def testControllerBugSpecifySaveOptionValueAfterAskHistoMinuteYearSupplied(self):
         timezoneStr = LOCAL_TIME_ZONE
         now = DateTimeUtil.localNow(timezoneStr)
         fiveDaysBeforeArrowDate = now.shift(days=-5)
