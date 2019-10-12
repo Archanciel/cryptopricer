@@ -57,6 +57,11 @@ class PriceRequesterTestStub(PriceRequester):
                                                               timeStampUTCNoHHMMForHistoDay,
                                                               exchange)
 
+        # fed up with this fucking provider which regurlarly return an invalid value of 1.06
+        # for USD/CHF on CCCAGG on 12/9/17 !
+        if crypto == 'USD' and unit == 'CHF' and exchange == 'CCCAGG' and timeStampUTCNoHHMMForHistoDay == 1536710400:
+            resultData.setValue(resultData.RESULT_KEY_PRICE, 0.9728)
+
         return resultData
 
     def getCurrentPrice(self,
