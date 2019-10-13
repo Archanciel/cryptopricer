@@ -44,21 +44,21 @@ class GuiOutputFormater(AbstractOutputFormater):
         '''
         Recreate the full command string corresponding to a full or partial price request entered by the user.
 
-        The full command string with no option contains a full date and time which is formatted according to the date time
+        The full command string no options contains a full date and time which is formatted according to the date time
         format as specified in the configuration file. Even if the request only contained partial date time info,
-        the full command string with no option contains a full date time specification.
+        the full command string no options contains a full date time specification.
 
-        The full command string with no option will be stored in the command history list so it can be replayed or saved to file.
+        The full command string no options will be stored in the command history list so it can be replayed or saved to file.
         An empty string is returned if the command generated an error (empty string will not be added to history !
 
         In case an option to the command with save mode is in effect - for example -vs -, then the full
         command with the save mode option is returned as well. In the GUI, the full command with save mode will
-        replace the full command string with no option in the command history list. Otherwise, if no command option in save mode
+        replace the full command string no options in the command history list. Otherwise, if no command option in save mode
         is in effect (no option or -v for example), then None is returned as second return value and
-        no full command string with no option will NOT have to be replaced in the command history list.
+        no full command string no options will NOT have to be replaced in the command history list.
 
         :param resultData: result of the last full or partial request
-        :seqdiag_return printResult, fullCommandStrWithNoOption, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+        :seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
         :return: 1/ full command string with no command option corresponding to a full or partial price request
                     entered by the user or empty string if the command generated an error msg.
                  2/ full request command with any non save command option
@@ -84,18 +84,18 @@ class GuiOutputFormater(AbstractOutputFormater):
         priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
 
         if priceType == resultData.PRICE_TYPE_RT:
-            fullCommandStrWithNoOption = commandDic[CommandPrice.CRYPTO] + ' ' + \
-                                         commandDic[CommandPrice.UNIT] + ' 0 ' + \
-                                         commandDic[CommandPrice.EXCHANGE]
+            fullCommandStrNoOptions = commandDic[CommandPrice.CRYPTO] + ' ' + \
+                                                 commandDic[CommandPrice.UNIT] + ' 0 ' + \
+                                                 commandDic[CommandPrice.EXCHANGE]
         else:
             requestDateDMY, requestDateHM = self._buildFullDateAndTimeStrings(commandDic,
                                                                               self.configurationMgr.localTimeZone)
 
-            fullCommandStrWithNoOption = commandDic[CommandPrice.CRYPTO] + ' ' + \
-                                         commandDic[CommandPrice.UNIT] + ' ' + \
-                                         requestDateDMY + ' ' + \
-                                         requestDateHM + ' ' + \
-                                         commandDic[CommandPrice.EXCHANGE]
+            fullCommandStrNoOptions = commandDic[CommandPrice.CRYPTO] + ' ' + \
+                                                 commandDic[CommandPrice.UNIT] + ' ' + \
+                                                 requestDateDMY + ' ' + \
+                                                 requestDateHM + ' ' + \
+                                                 commandDic[CommandPrice.EXCHANGE]
 
         fullCommandStrWithSaveModeOptions = None
         fullCommandStrWithOptions = None
@@ -105,19 +105,19 @@ class GuiOutputFormater(AbstractOutputFormater):
                 # in case the value command generated a warning, if the value command data contains a crypto or unit
                 # different from the crypto or unit of tthe request, the fullCommandStrWithSaveModeOptions remains
                 # None and wont't be stored in the request history list of the GUI !
-                fullCommandStrWithSaveModeOptions = fullCommandStrWithNoOption + ' -vs' + commandDic[
+                fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -vs' + commandDic[
                     CommandPrice.OPTION_VALUE_AMOUNT] + commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
         else:
             valueCommandAmountStr = commandDic[CommandPrice.OPTION_VALUE_AMOUNT]
             valueCommandSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
             if valueCommandAmountStr and valueCommandSymbolStr:
                 # even in case the value command generated a warning, it will be displayed in the status bar !
-                fullCommandStrWithOptions = fullCommandStrWithNoOption + ' -v' + valueCommandAmountStr + valueCommandSymbolStr
+                fullCommandStrWithOptions = fullCommandStrNoOptions + ' -v' + valueCommandAmountStr + valueCommandSymbolStr
 
         from seqdiagbuilder import SeqDiagBuilder
         SeqDiagBuilder.recordFlow()
 
-        return fullCommandStrWithNoOption, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+        return fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
 
     def _buildFullDateAndTimeStrings(self, commandDic, timezoneStr):
         '''
