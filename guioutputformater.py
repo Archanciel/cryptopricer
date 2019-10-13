@@ -100,19 +100,42 @@ class GuiOutputFormater(AbstractOutputFormater):
         fullCommandStrWithSaveModeOptions = None
         fullCommandStrWithOptions = None
 
+        # handling option value
+
         if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE):
             if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
                 # in case the value command generated a warning, if the value command data contains a crypto or unit
                 # different from the crypto or unit of tthe request, the fullCommandStrWithSaveModeOptions remains
                 # None and wont't be stored in the request history list of the GUI !
-                fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -vs' + commandDic[
-                    CommandPrice.OPTION_VALUE_AMOUNT] + commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
+                fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -vs{}{}'.format(commandDic[
+                    CommandPrice.OPTION_VALUE_AMOUNT], commandDic[CommandPrice.OPTION_VALUE_SYMBOL])
         else:
-            valueCommandAmountStr = commandDic[CommandPrice.OPTION_VALUE_AMOUNT]
-            valueCommandSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
-            if valueCommandAmountStr and valueCommandSymbolStr:
+            valueOptionAmountStr = commandDic[CommandPrice.OPTION_VALUE_AMOUNT]
+            valueOptionSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
+            if valueOptionAmountStr and valueOptionSymbolStr:
                 # even in case the value command generated a warning, it will be displayed in the status bar !
-                fullCommandStrWithOptions = fullCommandStrNoOptions + ' -v' + valueCommandAmountStr + valueCommandSymbolStr
+                fullCommandStrWithOptions = fullCommandStrNoOptions + ' -v{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
+
+        # handling option fiat
+
+        if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
+            if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
+                # in case the value command generated a warning, if the value command data contains a crypto or unit
+                # different from the crypto or unit of tthe request, the fullCommandStrWithSaveModeOptions remains
+                # None and wont't be stored in the request history list of the GUI !
+                if fullCommandStrWithSaveModeOptions:
+                    # case when option value exist and is in save mode
+                    fullCommandStrWithSaveModeOptions = fullCommandStrWithSaveModeOptions + ' -fs{}.{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL],
+                                                                                                               commandDic[CommandPrice.OPTION_FIAT_EXCHANGE])
+                else:
+                    fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -fs{}.{}'.format(commandDic[
+                        CommandPrice.OPTION_FIAT_SYMBOL], commandDic[CommandPrice.OPTION_FIAT_EXCHANGE])
+        else:
+            fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
+            fiatOptionExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
+            if fiatOptionSymbol and fiatOptionExchange:
+                # even in case the value command generated a warning, it will be displayed in the status bar !
+                fullCommandStrWithOptions = fullCommandStrNoOptions + ' -f' + fiatOptionSymbol + fiatOptionExchange
 
         from seqdiagbuilder import SeqDiagBuilder
         SeqDiagBuilder.recordFlow()
