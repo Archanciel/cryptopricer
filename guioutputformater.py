@@ -125,11 +125,19 @@ class GuiOutputFormater(AbstractOutputFormater):
                 # None and wont't be stored in the request history list of the GUI !
                 if fullCommandStrWithSaveModeOptions:
                     # case when option value exist and is in save mode
-                    fullCommandStrWithSaveModeOptions = fullCommandStrWithSaveModeOptions + ' -fs{}.{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL],
-                                                                                                               commandDic[CommandPrice.OPTION_FIAT_EXCHANGE])
+                    requestFiatExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
+                    if requestFiatExchange:
+                        fullCommandStrWithSaveModeOptions = fullCommandStrWithSaveModeOptions + ' -fs{}.{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL],
+                                                                                                                   requestFiatExchange)
+                    else:
+                        fullCommandStrWithSaveModeOptions = fullCommandStrWithSaveModeOptions + ' -fs{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL])
                 else:
-                    fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -fs{}.{}'.format(commandDic[
-                        CommandPrice.OPTION_FIAT_SYMBOL], commandDic[CommandPrice.OPTION_FIAT_EXCHANGE])
+                    requestFiatExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
+                    if requestFiatExchange:
+                        fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -fs{}.{}'.format(commandDic[
+                            CommandPrice.OPTION_FIAT_SYMBOL], requestFiatExchange)
+                    else:
+                        fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -fs{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL])
         else:
             fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
             fiatOptionExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]

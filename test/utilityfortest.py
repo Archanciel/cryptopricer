@@ -29,7 +29,7 @@ class UtilityForTest:
 
 
     @staticmethod
-    def removePriceFromResult(resultStr):
+    def removeOneEndPriceFromResult(resultStr):
         '''
         Used to remove unique price from RT request results or variable date/time price request results
         :param resultStr:
@@ -49,6 +49,33 @@ class UtilityForTest:
 
         if (match):
             if len(match.groups()) == 2:
+                # the case for resultStr containing BTC/USD on CCCAGG: 30/01/18 01:49R 11243.72 for example !
+                return match.group(1)
+
+        return ()
+
+    @staticmethod
+    def removeTwoEndPricesFromResult(resultStr):
+        '''
+        Used to remove two prices from RT request results with -f (fiat) option or variable date/time price request
+        results with -f (fiat) option
+        :param resultStr:
+        :return:
+        '''
+        patternNoWarning = r"(.*) (?:[\d\.]*) (?:[\d\.]*)"
+        patternOneWarning = r"(.*) (?:[\d\.]*) (?:[\d\.]*)(\n.*)" #in raw string, \ must not be escaped (\\n not working !)
+        match = re.match(patternOneWarning, resultStr)
+
+        if (match):
+            if len(match.groups()) == 2:
+                # here, resultStr contains a warning like in
+                # BTC/USD on CCCAGG: 30/01/18 01:51R 11248.28\nWarning - unsupported command -ebitfinex in request btc usd 0 all -ebitfinex !
+                return match.group(1) + match.group(2)
+
+        match = re.match(patternNoWarning, resultStr)
+
+        if (match):
+            if len(match.groups()) == 1:
                 # the case for resultStr containing BTC/USD on CCCAGG: 30/01/18 01:49R 11243.72 for example !
                 return match.group(1)
 

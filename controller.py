@@ -65,7 +65,7 @@ class Controller:
         command history list.
 
         :param inputStr:
-        :seqdiag_return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+        :seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
         :return: 1/ printable request result
                  2/ full request command without any command option
                  3/ full request command with any non save command option
@@ -92,9 +92,9 @@ class Controller:
 
         if result != '':
             printResult = self.printer.getPrintableData(result)
-            fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(result)
+            fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.printer.getFullCommandString(result)
             
-            return printResult, fullCommandStr, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+            return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
 
 
 if __name__ == '__main__':

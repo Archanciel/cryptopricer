@@ -276,7 +276,7 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('NEO/BTC on Bitfinex: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[1][:-1]))
+            self.assertEqual('NEO/BTC on Bitfinex: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1]))
             self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2000), contentList[2][:-1])
 
 
@@ -315,8 +315,8 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
 
 
     def testControllerBugSpecifyTimeAfterAskedRT001(self):
@@ -354,8 +354,8 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
 
 
     def testControllerBugSpecifyTimeAfterAskedRT700ThenReaskRT(self):
@@ -393,9 +393,9 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
 
 
     def testControllerBugSpecifyDateAfterAskedRT2910(self):
@@ -441,8 +441,8 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
             self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
 
 
@@ -476,9 +476,9 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(tenDaysBeforeNowDayStr, tenDaysBeforeNowMonthStr, tenDaysBeforeNowYearStr), UtilityForTest.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(tenDaysBeforeNowDayStr, tenDaysBeforeNowMonthStr, tenDaysBeforeNowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
 
 
     def testControllerBugSpecifyFutureDateAfterAskedRTThenAskRTAgain(self):
@@ -524,10 +524,10 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
             self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[6][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[6][:-1])) #removing \n from contentList entry !
 
 
     def testControllerBugChangeCryptoAfterAskedRT(self):
@@ -557,8 +557,8 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
 
     def testControllerBugChangeCryptoAfterAskedRTThenAskRTAgain(self):
         stdin = sys.stdin
@@ -587,9 +587,9 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
-            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[5][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1]))
 
 
     def testControllerBugAskRTTwice(self):
@@ -619,8 +619,8 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
 
 
     def testControllerInvalidYearThenValidDDMMInFuture(self):
@@ -665,7 +665,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual("ERROR - 201 not conform to accepted year format (YYYY, YY or '')\n", contentList[1])
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneYearBeforeYearStr), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneYearBeforeYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
             self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneDayAfterNowYearStr), contentList[4][:-1])
 
 
@@ -712,7 +712,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual("ERROR - 999 not conform to accepted month format (MM or M)\n", contentList[1])
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneYearBeforeYearStr), UtilityForTest.removePriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneYearBeforeYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
             self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneDayAfterNowYearStr), contentList[4][:-1])
 
 
@@ -973,10 +973,10 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'.format(yesterdayDayStr, yesterdayMonthStr, previousDate.year - 2000, yesterdayHourStr, yesterdayMinuteStr), UtilityForTest.removePriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
-            self.assertEqual('ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
-            self.assertEqual('ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removePriceFromResult(contentList[7][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'.format(yesterdayDayStr, yesterdayMonthStr, previousDate.year - 2000, yesterdayHourStr, yesterdayMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+            self.assertEqual('ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[7][:-1])) #removing \n from contentList entry !
 
 
     def testControllerHistoDayPriceIncompleteCommandScenarioWithDateInFuture(self):
@@ -1024,7 +1024,7 @@ class TestController(unittest.TestCase):
             # othervise, the test which assumes that we try a full request with only day and time
             # specified, but with the day number set to tomorrow - in the future can not be
             # run.
-                self.assertEqual('BTC/USD on BitTrex: ' + '{}/{}/{} 00:00C'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, oneYearBeforeYearStr), UtilityForTest.removePriceFromResult(contentList[5][:-1]))
+                self.assertEqual('BTC/USD on BitTrex: ' + '{}/{}/{} 00:00C'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, oneYearBeforeYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1]))
                 self.assertEqual('Warning - request date {}/{}/{} 02:56 can not be in the future and was shifted back to last year'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[6][:-1])
 
 
@@ -1093,7 +1093,7 @@ class TestController(unittest.TestCase):
             self.assertEqual(
                 'BTC/USD on BitTrex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                 nowMinuteStr),
-                UtilityForTest.removePriceFromResult(contentList[7][:-1]))  # removing \n from contentList entry !
+                UtilityForTest.removeOneEndPriceFromResult(contentList[7][:-1]))  # removing \n from contentList entry !
 
 
     def testControllerScenarioModel(self):
@@ -1164,19 +1164,19 @@ class TestController(unittest.TestCase):
             self.assertEqual(
                 'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                 nowMinuteStr),
-                UtilityForTest.removePriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
+                UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
             self.assertEqual(
                 'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'.format(yesterdayDayStr, yesterdayMonthStr, yesterday.year - 2000,
                                                                 yesterdayHourStr, yesterdayMinuteStr),
-                UtilityForTest.removePriceFromResult(contentList[3][:-1]))  # removing \n from contentList entry !
+                UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))  # removing \n from contentList entry !
             self.assertEqual(
                 'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                 nowMinuteStr),
-                UtilityForTest.removePriceFromResult(contentList[5][:-1]))  # removing \n from contentList entry !
+                UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1]))  # removing \n from contentList entry !
             self.assertEqual(
                 'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                 nowMinuteStr),
-                UtilityForTest.removePriceFromResult(contentList[7][:-1]))  # removing \n from contentList entry !
+                UtilityForTest.removeOneEndPriceFromResult(contentList[7][:-1]))  # removing \n from contentList entry !
 
 
     def testControllerBugSpecifyInvalTimeAfterAskedRT345(self):
@@ -1210,7 +1210,7 @@ class TestController(unittest.TestCase):
             self.assertEqual(
                 'BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
                                                                  nowMinuteStr),
-                UtilityForTest.removePriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
+                UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
             self.assertEqual('ERROR - invalid partial request -t03.45: in -t03.45, 03.45 must respect HH:mm format', contentList[3][:-1])
 
 
