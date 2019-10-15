@@ -80,7 +80,7 @@ class TestControllerGui(unittest.TestCase):
         requestDayStr = '1'
         requestMonthStr = '1'
         requestArrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(requestDayStr), int(requestMonthStr), now.year, 0, 0, 0, timezoneStr)
-        inputStr = 'mcap btc {}/{} all'.format(requestDayStr, requestMonthStr)
+        inputStr = 'mco btc {}/{} all'.format(requestDayStr, requestMonthStr)
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrNoOptionsWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
@@ -94,9 +94,9 @@ class TestControllerGui(unittest.TestCase):
             priceType = 'M'
 
         self.assertEqual(
-            'MCAP/BTC on CCCAGG: ' + '0{}/0{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+            'MCO/BTC on CCCAGG: ' + '0{}/0{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeOneEndPriceFromResult(printResult))
-        self.assertEqual('mcap btc 0{}/0{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
+        self.assertEqual('mco btc 0{}/0{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrNoOptionsWithSaveModeOptions)
 
 
@@ -142,7 +142,7 @@ class TestControllerGui(unittest.TestCase):
         requestDayStr = eightDaysBeforeDayStr
         requestMonthStr = eightDaysBeforeMonthStr
         requestYearStr = eightDaysBeforeYearStr
-        inputStr = 'mcap btc {}/{} all'.format(requestDayStr, requestMonthStr)
+        inputStr = 'mco btc {}/{} all'.format(requestDayStr, requestMonthStr)
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrNoOptionsWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
@@ -156,9 +156,9 @@ class TestControllerGui(unittest.TestCase):
             priceType = 'M'
 
         self.assertEqual(
-            'MCAP/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+            'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeOneEndPriceFromResult(printResult))
-        self.assertEqual('mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
+        self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrNoOptionsWithSaveModeOptions)
 
         #next command: '' to replay lst command
@@ -167,9 +167,9 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'MCAP/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+            'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeOneEndPriceFromResult(printResult))
-        self.assertEqual('mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
+        self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrNoOptionsWithSaveModeOptions)
 
 
@@ -1249,7 +1249,7 @@ class TestControllerGui(unittest.TestCase):
         requestDayStr = eightDaysBeforeDayStr
         requestMonthStr = eightDaysBeforeMonthStr
         requestYearStr = eightDaysBeforeYearStr
-        inputStr = 'mcap btc {}/{} all'.format(requestDayStr, requestMonthStr)
+        inputStr = 'mco btc {}/{} all'.format(requestDayStr, requestMonthStr)
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrNoOptionsWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
@@ -1263,19 +1263,19 @@ class TestControllerGui(unittest.TestCase):
             priceType = 'M'
 
         self.assertEqual(
-            'MCAP/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+            'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeOneEndPriceFromResult(printResult))
-        self.assertEqual('mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
+        self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrNoOptionsWithSaveModeOptions)
 
-        inputStr = '-v12mcap'
+        inputStr = '-v12mco'
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrNoOptionsWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
-            'MCAP/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+            'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
-        self.assertEqual('mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
+        self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrNoOptionsWithSaveModeOptions)
 
 
@@ -1289,7 +1289,7 @@ class TestControllerGui(unittest.TestCase):
         requestYearStr = eightDaysBeforeYearStr
         requestDayStr = eightDaysBeforeDayStr
         requestMonthStr = eightDaysBeforeMonthStr
-        inputStr = 'mcap btc {}/{} all'.format(requestDayStr, requestMonthStr)
+        inputStr = 'mco btc {}/{} all'.format(requestDayStr, requestMonthStr)
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrNoOptionsWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
@@ -1303,20 +1303,20 @@ class TestControllerGui(unittest.TestCase):
             priceType = 'M'
 
         self.assertEqual(
-            'MCAP/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+            'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeOneEndPriceFromResult(printResult))
-        self.assertEqual('mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
+        self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrNoOptionsWithSaveModeOptions)
 
-        inputStr = '-vs12mcap'
+        inputStr = '-vs12mco'
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrNoOptionsWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
-            'MCAP/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+            'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
-        self.assertEqual('mcap btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
-        self.assertEqual('mcap btc {}/{}/{} {}:{} all -vs12mcap'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptionsWithSaveModeOptions)
+        self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
+        self.assertEqual('mco btc {}/{}/{} {}:{} all -vs12mco'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptionsWithSaveModeOptions)
 
 
     def testControllerBugSpecifyOptionValueAfterAskHistoMinute(self):
