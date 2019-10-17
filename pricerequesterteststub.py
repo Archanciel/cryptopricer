@@ -61,6 +61,8 @@ class PriceRequesterTestStub(PriceRequester):
         # for USD/CHF on CCCAGG on 12/9/17 !
         if crypto == 'USD' and unit == 'CHF' and exchange == 'CCCAGG' and timeStampUTCNoHHMMForHistoDay == 1536710400:
             resultData.setValue(resultData.RESULT_KEY_PRICE, 0.9728)
+        elif crypto == 'USD' and unit == 'CHF' and exchange == 'CCCAGG' and timeStampUTCNoHHMMForHistoDay == 1505174400:
+            resultData.setValue(resultData.RESULT_KEY_PRICE, 1.001)
 
         return resultData
 
