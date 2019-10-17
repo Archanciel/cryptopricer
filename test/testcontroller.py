@@ -15,6 +15,7 @@ from controller import Controller
 from datetimeutil import DateTimeUtil
 from consoleoutputformater import ConsoleOutputFormater
 from configurationmanager import ConfigurationManager
+from pricerequesterteststub import PriceRequesterTestStub
 from utilityfortest import UtilityForTest
 
 LOCAL_TIME_ZONE = 'Europe/Zurich'
@@ -36,7 +37,7 @@ class TestController(unittest.TestCase):
         configMgr = ConfigurationManager(self.filePath)
 
         #print('---- Instanciating Controller with ConsoleOutputFormater ----')
-        self.controller = Controller(ConsoleOutputFormater(), configMgr)
+        self.controller = Controller(ConsoleOutputFormater(), configMgr, PriceRequesterTestStub())
 
 
     def testControllerHistoDayPrice(self):
