@@ -27,6 +27,7 @@ from kivy.uix.widget import Widget
 from kivy.utils import platform
 
 from configurationmanager import ConfigurationManager
+from pricerequester import PriceRequester
 from controller import Controller
 from guioutputformater import GuiOutputFormater
 from guiutil import GuiUtil
@@ -222,7 +223,7 @@ class CryptoPricerGUI(BoxLayout):
             self.toggleAppSizeButton.text = 'Half'  # correct on Windows version !
 
         self.configMgr = ConfigurationManager(configPath)
-        self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr)
+        self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr, PriceRequester())
         self.dataPath = self.configMgr.dataPath
         self.histoListItemHeight = int(self.configMgr.histoListItemHeight)
         self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)

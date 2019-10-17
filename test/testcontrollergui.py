@@ -15,6 +15,7 @@ from controller import Controller
 from datetimeutil import DateTimeUtil
 from guioutputformater import GuiOutputFormater
 from configurationmanager import ConfigurationManager
+from pricerequesterteststub import PriceRequesterTestStub
 from utilityfortest import UtilityForTest
 
 
@@ -35,7 +36,7 @@ class TestControllerGui(unittest.TestCase):
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         configMgr = ConfigurationManager(FILE_PATH)
-        self.controller = Controller(GuiOutputFormater(configMgr), configMgr)
+        self.controller = Controller(GuiOutputFormater(configMgr), configMgr, PriceRequesterTestStub())
 
 
     @unittest.skip

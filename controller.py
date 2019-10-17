@@ -17,14 +17,14 @@ class Controller:
     control the rep loop
     :seqdiag_note Entry point of the business layer
     '''
-    def __init__(self, printer, configMgr):
+    def __init__(self, printer, configMgr, priceRequester):
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptopricer.ini'
         else:
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         self.configMgr = configMgr
-        self.priceRequester = PriceRequester()
+        self.priceRequester = priceRequester
         self.crypCompTranslator = CrypCompExchanges()
         self.processor = Processor(self.configMgr, self.priceRequester, self.crypCompTranslator)
         self.requester = Requester(self.configMgr)
