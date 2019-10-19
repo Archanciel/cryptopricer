@@ -129,6 +129,31 @@ class Processor:
                                     dateTimeFormat,
                                     localTz)
 
+
+        if resultData.isError():
+            # since crypto/unit is not supported by the exchange, we try to request the unit/crypto inverted rate
+            errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
+            resultData = self._getPrice(unit,
+                                        crypto,
+                                        validExchangeSymbol,
+                                        year,
+                                        month,
+                                        day,
+                                        hour,
+                                        minute,
+                                        dateTimeFormat,
+                                        localTz)
+
+            resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+            resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
+            price = resultData.getValue(resultData.RESULT_KEY_PRICE)
+
+            if price:
+                resultData.setValue(resultData.RESULT_KEY_PRICE, 1 / price)
+                resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+            else:
+                resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, errorMsg)
+
         fiatConversionRate = 0
 
         if optionFiatSymbol is not None and not resultData.isError():

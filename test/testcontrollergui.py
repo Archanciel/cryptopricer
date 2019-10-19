@@ -980,9 +980,12 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
         self.assertEqual(
-            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported option -eall in request btc eth 0 binance -eall', printResult)
-        self.assertEqual('', fullCommandStrNoOptions)
+            'BTC/ETH on Binance: {}/{}/{} {}:{}R\nWarning - unsupported option -eall in request btc eth 0 binance -eall'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))
+        self.assertEqual('btc eth 0 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
@@ -999,8 +1002,8 @@ class TestControllerGui(unittest.TestCase):
             inputStr)
 
         self.assertEqual(
-            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported option -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
-        self.assertEqual('', fullCommandStrNoOptions)
+            'BTC/ETH on Binance: {}/{}/{} 00:00C\nWarning - unsupported option -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr, tenDaysBeforeYearStr, requestDayStr, requestMonthStr), UtilityForTest.removeOneEndPriceFromResult(printResult))
+        self.assertEqual('btc eth {}/{}/{} 00:00 binance'.format(requestDayStr, requestMonthStr, tenDaysBeforeYearStr), fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
@@ -1222,7 +1225,32 @@ class TestControllerGui(unittest.TestCase):
                                                                    nowMinuteStr), fullCommandStrNoOptions)
             self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
-# testing option value scenario
+    def testBtcEthBinanceInvertedCryptoUnitBug(self):
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            now)
+
+        inputStr = 'eth btc 0 binance'
+        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'ETH/BTC on Binance: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
+            UtilityForTest.removeOneEndPriceFromResult(printResult))
+        self.assertEqual('eth btc 0 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        invertedInputStr = 'btc eth 0 binance'
+        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            invertedInputStr)
+
+        self.assertEqual(
+            'BTC/ETH on Binance: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
+            UtilityForTest.removeOneEndPriceFromResult(printResult))
+        self.assertEqual('btc eth 0 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+    # testing option value scenario
 
     def testGetPrintableResultForInputscenarioWithInvalidOptionValueSaveAndWarning(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)

@@ -496,7 +496,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
 
-    def testGetCryptoPriceRealTimeExchangeNotSupportPair(self):
+    def testGetCryptoPriceRealTimeInvalidExchangeNotSupportPair(self):
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
         unit = 'USD'
@@ -524,6 +524,46 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), None)
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+
+    def testGetCryptoPriceHistoDayValidExchangeHandlingInvertedCryptoUnit(self):
+        now = DateTimeUtil.localNow('Europe/Zurich')
+        crypto = 'BTC'
+        unit = 'ETH'
+        exchange = 'Binance'
+        day = 12
+        month = 9
+        year = 2017
+        hour = 0
+        minute = 0
+
+        resultData = self.processor.getCryptoPrice(crypto,
+                                               unit,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
+                                               minute)
+
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual(unit,resultData.getValue(resultData.RESULT_KEY_UNIT))
+        self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+        self.assertEqual(resultData.PRICE_TYPE_HISTO_DAY, resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE))
+        self.assertEqual(14.164305949008499, resultData.getValue(resultData.RESULT_KEY_PRICE))
+        self.assertEqual('12/09/17 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual(1505174400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
