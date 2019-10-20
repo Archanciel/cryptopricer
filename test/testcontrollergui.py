@@ -932,27 +932,18 @@ class TestControllerGui(unittest.TestCase):
                                                                requestMinuteStr), fullCommandStrWithSaveModeOptions)
 
 
-    def testGetPrintableResultForRealTimeWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning(self):
-        #first command: RT price request
-        inputStr = 'btc eth 0 binance -eall'
-        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
-            inputStr)
-
-        self.assertEqual(
-            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported option -eall in request btc eth 0 binance -eall', printResult)
-        self.assertEqual('', fullCommandStrNoOptions)
-        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
-
-
     def testGetPrintableResultForHistoMinuteWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning(self):
         #first command: RT price request
         inputStr = 'btc eth 0 binance -eall'
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
         self.assertEqual(
-            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported option -eall in request btc eth 0 binance -eall', printResult)
-        self.assertEqual('', fullCommandStrNoOptions)
+            'BTC/ETH on Binance: {}/{}/{} {}:{}R\nWarning - unsupported option -eall in request btc eth 0 binance -eall'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))
+        self.assertEqual('btc eth 0 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
@@ -963,14 +954,14 @@ class TestControllerGui(unittest.TestCase):
         requestDayStr = threeDaysBeforeDayStr
         requestMonthStr = threeDaysBeforeMonthStr
 
-        #second command: histo price request
+        #second command: histo minute price request
         inputStr = 'btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr)
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
-            'PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-ETH)\nWarning - unsupported option -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr), printResult)
-        self.assertEqual('', fullCommandStrNoOptions)
+            'BTC/ETH on Binance: {}/{}/{} 00:00M\nWarning - unsupported option -eall in request btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr, threeDaysBeforeYearStr, requestDayStr, requestMonthStr), UtilityForTest.removeOneEndPriceFromResult(printResult))
+        self.assertEqual('btc eth {}/{}/{} 00:00 binance'.format(requestDayStr, requestMonthStr, threeDaysBeforeYearStr), fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
@@ -996,7 +987,7 @@ class TestControllerGui(unittest.TestCase):
         requestDayStr = tenDaysBeforeDayStr
         requestMonthStr = tenDaysBeforeMonthStr
 
-        #second command: histo price request
+        #second command: histo day price request
         inputStr = 'btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr)
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
@@ -1697,9 +1688,10 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'PROVIDER ERROR - Bitfinex market does not exist for this coin pair (BTC-ETH)', printResult)
-        self.assertEqual('', fullCommandStrNoOptions)
-        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+            'BTC/ETH on Bitfinex: '+ '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr), UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('btc eth 0 bitfinex', fullCommandStrNoOptions)
+        self.assertEqual('btc eth 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
         inputStr = '-cxmr'
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
@@ -1713,9 +1705,10 @@ class TestControllerGui(unittest.TestCase):
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'PROVIDER ERROR - Bitfinex market does not exist for this coin pair (BTC-ETH)', printResult)
-        self.assertEqual('', fullCommandStrNoOptions)
-        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+            'BTC/ETH on Bitfinex: '+ '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+                                                               nowMinuteStr), UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+        self.assertEqual('btc eth 0 bitfinex', fullCommandStrNoOptions)
+        self.assertEqual('btc eth 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
         inputStr = '-uusd'
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
