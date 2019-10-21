@@ -241,11 +241,36 @@ class CryptoPricerGUI(BoxLayout):
     def ensureDataPathExist(self, dataPath, message):
         '''
         Display a warning in a popup if the data path defined in the settings
-        does nor exist and return False. If path ok, returns True. This prevents
+        does not exist and return False. If path ok, returns True. This prevents
         exceptions at load or save or settings save time.
         :return:
         '''
-        if not (os.path.isdir(dataPath) or os.path.isfile(dataPath)):
+        if not (os.path.isdir(dataPath)):
+            popupSize = None
+
+            if platform == 'android':
+                popupSize = (980, 450)
+            elif platform == 'win':
+                popupSize = (300, 150)
+
+            popup = Popup(title='CryptoPricer WARNING', content=Label(
+                text=message),
+                          auto_dismiss=True, size_hint=(None, None),
+                          size=popupSize)
+            popup.open()
+
+            return False
+        else:
+            return True
+
+    def ensureDataPathFileNameExist(self, dataPathFileName, message):
+        '''
+        Display a warning in a popup if the passed data path file name
+        does not exist and return False. If dataPathFileName ok, returns True.
+        This prevents exceptions at load or save or settings save time.
+        :return:
+        '''
+        if not (os.path.isfile(dataPathFileName)):
             popupSize = None
 
             if platform == 'android':
@@ -590,7 +615,7 @@ class CryptoPricerGUI(BoxLayout):
     def loadHistoryFromPathFilename(self, pathFilename):
         dataFileNotFoundMessage = 'Data file\n' + pathFilename + 'not found. No history loaded.'
 
-        if not self.ensureDataPathExist(pathFilename, dataFileNotFoundMessage):
+        if not self.ensureDataPathFileNameExist(pathFilename, dataFileNotFoundMessage):
             return
 
         with open(pathFilename) as stream:
@@ -598,7 +623,7 @@ class CryptoPricerGUI(BoxLayout):
 
         lines = list(map(lambda line: line.strip('\n'), lines))
         histoLines = [{'text' : val} for val in lines]
-        self.requestListRV.data.extend(histoLines)
+        self.requestListRV.data = histoLines
 
         # Reset the ListView
         self.resetListViewScrollToEnd()
@@ -608,12 +633,11 @@ class CryptoPricerGUI(BoxLayout):
 
     def saveHistoryToFile(self, path, filename, isLoadAtStart):
         dataPathNotExistMessage = self.buildDataPathNotExistMessage(path)
+        pathFileName = os.path.join(path, filename)
 
-        if not filename or not self.ensureDataPathExist(filename, dataPathNotExistMessage):
+        if not filename or not self.ensureDataPathExist(path, dataPathNotExistMessage):
             # no file selected. Save dialog remains open ..
             return
-
-        pathFileName = os.path.join(path, filename)
 
         with open(pathFileName, 'w') as stream:
             for listEntry in self.requestListRV.data:
@@ -863,7 +887,7 @@ class CryptoPricerGUIApp(App):
             historyFilePathFilename = self.cryptoPricerGUI.configMgr.loadAtStartPathFilename
             dataFileNotFoundMessage = self.cryptoPricerGUI.buildFileNotFoundMessage(historyFilePathFilename)
 
-            if historyFilePathFilename != '' and self.cryptoPricerGUI.ensureDataPathExist(historyFilePathFilename, dataFileNotFoundMessage):
+            if historyFilePathFilename != '' and self.cryptoPricerGUI.ensureDataPathFileNameExist(historyFilePathFilename, dataFileNotFoundMessage):
                 self.cryptoPricerGUI.loadHistoryFromPathFilename(historyFilePathFilename)
 
 if __name__ == '__main__':
