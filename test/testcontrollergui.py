@@ -1123,13 +1123,6 @@ class TestControllerGui(unittest.TestCase):
                                                                    nowMinuteStr), fullCommandStrNoOptions)
             self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
-
-
-#-------------------
-
-
-
-
     def testGetPrintableResultForDayOnlyAndTimePartialRequest_3daysBefore(self):
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
         nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
@@ -2531,6 +2524,43 @@ class TestControllerGui(unittest.TestCase):
             UtilityForTest.removeOneEndPriceFromResult(printResult))
         self.assertEqual('neo usd 0 bitfinex', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+    def testControllerBugSpecifyOptionValueSaveThenFiatSaveAfterAskHistoDay(self):
+        # timezoneStr = LOCAL_TIME_ZONE
+        # now = DateTimeUtil.localNow(timezoneStr)
+        # eightDaysBeforeArrowDate = now.shift(days=-8)
+        #
+        # eightDaysBeforeYearStr, eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
+        #
+        # requestYearStr = eightDaysBeforeYearStr
+        # requestDayStr = eightDaysBeforeDayStr
+        # requestMonthStr = eightDaysBeforeMonthStr
+        # histo day full request
+        inputStr = 'btc eth 12/9/17 binance'
+        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual('BTC/ETH on Binance: 12/09/17 00:00C 14.16430595', printResult)
+        self.assertEqual('btc eth 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        # adding value save option
+        inputStr = '-vs10eth'
+        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual('0.706 BTC/10 ETH on Binance: 12/09/17 00:00C 14.16430595', printResult)
+        self.assertEqual('btc eth 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual('btc eth 12/09/17 00:00 binance -vs10eth', fullCommandStrWithSaveModeOptions)
+
+        # adding fiat save option
+        inputStr = '-fschf'
+        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual('0.706 BTC/10 ETH/2947.7 CHF.CCCAGG on Binance: 12/09/17 00:00C 14.16430595 4175.21246459', printResult)
+        self.assertEqual('btc eth 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual('btc eth 12/09/17 00:00 binance -vs10eth -fschf', fullCommandStrWithSaveModeOptions)
 
 if __name__ == '__main__':
     unittest.main()
