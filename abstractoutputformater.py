@@ -5,8 +5,10 @@ from abc import abstractmethod
 class AbstractOutputFormater(metaclass=ABCMeta):
     '''
     '''
-    PRICE_FLOAT_FORMAT = '%.8f' # format of crypto, unit or fiat prices returned by provider
-    VALUE_FLOAT_FORMAT = '%.8f' # format of -v value option computed values
+    PRICE_FLOAT_ROUNDING = 8
+    VALUE_FLOAT_ROUNDING = 8
+    PRICE_FLOAT_FORMAT = '%.{}f'.format(PRICE_FLOAT_ROUNDING) # format of crypto, unit or fiat prices returned by provider
+    VALUE_FLOAT_FORMAT = '%.{}f'.format(VALUE_FLOAT_ROUNDING) # format of -v value option computed values
 
     def __init__(self, receiver=None, name='', rawParmData='', parsedParmData={}):
         pass
