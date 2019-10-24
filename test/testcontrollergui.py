@@ -2490,7 +2490,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('btc eth 12/09/17 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual('btc eth 12/09/17 00:00 binance -vs10eth -fschf', fullCommandStrWithSaveModeOptions)
 
-    def testOptionFiatValueComputationIsCorrectHistoDayPrice(self):
+    def testOptionFiatValueComputationIsCorrectFullRequestHistoDayPrice(self):
         '''
         This test verifies that the fiat computed amount is correct
         :return:
@@ -2522,15 +2522,11 @@ class TestControllerGui(unittest.TestCase):
         #ensure fiat value of eth is correct
         self.assertEqual(ethBtcRate * btcUsdRate, fiatComputedEthUsdRate)
 
-    def testOptionFiatValueComputationIsCorrectCurrentPrice(self):
+    def testOptionFiatValueComputationIsCorrectFullRequestCurrentPrice(self):
         '''
         This test verifies that the fiat computed amount is correct
         :return:
         '''
-        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
-
-        nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
-
         #first command: eth usd histo day on kraken price request
         inputStr = 'btc usd 0 kraken'
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
@@ -2540,6 +2536,74 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: eth btc histo day price request with usd fiat option
         inputStr = 'eth btc 0 binance -fsusd.kraken'
+        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0])
+        ethUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
+
+        #ensure fiat value of eth is correct
+        self.assertEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate)
+
+    def testOptionFiatValueComputationIsCorrectPartialRequestHistoDayPrice(self):
+        '''
+        This test verifies that the fiat computed amount is correct
+        :return:
+        '''
+        #first command: btc usd histo day on kraken price request
+        inputStr = 'btc usd 1/1/19 kraken'
+        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/USD on Kraken: 01/01/19 00:00C 3820.1', printResult)
+        self.assertEqual('btc usd 01/01/19 00:00 kraken', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        btcUsdRate = float(re.findall(r".* ([\d\.]+)", printResult)[0]) # 3820.1
+
+        #second command: eth btc histo day price request
+        inputStr = 'eth btc 1/1/19 binance'
+        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/BTC on Binance: 01/01/19 00:00C 0.03663', printResult)
+        self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #second command: usd fiat save option
+        inputStr = '-fsusd.kraken'
+        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
+        self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken', fullCommandStrWithSaveModeOptions)
+
+        ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
+        fiatComputedEthUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1]) # 139.930263
+
+        #ensure fiat value of eth is correct
+        self.assertEqual(ethBtcRate * btcUsdRate, fiatComputedEthUsdRate)
+
+    def testOptionFiatValueComputationIsCorrectPartialRequestCurrentPrice(self):
+        '''
+        This test verifies that the fiat computed amount is correct
+        :return:
+        '''
+        #first command: eth usd histo day on kraken price request
+        inputStr = 'btc usd 0 kraken'
+        printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        btcUsdRate = float(re.findall(r".* ([\d\.]+)", printResult)[0])
+
+        #second command: eth btc histo day price request
+        inputStr = 'eth btc 0 binance'
+        _, _, _, _ = self.controller.getPrintableResultForInput(inputStr)
+
+        #third command: usd fiat save option
+        inputStr = '-fsusd.kraken'
         printResult, fullCommandStrNoOptions, fullCommandStrNoOptionsWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
             inputStr)
 
