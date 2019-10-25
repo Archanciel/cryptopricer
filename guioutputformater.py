@@ -141,9 +141,19 @@ class GuiOutputFormater(AbstractOutputFormater):
         else:
             fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
             fiatOptionExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
-            if fiatOptionSymbol and fiatOptionExchange:
-                # even in case the value command generated a warning, it will be displayed in the status bar !
-                fullCommandStrWithOptions = fullCommandStrNoOptions + ' -f' + fiatOptionSymbol + fiatOptionExchange
+            if not fullCommandStrWithOptions:
+                if fiatOptionSymbol:
+                    if fiatOptionExchange:
+                        fullCommandStrWithOptions = fullCommandStrNoOptions + ' -f{}.{}'.format(fiatOptionSymbol, fiatOptionExchange)
+                    else:
+                        fullCommandStrWithOptions = fullCommandStrNoOptions + ' -f{}'.format(fiatOptionSymbol)
+            else:
+                if fiatOptionSymbol:
+                    if fiatOptionExchange:
+                        fullCommandStrWithOptions = fullCommandStrWithOptions + ' -f{}.{}'.format(fiatOptionSymbol,
+                                                                                                  fiatOptionExchange)
+                    else:
+                        fullCommandStrWithOptions = fullCommandStrWithOptions + ' -f{}'.format(fiatOptionSymbol)
 
         from seqdiagbuilder import SeqDiagBuilder
         SeqDiagBuilder.recordFlow()
