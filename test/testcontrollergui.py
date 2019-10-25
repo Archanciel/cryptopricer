@@ -2632,7 +2632,7 @@ class TestControllerGui(unittest.TestCase):
             'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
         self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithOptions)
-        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrWithSaveModeOptions)
 
         ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
         fiatComputedEthUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1]) # 139.930263
@@ -2707,7 +2707,7 @@ class TestControllerGui(unittest.TestCase):
             'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
         self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithOptions)
-        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrWithSaveModeOptions)
 
         ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
         fiatComputedEthUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1]) # 139.930263
@@ -2745,6 +2745,84 @@ class TestControllerGui(unittest.TestCase):
 
         #ensure fiat value of eth is correct
         self.assertEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate)
+
+    def testOptionFiatValueComputationIsCorrectFullRequestHistoDayPriceNoSave(self):
+        '''
+        This test verifies that the fiat computed amount is correct
+        :return:
+        '''
+        #first command: btc usd histo day on kraken price request
+        inputStr = 'btc usd 1/1/19 kraken'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/USD on Kraken: 01/01/19 00:00C 3820.1', printResult)
+        self.assertEqual('btc usd 01/01/19 00:00 kraken', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        btcUsdRate = float(re.findall(r".* ([\d\.]+)", printResult)[0]) # 3820.1
+
+        #second command: eth btc histo day price request with usd fiat option
+        inputStr = 'eth btc 1/1/19 binance -fusd.kraken'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
+        self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrWithOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
+        fiatComputedEthUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1]) # 139.930263
+
+        #ensure fiat value of eth is correct
+        self.assertEqual(ethBtcRate * btcUsdRate, fiatComputedEthUsdRate)
+
+    def testOptionFiatValueComputationIsCorrectPartialRequestHistoDayPriceNoSave(self):
+        '''
+        This test verifies that the fiat computed amount is correct
+        :return:
+        '''
+        #first command: btc usd histo day on kraken price request
+        inputStr = 'btc usd 1/1/19 kraken'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/USD on Kraken: 01/01/19 00:00C 3820.1', printResult)
+        self.assertEqual('btc usd 01/01/19 00:00 kraken', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        btcUsdRate = float(re.findall(r".* ([\d\.]+)", printResult)[0]) # 3820.1
+
+        #second command: eth btc histo day price request
+        inputStr = 'eth btc 1/1/19 binance'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/BTC on Binance: 01/01/19 00:00C 0.03663', printResult)
+        self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #second command: usd fiat save option
+        inputStr = '-fusd.kraken'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
+        self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrWithOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
+        fiatComputedEthUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1]) # 139.930263
+
+        #ensure fiat value of eth is correct
+        self.assertEqual(ethBtcRate * btcUsdRate, fiatComputedEthUsdRate)
 
 if __name__ == '__main__':
     unittest.main()
