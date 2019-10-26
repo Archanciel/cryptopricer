@@ -82,7 +82,7 @@ class TestControllerGui(unittest.TestCase):
         requestMonthStr = '1'
         requestArrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(requestDayStr), int(requestMonthStr), now.year, 0, 0, 0, timezoneStr)
         inputStr = 'mco btc {}/{} all'.format(requestDayStr, requestMonthStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(requestArrowDate, 7):
@@ -110,7 +110,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -122,7 +122,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -144,7 +144,7 @@ class TestControllerGui(unittest.TestCase):
         requestMonthStr = eightDaysBeforeMonthStr
         requestYearStr = eightDaysBeforeYearStr
         inputStr = 'mco btc {}/{} all'.format(requestDayStr, requestMonthStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(eightDaysBeforeArrowDate, 7):
@@ -164,7 +164,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -186,7 +186,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -206,7 +206,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -223,7 +223,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'btc usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -251,7 +251,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '-t' 10 minutes before
         inputStr = '-t{}:{}'.format(hourStr, minuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -264,7 +264,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '-ceth'
         inputStr = '-ceth'.format(hourStr, minuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -288,7 +288,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -308,7 +308,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: -d with invalid date format
         inputStr = '-d10:01'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -329,7 +329,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -349,7 +349,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: -d with invalid date format
         inputStr = '-d10/O1'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -370,7 +370,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -390,7 +390,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: -d with invalid date format
         inputStr = '-d1/1/20O1'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -411,7 +411,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -431,7 +431,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: -t with invalid time format
         inputStr = '-t10:O1'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -452,7 +452,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -472,7 +472,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: -t with invalid time format
         inputStr = '-t10:61'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -493,7 +493,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -513,7 +513,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: -t with invalid time format
         inputStr = '-t1O:01'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -531,7 +531,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -543,7 +543,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '-d1'
         inputStr = '-d1'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(nowBegOfMonth, 7):
@@ -573,7 +573,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -585,7 +585,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '-d1'
         inputStr = '-d1/1'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(nowBegOfMonth, 7):
@@ -615,7 +615,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -627,7 +627,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '-d1'
         inputStr = '-d1/1/{}'.format(nowBegOfMonthLastYearYearStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(nowBegOfMonthLastYear, 7):
@@ -655,7 +655,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'btc usd 0 all -ebitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -665,7 +665,7 @@ class TestControllerGui(unittest.TestCase):
 
         # then replay same request with no error
         inputStr = 'btc usd 0 all'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -680,7 +680,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'btc usd 0 all -zooo'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request btc usd 0 all -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -690,7 +690,7 @@ class TestControllerGui(unittest.TestCase):
 
         # then replay same request with no error
         inputStr = '-ueth -zooo'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('BTC/ETH on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request -ueth -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -706,7 +706,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -718,7 +718,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next: invalid time command '-t12.56'
         inputStr = '-t12.56'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -728,7 +728,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next: invalid time command '-t12.56'
         inputStr = '-d23:11'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -744,7 +744,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -756,7 +756,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next: invalid time command '-t12.56'
         inputStr = '-d23:11'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -766,7 +766,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next: invalid time command '-t12.56'
         inputStr = '-t12.56'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -776,7 +776,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next: valid -e command
         inputStr = '-eall'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -792,7 +792,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -803,7 +803,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-d{}:{} -t00.01'.format(requestDayStr, requestMonthStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -812,7 +812,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-t00:01'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -821,7 +821,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-d{}/{}'.format(requestDayStr, requestMonthStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -840,7 +840,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'btc usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -870,7 +870,7 @@ class TestControllerGui(unittest.TestCase):
             priceType = 'M'
 
         inputStr = '-vs100usd -eall -t{}:{} -ceth -d{}/{}'.format(requestHourStr, requestMinuteStr, requestDayStr, requestMonthStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -889,7 +889,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'btc usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -919,7 +919,7 @@ class TestControllerGui(unittest.TestCase):
             priceType = 'M'
 
         inputStr = '-ubtc -eall -t{}:{} -vs100eth -ceth -d{}/{}'.format(requestHourStr, requestMinuteStr, requestDayStr, requestMonthStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -935,7 +935,7 @@ class TestControllerGui(unittest.TestCase):
     def testGetPrintableResultForHistoMinuteWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning(self):
         #first command: RT price request
         inputStr = 'btc eth 0 binance -eall'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
@@ -956,7 +956,7 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: histo minute price request
         inputStr = 'btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -968,7 +968,7 @@ class TestControllerGui(unittest.TestCase):
     def testGetPrintableResultForHistoDayWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning(self):
         #first command: RT price request
         inputStr = 'btc eth 0 binance -eall'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
@@ -989,7 +989,7 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: histo day price request
         inputStr = 'btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1006,7 +1006,7 @@ class TestControllerGui(unittest.TestCase):
         #not a RT price, but a histo minute price. We may request a price at 12:55 and we are
         #at 12:55:01 !
         inputStr = 'btc usd {}:{} bitfinex'.format(nowHourStr, nowMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1028,7 +1028,7 @@ class TestControllerGui(unittest.TestCase):
         threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
 
         inputStr = 'btc usd {} {}:{} bitfinex'.format(threeDaysBeforeDayStr, nowHourStr, nowMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if nowMonthStr == threeDaysBeforeMonthStr:
@@ -1053,7 +1053,7 @@ class TestControllerGui(unittest.TestCase):
         oneMonthBeforeArrowDate = now.shift(months=-1)
         day = 31
         inputStr = 'btc usd {} {}:{} bitfinex'.format(day, nowHourStr, nowMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         try:
@@ -1077,7 +1077,7 @@ class TestControllerGui(unittest.TestCase):
         eightDaysBeforeYearStr, eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
 
         inputStr = 'btc usd {} {}:{} bitfinex'.format(eightDaysBeforeDayStr, nowHourStr, nowMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if nowMonthStr == eightDaysBeforeMonthStr:
@@ -1108,7 +1108,7 @@ class TestControllerGui(unittest.TestCase):
         oneYearBeforeYearStr, oneYearBeforeMonthStr, oneYearBeforeDayStr, oneYearBeforeHourStr, oneYearBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearBeforeArrowDate)
 
         inputStr = 'btc usd {} {}:{} bitfinex'.format(oneDaysAfterDayStr, oneDaysAfterHourStr, nowMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if nowMonthStr == oneDaysAfterMonthStr:
@@ -1136,7 +1136,7 @@ class TestControllerGui(unittest.TestCase):
         #not a RT price, but a histo minute price. We may request a price at 12:55 and we are
         #at 12:55:01 !
         inputStr = 'btc usd {} {}:{} bitfinex'.format(threeDaysBeforeDayStr, nowHourStr, nowMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if nowMonthStr == threeDaysBeforeMonthStr:
@@ -1163,7 +1163,7 @@ class TestControllerGui(unittest.TestCase):
         eightDaysBeforeYearStr, eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
 
         inputStr = 'btc usd {} {}:{} bitfinex'.format(eightDaysBeforeDayStr, nowHourStr, nowMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if nowMonthStr == eightDaysBeforeMonthStr:
@@ -1194,7 +1194,7 @@ class TestControllerGui(unittest.TestCase):
         oneYearBeforeYearStr, oneYearBeforeMonthStr, oneYearBeforeDayStr, oneYearBeforeHourStr, oneYearBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneYearBeforeArrowDate)
 
         inputStr = 'btc usd {} {}:{} bitfinex'.format(oneDaysAfterDayStr, oneDaysAfterHourStr, nowMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if nowMonthStr == oneDaysAfterMonthStr:
@@ -1215,7 +1215,7 @@ class TestControllerGui(unittest.TestCase):
             now)
 
         inputStr = 'eth btc 0 binance'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1225,7 +1225,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         invertedInputStr = 'btc eth 0 binance'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             invertedInputStr)
 
         self.assertEqual(
@@ -1243,7 +1243,7 @@ class TestControllerGui(unittest.TestCase):
             now)
 
         inputStr = 'eth usd 0 bitfinex -vs100'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         #        self.assertTrue('WARNING - currency value option symbol missing. -vs option ignored' in printResult)
         self.assertEqual(
@@ -1263,7 +1263,7 @@ class TestControllerGui(unittest.TestCase):
         requestMonthStr = eightDaysBeforeMonthStr
         requestYearStr = eightDaysBeforeYearStr
         inputStr = 'mco btc {}/{} all'.format(requestDayStr, requestMonthStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(eightDaysBeforeArrowDate, 7):
@@ -1282,7 +1282,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-v12mco'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1303,7 +1303,7 @@ class TestControllerGui(unittest.TestCase):
         requestDayStr = eightDaysBeforeDayStr
         requestMonthStr = eightDaysBeforeMonthStr
         inputStr = 'mco btc {}/{} all'.format(requestDayStr, requestMonthStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(eightDaysBeforeArrowDate, 7):
@@ -1322,7 +1322,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-vs12mco'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1345,7 +1345,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -1364,7 +1364,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-v12eth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1387,7 +1387,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -1406,7 +1406,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-vs12eth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1429,7 +1429,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -1448,7 +1448,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-v12eth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1471,7 +1471,7 @@ class TestControllerGui(unittest.TestCase):
         requestHourStr = fiveDaysBeforeHourStr
         requestMinuteStr = fiveDaysBeforeMinuteStr
         inputStr = 'eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr)
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
@@ -1490,7 +1490,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-vs12eth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1508,7 +1508,7 @@ class TestControllerGui(unittest.TestCase):
 
         # first command: RT price request
         inputStr = 'btc usd 0 -vs10btc bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1524,7 +1524,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1536,7 +1536,7 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: value option
         inputStr = '-v10eth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1547,7 +1547,7 @@ class TestControllerGui(unittest.TestCase):
 
         #third command: value save option
         inputStr = '-vs100usd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1558,7 +1558,7 @@ class TestControllerGui(unittest.TestCase):
 
         #fourth command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1569,7 +1569,7 @@ class TestControllerGui(unittest.TestCase):
 
         #fifth command: change crypto
         inputStr = '-cneo'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1580,7 +1580,7 @@ class TestControllerGui(unittest.TestCase):
 
         #sixth command: remove value option
         inputStr = '-v0'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1591,7 +1591,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSaveCryptoAmountSpecified(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs0.1btc'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.1 BTC/414.94 USD on Bitfinex: 12/09/17 00:00C 4149.4',printResult)
@@ -1607,7 +1607,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price full command with save value option
         inputStr = 'eth usd 0 bitfinex -vs100usd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1620,7 +1620,7 @@ class TestControllerGui(unittest.TestCase):
         #each time you enter a full command, you wioe out any previously entered command, as tested
         #by testGetPrintableResultForInputScenarioWithValueSaveCommandWipedOutByFullCommand() !
         inputStr = 'eth usd 0 bitfinex -v0'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1638,7 +1638,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price full command with save value option
         inputStr = 'eth usd 0 bitfinex -vs100usd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1650,7 +1650,7 @@ class TestControllerGui(unittest.TestCase):
         #second command: RT price full command with remove value option. This is not usefull since
         #each time you enter a full command, you wioe out any previously entered command !
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1667,7 +1667,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'btc usd 0 bitfinex -vs10btc'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1678,7 +1678,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('btc usd 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
         inputStr = '-ueth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'BTC/ETH on Bitfinex: '+ '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1687,7 +1687,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('btc eth 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
         inputStr = '-cxmr'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'PROVIDER ERROR - Bitfinex market does not exist for this coin pair (XMR-ETH)', printResult)
@@ -1695,7 +1695,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-cbtc'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'BTC/ETH on Bitfinex: '+ '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1704,7 +1704,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('btc eth 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
         inputStr = '-uusd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1719,7 +1719,7 @@ class TestControllerGui(unittest.TestCase):
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         inputStr = 'eth usd 0 bitfinex -vs100usd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1730,7 +1730,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
         inputStr = '-v100usd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1741,7 +1741,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1752,7 +1752,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-v0'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -1785,7 +1785,7 @@ class TestControllerGui(unittest.TestCase):
             minuteStr = requestMinuteStr
             priceType = 'M'
 
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1796,7 +1796,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1807,7 +1807,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: value option
         inputStr = '-v10eth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1818,7 +1818,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1830,7 +1830,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: value save option
         inputStr = '-vs100usd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1841,7 +1841,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1852,7 +1852,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: change crypto
         inputStr = '-cneo'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1863,7 +1863,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1874,7 +1874,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: remove value option
         inputStr = '-v0'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1885,7 +1885,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1917,7 +1917,7 @@ class TestControllerGui(unittest.TestCase):
             minuteStr = requestMinuteStr
             priceType = 'M'
 
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1928,7 +1928,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1939,7 +1939,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: value option
         inputStr = '-v10eth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr,
@@ -1950,7 +1950,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -1962,7 +1962,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: value save option
         inputStr = '-vs100usd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr,
@@ -1973,7 +1973,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr,
@@ -1984,7 +1984,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: change crypto
         inputStr = '-cneo'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr,
@@ -1995,7 +1995,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr,
@@ -2006,7 +2006,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: remove value option
         inputStr = '-v0'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr,
@@ -2017,7 +2017,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr,
@@ -2033,7 +2033,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2045,7 +2045,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2057,7 +2057,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: value option
         inputStr = '-v10eth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -2068,7 +2068,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2080,7 +2080,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: value save option
         inputStr = '-vs100usd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -2091,7 +2091,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -2102,7 +2102,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: change crypto
         inputStr = '-cneo'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -2113,7 +2113,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -2124,7 +2124,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: remove value option
         inputStr = '-v0'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -2135,7 +2135,7 @@ class TestControllerGui(unittest.TestCase):
 
         #next command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -2151,7 +2151,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'btc usd 0 all -vs100.2usd -ebitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -vs100.2usd -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2165,7 +2165,7 @@ class TestControllerGui(unittest.TestCase):
         nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
         inputStr = 'eth usd 0 bitfinex -vs100usd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2175,7 +2175,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
         inputStr = '-cxmr'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'XMR/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2185,7 +2185,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('xmr usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
         inputStr = '-ubtc'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'XMR/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (XMR) and unit (BTC) of last request. -vs option ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2195,7 +2195,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-ceth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (ETH) and unit (BTC) of last request. -vs option ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2205,7 +2205,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         inputStr = '-v0'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2217,7 +2217,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSaveUnitAmountSpecified(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs70usd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.01686991 BTC/70 USD on Bitfinex: 12/09/17 00:00C 4149.4',printResult)
@@ -2233,7 +2233,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth btc 0 bitfinex -fusd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2251,7 +2251,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth btc 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2264,7 +2264,7 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: fiat option
         inputStr = '-fusd'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2282,7 +2282,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth btc 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2295,7 +2295,7 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: fiat option
         inputStr = '-fusd.kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2313,7 +2313,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth btc 0 bitfinex -fusd.kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2331,7 +2331,7 @@ class TestControllerGui(unittest.TestCase):
 
         #first command: RT price request
         inputStr = 'eth usd 0 bitfinex'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2344,7 +2344,7 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: fiat option
         inputStr = '-fchf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD/CHF.CCCAGG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2356,7 +2356,7 @@ class TestControllerGui(unittest.TestCase):
 
         #third command: value save option
         inputStr = '-fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD/CHF.CCCAGG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2367,7 +2367,7 @@ class TestControllerGui(unittest.TestCase):
 
         #fourth command: '' to replay lst command
         inputStr = ''
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/USD/CHF.CCCAGG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2378,7 +2378,7 @@ class TestControllerGui(unittest.TestCase):
 
         #fifth command: change crypto
         inputStr = '-cneo'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD/CHF.CCCAGG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2389,7 +2389,7 @@ class TestControllerGui(unittest.TestCase):
 
         #sixth command: remove fiat save option
         inputStr = '-f0'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2400,7 +2400,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSaveCryptoAmountSpecifiedOptionFiat(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs0.1btc -fchf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.1 BTC/414.94 USD/415.35494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2409,7 +2409,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSaveCryptoAmountSpecifiedOptionFiatSave(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs0.1btc -fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.1 BTC/414.94 USD/415.35494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2418,7 +2418,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueCryptoAmountSpecifiedOptionFiatSave(self):
         inputStr = 'btc usd 12/09/17 bitfinex -v0.1btc -fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.1 BTC/414.94 USD/415.35494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2427,7 +2427,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueCryptoAmountSpecifiedOptionFiat(self):
         inputStr = 'btc usd 12/09/17 bitfinex -v0.1btc -fchf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.1 BTC/414.94 USD/415.35494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2436,7 +2436,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSaveUnitAmountSpecifiedOptionFiat(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs1000usd -fchf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.2409987 BTC/1000 USD/1001 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2445,7 +2445,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSaveUnitAmountSpecifiedOptionFiatSave(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs1000usd -fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.2409987 BTC/1000 USD/1001 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2454,7 +2454,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueUnitAmountSpecifiedOptionFiatSave(self):
         inputStr = 'btc usd 12/09/17 bitfinex -v1000usd -fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.2409987 BTC/1000 USD/1001 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2463,7 +2463,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueUnitAmountSpecifiedOptionFiat(self):
         inputStr = 'btc usd 12/09/17 bitfinex -v1000usd -fchf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.2409987 BTC/1000 USD/1001 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2473,7 +2473,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSaveFiatAmountSpecifiedOptionFiat(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs1000chf -fchf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2482,7 +2482,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSaveFiatAmountSpecifiedOptionFiatSave(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs1000chf -fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2492,7 +2492,7 @@ class TestControllerGui(unittest.TestCase):
     def testGetPrintableResultForHistoricalRequestWithOptionFiatSaveOptionValueSaveFiatAmountSpecified(self):
         # inverting value and fiat options compared to previous tst
         inputStr = 'btc usd 12/09/17 bitfinex -fschf -vs1000chf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2501,7 +2501,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueFiatAmountSpecifiedOptionFiatSave(self):
         inputStr = 'btc usd 12/09/17 bitfinex -v1000chf -fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2510,7 +2510,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueFiatAmountSpecifiedOptionFiat(self):
         inputStr = 'btc usd 12/09/17 bitfinex -v1000chf -fchf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2519,7 +2519,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSaveFiatOptionSave(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs1000chf -fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2529,7 +2529,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSavedOptionFiat(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs10btc -fchf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '10 BTC/41494 USD/41535.494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2539,7 +2539,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueOptionFiatSave(self):
         inputStr = 'btc usd 12/09/17 bitfinex -v10btc -fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             '10 BTC/41494 USD/41535.494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
@@ -2549,7 +2549,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueSaveInvalidCurrencyAmountSpecifiedOptionFiatSave(self):
         inputStr = 'btc usd 12/09/17 bitfinex -vs1000eth -fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'BTC/USD/CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -vs option ignored', printResult)
@@ -2559,7 +2559,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueInvalidCurrencyAmountSpecifiedOptionFiatSave(self):
         inputStr = 'btc usd 12/09/17 bitfinex -v1000eth -fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'BTC/USD/CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -v option ignored', printResult)
@@ -2568,7 +2568,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testGetPrintableResultForHistoricalRequestWithOptionValueInvalidCurrencyAmountSpecifiedOptionFiat(self):
         inputStr = 'btc usd 12/09/17 bitfinex -v1000eth -fchf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'BTC/USD/CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -v option ignored', printResult)
@@ -2578,7 +2578,7 @@ class TestControllerGui(unittest.TestCase):
 
     def testControllerBugSpecifyOptionValueSaveThenFiatSaveAfterAskHistoDay(self):
         inputStr = 'btc eth 12/9/17 binance'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('BTC/ETH on Binance: 12/09/17 00:00C 14.16430595', printResult)
@@ -2588,7 +2588,7 @@ class TestControllerGui(unittest.TestCase):
 
         # adding value save option
         inputStr = '-vs10eth'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('0.706 BTC/10 ETH on Binance: 12/09/17 00:00C 14.16430595', printResult)
@@ -2598,7 +2598,7 @@ class TestControllerGui(unittest.TestCase):
 
         # adding fiat save option
         inputStr = '-fschf'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('0.706 BTC/10 ETH/2947.7 CHF.CCCAGG on Binance: 12/09/17 00:00C 14.16430595 4175.21246459', printResult)
@@ -2613,7 +2613,7 @@ class TestControllerGui(unittest.TestCase):
         '''
         #first command: btc usd histo day on kraken price request
         inputStr = 'btc usd 1/1/19 kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2626,13 +2626,14 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: eth btc histo day price request with usd fiat option
         inputStr = 'eth btc 1/1/19 binance -fsusd.kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
         self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithOptions)
-        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
 
         ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
         fiatComputedEthUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1]) # 139.930263
@@ -2647,7 +2648,7 @@ class TestControllerGui(unittest.TestCase):
         '''
         #first command: eth usd histo day on kraken price request
         inputStr = 'btc usd 0 kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('btc usd 0 kraken', fullCommandStrNoOptions)
@@ -2658,7 +2659,7 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: eth btc histo day price request with usd fiat option
         inputStr = 'eth btc 0 binance -fsusd.kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('eth btc 0 binance', fullCommandStrNoOptions)
@@ -2678,7 +2679,7 @@ class TestControllerGui(unittest.TestCase):
         '''
         #first command: btc usd histo day on kraken price request
         inputStr = 'btc usd 1/1/19 kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2691,7 +2692,7 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: eth btc histo day price request
         inputStr = 'eth btc 1/1/19 binance'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/BTC on Binance: 01/01/19 00:00C 0.03663', printResult)
@@ -2701,13 +2702,14 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: usd fiat save option
         inputStr = '-fsusd.kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
         self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithOptions)
-        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
 
         ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
         fiatComputedEthUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1]) # 139.930263
@@ -2722,18 +2724,18 @@ class TestControllerGui(unittest.TestCase):
         '''
         #first command: eth usd histo day on kraken price request
         inputStr = 'btc usd 0 kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         btcUsdRate = float(re.findall(r".* ([\d\.]+)", printResult)[0])
 
         #second command: eth btc histo day price request
         inputStr = 'eth btc 0 binance'
-        _, _, _, _ = self.controller.getPrintableResultForInput(inputStr)
+        _, _, _, _, _ = self.controller.getPrintableResultForInput(inputStr)
 
         #third command: usd fiat save option
         inputStr = '-fsusd.kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual('eth btc 0 binance', fullCommandStrNoOptions)
@@ -2753,7 +2755,7 @@ class TestControllerGui(unittest.TestCase):
         '''
         #first command: btc usd histo day on kraken price request
         inputStr = 'btc usd 1/1/19 kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2766,12 +2768,13 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: eth btc histo day price request with usd fiat option
         inputStr = 'eth btc 1/1/19 binance -fusd.kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
         self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
-        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrWithOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
@@ -2787,7 +2790,7 @@ class TestControllerGui(unittest.TestCase):
         '''
         #first command: btc usd histo day on kraken price request
         inputStr = 'btc usd 1/1/19 kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
 
         self.assertEqual(
@@ -2800,7 +2803,7 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: eth btc histo day price request
         inputStr = 'eth btc 1/1/19 binance'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/BTC on Binance: 01/01/19 00:00C 0.03663', printResult)
@@ -2810,12 +2813,13 @@ class TestControllerGui(unittest.TestCase):
 
         #second command: usd fiat save option
         inputStr = '-fusd.kraken'
-        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
             'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
         self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
-        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrWithOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken', fullCommandStrWithOptions)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663

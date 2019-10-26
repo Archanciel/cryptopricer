@@ -78,7 +78,7 @@ class GuiOutputFormater(AbstractOutputFormater):
                      3/ None (no value command with save option in effect)
         '''
         if resultData.isError():
-            return '', None, None
+            return '', None, None, None
 
         commandDic = resultData.getValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS)
         priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
@@ -99,6 +99,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 
         fullCommandStrWithSaveModeOptions = None
         fullCommandStrWithOptions = None
+        fullCommandStrForStatusBar = None
 
         # handling option value
 
@@ -109,12 +110,14 @@ class GuiOutputFormater(AbstractOutputFormater):
                 # None and wont't be stored in the request history list of the GUI !
                 fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -vs{}{}'.format(commandDic[
                     CommandPrice.OPTION_VALUE_AMOUNT], commandDic[CommandPrice.OPTION_VALUE_SYMBOL])
+                fullCommandStrForStatusBar = fullCommandStrWithSaveModeOptions
         else:
             valueOptionAmountStr = commandDic[CommandPrice.OPTION_VALUE_AMOUNT]
             valueOptionSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
             if valueOptionAmountStr and valueOptionSymbolStr:
                 # even in case the value command generated a warning, it will be displayed in the status bar !
                 fullCommandStrWithOptions = fullCommandStrNoOptions + ' -v{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
+                fullCommandStrForStatusBar = fullCommandStrWithOptions
 
         # handling option fiat
 
@@ -132,12 +135,15 @@ class GuiOutputFormater(AbstractOutputFormater):
                     else:
                         fullCommandStrWithSaveModeOptions = fullCommandStrWithSaveModeOptions + ' -fs{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL])
                 else:
+                    # case when no option value exist in save mode
                     requestFiatExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
                     if requestFiatExchange:
                         fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -fs{}.{}'.format(commandDic[
                             CommandPrice.OPTION_FIAT_SYMBOL], requestFiatExchange)
                     else:
                         fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -fs{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL])
+
+                fullCommandStrForStatusBar = fullCommandStrWithSaveModeOptions + self.buildUnitFiatComputationString(resultData)
         else:
             fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
             fiatOptionExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
@@ -154,11 +160,19 @@ class GuiOutputFormater(AbstractOutputFormater):
                                                                                                   fiatOptionExchange)
                     else:
                         fullCommandStrWithOptions = fullCommandStrWithOptions + ' -f{}'.format(fiatOptionSymbol)
+            if fullCommandStrWithOptions:
+                fullCommandStrForStatusBar = fullCommandStrWithOptions + self.buildUnitFiatComputationString(resultData)
 
         from seqdiagbuilder import SeqDiagBuilder
+
         SeqDiagBuilder.recordFlow()
 
-        return fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+        return fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
+
+    def buildUnitFiatComputationString(self, resultData):
+        return ' ({} * {} = {})'.format(resultData.getValue(resultData.RESULT_KEY_PRICE),
+                                        resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE),
+                                        resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 
     def _buildFullDateAndTimeStrings(self, commandDic, timezoneStr):
         '''

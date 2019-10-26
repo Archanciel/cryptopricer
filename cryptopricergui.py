@@ -354,7 +354,7 @@ class CryptoPricerGUI(BoxLayout):
         #   fullRequestStr - for the request history list
         #   fullRequestStrWithOptions - for the status bar
         #   fullRequestStrWithSaveModeOptions - for the request history list
-        outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+        outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             requestStr)
 
         self.outputResult(outputResultStr)
@@ -399,17 +399,17 @@ class CryptoPricerGUI(BoxLayout):
         else:
             if fullRequestStrWithSaveModeOptions:
                 if requestStr != fullRequestStrWithSaveModeOptions:
-                    self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithSaveModeOptions)
+                    self.updateStatusBar(requestStr + ' --> ' + fullCommandStrForStatusBar)
                 else:
-                    self.updateStatusBar(fullRequestStrWithSaveModeOptions)
+                    self.updateStatusBar(fullCommandStrForStatusBar)
             else:
                 if not fullRequestStrWithOptions:
                     fullRequestStrWithOptions = fullRequestStr
 
                 if requestStr != fullRequestStrWithOptions:
-                    self.updateStatusBar(requestStr + ' --> ' + fullRequestStrWithOptions)
+                    self.updateStatusBar(requestStr + ' --> ' + fullCommandStrForStatusBar)
                 else:
-                    self.updateStatusBar(fullRequestStrWithOptions)
+                    self.updateStatusBar(fullCommandStrForStatusBar)
 
         self.refocusOnRequestInput()
 
@@ -540,7 +540,7 @@ class CryptoPricerGUI(BoxLayout):
         self.outputResult('')
 
         for listEntry in self.requestListRV.data:
-            outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
+            outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
                 listEntry['text'])
             self.outputResult(outputResultStr)
 
