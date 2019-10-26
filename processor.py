@@ -154,20 +154,18 @@ class Processor:
             else:
                 resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, errorMsg)
 
-        fiatConversionRate = 0
-
         if optionFiatSymbol is not None and not resultData.isError():
-            fiatConversionRate, resultData = self._computeOptionFiatAmount(resultData,
-                                                                           optionFiatSymbol,
-                                                                           validFiatExchangeSymbol,
-                                                                           unit,
-                                                                           year,
-                                                                           month,
-                                                                           day,
-                                                                           hour,
-                                                                           minute,
-                                                                           dateTimeFormat,
-                                                                           localTz)
+            resultData = self._computeOptionFiatAmount(resultData,
+                                                       optionFiatSymbol,
+                                                       validFiatExchangeSymbol,
+                                                       unit,
+                                                       year,
+                                                       month,
+                                                       day,
+                                                       hour,
+                                                       minute,
+                                                       dateTimeFormat,
+                                                       localTz)
 
         if optionValueSymbol is not None and not resultData.isError():
             resultData = self._computeOptionValueAmount(resultData,
@@ -176,8 +174,7 @@ class Processor:
                                                         optionFiatSymbol,
                                                         optionValueSymbol,
                                                         optionValueAmount,
-                                                        optionValueSaveFlag,
-                                                        fiatConversionRate)
+                                                        optionValueSaveFlag)
 
         return resultData
 
@@ -265,8 +262,7 @@ class Processor:
                                   optionFiatSymbol,
                                   optionValueSymbol,
                                   optionValueAmount,
-                                  optionValueSaveFlag,
-                                  fiatConversionRate):
+                                  optionValueSaveFlag):
         '''
         Compute the optionValueAmount according to the passed parms and put the result in
         the passed resultData.
@@ -305,7 +301,7 @@ class Processor:
             resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, optionValueAmount)
             resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, convertedValue)
             if optionFiatSymbol:
-                fiatConvertedUnitValuePrice = convertedValue * fiatConversionRate
+                fiatConvertedUnitValuePrice = convertedValue * resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE)
                 resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, fiatConvertedUnitValuePrice)
         elif optionValueSymbol == unit:
             #converting optionValueAmount in unit to equivalent value in crypto
@@ -313,12 +309,12 @@ class Processor:
             resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, convertedValue)
             resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, optionValueAmount)
             if optionFiatSymbol:
-                fiatConvertedUnitValuePrice = optionValueAmount * fiatConversionRate
+                fiatConvertedUnitValuePrice = optionValueAmount * resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE)
                 resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, fiatConvertedUnitValuePrice)
         elif optionValueSymbol == optionFiatSymbol:
             convertedCryptoValue = optionValueAmount / resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
             resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, convertedCryptoValue)
-            convertedUnitValue = optionValueAmount / fiatConversionRate
+            convertedUnitValue = optionValueAmount / resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE)
             resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, convertedUnitValue)
             resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, optionValueAmount)
         else:
@@ -398,11 +394,12 @@ class Processor:
             price = resultData.getValue(resultData.RESULT_KEY_PRICE)
             fiatConvertedPrice = price * fiatConversionRate
 
+            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, fiatConversionRate)
             resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, fiatConvertedPrice)
             resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
             resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
 
-            return fiatConversionRate, resultData
+            return resultData
         else:
             # since fiat/unit is not supported by the exchange, we try to request the unit/fiat inverted rate
             fiatResultData = self._getPrice(fiat,
@@ -420,11 +417,12 @@ class Processor:
                 price = resultData.getValue(resultData.RESULT_KEY_PRICE)
                 fiatConvertedPrice = price * fiatConversionRate
 
+                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, fiatConversionRate)
                 resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, fiatConvertedPrice)
                 resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
                 resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
 
-                return fiatConversionRate, resultData
+                return resultData
             else:
                 errorMsg = fiatResultData.getValue(fiatResultData.RESULT_KEY_ERROR_MSG)
 
@@ -436,7 +434,7 @@ class Processor:
 
                 fiatResultData.setValue(fiatResultData.RESULT_KEY_ERROR_MSG, errorMsg)
 
-                return 0, fiatResultData
+                return fiatResultData
 
 if __name__ == '__main__':
     from configurationmanager import ConfigurationManager
