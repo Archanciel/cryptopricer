@@ -149,7 +149,7 @@
                 effect_cls: ScrollEffect #prevents overscrolling
                 TextInput:
                     id: status_bar
-                    size_hint: (None, None) # if remopved, scrolling no longer working !
+                    size_hint: (None, 1) # if remopved, scrolling no longer working. 1 required for correct 2 lines display !
                     background_color: 0,0,0,0
                     foreground_color: 1,1,1,1
                     width: scrlv_status_bar.width
