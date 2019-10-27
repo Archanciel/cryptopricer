@@ -6,7 +6,6 @@ from commanderror import CommandError
 from commandprice import CommandPrice
 from commandquit import CommandQuit
 from crypcompexchanges import CrypCompExchanges
-from pricerequester import PriceRequester
 from processor import Processor
 from requester import Requester
 
