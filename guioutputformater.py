@@ -173,7 +173,7 @@ class GuiOutputFormater(AbstractOutputFormater):
         fiatComputedAmount = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
         fiatComputedAmountStr = self._formatPriceFloatToStr(fiatComputedAmount, self.PRICE_FLOAT_FORMAT)
 
-        return ' ({} * {} = {})'.format(resultData.getValue(resultData.RESULT_KEY_PRICE),
+        return '\n({} * {} = {})'.format(resultData.getValue(resultData.RESULT_KEY_PRICE),
                                         resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE),
                                         fiatComputedAmountStr)
 

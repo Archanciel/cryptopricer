@@ -2633,7 +2633,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithOptions)
         self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken', fullCommandStrWithSaveModeOptions)
-        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken\n(0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
 
         ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
         fiatComputedEthUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1]) # 139.930263
@@ -2709,7 +2709,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithOptions)
         self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken', fullCommandStrWithSaveModeOptions)
-        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fsusd.kraken\n(0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
 
         ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
         fiatComputedEthUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1]) # 139.930263
@@ -2774,7 +2774,7 @@ class TestControllerGui(unittest.TestCase):
             'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
         self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
-        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken\n(0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
@@ -2819,7 +2819,7 @@ class TestControllerGui(unittest.TestCase):
             'ETH/BTC/USD.Kraken on Binance: 01/01/19 00:00C 0.03663 139.930263', printResult)
         self.assertEqual('eth btc 01/01/19 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken', fullCommandStrWithOptions)
-        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken (0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
+        self.assertEqual('eth btc 01/01/19 00:00 binance -fusd.kraken\n(0.03663 * 3820.1 = 139.930263)', fullCommandStrForStatusBar)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
         ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0]) # 0.03663
@@ -2837,7 +2837,7 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithOptions)
         self.assertEqual('eth btc 12/09/17 00:00 binance -fschf', fullCommandStrWithSaveModeOptions)
-        self.assertEqual('eth btc 12/09/17 00:00 binance -fschf (0.0706 * 4162.24 = 293.854144)', fullCommandStrForStatusBar)
+        self.assertEqual('eth btc 12/09/17 00:00 binance -fschf\n(0.0706 * 4162.24 = 293.854144)', fullCommandStrForStatusBar)
 
 if __name__ == '__main__':
     unittest.main()
