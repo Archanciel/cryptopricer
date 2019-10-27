@@ -2828,5 +2828,16 @@ class TestControllerGui(unittest.TestCase):
         #ensure fiat value of eth is correct
         self.assertEqual(ethBtcRate * btcUsdRate, fiatComputedEthUsdRate)
 
+    def testOptionFiatFullRequestHistoDayPriceFullCommandStrForStatusBarFormat(self):
+        inputStr = 'eth btc 12/9/17 binance -fschf'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/BTC/CHF.CCCAGG on Binance: 12/09/17 00:00C 0.0706 293.854144', printResult)
+        self.assertEqual('eth btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual('eth btc 12/09/17 00:00 binance -fschf', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 12/09/17 00:00 binance -fschf (0.0706 * 4162.24 = 293.854144)', fullCommandStrForStatusBar)
+
 if __name__ == '__main__':
     unittest.main()

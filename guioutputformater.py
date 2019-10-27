@@ -143,7 +143,7 @@ class GuiOutputFormater(AbstractOutputFormater):
                     else:
                         fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -fs{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL])
 
-                fullCommandStrForStatusBar = fullCommandStrWithSaveModeOptions + self.buildUnitFiatComputationString(resultData)
+                fullCommandStrForStatusBar = fullCommandStrWithSaveModeOptions + self._buildUnitFiatComputationString(resultData)
         else:
             fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
             fiatOptionExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
@@ -161,7 +161,7 @@ class GuiOutputFormater(AbstractOutputFormater):
                     else:
                         fullCommandStrWithOptions = fullCommandStrWithOptions + ' -f{}'.format(fiatOptionSymbol)
             if fullCommandStrWithOptions:
-                fullCommandStrForStatusBar = fullCommandStrWithOptions + self.buildUnitFiatComputationString(resultData)
+                fullCommandStrForStatusBar = fullCommandStrWithOptions + self._buildUnitFiatComputationString(resultData)
 
         from seqdiagbuilder import SeqDiagBuilder
 
@@ -169,10 +169,13 @@ class GuiOutputFormater(AbstractOutputFormater):
 
         return fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
 
-    def buildUnitFiatComputationString(self, resultData):
+    def _buildUnitFiatComputationString(self, resultData):
+        fiatComputedAmount = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
+        fiatComputedAmountStr = self._formatPriceFloatToStr(fiatComputedAmount, self.PRICE_FLOAT_FORMAT)
+
         return ' ({} * {} = {})'.format(resultData.getValue(resultData.RESULT_KEY_PRICE),
                                         resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE),
-                                        resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
+                                        fiatComputedAmountStr)
 
     def _buildFullDateAndTimeStrings(self, commandDic, timezoneStr):
         '''
