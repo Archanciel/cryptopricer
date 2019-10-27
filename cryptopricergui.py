@@ -404,7 +404,7 @@ class CryptoPricerGUI(BoxLayout):
                     self.updateStatusBar(fullCommandStrForStatusBar)
             else:
                 if not fullRequestStrWithOptions:
-                    fullRequestStrWithOptions = fullRequestStr
+                    fullCommandStrForStatusBar = fullRequestStr
 
                 if requestStr != fullRequestStrWithOptions:
                     self.updateStatusBar(requestStr + ' --> ' + fullCommandStrForStatusBar)
