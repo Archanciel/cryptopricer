@@ -108,16 +108,15 @@ request settings !
 Options can be added to both full and partial requests in order to obtain additional
 informations. [i]Remember that options added to a full request must be specified at the end of the request[/i].
 
-Currently, CryptoPricer supports only one option: the
-valuation [b][cy]-v[/b][/c] option. In the next version, two new options
-will be available: the fiat [b][cy]-f[/b][/c] and the price
- [b][cy]-p[/b][/c] options.
+Currently, CryptoPricer supports two options: the
+valuation [b][cy]-v[/b][/c] option and the fiat [b][cy]-f[/b][/c] option. In a further version, the price
+[b][cy]-p[/b][/c] option will be added.
 
 [cg]Valuation option[/cg]: [b][cy]-v[/b][/c][i]amount[/i]CURRENCY or 
 [b][cy]-vs[/b][/c][i]amount[/i]CURRENCY or [b][cy]-v0[/b][/c] to
 cancel it
 
-The [b][cy]-v[/b][/c] option is used in conjonction with a 
+The [b][cy]-v[/b][/c] option is used in conjunction with a
 specified [i]amount[/i] and CURRENCY (crypto or unit
 symbol) to obtain its converted unit or crypto
 value at the rate of the last request if entered separately, 
@@ -213,4 +212,56 @@ We see that now the previsously specified saved value
 option [cy]-vs0.1eth[/c] is applicable again. But now, 
 ETH is no longer the [cy]-c[/c] crypto, but is the 
 [cy]-u[/c] unit (counterparty).
+[p]
+[cg]Fiat option[/cg]: [b][cy]-f[/b][/c]CURRENCY or
+[b][cy]-fs[/b][/c]CURRENCY
+[n]or [b][cy]-f[/b][/c]CURRENCY.[i]exchange[/i] or
+[b][cy]-fs[/b][/c]CURRENCY.[i]exchange[/i] or
+[b][cy]-f0[/b][/c] to cancel it
+
+The [b][cy]-f[/b][/c] option is used to specify a CURRENCY in which the
+unit price of the crypto will be converted.
+
+Example: if the last request was 
+
+[n][cy]eth btc 0 bittrex[/c] -->
+[n]ETH/BTC on BitTrex: 28/10/19 18:38R 0.01939
+
+then entering
+
+[cy]-fusd[/c]
+
+returns
+
+ETH/BTC/USD.CCCAGG on BitTrex: 28/10/19 18:38R 0.01939 182.0755902
+
+which means that the ETH price in BTC on BitTrex of 0.01939 converted in USD
+equals 182.0755902, this for the BTC/USD price of 9390.13 obtained
+on CCCAGG (average BTC price).
+
+To state it differently, the USD conversion calculation is
+
+0.01939 * 9390.13 = 182.0755902
+
+It is possible to specify the exchange from which the fiat conversion rate will be
+obtained (CCCAGG is the default if no exchange is specified).
+
+Example: if the last request was
+
+[n][cy]eth btc 0 bittrex[/c] -->
+[n]ETH/BTC on BitTrex: 28/10/19 18:38R 0.01939
+
+then entering
+
+[cy]-fusd.kraken[/c]
+
+returns
+
+ETH/BTC/USD.Kraken on BitTrex: 28/10/19 18:38R 0.01939 182.09149
+
+which means that the ETH price in BTC on BitTrex of 0.01939 converted in USD
+equals 182.09149, this for the BTC/USD price of 9391 obtained
+from Kraken.
+
+[cg]Fiat option in conjunction with valuation option[/cg]:
 
