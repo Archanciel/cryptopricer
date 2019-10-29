@@ -378,6 +378,11 @@ class Processor:
         if fiatExchange == None:
             fiatExchange = 'CCCAGG'
 
+        if unit == fiat:
+            fiatConversionRate = 1
+
+            return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
+
         fiatResultData = self._getPrice(unit,
                                         fiat,
                                         fiatExchange,
@@ -391,15 +396,8 @@ class Processor:
 
         if not fiatResultData.isError():
             fiatConversionRate = fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
-            price = resultData.getValue(resultData.RESULT_KEY_PRICE)
-            fiatConvertedPrice = price * fiatConversionRate
 
-            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, fiatConversionRate)
-            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, fiatConvertedPrice)
-            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
-            resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
-
-            return resultData
+            return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
         else:
             # since fiat/unit is not supported by the exchange, we try to request the unit/fiat inverted rate
             fiatResultData = self._getPrice(fiat,
@@ -414,15 +412,8 @@ class Processor:
                                             localTz)
             if not fiatResultData.isError():
                 fiatConversionRate = 1 / fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
-                price = resultData.getValue(resultData.RESULT_KEY_PRICE)
-                fiatConvertedPrice = price * fiatConversionRate
 
-                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, fiatConversionRate)
-                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, fiatConvertedPrice)
-                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
-                resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
-
-                return resultData
+                return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
             else:
                 errorMsg = fiatResultData.getValue(fiatResultData.RESULT_KEY_ERROR_MSG)
 
@@ -435,6 +426,17 @@ class Processor:
                 fiatResultData.setValue(fiatResultData.RESULT_KEY_ERROR_MSG, errorMsg)
 
                 return fiatResultData
+
+    def _calculateAndStoreFiatData(self, fiat, fiatConversionRate, fiatExchange, resultData):
+        price = resultData.getValue(resultData.RESULT_KEY_PRICE)
+        fiatConvertedPrice = price * fiatConversionRate
+        resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, fiatConversionRate)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, fiatConvertedPrice)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
+        resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, fiatExchange)
+
+        return resultData
+
 
 if __name__ == '__main__':
     from configurationmanager import ConfigurationManager

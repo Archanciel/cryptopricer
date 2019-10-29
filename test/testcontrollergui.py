@@ -2883,15 +2883,16 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveModeOptions)
         self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance\n(0.002049 * 14.16430595 = 0.02902266)', fullCommandStrForStatusBar)
 
-        #second command: -cbtc -ueth Here, unit is equal to fiat which causes warning
+        #second command: -cbtc -ueth Here, unit is equal to fiat
         inputStr = '-cbtc -ueth'
         printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
             inputStr)
         self.assertEqual(
-            'PROVIDER ERROR - Trade pair ETH/ETH is invalid! (ETH-ETH)', printResult)
-        self.assertEqual('', fullCommandStrNoOptions)
+            'BTC/ETH/ETH.Binance on Binance: 12/09/17 00:00C 14.16430595 14.16430595', printResult)
+        self.assertEqual('btc eth 12/09/17 00:00 binance', fullCommandStrNoOptions)
         self.assertEqual(None, fullCommandStrWithOptions)
-        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+        self.assertEqual('btc eth 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('btc eth 12/09/17 00:00 binance -fseth.binance\n(14.16430595 * 1 = 14.16430595)', fullCommandStrForStatusBar)
 
         #third command: -cbtc -ueth with cancelling fiat option
         inputStr = '-cbtc -ueth -f0'
