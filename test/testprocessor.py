@@ -537,6 +537,15 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testGetCryptoPriceHistoDayValidExchangeHandlingInvertedCryptoUnit(self):
+        '''
+        Tests correct working of a request where the crypto/unit pair is not supported
+        by the fiat exchange and so causes an inverted unit/crypto pair request.
+
+        btc (crypto) eth (unit) on binance is not supported. So eth/btc is requested
+        and its result is inverted ((1/returned price)
+        :return:
+        '''
+        # full request btc eth 12/9/17 binance
         now = DateTimeUtil.localNow('Europe/Zurich')
         crypto = 'BTC'
         unit = 'ETH'
@@ -577,8 +586,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testGetCryptoPriceHistoricalOptionFiat(self):
-        # full request: btc usd 12/09/17 10:05 bittrex -fCHF
-        # exp result: BTC/USD/CHF on BitTrex: 12/09/17 00:00C 4122 4126.122
+        # full request: btc usd 12/09/17 10:05 bittrex -feur
         crypto = 'BTC'
         unit = 'USD'
         exchange = 'bittrex'
@@ -616,6 +624,66 @@ class TestProcessor(unittest.TestCase):
         value = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
         self.assertTrue(value >= 3440.2212 and value <= 3463.7166)
         self.assertEqual('EUR', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+        self.assertEqual(0.8403, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+
+    def testGetCryptoPriceHistoricalOptionFiatHandlingInvertedUnitFiat(self):
+        '''
+        Tests correct working of a fiat option where the unit/fiat pair is not supported
+        by the fiat exchange and so causes an inverted fiat/unit pair request.
+
+        btc (unit) eth (fiat) on binance is not supported. So eth/btc is requested
+        and its result is inverted ((1/returned price)
+        :return:
+        '''
+        # mco btc 12/09/17 00:00 binance -fseth.binance
+        crypto = 'MCO'
+        unit = 'BTC'
+        exchange = 'binance'
+        day = 12
+        month = 9
+        year = 2017
+        hour = 10
+        minute = 5
+        optionFiatSymbol = 'ETH' # -fsETH
+        optionFiatExchange = 'binance'
+
+
+        resultData = self.processor.getCryptoPrice(crypto,
+                                               unit,
+                                               exchange,
+                                               day,
+                                               month,
+                                               year,
+                                               hour,
+                                               minute,
+                                               optionValueSymbol=None,
+                                               optionValueAmount=None,
+                                               requestInputString='',
+                                               optionFiatSymbol=optionFiatSymbol,
+                                               optionFiatExchange=optionFiatExchange,
+                                               optionValueSaveFlag='s')
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+        self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
+        self.assertEqual('Binance', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+        self.assertEqual(resultData.PRICE_TYPE_HISTO_DAY, resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE))
+        self.assertEqual(0.002049, resultData.getValue(resultData.RESULT_KEY_PRICE))
+        self.assertEqual('12/09/17 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual(1505174400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
+        value = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
+        self.assertEqual(0.029022662889518415, value)
+        self.assertEqual('ETH', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual('Binance', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+        self.assertEqual(14.164305949008499, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
@@ -623,8 +691,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testGetCryptoPriceHistoricalOptionValueCryptoToUnitOptionFiat(self):
-        # full request: btc usd 12/09/17 10:05 bittrex -v0.001BTC -fCHF
-        # exp result: 0.001 BTC/4.122 USD/4.126122 CHF on BitTrex: 12/09/17 00:00C 4122 4126.122
+        # full request: btc usd 12/09/17 10:05 bittrex -v0.001BTC -feur
         crypto = 'BTC'
         unit = 'USD'
         exchange = 'bittrex'
@@ -665,6 +732,8 @@ class TestProcessor(unittest.TestCase):
         value = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
         self.assertTrue(value >= 3440.2212 and value <= 3463.7166)
         self.assertEqual('EUR', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+        self.assertEqual(0.8403, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
@@ -672,8 +741,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
 
     def testGetCryptoPriceHistoricalOptionValueCryptoToUnitOptionFiatSave(self):
-        # full request: btc usd 12/09/17 10:05 bittrex -v0.001BTC -fCHF
-        # exp result: 0.001 BTC/4.122 USD/4.126122 CHF on BitTrex: 12/09/17 00:00C 4122 4126.122
+        # full request: btc usd 12/09/17 10:05 bittrex -v0.001BTC -fseur
         crypto = 'BTC'
         unit = 'USD'
         exchange = 'bittrex'
@@ -716,6 +784,9 @@ class TestProcessor(unittest.TestCase):
         value = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
         self.assertTrue(value >= 3440.2212 and value <= 3463.7166)
         self.assertEqual('EUR', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+        self.assertEqual(0.8403, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
+
         # The save flag is set in the ResultData in CommandPrice.execute()
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
@@ -773,6 +844,8 @@ class TestProcessor(unittest.TestCase):
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
             self.assertEqual(4126.121999999999, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
             self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+            self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+            self.assertEqual(1.001, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
             self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
@@ -821,6 +894,9 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
         self.assertEqual(178.051584, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+        self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
+
         # The save flag is set in the ResultData in CommandPrice.execute()
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
@@ -870,6 +946,9 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
         self.assertEqual(178.051584, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+        self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
+
         # The save flag is set in the ResultData in CommandPrice.execute()
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
@@ -919,6 +998,9 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
         self.assertEqual(178.051584, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+        self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
+
         # The save flag is set in the ResultData in CommandPrice.execute()
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
@@ -968,6 +1050,9 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
         self.assertEqual(178.051584, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+        self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
+
         # The save flag is set in the ResultData in CommandPrice.execute()
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
@@ -1018,6 +1103,8 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
         self.assertEqual(178.051584, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+        self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+        self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
         # The save flag is set in the ResultData in CommandPrice.execute()
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))

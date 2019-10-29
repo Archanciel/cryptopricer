@@ -2839,5 +2839,123 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth btc 12/09/17 00:00 binance -fschf', fullCommandStrWithSaveModeOptions)
         self.assertEqual('eth btc 12/09/17 00:00 binance -fschf\n(0.0706 * 4162.24 = 293.854144)', fullCommandStrForStatusBar)
 
+    def testGetCryptoPriceHistoricalOptionFiatHandlingInvertedUnitFiat(self):
+        '''
+        Tests correct working of a fiat option where the unit/fiat pair is not supported
+        by the fiat exchange and so causes an inverted fiat/unit pair request.
+
+        btc (unit) eth (fiat) on binance is not supported. So eth/btc is requested
+        and its result is inverted ((1/returned price)
+        :return:
+        '''
+        # mco btc 12/09/17 00:00 binance -fseth.binance
+        #first command: mco btc 12/09/17 00:00 binance -fseth.binance
+        inputStr = 'mco btc 12/09/17 00:00 binance -fseth.binance'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'MCO/BTC/ETH.Binance on Binance: 12/09/17 00:00C 0.002049 0.02902266', printResult)
+        self.assertEqual('mco btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance\n(0.002049 * 14.16430595 = 0.02902266)', fullCommandStrForStatusBar)
+
+    def testGetCryptoPriceHistoricalOptionFiatScenarioSettingUnitEqualToFiat(self):
+        '''
+        Tests correct working of a fiat option where the unit/fiat pair is not supported
+        by the fiat exchange and so causes an inverted fiat/unit pair request.
+
+        btc (unit) eth (fiat) on binance is not supported. So eth/btc is requested
+        and its result is inverted ((1/returned price)
+        :return:
+        '''
+        # mco btc 12/09/17 00:00 binance -fseth.binance
+        #first command: mco btc 12/09/17 00:00 binance -fseth.binance
+        inputStr = 'mco btc 12/09/17 00:00 binance -fseth.binance'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'MCO/BTC/ETH.Binance on Binance: 12/09/17 00:00C 0.002049 0.02902266', printResult)
+        self.assertEqual('mco btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance\n(0.002049 * 14.16430595 = 0.02902266)', fullCommandStrForStatusBar)
+
+        #second command: -cbtc -ueth Here, unit is equal to fiat which causes warning
+        inputStr = '-cbtc -ueth'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'PROVIDER ERROR - Trade pair ETH/ETH is invalid! (ETH-ETH)', printResult)
+        self.assertEqual('', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+        #third command: -cbtc -ueth with cancelling fiat option
+        inputStr = '-cbtc -ueth -f0'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'BTC/ETH on Binance: 12/09/17 00:00C 14.16430595', printResult)
+        self.assertEqual('btc eth 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+    def testGetCryptoPriceHistoricalOptionFiatScenarioSettingCryptoEqualToFiat(self):
+        '''
+        Tests correct working of a fiat option where the unit/fiat pair is not supported
+        by the fiat exchange and so causes an inverted fiat/unit pair request.
+
+        btc (unit) eth (fiat) on binance is not supported. So eth/btc is requested
+        and its result is inverted ((1/returned price)
+        :return:
+        '''
+        # mco btc 12/09/17 00:00 binance -fseth.binance
+        #first command: mco btc 12/09/17 00:00 binance -fseth.binance
+        inputStr = 'mco btc 12/09/17 00:00 binance -fseth.binance'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'MCO/BTC/ETH.Binance on Binance: 12/09/17 00:00C 0.002049 0.02902266', printResult)
+        self.assertEqual('mco btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance\n(0.002049 * 14.16430595 = 0.02902266)', fullCommandStrForStatusBar)
+
+        #second command: -cbtc -ueth Here, unit is equal to fiat which causes warning
+        inputStr = '-ceth'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            'ETH/BTC/ETH.Binance on Binance: 12/09/17 00:00C 0.0706 1', printResult)
+        self.assertEqual('eth btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual('eth btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 12/09/17 00:00 binance -fseth.binance\n(0.0706 * 14.16430595 = 1)', fullCommandStrForStatusBar)
+
+    def testGetCryptoPriceHistoDayValidExchangeHandlingInvertedCryptoUnit(self):
+        '''
+        Tests correct working of a request where the crypto/unit pair is not supported
+        by the fiat exchange and so causes an inverted unit/crypto pair request.
+
+        btc (crypto) eth (unit) on binance is not supported. So eth/btc is requested
+        and its result is inverted ((1/returned price)
+        :return:
+        '''
+        # btc eth 12/09/17 00:00 binance
+        #first command: mco btc 12/09/17 00:00 binance -fseth.binance
+        inputStr = 'btc eth 12/09/17 00:00 binance'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+            inputStr)
+
+        self.assertEqual(
+            'BTC/ETH on Binance: 12/09/17 00:00C 14.16430595', printResult)
+        self.assertEqual('btc eth 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
 if __name__ == '__main__':
     unittest.main()

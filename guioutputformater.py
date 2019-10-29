@@ -172,10 +172,11 @@ class GuiOutputFormater(AbstractOutputFormater):
     def _buildUnitFiatComputationString(self, resultData):
         fiatComputedAmount = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
         fiatComputedAmountStr = self._formatPriceFloatToStr(fiatComputedAmount, self.PRICE_FLOAT_FORMAT)
+        fiatRateStr = self._formatPriceFloatToStr(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE), self.PRICE_FLOAT_FORMAT)
 
         return '\n({} * {} = {})'.format(resultData.getValue(resultData.RESULT_KEY_PRICE),
-                                        resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE),
-                                        fiatComputedAmountStr)
+                                         fiatRateStr,
+                                         fiatComputedAmountStr)
 
     def _buildFullDateAndTimeStrings(self, commandDic, timezoneStr):
         '''
