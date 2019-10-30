@@ -63,6 +63,8 @@ class PriceRequesterTestStub(PriceRequester):
             resultData.setValue(resultData.RESULT_KEY_PRICE, 0.9728)
         elif crypto == 'USD' and unit == 'CHF' and exchange == 'CCCAGG' and timeStampUTCNoHHMMForHistoDay == 1505174400:
             resultData.setValue(resultData.RESULT_KEY_PRICE, 1.001)
+        elif crypto == 'USD' and unit == 'EUR' and exchange == 'CCCAGG' and timeStampUTCNoHHMMForHistoDay == 1505174400:
+            resultData.setValue(resultData.RESULT_KEY_PRICE, 0.8346)
 
         return resultData
 
