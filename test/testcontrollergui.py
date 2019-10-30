@@ -2937,6 +2937,28 @@ class TestControllerGui(unittest.TestCase):
         self.assertEqual('eth btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveModeOptions)
         self.assertEqual('eth btc 12/09/17 00:00 binance -fseth.binance\n(0.0706 * 14.16430595 = 1)', fullCommandStrForStatusBar)
 
+        #third command: add -vs10eth
+        inputStr = '-vs10eth'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            '10 ETH/0.706 BTC/10 ETH.Binance on Binance: 12/09/17 00:00C 0.0706 1', printResult)
+        self.assertEqual('eth btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual('eth btc 12/09/17 00:00 binance -vs10eth -fseth.binance', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 12/09/17 00:00 binance -vs10eth -fseth.binance\n(0.0706 * 14.16430595 = 1)', fullCommandStrForStatusBar)
+
+        #fourth command: add -vs10btc
+        inputStr = '-vs10btc'
+        printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+            inputStr)
+        self.assertEqual(
+            '141.64305949 ETH/10 BTC/141.64305949 ETH.Binance on Binance: 12/09/17 00:00C 0.0706 1', printResult)
+        self.assertEqual('eth btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
+        self.assertEqual(None, fullCommandStrWithOptions)
+        self.assertEqual('eth btc 12/09/17 00:00 binance -vs10btc -fseth.binance', fullCommandStrWithSaveModeOptions)
+        self.assertEqual('eth btc 12/09/17 00:00 binance -vs10btc -fseth.binance\n(0.0706 * 14.16430595 = 1)', fullCommandStrForStatusBar)
+
     def testGetCryptoPriceHistoDayValidExchangeHandlingInvertedCryptoUnit(self):
         '''
         Tests correct working of a request where the crypto/unit pair is not supported
