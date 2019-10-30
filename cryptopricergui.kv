@@ -9,6 +9,7 @@
     #optimizing app size for your smartphone with Messagease keyboard
     size_hint: 1, .62
     pos_hint: {'x' : 0, 'y' : .38}
+    requestInputScrollView: scrlv_request_TextInput
     requestInput: request_TextInput
     requestListRV: request_RecycleView_list
     resultOutput: ro_output_TextInput
@@ -44,14 +45,22 @@
 
         GridLayout:
             cols: 2
-            TextInput:
-                id: request_TextInput
-                background_color: 0,0,0,0
-                foreground_color: 1,1,1,1
-                focus: True
-                multiline: False
-                #ENTER triggers root.submitRequest()
-                on_text_validate: root.submitRequest()
+
+            ScrollView:
+                id: scrlv_request_TextInput
+                do_scroll_y: False # limiting to horizontal scrolling
+                effect_cls: ScrollEffect #prevents overscrolling
+                TextInput:
+                    id: request_TextInput
+                    size_hint: (None, 1) # if removed, scrolling no longer working. 1 required for correct 2 lines display !
+                    background_color: 0,0,0,0
+                    foreground_color: 1,1,1,1
+                    width: scrlv_request_TextInput.width
+                    focus: True
+                    multiline: False
+                    #ENTER triggers root.submitRequest()
+                    on_text_validate: root.submitRequest()
+                    on_text: root.requestTextInputChanged()
             Button:
                 id: toggle_app_size_Button
                 text: 'Full'
@@ -149,7 +158,7 @@
                 effect_cls: ScrollEffect #prevents overscrolling
                 TextInput:
                     id: status_bar
-                    size_hint: (None, 1) # if remopved, scrolling no longer working. 1 required for correct 2 lines display !
+                    size_hint: (None, 1) # if removed, scrolling no longer working. 1 required for correct 2 lines display !
                     background_color: 0,0,0,0
                     foreground_color: 1,1,1,1
                     width: scrlv_status_bar.width

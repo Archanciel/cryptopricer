@@ -200,6 +200,7 @@ class ScrollablePopup(Popup):
 class CryptoPricerGUI(BoxLayout):
     requestInput = ObjectProperty()
     resultOutput = ObjectProperty()
+    requestInputScrollView = ObjectProperty()
     statusBarScrollView = ObjectProperty()
     statusBarTextInput = ObjectProperty()
     showRequestList = False
@@ -674,6 +675,12 @@ class CryptoPricerGUI(BoxLayout):
         for line_label in self.statusBarTextInput._lines_labels:
             width_calc = max(width_calc, line_label.width + 20)   # add 20 to avoid automatically creating a new line
         self.statusBarTextInput.width = width_calc
+
+    def requestTextInputChanged(self):
+        width_calc = self.requestInputScrollView.width
+        for line_label in self.requestInput._lines_labels:
+            width_calc = max(width_calc, line_label.width + 20)   # add 20 to avoid automatically creating a new line
+        self.requestInputScrollView.width = width_calc
 
 class CryptoPricerGUIApp(App):
     settings_cls = SettingsWithTabbedPanel
