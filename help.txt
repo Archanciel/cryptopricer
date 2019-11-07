@@ -112,17 +112,17 @@ Currently, CryptoPricer supports two options: the
 valuation [b][cy]-v[/b][/c] option and the fiat [b][cy]-f[/b][/c] option. In a further version, the price
 [b][cy]-p[/b][/c] option will be added.
 
-[cg]Valuation option[/cg]: [b][cy]-v[/b][/c][i]amount[/i]CURRENCY or 
+[cg]Valuation option[/cg]: [b][cy]-v[/b][/c][i]amount[/i]CURRENCY or
 [b][cy]-vs[/b][/c][i]amount[/i]CURRENCY or [b][cy]-v0[/b][/c] to
 cancel it
 
 The [b][cy]-v[/b][/c] option is used in conjunction with a
 specified [i]amount[/i] and CURRENCY (crypto or unit
 symbol) to obtain its converted unit or crypto
-value at the rate of the last request if entered separately, 
+value at the rate of the last request if entered separately,
 or at the rate of the current request if added to it.
 
-Example: if the last request was 
+Example: if the last request was
 
 [n][cy]btc usd 0 bittrex[/c] -->
 [n]BTC/USD on BitTrex: 16/12/17 22:10R 19120
@@ -135,7 +135,7 @@ returns
 
 0.003661088 BTC/700 USD on BitTrex: 16/12/17 22:10R 19120
 
-which means that 700 USD is equivalent to 
+which means that 700 USD is equivalent to
 0.003661088 BTC at the BTC/USD rate of 19120
 
 Next, entering
@@ -146,21 +146,21 @@ returns
 
 [n]0.01 BTC/1914 USD on BitTrex: 16/12/17 22:10R 19140
 
-which means that 0.1 BTC is equivalent to 
+which means that 0.1 BTC is equivalent to
 1914 USD at the BTC/USD rate of 19140
 
-[n]Note that here the RT price went up 20 USD since 
+[n]Note that here the RT price went up 20 USD since
 the last [b][cy]-v[/b][/c] request !
 
-[cg]Valuation option format[/cg]: [b][cy]-v[/b][/c]999.9999zzz 
+[cg]Valuation option format[/cg]: [b][cy]-v[/b][/c]999.9999zzz
 or [b][cy]-vs[/b][/c]999.9999zzz, [b][cy]s[/b][/c]
 is a [b][cy]save[/b][/c] additional modifier which causes
- the [b][cy]-v[/b][/c] option to be ieffecect across the 
-subsequent partial requests and also to be  saved in 
-the request history. [b][cy]-v0[/b][/c] is used to cancel 
+ the [b][cy]-v[/b][/c] option to be in effect across the
+subsequent partial requests and also to be  saved in
+the request history. [b][cy]-v0[/b][/c] is used to cancel
 a currently active [b][cy]-vs[/b][/c] option.
 
-If the last request was 
+If the last request was
 
 [cy]eth usd 21/11/17 bitfinex[/c] -->
 [n]ETH/USD on Bitfinex: 21/11/17 00:00C 360
@@ -178,15 +178,15 @@ in the request history list.
 There are two ways of deactivating a currently in effect
 [b][cy]-vs[/b][/c] option:
 
-    1/ enter a full request, which wipes out  all the 
+    1/ enter a full request, which wipes out all the
     previously entered partial request settings
     [n]2/ enter [b][cy]-v0[/b][/c] which cancels the [b][cy]-vs[/b][/c] valuation option
 
-So, until the [b][cy]-vs[/b][/c] command is cancelled, it stays in effect 
-and impacts any new partial request. This is the case 
-provided that either the crypto [b][cy]-c[/b][/c] or the 
-unit [b][cy]-u[/b][/c] (counterparty) in effect or specified 
-in the new request are compatible with the currency 
+So, until the [b][cy]-vs[/b][/c] command is cancelled, it stays in effect
+and impacts any new partial request. This is the case
+provided that either the crypto [b][cy]-c[/b][/c], the
+unit [b][cy]-u[/b][/c] (counterparty) or the fiat [b][cy]-f[/b][/c] in effect or specified
+in the new request are compatible with the currency
 attached to the [b][cy]-vs[/b][/c] option.
 
 Example:
@@ -208,21 +208,23 @@ returns
 
 [n]0.00445236BTC/0.1ETH on Bitfinex:  21/11/17 00:00C 0.4445
 
-We see that now the previsously specified saved value 
-option [cy]-vs0.1eth[/c] is applicable again. But now, 
-ETH is no longer the [cy]-c[/c] crypto, but is the 
-[cy]-u[/c] unit (counterparty).
+We see that now the previsously specified saved value
+option [cy]-vs0.1eth[/c] is applicable again. But now,
+ETH is no longer the [cy]-c[/c] crypto, but is the
+[cy]-u[/c] unit (counterparty). Examples implying fiat
+and value options are provided in the next fiat option section.
 [p]
 [cg]Fiat option[/cg]: [b][cy]-f[/b][/c]CURRENCY or
 [b][cy]-fs[/b][/c]CURRENCY
 [n]or [b][cy]-f[/b][/c]CURRENCY.[i]exchange[/i] or
 [b][cy]-fs[/b][/c]CURRENCY.[i]exchange[/i] or
-[b][cy]-f0[/b][/c] to cancel it
+[b][cy]-f0[/b][/c] to cancel to cancel
+a currently active [b][cy]-fs[/b][/c] option.
 
 The [b][cy]-f[/b][/c] option is used to specify a CURRENCY in which the
 unit price of the crypto will be converted.
 
-Example: if the last request was 
+Example: if the last request was
 
 [n][cy]eth btc 0 bittrex[/c] -->
 [n]ETH/BTC on BitTrex: 28/10/19 18:38R 0.01939
@@ -262,6 +264,44 @@ ETH/BTC/USD.Kraken on BitTrex: 28/10/19 18:38R 0.01939 182.09149
 which means that the ETH price in BTC on BitTrex of 0.01939 converted in USD
 equals 182.09149, this for the BTC/USD price of 9391 obtained
 from Kraken.
+
+Using [b][cy]-fs[/b][/c] instead of [b][cy]-f[/b][/c] saves the fiat option, making it
+active for all subsequent PARTIAL requests. The [b][cy]-fs[/b][/c] option is also saved
+in the request history list.
+
+There are two ways of deactivating a currently in effect
+[b][cy]-fs[/b][/c] option:
+
+    1/ enter a full request, which wipes out all the
+    previously entered partial request settings
+    [n]2/ enter [b][cy]-f0[/b][/c] which cancels the [b][cy]-fs[/b][/c] fiat option
+
+So, until the [b][cy]-fs[/b][/c] command is cancelled, it stays in effect
+and impacts any new partial request.STAYED HERE !
+
+Example:
+
+[cy]-fs0.1eth[/c] -->
+[n]0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
+
+[cy]-cbtc[/c] -->
+[n]BTC/USD on Bitfinex:  21/11/17 00:00C 8096.9
+WARNING - currency value option symbol ETH currently
+in effect differs from both crypto (BTC) and unit (USD) of last request.
+-fs parameter ignored
+
+Next entering
+
+[cy]-ueth[/c]
+
+returns
+
+[n]0.00445236BTC/0.1ETH on Bitfinex:  21/11/17 00:00C 0.4445
+
+We see that now the previsously specified saved value
+option [cy]-fs0.1eth[/c] is applicable again. But now,
+ETH is no longer the [cy]-c[/c] crypto, but is the
+[cy]-u[/c] unit (counterparty).
 
 [cg]Fiat option in conjunction with valuation option[/cg]:
 
