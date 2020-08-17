@@ -413,6 +413,16 @@ class CryptoPricerGUI(BoxLayout):
 
         self.refocusOnRequestInput()
 
+    def ensureLowercase(self):
+        '''
+        Submit the request, output the result and add the request to the
+        request list
+        :return:
+        '''
+        # Get the request from the TextInput
+        requestStr = self.requestInput.text
+        self.requestInput.text = requestStr.lower()
+
     def recycleViewSelectItem(self, index, isSelected):
         if isSelected:
             self.recycleViewCurrentSelIndex = index

@@ -52,6 +52,7 @@
                 multiline: False
                 #ENTER triggers root.submitRequest()
                 on_text_validate: root.submitRequest()
+                on_text: root.ensureLowercase()
             Button:
                 id: toggle_app_size_Button
                 text: 'Full'
