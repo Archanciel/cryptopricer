@@ -415,9 +415,7 @@ class CryptoPricerGUI(BoxLayout):
 
     def ensureLowercase(self):
         '''
-        Submit the request, output the result and add the request to the
-        request list
-        :return:
+        Ensure the input text control only contains lower cases.
         '''
         # Get the request from the TextInput
         requestStr = self.requestInput.text
