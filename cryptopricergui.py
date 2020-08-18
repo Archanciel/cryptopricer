@@ -33,7 +33,7 @@ from guioutputformater import GuiOutputFormater
 from guiutil import GuiUtil
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
-CRYPTOPRICER_VERSION = 'CryptoPricer 2.0'
+CRYPTOPRICER_VERSION = 'CryptoPricer 2.01'
 fromAppBuilt = False
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
