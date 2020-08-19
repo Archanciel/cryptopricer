@@ -49,21 +49,27 @@ Examples: assume we are on 16/12/17 at 22:10
 
 [cy]btc usd 0 bittrex[/c] -->
 [n]BTC/USD on BitTrex: 16/12/17 22:10R 19120
+[n][i]This basic request displays the BTC/USD real time price of 19120 at the specified date time on the BitTrex exchange[/i]
 
 [cy]eth btc 16/12 13:45 bitfinex[/c] -->
 [n]ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+[n][i]Same remark for the ETH/BTC minute price of 0.03893 on Bitfinex[/i]
 
 [cy]eth btc 13:45 bitfinex[/c] -->
 [n]ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+[n][i]Here, only the time was specified, so the current date is assumed[/i]
 
 [cy]eth btc 15 8:45 bitfinex[/c] -->
 [n]ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
+[n][i]Here, only the day and time are given. The current month and year are assumed[/i]
 
 [cy]eth btc 21/1 13:45 bitfinex[/c] -->
 [n]ETH/BTC on Bitfinex: 21/01/17C 0.01185
+[n][i]Here, the current year is assumed[/i]
 
 [cy]btc usd 0 bittrex -v0.01btc[/c] -->
 [n]0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
+[n][i]Here, a value [cy]-v[/c] option is added at the end of the request asking the value of 0.01 BTC in USD. The BTC price being 19120 USD, the value of the specified 0.01 BTC is 191.2 USD[/i]
 
 [b][cr]WARNING[/c][/b]: <options> MUST be specified at the end of the full command price
 and preceded by [b][cy]-[/c][/b]. They are documented later in the help.
