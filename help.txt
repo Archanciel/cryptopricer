@@ -7,6 +7,8 @@ Two kinds of requests are supported: full requests and partial requests.
 
 [b][cg]Full requests[/c][/b]
 
+Full requests do specify all the request parameter values.
+
 <crypto> <unit> <date time> <exchange> <options>
 
     [b][cy]<crypto>[/c][/b] = crypto currency symbol like btc, but a unit symbol is possible too
@@ -28,7 +30,7 @@ Two kinds of requests are supported: full requests and partial requests.
     If no year is specified, current year is assumed. If no time is specified, current time
     is assumed.
 
-    [b][cy]21/12 8:34[/c][/b] --> current year assumed
+    [b][cy]21/12 8:34[/c][/b] --> current year assumed.
 
     [b][cy]21 8:34[/c][/b] --> here, since no month is specified, current month or previous
     month is assumed.
@@ -36,7 +38,7 @@ Two kinds of requests are supported: full requests and partial requests.
     [b][cy]8:34[/c][/b] --> here, since no date is specified, current date is assumed.
 
 [b][cr]WARNING[/c][/b]: specifying time makes sense only for dates not older than 7 days. Prices older
-than 7 days are 'close' prices. Since there is no notion of a close price for crypto's,
+than 7 days are 'close' prices. Since there's no notion of a close price for crypto's,
 the last price of the date at UTC 23.59 is returned as 'close' price.
 
 [b][cg]Output price qualifiers[/c][/b]:
@@ -49,7 +51,7 @@ Examples: assume we are on 16/12/17 at 22:10
 
 [cy]btc usd 0 bittrex[/c] -->
 [n]BTC/USD on BitTrex: 16/12/17 22:10R 19120
-[n][i]This basic request displays the BTC/USD real time price of 19120 at the specified date time on the BitTrex exchange[/i]
+[n][i]This basic request displays the BTC/USD real time price of 19120 on the BitTrex exchange. The request was entered at the displayed date time[/i]
 
 [cy]eth btc 16/12 13:45 bitfinex[/c] -->
 [n]ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
@@ -57,21 +59,23 @@ Examples: assume we are on 16/12/17 at 22:10
 
 [cy]eth btc 13:45 bitfinex[/c] -->
 [n]ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
-[n][i]Here, only the time was specified, so the current date is assumed[/i]
+[n][i]Here, only the time was specified, so the current date was assumed[/i]
 
 [cy]eth btc 15 8:45 bitfinex[/c] -->
 [n]ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
-[n][i]Here, only the day and time are given. The current month and year are assumed[/i]
+[n][i]Here, only the day and time were given. The current month and year were assumed[/i]
 
 [cy]eth btc 21/1 13:45 bitfinex[/c] -->
 [n]ETH/BTC on Bitfinex: 21/01/17C 0.01185
-[n][i]Here, the current year is assumed[/i]
+[n][i]Here, the current year was assumed[/i]
 
 [cy]btc usd 0 bittrex -v0.01btc[/c] -->
 [n]0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
-[n][i]Here, a value [cy]-v[/c] option is added at the end of the request asking the value of 0.01 BTC in USD. The BTC price being 19120 USD, the value of the specified 0.01 BTC is 191.2 USD[/i]
+[n][i]Here, a value [cy]-v[/c] option was added at the end of the request asking the value of 
+0.01 BTC in USD. The real time BTC price being 19120 USD, the value of the specified 
+0.01 BTC amount was 191.2 USD[/i]
 
-[b][cr]WARNING[/c][/b]: <options> MUST be specified at the end of the full command price
+[b][cr]WARNING[/c][/b]: <options> MUST be specified at the end of the full request
 and preceded by [b][cy]-[/c][/b]. They are documented later in the help.
 
 [b][cg]Partial requests[/c][/b]
