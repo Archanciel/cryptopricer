@@ -548,8 +548,8 @@ class CryptoPricerGUI(BoxLayout):
         self.outputResult('')
 
         for listEntry in self.requestListRV.data:
-            outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
-                listEntry['text'])
+            outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions, fullCommandStrForStatusBar = \
+                self.controller.getPrintableResultForInput(listEntry['text'])
             self.outputResult(outputResultStr)
 
         # self.resultOutput.do_cursor_movement('cursor_pgdown')
