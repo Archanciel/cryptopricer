@@ -556,7 +556,7 @@ class CryptoPricerGUI(BoxLayout):
 
 		for listEntry in self.requestListRV.data:
 			outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions, fullCommandStrForStatusBar = \
-				self.controller.getPrintableResultForInput(listEntry['text'])
+				self.controller.getPrintableResultForInput(listEntry['text'], copyResultInClipboard=False)
 			self.outputResult(outputResultStr)
 
 		self.replayAllButton.disabled = False

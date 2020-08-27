@@ -95,7 +95,8 @@ class TestGuiOutputFormater(unittest.TestCase):
                              'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'OPTION_VALUE_AMOUNT': None, 'OPTION_VALUE_SYMBOL': None,
                              'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None})
 
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual(fullCommandStringNoOptions, "eth usd 05/12/17 09:30 bittrex")
 
@@ -411,7 +412,8 @@ class TestGuiOutputFormater(unittest.TestCase):
                              'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'OPTION_VALUE_AMOUNT': None, 'OPTION_VALUE_SYMBOL': None,
                              'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None})
 
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual(fullCommandStringNoOptions, "eth usd 05/12/17 09:30 bittrex")
 
@@ -435,7 +437,8 @@ class TestGuiOutputFormater(unittest.TestCase):
                              'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'OPTION_VALUE_AMOUNT': None, 'OPTION_VALUE_SYMBOL': None,
                              'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None})
 
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual(fullCommandStringNoOptions, "eth usd 05/12/17 09:30 bittrex")
 
@@ -504,7 +507,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('0.01 BTC/160 USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -574,7 +578,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('0.01 BTC/160 USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual('btc usd 0 bittrex -vs0.01btc', fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -888,7 +893,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('0.01 BTC/160 USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -956,7 +962,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('0.01 BTC/160 USD on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual('btc usd 0 bittrex -vs0.01btc', fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -1030,7 +1037,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('BTC/USD/CHF.Kraken on BitTrex: {}R {} {}\n'.format(dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -1103,7 +1111,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('BTC/USD/CHF.Kraken on BitTrex: {}R {} {}\n'.format(dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual('btc usd 0 bittrex -fschf.kraken', fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -1187,7 +1196,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('{} BTC/{} USD/{} CHF.Kraken on BitTrex: {}R {} {}\n'.format(optionValueCrypto, optionValueUnit, optionValueFiat, dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -1269,7 +1279,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('{} BTC/{} USD/{} CHF.Kraken on BitTrex: {}R {} {}\n'.format(optionValueCrypto, optionValueUnit, optionValueFiat, dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual('btc usd 0 bittrex -vs1000chf', fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -1351,7 +1362,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('{} BTC/{} USD/{} CHF.CCCAGG on BitTrex: {}R {} {}\n'.format(optionValueCrypto, optionValueUnit, optionValueFiat, dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual('btc usd 0 bittrex -vs1000chf', fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -1433,7 +1445,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('{} BTC/{} USD/{} CHF.Kraken on BitTrex: {}R {} {}\n'.format(optionValueCrypto, optionValueUnit, optionValueFiat, dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual('btc usd 0 bittrex -fschf.kraken', fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -1515,7 +1528,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('{} BTC/{} USD/{} CHF.Kraken on BitTrex: {}R {} {}\n'.format(optionValueCrypto, optionValueUnit, optionValueFiat, dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual('btc usd 0 bittrex -vs1000chf -fschf.kraken', fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 
@@ -1597,7 +1611,8 @@ class TestGuiOutputFormater(unittest.TestCase):
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
         self.assertEqual('{} BTC/{} USD/{} CHF.CCCAGG on BitTrex: {}R {} {}\n'.format(optionValueCrypto, optionValueUnit, optionValueFiat, dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
-        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+        fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+	        resultData)
         self.assertEqual('btc usd 0 bittrex -vs1000chf -fschf', fullCommandStrWithSaveModeOptions)
         self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
 

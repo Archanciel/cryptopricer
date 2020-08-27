@@ -249,8 +249,7 @@ class TestSeqDiagBuilderSimple(unittest.TestCase):
         controller = Controller(GuiOutputFormater(configMgr), configMgr)
 
         inputStr = 'mcap btc 0 all'
-        _, _, _, _ = controller.getPrintableResultForInput(
-            inputStr)
+        _, _, _, _ = controller.getPrintableResultForInput(inputStr)
 
         SeqDiagBuilder.createDiagram('c:\\temp\\', 'GUI', None, 20)
 
@@ -273,8 +272,7 @@ class TestSeqDiagBuilderSimple(unittest.TestCase):
         controller = Controller(GuiOutputFormater(configMgr), configMgr)
 
         inputStr = 'mcap btc 0 all'
-        _, _, _, _ = controller.getPrintableResultForInput(
-            inputStr)
+        _, _, _, _ = controller.getPrintableResultForInput(inputStr)
 
         SeqDiagBuilder.createDiagram('c:/temp', 'GUI', None, 20)
 

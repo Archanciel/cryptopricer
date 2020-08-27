@@ -287,7 +287,7 @@ class CryptoPricerGUI_LVRV(BoxLayout):
         #   fullRequestStrWithOptions - for the status bar
         #   fullRequestStrWithSaveModeOptions - for the request history list
         outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
-            requestStr)
+	        requestStr)
 
         self.outputResult(outputResultStr)
 
@@ -528,12 +528,12 @@ class CryptoPricerGUI_LVRV(BoxLayout):
 
         for request in self.requestList.adapter.data:
             outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
-                request)
+	            request)
             self.outputResult(outputResultStr)
 
         for listEntry in self.requestListRV.data:
             outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions = self.controller.getPrintableResultForInput(
-                listEntry['text'])
+	            listEntry['text'])
             self.outputResult(outputResultStr)
 
         # self.resultOutput.do_cursor_movement('cursor_pgdown')
