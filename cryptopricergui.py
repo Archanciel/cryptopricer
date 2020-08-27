@@ -1,4 +1,4 @@
-import os
+import os, threading
 from os.path import sep
 
 from kivy.app import App
@@ -544,6 +544,13 @@ class CryptoPricerGUI(BoxLayout):
 		self.replaceButton.disabled = True
 
 	def replayAllRequests(self):
+		self.replayAllButton.disabled = True
+
+		t = threading.Thread(target=self.replayAllRequestsOnNewThread, args=())
+		t.daemon = True
+		t.start()
+
+	def replayAllRequestsOnNewThread(self):
 		# output blank line
 		self.outputResult('')
 
@@ -552,9 +559,11 @@ class CryptoPricerGUI(BoxLayout):
 				self.controller.getPrintableResultForInput(listEntry['text'])
 			self.outputResult(outputResultStr)
 
+		self.replayAllButton.disabled = False
+
 		# self.resultOutput.do_cursor_movement('cursor_pgdown')
 		self.refocusOnRequestInput()
-
+	
 	def openDropDownMenu(self, widget):
 		self.dropDownMenu.open(widget)
 
