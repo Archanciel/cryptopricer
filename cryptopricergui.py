@@ -75,6 +75,7 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			# toggling from unselected to selected
 			self.selected = not self.selected
 			rv.parent.parent.recycleViewSelectItem(index, is_selected)
+			rv.parent.parent.recycleViewCurrentSelIndex = index
 
 class SettingScrollOptions(SettingOptions):
 	'''
@@ -237,6 +238,8 @@ class CryptoPricerGUI(BoxLayout):
 		self.defaultAppPosAndSize = self.configMgr.appSize
 		self.appSizeHalfProportion = float(self.configMgr.appSizeHalfProportion)
 		self.applyAppPosAndSize()
+		self.movedRequestNewIndex = -1
+		self.movingRequest = False
 
 	def ensureDataPathExist(self, dataPath, message):
 		'''
@@ -538,10 +541,14 @@ class CryptoPricerGUI(BoxLayout):
 	def enableRequestListItemButtons(self):
 		self.deleteButton.disabled = False
 		self.replaceButton.disabled = False
+		self.moveUpButton.disabled = False
+		self.moveDownButton.disabled = False
 
 	def disableRequestListItemButtons(self):
 		self.deleteButton.disabled = True
 		self.replaceButton.disabled = True
+		self.moveUpButton.disabled = True
+		self.moveDownButton.disabled = True
 
 	def replayAllRequests(self):
 		self.replayAllButton.disabled = True
@@ -556,14 +563,53 @@ class CryptoPricerGUI(BoxLayout):
 
 		for listEntry in self.requestListRV.data:
 			outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions, fullCommandStrForStatusBar = \
-				self.controller.getPrintableResultForInput(listEntry['text'], copyResultInClipboard=False)
+				self.controller.getPrintableResultForInput(listEntry['text'], copyResultToClipboard=False)
 			self.outputResult(outputResultStr)
 
 		self.replayAllButton.disabled = False
 
 		# self.resultOutput.do_cursor_movement('cursor_pgdown')
 		self.refocusOnRequestInput()
-	
+
+	def moveUpRequest(self):
+		oldIndex = self.recycleViewCurrentSelIndex
+		newIndex = oldIndex - 1
+		requestTotalNumber = len(self.requestListRV.data)
+
+		if newIndex < 0:
+			# if first line request is moved up, it is moved at the end of the
+			# request history list
+			newIndex = requestTotalNumber - 1
+
+		self.moveItemInList(list=self.requestListRV.data, oldIndex=oldIndex, newIndex=newIndex)
+
+		if self.showRequestList:
+			self.adjustRequestListSize()
+
+		self.manageStateOfRequestListButtons()
+
+#		self.refocusOnRequestInput()
+
+	def moveDownRequest(self):
+		oldIndex = self.recycleViewCurrentSelIndex
+		newIndex = oldIndex + 1
+		requestTotalNumber = len(self.requestListRV.data)
+
+		if newIndex == requestTotalNumber:
+			# if first line request is moved up, it is moved at the end of the
+			# request history list
+			newIndex = 0
+
+		self.moveItemInList(list=self.requestListRV.data, oldIndex=oldIndex, newIndex=newIndex)
+
+		if self.showRequestList:
+			self.adjustRequestListSize()
+
+		self.manageStateOfRequestListButtons()
+
+	def moveItemInList(self, list, oldIndex, newIndex):
+		list.insert(newIndex, list.pop(oldIndex))
+
 	def openDropDownMenu(self, widget):
 		self.dropDownMenu.open(widget)
 

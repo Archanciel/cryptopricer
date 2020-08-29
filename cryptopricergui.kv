@@ -16,6 +16,8 @@
     deleteButton: delete_Button
     replaceButton: replace_Button
     replayAllButton: replay_all_Button
+    moveUpButton: moveUp_Button
+    moveDownButton: moveDown_Button
     statusBarScrollView: scrlv_status_bar
     statusBarTextInput: status_bar
     clearResultOutputButton: clear_output_Button
@@ -81,6 +83,18 @@
             size_hint_x: 15
             disabled: True
             on_press: root.replaceRequest()
+        Button:
+            id: moveUp_Button
+            text: "^"
+            size_hint_x: 5
+            disabled: True
+            on_press: root.moveUpRequest()
+        Button:
+            id: moveDown_Button
+            text: "v"
+            size_hint_x: 5
+            disabled: True
+            on_press: root.moveDownRequest()
         Button:
             id: replay_all_Button
             text: "Replay All"
