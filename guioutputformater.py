@@ -40,7 +40,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 		print(outputStr)
 
-	def getFullCommandString(self, resultData, copyResultInClipboard=True):
+	def getFullCommandString(self, resultData, copyResultToClipboard=True):
 		'''
 		Recreate the full command string corresponding to a full or partial price request entered by the user.
 
@@ -57,9 +57,9 @@ class GuiOutputFormater(AbstractOutputFormater):
 		is in effect (no option or -v for example), then None is returned as second return value and
 		no full command string no options will NOT have to be replaced in the command history list.
 
-		:param copyResultInClipboard:
+		:param copyResultToClipboard:
 		:param resultData: result of the last full or partial request
-		:param copyResultInClipboard: set to True by default. Whreplaying all requests
+		:param copyResultToClipboard: set to True by default. Whreplaying all requests
 									  stored in history, set to False, which avoids
 									  problem on Android
 		seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions

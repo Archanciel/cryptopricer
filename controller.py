@@ -57,14 +57,14 @@ class Controller:
                 print(strToPrint)
 
 
-    def getPrintableResultForInput(self, inputStr, copyResultInClipboard=True):
+    def getPrintableResultForInput(self, inputStr, copyResultToClipboard=True):
         '''
         Return the printable request result, the full request command without any command option and
         the full request command with any specified save mode option (option which is to be saved in the
         command history list.
 
         :param inputStr:
-        :param copyResultInClipboard: set to True by default. Whreplaying all requests
+        :param copyResultToClipboard: set to True by default. Whreplaying all requests
                                       stored in history, set to False, which avoids
                                       problem on Android
         :seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
@@ -94,9 +94,9 @@ class Controller:
         result = command.execute()
 
         if result != '':
-            printResult = self.printer.getPrintableData(result, copyResultInClipboard)
+            printResult = self.printer.getPrintableData(result, copyResultToClipboard)
             fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
-                result, copyResultInClipboard)
+                result, copyResultToClipboard)
             
             return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
 
