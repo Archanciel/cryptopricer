@@ -75,7 +75,6 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			# toggling from unselected to selected
 			self.selected = not self.selected
 			rv.parent.parent.recycleViewSelectItem(index, is_selected)
-			rv.parent.parent.recycleViewCurrentSelIndex = index
 
 class SettingScrollOptions(SettingOptions):
 	'''
@@ -341,6 +340,7 @@ class CryptoPricerGUI(BoxLayout):
 	def adjustRequestListSize(self):
 		listItemNumber = len(self.requestListRV.data)
 		self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
+
 		return listItemNumber
 
 	def submitRequest(self):
@@ -583,13 +583,6 @@ class CryptoPricerGUI(BoxLayout):
 
 		self.moveItemInList(list=self.requestListRV.data, oldIndex=oldIndex, newIndex=newIndex)
 
-		if self.showRequestList:
-			self.adjustRequestListSize()
-
-		self.manageStateOfRequestListButtons()
-
-#		self.refocusOnRequestInput()
-
 	def moveDownRequest(self):
 		oldIndex = self.recycleViewCurrentSelIndex
 		newIndex = oldIndex + 1
@@ -601,11 +594,6 @@ class CryptoPricerGUI(BoxLayout):
 			newIndex = 0
 
 		self.moveItemInList(list=self.requestListRV.data, oldIndex=oldIndex, newIndex=newIndex)
-
-		if self.showRequestList:
-			self.adjustRequestListSize()
-
-		self.manageStateOfRequestListButtons()
 
 	def moveItemInList(self, list, oldIndex, newIndex):
 		list.insert(newIndex, list.pop(oldIndex))
