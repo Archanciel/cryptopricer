@@ -751,7 +751,6 @@ class CryptoPricerGUIApp(App):
 
 	def on_resume(self):
 		# Here you can check if any data needs replacing (usually nothing)
-
 		pass
 
 	def build_config(self, config):
