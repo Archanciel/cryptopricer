@@ -216,13 +216,10 @@ class GuiOutputFormater(AbstractOutputFormater):
 		return requestDateDMY, requestDateHM
 
 	def toClipboard(self, numericVal):
-		if os.name == 'posix':
-			self._clipboard.copy(str(numericVal))
-		else:
-			if not self.activateClipboard:
-				pass
-			else:
-				self._clipboard.copy(str(numericVal))
+		if not self.activateClipboard:
+			return
+			
+		self._clipboard.copy(str(numericVal))
 
 	def fromClipboard(self):
 		if not self.activateClipboard:
