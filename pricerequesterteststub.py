@@ -1,83 +1,79 @@
-import json
-import sys
-import ssl
-import urllib.request
-from urllib.error import HTTPError, URLError
-
-from bs4 import BeautifulSoup
-
-from datetimeutil import DateTimeUtil
-from resultdata import ResultData
+import os
 from pricerequester import PriceRequester
+from resultdata import ResultData
+from ratedictionary import RateDictionary
+
+if os.name == 'posix':
+	RATE_DIC_FILE_PATH = '/sdcard/rateDic.txt'
+else:
+	RATE_DIC_FILE_PATH = 'D:\\Development\\Python\\CryptoPricer\\test\\rateDicSavedData.txt'
 
 MINUTE_PRICE_DAY_NUMBER_LIMIT = 7   # if the request date is older than current time - this value,
-                                    # the price returned is a day close price, not a minute price !
+									# the price returned is a day close price, not a minute price !
 
 IDX_DATA_ENTRY_TO = 1
 
 class PriceRequesterTestStub(PriceRequester):
-    '''
-    This class is used for testing purposes only to solve the fact that sometimes requesting
-    a fiat/fiat (USD/CHF for example) historical price does not return a correct price.
-    '''
+	'''
+	This class is used for testing purposes only to solve the fact that sometimes requesting
+	a fiat/fiat (USD/CHF for example) historical price does not return a correct price.
+	'''
 
-    def getHistoricalPriceAtUTCTimeStamp(self,
-                                         crypto,
-                                         unit,
-                                         timeStampLocalForHistoMinute,
-                                         timeStampUTCNoHHMMForHistoDay,
-                                         exchange):
-        '''
-        Why do we pass two different time stamp to the method ?
-        
-        When requesting a minute price the time stamp obtained
-        from a local arrow datetime object is used. If we
-        request a minute price for 15:18 Zurich time (+00.02)
-        time, the minute price returned is the one at UTC 13:18.
-        Asking the same price from Mumbay would require to
-        ask the price for 20:18 (+00.05).
-        
-        Now, when asking an histo day price, the returned price
-        is a close price. But crypto trade 24 H a day. The "close"
-        price time stamp must not be dependant from the location 
-        from which the request is sent. Instead, the "close" price
-        is the one at the passed date with hour and minute set to 0.
-        This date is not a loculiszd date, but a UTC localization
-        independant date.
-        When you go on the Cryptocompare site and you search for 
-        historical prices, the close price for a given date is
-        the same whatever the location of the user is !
+	def __init__(self):
+		super(PriceRequesterTestStub, self).__init__()
+		self.rateDic = RateDictionary()
 
-        :seqdiag_note Obtainins a minute price if request date < 7 days from now, else a day close price.
-        :seqdiag_return ResultData
-        '''
-        resultData = super().getHistoricalPriceAtUTCTimeStamp(crypto,
-                                                              unit,
-                                                              timeStampLocalForHistoMinute,
-                                                              timeStampUTCNoHHMMForHistoDay,
-                                                              exchange)
+	def _getHistoMinutePriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
+		rate = self.rateDic.getRate(crypto, unit, timeStampUTC, exchange)
 
-        # fed up with this fucking provider which regurlarly return an invalid value of 1.06
-        # for USD/CHF on CCCAGG on 12/9/17 !
-        if crypto == 'USD' and unit == 'CHF' and exchange == 'CCCAGG' and timeStampUTCNoHHMMForHistoDay == 1536710400:
-            resultData.setValue(resultData.RESULT_KEY_PRICE, 0.9728)
-        elif crypto == 'USD' and unit == 'CHF' and exchange == 'CCCAGG' and timeStampUTCNoHHMMForHistoDay == 1505174400:
-            resultData.setValue(resultData.RESULT_KEY_PRICE, 1.001)
-        elif crypto == 'USD' and unit == 'EUR' and exchange == 'CCCAGG' and timeStampUTCNoHHMMForHistoDay == 1505174400:
-            resultData.setValue(resultData.RESULT_KEY_PRICE, 0.8346)
+		if not rate:
+			resultData = super()._getHistoMinutePriceAtUTCTimeStamp(crypto, unit, timeStampUTC, exchange, resultData)
+			rate = resultData.getValue(resultData.RESULT_KEY_PRICE)
+			self.rateDic.saveRate(crypto, unit, timeStampUTC, exchange, rate)
+		else:
+			resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+			resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, timeStampUTC)
+			resultData.setValue(ResultData.RESULT_KEY_PRICE, rate)
 
-        return resultData
+		return resultData
 
-    def getCurrentPrice(self,
-                        crypto,
-                        unit,
-                        exchange):
-        resultData = super().getCurrentPrice(crypto,
-                                             unit,
-                                             exchange)
+	def _getHistoDayPriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
+		rate = self.rateDic.getRate(crypto, unit, timeStampUTC, exchange)
 
-        return resultData
+		if not rate:
+			resultData = super()._getHistoDayPriceAtUTCTimeStamp(crypto, unit, timeStampUTC, exchange, resultData)
+			rate = resultData.getValue(resultData.RESULT_KEY_PRICE)
+
+			# fed up with this fucking provider which regurlarly return an invalid value of 1.06
+			# for USD/CHF on CCCAGG on 12/9/17 !
+			if crypto == 'USD' and unit == 'CHF' and exchange == 'CCCAGG' and timeStampUTC == 1536710400:
+				rate = 0.9728
+				resultData.setValue(resultData.RESULT_KEY_PRICE, rate)
+			elif crypto == 'USD' and unit == 'CHF' and exchange == 'CCCAGG' and timeStampUTC == 1505174400:
+				rate = 1.001
+				resultData.setValue(resultData.RESULT_KEY_PRICE, rate)
+			elif crypto == 'USD' and unit == 'EUR' and exchange == 'CCCAGG' and timeStampUTC == 1505174400:
+				rate = 0.8346
+				resultData.setValue(resultData.RESULT_KEY_PRICE, rate)
+
+			self.rateDic.saveRate(crypto, unit, timeStampUTC, exchange, rate)
+		else:
+			resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
+			resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, timeStampUTC)
+			resultData.setValue(ResultData.RESULT_KEY_PRICE, rate)
+
+		return resultData
+
+	def getCurrentPrice(self,
+						crypto,
+						unit,
+						exchange):
+		resultData = super().getCurrentPrice(crypto,
+											 unit,
+											 exchange)
+
+		return resultData
 
 if __name__ == '__main__':
-    pr = PriceRequesterTestStub()
+	pr = PriceRequesterTestStub()
 
