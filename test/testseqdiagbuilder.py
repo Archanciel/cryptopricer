@@ -1488,7 +1488,7 @@ participant PriceRequester
 		Obtains the RT or historical rates from the Cryptocompare web site
 	end note
 participant GuiOutputFormater
-GUI -> Controller: getPrintableResultForInput(inputStr)
+GUI -> Controller: getPrintableResultForInput(inputStr, copyResultToClipboard=True)
 	activate Controller
 	Controller -> Requester: getCommand(inputStr)
 		activate Requester
@@ -1528,7 +1528,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 			deactivate Processor
 		Controller <-- CommandPrice: return ResultData or False
 		deactivate CommandPrice
-	Controller -> GuiOutputFormater: getFullCommandString(resultData)
+	Controller -> GuiOutputFormater: getFullCommandString(resultData, copyResultToClipboard=True)
 		activate GuiOutputFormater
 		GuiOutputFormater -> GuiOutputFormater: _buildFullDateAndTimeStrings(commandDic, timezoneStr)
 			activate GuiOutputFormater
@@ -1609,7 +1609,7 @@ participant PriceRequester
 		web site
 	end note
 participant GuiOutputFormater
-GUI -> Controller: getPrintableResultForInput(inputStr)
+GUI -> Controller: getPrintableResultForInput(inputStr, ...)
 	activate Controller
 	Controller -> Requester: getCommand(inputStr)
 		activate Requester
@@ -1652,7 +1652,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 			deactivate Processor
 		Controller <-- CommandPrice: return ResultData or False
 		deactivate CommandPrice
-	Controller -> GuiOutputFormater: getFullCommandString(resultData)
+	Controller -> GuiOutputFormater: getFullCommandString(resultData, ...)
 		activate GuiOutputFormater
 		GuiOutputFormater -> GuiOutputFormater: _buildFullDateAndTimeStrings(commandDic, ...)
 			activate GuiOutputFormater
