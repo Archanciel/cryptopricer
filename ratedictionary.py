@@ -2,6 +2,7 @@ import json, os, atexit
 
 class RateDictionary:
 	dic = {}
+	wasDicUpdated = False
 
 	def __init__(self):
 		atexit.register(self.saveDic)
@@ -28,17 +29,21 @@ class RateDictionary:
 
 	def saveRate(self, crypto, unit, timeStampUTCStr, exchange, rate):
 		self.dic[self.getDicKey(crypto, unit, timeStampUTCStr, exchange)] = rate
+		RateDictionary.wasDicUpdated = True
 		
 	def saveDic(self):
-		if os.name == 'posix':
-			RATE_DIC_FILE_PATH = '/sdcard/rateDic.txt'
-		else:
-			RATE_DIC_FILE_PATH = 'D:\\Development\\Python\\CryptoPricer\\test\\rateDicSavedData.txt'
-		with open(RATE_DIC_FILE_PATH, 'w') as f:
-			json.dump(RateDictionary.dic,
-			          f,
-			          indent=4,
-			          sort_keys=True)
+		if RateDictionary.wasDicUpdated:
+			if os.name == 'posix':
+				RATE_DIC_FILE_PATH = '/sdcard/rateDic.txt'
+			else:
+				RATE_DIC_FILE_PATH = 'D:\\Development\\Python\\CryptoPricer\\test\\rateDicSavedData.txt'
+			with open(RATE_DIC_FILE_PATH, 'w') as f:
+				json.dump(RateDictionary.dic,
+				          f,
+				          indent=4,
+				          sort_keys=True)
+				
+			RateDictionary.wasDicUpdated = False
 
 	def getDicKey(self, crypto, unit, timeStampUTCStr, exchange):
 		return crypto + unit + str(timeStampUTCStr) + exchange
