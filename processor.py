@@ -417,7 +417,7 @@ class Processor:
             else:
                 errorMsg = fiatResultData.getValue(fiatResultData.RESULT_KEY_ERROR_MSG)
 
-                if 'PROVIDER ERROR - There was an error with the parameters' in errorMsg:
+                if 'market does not exist for this coin pair' in errorMsg:
                     errorMsg = 'PROVIDER ERROR - fiat option coin pair {}/{} or {}/{} not supported by exchange {}'.format(fiat, unit, unit, fiat, fiatExchange)
                 else:
                     # making the error msg specific to the fiat option
