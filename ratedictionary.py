@@ -8,7 +8,7 @@ class RateDictionary:
 		atexit.register(self.saveDic)
 
 		if os.name == 'posix':
-			RATE_DIC_FILE_PATH = '/sdcard/rateDic.txt'
+			RATE_DIC_FILE_PATH = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/cryptopricer/test/rateDic.txt'
 		else:
 			RATE_DIC_FILE_PATH = 'D:\\Development\\Python\\CryptoPricer\\test\\rateDicSavedData.txt'
 
@@ -42,7 +42,7 @@ class RateDictionary:
 				          f,
 				          indent=4,
 				          sort_keys=True)
-				
+
 			RateDictionary.wasDicUpdated = False
 
 	def getDicKey(self, crypto, unit, timeStampUTCStr, exchange):
