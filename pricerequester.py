@@ -117,7 +117,7 @@ class PriceRequester:
         :param exchange:
         :param resultData:
         :seqdiag_return ResultData
-        :return:
+        :return: resultData
         '''
         timeStampUTCStr = str(timeStampUTC)
         url = "https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit=1&aggregate=1&toTs={}&e={}".format(crypto, unit, timeStampUTCStr, exchange)
