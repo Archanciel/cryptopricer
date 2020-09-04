@@ -8,7 +8,7 @@ sys.path.insert(0, parentdir)
 import re
 from datetimeutil import DateTimeUtil
 from configurationmanager import ConfigurationManager
-from pricerequester import PriceRequester
+from pricerequesterteststub import PriceRequesterTestStub
 from crypcompexchanges import CrypCompExchanges
 from processor import Processor
 from commandprice import  CommandPrice
@@ -22,7 +22,7 @@ class TestCommandPrice(unittest.TestCase):
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         self.configMgr = ConfigurationManager(FILE_PATH)
-        self.priceRequester = PriceRequester()
+        self.priceRequester = PriceRequesterTestStub()
         self.crypCompExchanges = CrypCompExchanges()
         self.processor = Processor(self.configMgr, self.priceRequester, self.crypCompExchanges)
         self.commandPrice = CommandPrice(self.processor, self.configMgr)
