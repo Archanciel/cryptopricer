@@ -51,6 +51,7 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 
 	def refresh_view_attrs(self, rv, index, data):
 		''' Catch and handle the view changes '''
+		self.rv = rv                            #<<------
 		self.index = index
 		return super(SelectableLabel, self).refresh_view_attrs(
 			rv, index, data)
@@ -60,10 +61,23 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		if super(SelectableLabel, self).on_touch_down(touch):
 			return True
 		if self.collide_point(*touch.pos) and self.selectable:
+			if self.rv.parent.parent.recycleViewCurrentSelIndex == self.index: #<<------
+				self.selected = False                                          #<<------
+				self.rv.parent.parent.recycleViewCurrentSelIndex = -1          #<<------
+			else:                                                              #<<------
+				self.rv.parent.parent.recycleViewCurrentSelIndex = self.index  #<<------
+
 			return self.parent.select_with_touch(self.index, touch)
 
 	def apply_selection(self, rv, index, is_selected):
 		''' Respond to the selection of items in the view. '''
+		if rv.parent.parent.recycleViewCurrentSelIndex == index: #<<------
+			is_selected = True                                   #<<------
+			self.selected = False                                #<<------
+		else:                                                    #<<------
+			is_selected = False                                  #<<------
+			self.selected = True                                 #<<------
+
 		if not self.selected and not is_selected:
 			# case when adding a new list item
 			return
@@ -573,6 +587,10 @@ class CryptoPricerGUI(BoxLayout):
 
 	def moveUpRequest(self):
 		oldIndex = self.recycleViewCurrentSelIndex
+
+		if oldIndex == -1:                                  #<<------
+			return
+		
 		newIndex = oldIndex - 1
 		requestTotalNumber = len(self.requestListRV.data)
 
@@ -582,9 +600,14 @@ class CryptoPricerGUI(BoxLayout):
 			newIndex = requestTotalNumber - 1
 
 		self.moveItemInList(list=self.requestListRV.data, oldIndex=oldIndex, newIndex=newIndex)
-
+		self.recycleViewCurrentSelIndex = newIndex          #<<------
+		
 	def moveDownRequest(self):
 		oldIndex = self.recycleViewCurrentSelIndex
+		
+		if oldIndex == -1:                                  #<<------
+			return
+		
 		newIndex = oldIndex + 1
 		requestTotalNumber = len(self.requestListRV.data)
 
@@ -594,7 +617,8 @@ class CryptoPricerGUI(BoxLayout):
 			newIndex = 0
 
 		self.moveItemInList(list=self.requestListRV.data, oldIndex=oldIndex, newIndex=newIndex)
-
+		self.recycleViewCurrentSelIndex = newIndex          #<<------
+		
 	def moveItemInList(self, list, oldIndex, newIndex):
 		list.insert(newIndex, list.pop(oldIndex))
 
