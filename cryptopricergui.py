@@ -84,11 +84,11 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		elif self.selected and not is_selected:
 			# toggling from selected to unselected
 			self.selected = False
-			rv.parent.parent.recycleViewSelectItem(index, is_selected)
+			rv.parent.parent.recycleViewSelectItem(index, self.selected)
 		else:
 			# toggling from unselected to selected
 			self.selected = not self.selected
-			rv.parent.parent.recycleViewSelectItem(index, is_selected)
+			rv.parent.parent.recycleViewSelectItem(index, self.selected)
 
 class SettingScrollOptions(SettingOptions):
 	'''
@@ -439,14 +439,16 @@ class CryptoPricerGUI(BoxLayout):
 		self.requestInput.text = requestStr.lower()
 
 	def recycleViewSelectItem(self, index, isSelected):
+		if self.recycleViewCurrentSelIndex != -1 and \
+			index != self.recycleViewCurrentSelIndex:
+			return
+		
 		if isSelected:
-			self.recycleViewCurrentSelIndex = index
 			requestStr = self.requestListRV.data[index]['text']
 			self.requestInput.text = requestStr
 			self.enableRequestListItemButtons()
 			self.refocusOnRequestInput()
 		else:
-			self.recycleViewCurrentSelIndex = -1
 			self.requestInput.text = ''
 			self.disableRequestListItemButtons()
 
