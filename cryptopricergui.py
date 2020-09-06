@@ -441,6 +441,7 @@ class CryptoPricerGUI(BoxLayout):
 	def recycleViewSelectItem(self, index, isSelected):
 		if self.recycleViewCurrentSelIndex != -1 and \
 			index != self.recycleViewCurrentSelIndex:
+			
 			return
 		
 		if isSelected:
