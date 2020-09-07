@@ -103,7 +103,7 @@ Comment:
 
 ## Installation
 ### Required libraries
-* kivy
+* kivy (version 1.11)
 * arrow
 * configobj
 * bs4 (beautifulsoup4)__
