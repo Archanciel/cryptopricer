@@ -37,36 +37,38 @@ class ResultData:
     PRICE_TYPE_HISTO_MINUTE = 'HISTO_MINUTE'
     PRICE_TYPE_RT = 'REAL_TIME'
     
-    def __init__(self):
-        self._resultDataDic = {}
-        self._resultDataDic[self.RESULT_KEY_CRYPTO] = None
-        self._resultDataDic[self.RESULT_KEY_UNIT] = None
-        self._resultDataDic[self.RESULT_KEY_EXCHANGE] = None
-        self._resultDataDic[self.RESULT_KEY_PRICE_TIME_STAMP] = None
-        self._resultDataDic[self.RESULT_KEY_PRICE_DATE_TIME_STRING] = None
-        self._resultDataDic[self.RESULT_KEY_PRICE] = None
-        self._resultDataDic[self.RESULT_KEY_PRICE_TYPE] = None
-        self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None
-        self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC] = {}
-        self._resultDataDic[self.RESULT_KEY_INITIAL_COMMAND_PARMS] = None
-        self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None       
-        self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_CRYPTO] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_UNIT] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_FIAT] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_SAVE] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_RATE] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SYMBOL] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SAVE] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_EXCHANGE] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SYMBOL] = None
-        self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SAVE] = None
+    def __init__(self, resultDataDic=None):
+        if not resultDataDic:
+            self._resultDataDic = {}
+            self._resultDataDic[self.RESULT_KEY_CRYPTO] = None
+            self._resultDataDic[self.RESULT_KEY_UNIT] = None
+            self._resultDataDic[self.RESULT_KEY_EXCHANGE] = None
+            self._resultDataDic[self.RESULT_KEY_PRICE_TIME_STAMP] = None
+            self._resultDataDic[self.RESULT_KEY_PRICE_DATE_TIME_STRING] = None
+            self._resultDataDic[self.RESULT_KEY_PRICE] = None
+            self._resultDataDic[self.RESULT_KEY_PRICE_TYPE] = None
+            self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None
+            self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC] = {}
+            self._resultDataDic[self.RESULT_KEY_INITIAL_COMMAND_PARMS] = None
+            self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_CRYPTO] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_UNIT] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_FIAT] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_SAVE] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_RATE] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SYMBOL] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SAVE] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_EXCHANGE] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SYMBOL] = None
+            self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SAVE] = None
+        else:
+            self._resultDataDic = resultDataDic
 
         self.requestInputString = ''
-
-
+    
     def setValue(self, key, value):
         self._resultDataDic[key] = value
 

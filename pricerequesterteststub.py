@@ -3,6 +3,8 @@ from pricerequester import PriceRequester
 from resultdata import ResultData
 from ratedictionary import RateDictionary
 
+COIN_PAIR_NOT_SUPPORTED = 'NOT SUPPORTED'
+
 if os.name == 'posix':
 	RATE_DIC_FILE_PATH = '/sdcard/rateDic.txt'
 else:
@@ -24,45 +26,26 @@ class PriceRequesterTestStub(PriceRequester):
 		self.rateDic = RateDictionary()
 
 	def _getHistoMinutePriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
-		rate = self.rateDic.getRate(crypto, unit, timeStampUTC, exchange)
+		cachedResultData = self.rateDic.getResultData(crypto, unit, timeStampUTC, exchange, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 
-		if not rate:
-			resultData = super()._getHistoMinutePriceAtUTCTimeStamp(crypto, unit, timeStampUTC, exchange, resultData)
-			rate = resultData.getValue(resultData.RESULT_KEY_PRICE)
-			self.rateDic.saveRate(crypto, unit, timeStampUTC, exchange, rate)
-		else:
-			resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
-			resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, timeStampUTC)
-			resultData.setValue(ResultData.RESULT_KEY_PRICE, rate)
+		if not cachedResultData:
+			# resultData not available in the rate dictionary
 
-		return resultData
+			cachedResultData = super()._getHistoMinutePriceAtUTCTimeStamp(crypto, unit, timeStampUTC, exchange, resultData)
+			self.rateDic.saveResultData(crypto, unit, timeStampUTC, exchange, cachedResultData, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+
+		return cachedResultData
 
 	def _getHistoDayPriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
-		rate = self.rateDic.getRate(crypto, unit, timeStampUTC, exchange)
+		cachedResultData = self.rateDic.getResultData(crypto, unit, timeStampUTC, exchange, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 
-		if not rate:
-			resultData = super()._getHistoDayPriceAtUTCTimeStamp(crypto, unit, timeStampUTC, exchange, resultData)
-			rate = resultData.getValue(resultData.RESULT_KEY_PRICE)
-
-			# fed up with this fucking provider which regurlarly return an invalid value of 1.06
-			# for USD/CHF on CCCAGG on 12/9/17 !
-			if crypto == 'USD' and unit == 'CHF' and exchange == 'CCCAGG' and timeStampUTC == 1536710400:
-				rate = 0.9728
-				resultData.setValue(resultData.RESULT_KEY_PRICE, rate)
-			elif crypto == 'USD' and unit == 'CHF' and exchange == 'CCCAGG' and timeStampUTC == 1505174400:
-				rate = 1.001
-				resultData.setValue(resultData.RESULT_KEY_PRICE, rate)
-			elif crypto == 'USD' and unit == 'EUR' and exchange == 'CCCAGG' and timeStampUTC == 1505174400:
-				rate = 0.8346
-				resultData.setValue(resultData.RESULT_KEY_PRICE, rate)
-
-			self.rateDic.saveRate(crypto, unit, timeStampUTC, exchange, rate)
-		else:
-			resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_DAY)
-			resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, timeStampUTC)
-			resultData.setValue(ResultData.RESULT_KEY_PRICE, rate)
-
-		return resultData
+		if not cachedResultData:
+			# resultData not available in the rate dictionary
+			
+			cachedResultData = super()._getHistoDayPriceAtUTCTimeStamp(crypto, unit, timeStampUTC, exchange, resultData)
+			self.rateDic.saveResultData(crypto, unit, timeStampUTC, exchange, cachedResultData, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO), resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+			
+		return cachedResultData
 
 	def getCurrentPrice(self,
 						crypto,

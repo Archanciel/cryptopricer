@@ -12,7 +12,7 @@ class DateTimeUtil:
     @staticmethod
     def timeStampToArrowLocalDate(timeStamp, timeZoneStr):
         '''
-        FGiven a UTC/GMT timezone independent timestamp and a timezone string specification,
+        Given a UTC/GMT timezone independent timestamp and a timezone string specification,
         returns a localized arrow object.
 
         :param timeStamp: UTC/GMT timezone independent timestamp
