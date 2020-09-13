@@ -23,7 +23,7 @@ class PriceRequesterTestStub(PriceRequester):
 		super(PriceRequesterTestStub, self).__init__()
 		self.rateDic = RateDictionary()
 
-	# NO INTEREST TO CACHE RATES FOR DATE TIMES WHICH CHANGES AT EACH UNIT TEST 
+	# NO INTEREST TO CACHE RATES FOR DATE TIMES WHICH CHANGES AT EACH UNIT TEST
 	# EXECUTION !
 	#
 	# def _getHistoMinutePriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
