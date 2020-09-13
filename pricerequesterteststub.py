@@ -23,23 +23,26 @@ class PriceRequesterTestStub(PriceRequester):
 		super(PriceRequesterTestStub, self).__init__()
 		self.rateDic = RateDictionary()
 
-	def _getHistoMinutePriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
-		rate = self.rateDic.getRate(crypto, unit, timeStampUTC, exchange)
-
-		if not rate:
-			# the rate is not cached and is queried for the first time
-			resultData = super()._getHistoMinutePriceAtUTCTimeStamp(crypto, unit, timeStampUTC, exchange, resultData)
-			rate = resultData.getValue(resultData.RESULT_KEY_PRICE)
-			
-			if rate:
-				# no exception indicating that the coin pair is not supported was raised
-				self.rateDic.saveRate(crypto, unit, timeStampUTC, exchange, rate)
-		else:
-			resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
-			resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, timeStampUTC)
-			resultData.setValue(ResultData.RESULT_KEY_PRICE, rate)
-
-		return resultData
+	# NO INTEREST TO CACHE RATES FOR DATE TIMES WHICH CHANGES AT EACH UNIT TEST 
+	# EXECUTION !
+	#
+	# def _getHistoMinutePriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
+	# 	rate = self.rateDic.getRate(crypto, unit, timeStampUTC, exchange)
+	#
+	# 	if not rate:
+	# 		# the rate is not cached and is queried for the first time
+	# 		resultData = super()._getHistoMinutePriceAtUTCTimeStamp(crypto, unit, timeStampUTC, exchange, resultData)
+	# 		rate = resultData.getValue(resultData.RESULT_KEY_PRICE)
+	#
+	# 		if rate:
+	# 			# no exception indicating that the coin pair is not supported was raised
+	# 			self.rateDic.saveRate(crypto, unit, timeStampUTC, exchange, rate)
+	# 	else:
+	# 		resultData.setValue(ResultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_HISTO_MINUTE)
+	# 		resultData.setValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP, timeStampUTC)
+	# 		resultData.setValue(ResultData.RESULT_KEY_PRICE, rate)
+	#
+	# 	return resultData
 
 	def _getHistoDayPriceAtUTCTimeStamp(self, crypto, unit, timeStampUTC, exchange, resultData):
 		# fed up with this fucking provider which regurlarly return an invalid value of 1.06
