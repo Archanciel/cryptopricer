@@ -124,12 +124,25 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = ''
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
+			
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
-		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#nowMonthStr,
+#														  nowYearStr,
+#														  resultNoEndPrice,
+#														  expectedPrintResultNoDateTimeNoEndPrice)
+#
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(no		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
@@ -657,9 +670,20 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = 'btc usd 0 all -ebitfinex'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
+			
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex'
 
-		self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
 		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions) #empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -668,8 +692,18 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
 		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions) #empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -683,8 +717,18 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request btc usd 0 all -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R\nWarning - unsupported option -zooo in request btc usd 0 all -zooo'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request btc usd 0 all -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
 		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions) #empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -693,8 +737,18 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('BTC/ETH on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request -ueth -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on CCCAGG: R\nWarning - unsupported option -zooo in request -ueth -zooo'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual('BTC/ETH on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request -ueth -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#									nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))#removing \n from contentList entry !
 		self.assertEqual('btc eth 0 all', fullCommandStrNoOptions) #empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -892,10 +946,21 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('btc usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -941,8 +1006,19 @@ class TestControllerGui(unittest.TestCase):
 		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
-		self.assertEqual(
-			'BTC/ETH on Binance: {}/{}/{} {}:{}R\nWarning - unsupported option -eall in request btc eth 0 binance -eall'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on Binance: R\nWarning - unsupported option -eall in request btc eth 0 binance -eall'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+														  
+#		self.assertEqual(
+#			'BTC/ETH on Binance: {}/{}/{} {}:{}R\nWarning - unsupported option -eall in request btc eth 0 binance -eall'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('btc eth 0 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -974,8 +1050,19 @@ class TestControllerGui(unittest.TestCase):
 		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
-		self.assertEqual(
-			'BTC/ETH on Binance: {}/{}/{} {}:{}R\nWarning - unsupported option -eall in request btc eth 0 binance -eall'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on Binance: R\nWarning - unsupported option -eall in request btc eth 0 binance -eall'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'BTC/ETH on Binance: {}/{}/{} {}:{}R\nWarning - unsupported option -eall in request btc eth 0 binance -eall'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('btc eth 0 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1009,10 +1096,21 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on Bitfinex: M'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
 															   nowMinuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1218,9 +1316,20 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'ETH/BTC on Binance: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC on Binance: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'ETH/BTC on Binance: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('eth btc 0 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1534,10 +1643,21 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1545,10 +1665,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = '-v10eth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1556,10 +1687,18 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = '-vs100usd'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
@@ -1567,10 +1706,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = ''
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
@@ -1578,10 +1728,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = '-cneo'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('neo usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('neo usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
@@ -1589,10 +1750,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = '-v0'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('neo usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1616,10 +1788,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = 'eth usd 0 bitfinex -vs100usd'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
@@ -1629,10 +1812,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = 'eth usd 0 bitfinex -v0'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1647,10 +1841,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = 'eth usd 0 bitfinex -vs100usd'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
@@ -1659,10 +1864,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = 'eth usd 0 bitfinex'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -1677,19 +1893,41 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('btc usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
 		inputStr = '-ueth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'BTC/ETH on Bitfinex: '+ '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr), UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'BTC/ETH on Bitfinex: '+ '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr), UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('btc eth 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc eth 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
@@ -1704,19 +1942,41 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = '-cbtc'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'BTC/ETH on Bitfinex: '+ '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr), UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'BTC/ETH on Bitfinex: '+ '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr), UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('btc eth 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc eth 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
 		inputStr = '-uusd'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('btc usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 0 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
 
@@ -1728,10 +1988,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = 'eth usd 0 bitfinex -vs100usd'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithOptions)
 		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
@@ -1739,10 +2010,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = '-v100usd'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth usd 0 bitfinex -v100usd', fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1750,10 +2032,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = ''
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth usd 0 bitfinex -v100usd', fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1761,10 +2054,21 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = '-v0'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -2182,50 +2486,105 @@ class TestControllerGui(unittest.TestCase):
 		inputStr = 'eth usd 0 bitfinex -vs100usd'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
 		inputStr = '-cxmr'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'XMR/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'XMR/USD on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'XMR/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('xmr usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('xmr usd 0 bitfinex -vs100usd', fullCommandStrWithSaveModeOptions)
 
 		inputStr = '-ubtc'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'XMR/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (XMR) and unit (BTC) of last request. -vs option ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'XMR/BTC on Bitfinex: R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (XMR) and unit (BTC) of last request. -vs option ignored'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'XMR/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (XMR) and unit (BTC) of last request. -vs option ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('xmr btc 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 		inputStr = '-ceth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (ETH) and unit (BTC) of last request. -vs option ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC on Bitfinex: R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (ETH) and unit (BTC) of last request. -vs option ignored'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (ETH) and unit (BTC) of last request. -vs option ignored'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('eth btc 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 		inputStr = '-v0'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+#		self.assertEqual(
+#			'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('eth btc 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -2251,10 +2610,21 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'ETH/BTC/USD.CCCAGG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeTwoEndPricesFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC/USD.CCCAGG on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'ETH/BTC/USD.CCCAGG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeTwoEndPricesFromResult(printResult))
 		self.assertEqual('eth btc 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth btc 0 bitfinex -fusd', fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -2269,10 +2639,21 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('eth btc 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -2282,10 +2663,21 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'ETH/BTC/USD.CCCAGG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeTwoEndPricesFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC/USD.CCCAGG on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'ETH/BTC/USD.CCCAGG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeTwoEndPricesFromResult(printResult))
 		self.assertEqual('eth btc 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth btc 0 bitfinex -fusd', fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -2300,10 +2692,21 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'ETH/BTC on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('eth btc 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -2313,10 +2716,21 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'ETH/BTC/USD.Kraken on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeTwoEndPricesFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC/USD.Kraken on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'ETH/BTC/USD.Kraken on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeTwoEndPricesFromResult(printResult))
 		self.assertEqual('eth btc 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth btc 0 bitfinex -fusd.kraken', fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -2331,10 +2745,21 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual(
-			'ETH/BTC/USD.Kraken on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr),
-			UtilityForTest.removeTwoEndPricesFromResult(printResult))
+		resultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC/USD.Kraken on Bitfinex: R'
+
+		self.doAssertAcceptingOneMinuteDateTimeDifference(nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  resultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+#		self.assertEqual(
+#			'ETH/BTC/USD.Kraken on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#															   nowMinuteStr),
+#			UtilityForTest.removeTwoEndPricesFromResult(printResult))
 		self.assertEqual('eth btc 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('eth btc 0 bitfinex -fusd.kraken', fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)

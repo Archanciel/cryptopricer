@@ -8,6 +8,7 @@ else:
 class RateDictionary:
 	dic = {}
 	wasDicUpdated = False
+	cachedRateAccessNumber = 0
 
 	def __init__(self):
 		atexit.register(self.saveDic)
@@ -17,11 +18,15 @@ class RateDictionary:
 				with open(RATE_DIC_FILE_PATH, 'r') as f:
 					RateDictionary.dic = json.load(f)
 
+	def __del__(self):
+		print('cachedRateAccessNumber: ', RateDictionary.cachedRateAccessNumber)
+	
 	def getRate(self, crypto, unit, timeStampUTCStr, exchange):
 		rate = None
 
 		try:
 			rate = RateDictionary.dic[self.getDicKey(crypto, unit, timeStampUTCStr, exchange)]
+			RateDictionary.cachedRateAccessNumber += 1
 		except KeyError:
 			# rate not yet in rate dic file
 			pass
