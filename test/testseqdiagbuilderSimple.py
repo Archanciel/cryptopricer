@@ -437,7 +437,7 @@ participant PriceRequester
         classFilePath = 'D:\\Development\\Python\\seqdiagbuilder\\testclasses\\subtestpackage\\'
 
         SeqDiagBuilder.activate(projectPath, '', '')
-        self.assertEquals('testclasses.subtestpackage.', SeqDiagBuilder._extractPackageSpec(classFilePath))
+        self.assertEqual('testclasses.subtestpackage.', SeqDiagBuilder._extractPackageSpec(classFilePath))
 
 
     def testExtractPackageSpecWindowsUnix(self):
@@ -445,7 +445,7 @@ participant PriceRequester
         classFilePath = 'D:/Development/Python/seqdiagbuilder/testclasses/subtestpackage/'
 
         SeqDiagBuilder.activate(projectPath, '', '')
-        self.assertEquals('testclasses.subtestpackage.', SeqDiagBuilder._extractPackageSpec(classFilePath))
+        self.assertEqual('testclasses.subtestpackage.', SeqDiagBuilder._extractPackageSpec(classFilePath))
 
 
     def testExtractPackageSpecUnixWindows(self):
@@ -453,7 +453,7 @@ participant PriceRequester
         classFilePath = 'D:\\Development\\Python\\seqdiagbuilder\\testclasses\\subtestpackage\\'
 
         SeqDiagBuilder.activate(projectPath, '', '')
-        self.assertEquals('testclasses.subtestpackage.', SeqDiagBuilder._extractPackageSpec(classFilePath))
+        self.assertEqual('testclasses.subtestpackage.', SeqDiagBuilder._extractPackageSpec(classFilePath))
 
 
     def testExtractPackageSpecUnixUnix(self):
@@ -461,7 +461,7 @@ participant PriceRequester
         classFilePath = 'D:/Development/Python/seqdiagbuilder/testclasses/subtestpackage/'
 
         SeqDiagBuilder.activate(projectPath, '', '')
-        self.assertEquals('testclasses.subtestpackage.', SeqDiagBuilder._extractPackageSpec(classFilePath))
+        self.assertEqual('testclasses.subtestpackage.', SeqDiagBuilder._extractPackageSpec(classFilePath))
 
 
     def testGetArgsForClassConstructorClassNotInDic(self):
@@ -507,19 +507,19 @@ participant PriceRequester
         cap = ConstructorArgsProvider(dic)
 
         # first call to ConstructorArgsProvider for the tested classes
-        self.assertEquals(['ccarg1'],cap.getArgsForClassConstructor('cc'))
-        self.assertEquals(['clarg11', 'clarg12'], cap.getArgsForClassConstructor('cl'))
-        self.assertEquals(['ca_arg1'], cap.getArgsForClassConstructor('ca'))
+        self.assertEqual(['ccarg1'],cap.getArgsForClassConstructor('cc'))
+        self.assertEqual(['clarg11', 'clarg12'], cap.getArgsForClassConstructor('cl'))
+        self.assertEqual(['ca_arg1'], cap.getArgsForClassConstructor('ca'))
 
         # second call to ConstructorArgsProvider for the tested classes
-        self.assertEquals(['ccarg2'],cap.getArgsForClassConstructor('cc'))
-        self.assertEquals(['clarg21', 'clarg22'], cap.getArgsForClassConstructor('cl'))
-        self.assertEquals(['ca_arg1'], cap.getArgsForClassConstructor('ca'))
+        self.assertEqual(['ccarg2'],cap.getArgsForClassConstructor('cc'))
+        self.assertEqual(['clarg21', 'clarg22'], cap.getArgsForClassConstructor('cl'))
+        self.assertEqual(['ca_arg1'], cap.getArgsForClassConstructor('ca'))
 
         # third call to ConstructorArgsProvider for the tested classes
-        self.assertEquals(['ccarg3'],cap.getArgsForClassConstructor('cc'))
+        self.assertEqual(['ccarg3'],cap.getArgsForClassConstructor('cc'))
         self.assertIsNone(cap.getArgsForClassConstructor('cl'))
-        self.assertEquals(['ca_arg1'], cap.getArgsForClassConstructor('ca'))
+        self.assertEqual(['ca_arg1'], cap.getArgsForClassConstructor('ca'))
 
 if __name__ == '__main__':
     unittest.main()

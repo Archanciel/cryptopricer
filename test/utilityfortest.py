@@ -113,6 +113,26 @@ class UtilityForTest:
 			if len(s.groups()) == 1:
 				group = s.group(1)
 				return group
+	
+	@staticmethod
+	def doAssertAcceptingOneMinuteDateTimeDifference(unitTest,
+													 nowDayStr,
+													 nowHourStr,
+													 nowMinuteStr,
+													 nowMonthStr,
+													 nowYearStr,
+													 resultNoEndPrice,
+													 expectedPrintResultNoDateTimeNoEndPrice):
+		actualDateTimeStr = UtilityForTest.extractDateTimeStr(resultNoEndPrice)
+		expectedDateTimeStr = '{}/{}/{} {}:{}'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+													  nowMinuteStr)
+		actualDateTimeStamp = DateTimeUtil.dateTimeStringToTimeStamp(actualDateTimeStr, 'Europe/Zurich',
+																	 'DD/MM/YY HH:mm')
+		expectedDateTimeStamp = DateTimeUtil.dateTimeStringToTimeStamp(expectedDateTimeStr, 'Europe/Zurich',
+																	   'DD/MM/YY HH:mm')
+		unitTest.assertAlmostEqual(actualDateTimeStamp, expectedDateTimeStamp, delta=60)
+		unitTest.assertEqual(expectedPrintResultNoDateTimeNoEndPrice,
+						 resultNoEndPrice.replace(actualDateTimeStr, ''))
 
 
 if __name__ == '__main__':
