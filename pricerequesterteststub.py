@@ -64,7 +64,7 @@ class PriceRequesterTestStub(PriceRequester):
 			resultData = super()._getHistoDayPriceAtUTCTimeStamp(crypto, unit, timeStampUTC, exchange, resultData)
 			rate = resultData.getValue(resultData.RESULT_KEY_PRICE)
 
-			if rate != None:
+			if rate != None and rate > 0:
 				# no exception indicating that the coin pair is not supported was raised
 				self.rateDic.saveRate(crypto, unit, timeStampUTC, exchange, rate)
 		else:
