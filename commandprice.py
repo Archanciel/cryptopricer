@@ -43,7 +43,7 @@ class CommandPrice(AbstractCommand):
     OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'     # store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
     OPTION_FIAT_MANDATORY_COMPONENTS = [OPTION_FIAT_SYMBOL]
 
-    OPTION_PRICE_DATA = 'OPTION_PRICE_DATA'     # temporary store the data specified with -p. Ex: 230usd
+    OPTION_PRICE_DATA = 'OPTION_PRICE_DATA'     # temporary store the data specified with -p. Ex: 230usd (see help for more info !)
     OPTION_PRICE_AMOUNT = 'OPTION_PRICE_AMOUNT' # store the price target specified with -p. Ex: 230
     OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL' # store the price symbol specified with -p. Ex: usd
     OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'     # store s or S or None to indicate if the value option is to be stored in history (-ps) or not (-p) --> None

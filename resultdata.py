@@ -25,7 +25,7 @@ class ResultData:
     RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT = 'OPTION_PRICE_SPECIFIED_AMOUNT'          # store the crypto or unit user entered value for -v option. Ex: 0.1 if -v0.1btc
     RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT = 'OPTION_PRICE_COMPUTED_UNIT_AMOUNT'  # store the price in unit corresponding to the amount specified in the option synbol specified
                                                                                         # for the -p option. Ex: if crypto is eth and unit is btc and option is -p300usd,
-                                                                                        # store the price in btc if 1 eth is 300 usd
+                                                                                        # store the price in btc if 1 eth is 300 usd (see help for more info !)
     RESULT_KEY_OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL'  # store the currency symbol of the -p option, usd if otion is -p300usd
     RESULT_KEY_OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'      # store True or False to indicate if the price option is to be stored in history (-ps) or not (-p)
 

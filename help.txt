@@ -119,10 +119,25 @@ Options can be added to both full and partial requests in order to obtain additi
 informations. [i]Remember that options added to a full request must be specified at the end of the request[/i].
 
 Currently, CryptoPricer supports two options: the
-valuation [b][cy]-v[/b][/c] option and the fiat [b][cy]-f[/b][/c] option. In a further version, the price
-[b][cy]-p[/b][/c] option will be added.
+valuation [b][cy]-v[/b][/c] option and the fiat [b][cy]-f[/b][/c] option.
 
-[cg]Valuation option[/cg]: [b][cy]-v[/b][/c][i]amount[/i]CURRENCY or
+In a further version, the price
+[b][cy]-p[/b][/c] option will be added. This option will enable you to specify a price value in fiat and obtain the 
+corresponding unit rate.
+
+This will be useful in this scenario:, you wish to purchase ETH on Binance at a rate of 650 USD. On Binance,
+the ETH/USD pair is not available. You ask the current ETH rate in BTC on this exchange 
+and you want to know what limit buy order in BTC you have to place in order
+to purchase your ETH at a rate of 650 USD.
+
+[cy]eth btc 0 binance -p650usd.kraken[/c] -->
+[n]ETH/BTC on Binance: 16/12/17 22:10R 0.03556 0.03357976
+[n][i]Currently the BTC/USD rate on Kraken is 19356.9. So, the ETH at this rate
+is valued at 0.03556 x 19 356.9 = 688.331364. So, your limit buy order must be placed
+at
+[n]0.03556 / 688.331364 x 650 = 0.03357976.[/i]
+
+[n][cg]Valuation option[/cg]: [b][cy]-v[/b][/c][i]amount[/i]CURRENCY or
 [b][cy]-vs[/b][/c][i]amount[/i]CURRENCY or [b][cy]-v0[/b][/c] to
 cancel it
 
