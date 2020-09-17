@@ -19,7 +19,9 @@ class RateDictionary:
 					RateDictionary.dic = json.load(f)
 
 	def __del__(self):
-		print('cachedRateAccessNumber: ', RateDictionary.cachedRateAccessNumber)
+		if RateDictionary.cachedRateAccessNumber > 0:
+			print('\nCached rates access number: ', RateDictionary.cachedRateAccessNumber)
+			RateDictionary.cachedRateAccessNumber = 0
 	
 	def getRate(self, crypto, unit, timeStampUTCStr, exchange):
 		rate = None
