@@ -133,7 +133,7 @@ class Requester:
     '''
     OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
     OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
-    OPTION_PRICE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
+    OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
 
     REQUEST_TYPE_PARTIAL = 'PARTIAL'
     REQUEST_TYPE_FULL = 'FULL'
@@ -686,6 +686,11 @@ class Requester:
 
             if optionType == 'FIAT':
                 self.commandPrice.parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE] = optionExchange
+                if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
+                    return self.handleInvalidOptionFormat(optionData, optionType, requestType)
+
+            if optionType == 'PRICE':
+                self.commandPrice.parsedParmData[CommandPrice.OPTION_PRICE_EXCHANGE] = optionExchange
                 if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
                     return self.handleInvalidOptionFormat(optionData, optionType, requestType)
 
