@@ -133,7 +133,8 @@ class Requester:
     '''
     OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
     OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
-    OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
+    #OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
+    OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
 
     REQUEST_TYPE_PARTIAL = 'PARTIAL'
     REQUEST_TYPE_FULL = 'FULL'
