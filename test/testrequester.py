@@ -3211,56 +3211,56 @@ class TestRequester(unittest.TestCase):
 
 	def testRequestCommandPriceFullWithOptionPriceSaveCommandInInvalidPosThree(self):
 		stdin = sys.stdin
-		sys.stdin = StringIO("btc usd -ps0.01btc 10/9/17 12:45 Kraken")
+		sys.stdin = StringIO("btc usd -ps0.02btc 10/9/17 12:45 Kraken")
 		commandPrice = self.requester.request()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd -ps0.01btc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd -ps0.02btc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
 
 	def testRequestCommandPriceFullWithOptionPriceSaveCommandInInvalidPosThreeAndUnsupportedOption(self):
 		stdin = sys.stdin
-		sys.stdin = StringIO("btc usd -ps0.01btc 10/9/17 12:45 Kraken -zunsupported")
+		sys.stdin = StringIO("btc usd -ps0.02btc 10/9/17 12:45 Kraken -zunsupported")
 		commandPrice = self.requester.request()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd -ps0.01btc 10/9/17 12:45 Kraken -zunsupported violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd -ps0.02btc 10/9/17 12:45 Kraken -zunsupported violates format <crypto> <unit> <date|time> <exchange> <options>",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
 
 	def testRequestCommandPriceFullWithOptionPriceSaveCommandInInvalidPosFour(self):
 		stdin = sys.stdin
-		sys.stdin = StringIO("btc usd 10/9/17 -ps0.01btc 12:45 Kraken")
+		sys.stdin = StringIO("btc usd 10/9/17 -ps0.02btc 12:45 Kraken")
 		commandPrice = self.requester.request()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd 10/9/17 -ps0.01btc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd 10/9/17 -ps0.02btc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
 
 	def testRequestCommandPriceFullWithOptionPriceSaveCommandInInvalidPosFive(self):
 		stdin = sys.stdin
-		sys.stdin = StringIO("btc usd 10/9/17 12:45 -ps0.01btc Kraken")
+		sys.stdin = StringIO("btc usd 10/9/17 12:45 -ps0.02btc Kraken")
 		commandPrice = self.requester.request()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd 10/9/17 12:45 -ps0.01btc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd 10/9/17 12:45 -ps0.02btc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -3342,7 +3342,7 @@ class TestRequester(unittest.TestCase):
 
 	def testRequestCommandPriceFullEndingWithOptionPriceSaveCommand(self):
 		stdin = sys.stdin
-		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.01btc")
+		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.02btc")
 		commandPrice = self.requester.request()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
@@ -3371,7 +3371,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
-		self.assertEqual('0.01', parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
+		self.assertEqual('0.02', parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
 		self.assertEqual('btc', parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_EXCHANGE])
 		self.assertTrue(parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
@@ -3380,7 +3380,7 @@ class TestRequester(unittest.TestCase):
 
 	def testRequestCommandPriceFullEndingWithOptionPriceSaveExchangeCommand(self):
 		stdin = sys.stdin
-		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.01btc.binance")
+		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.02btc.binance")
 		commandPrice = self.requester.request()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
@@ -3409,7 +3409,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
-		self.assertEqual('0.01', parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
+		self.assertEqual('0.02', parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
 		self.assertEqual('btc', parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
 		self.assertEqual('binance', parsedParmData[CommandPrice.OPTION_PRICE_EXCHANGE])
 		self.assertTrue(parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
@@ -3418,7 +3418,7 @@ class TestRequester(unittest.TestCase):
 
 	def testRequestCommandPriceFullEndingWithOptionPriceSaveCommandAndUnsupportedOption(self):
 		stdin = sys.stdin
-		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.01btc -zunsupported")
+		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.02btc -zunsupported")
 		commandPrice = self.requester.request()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
@@ -3447,7 +3447,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
-		self.assertEqual('0.01', parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
+		self.assertEqual('0.02', parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
 		self.assertEqual('btc', parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
 		self.assertTrue(parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
 
@@ -3455,7 +3455,7 @@ class TestRequester(unittest.TestCase):
 
 	def testRequestCommandPriceFullEndingWithPriceUnsupportedOptionAndPriceSaveCommand(self):
 		stdin = sys.stdin
-		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -zunsupported -ps0.01btc")
+		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -zunsupported -ps0.02btc")
 		commandPrice = self.requester.request()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
@@ -3484,7 +3484,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
-		self.assertEqual('0.01', parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
+		self.assertEqual('0.02', parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
 		self.assertEqual('btc', parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
 		self.assertTrue(parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
 
@@ -5065,36 +5065,13 @@ class TestRequester(unittest.TestCase):
 		parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL] = 'btc'
 		parsedParmData[CommandPrice.OPTION_FIAT_SAVE] = True
 
-		inputStr = "-ceth -f0 -ugbp -d11/8/15 -t22:46 -eKraken"
-		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-		self.assertEqual(commandPrice, self.commandPrice)
-		parsedParmData = commandPrice.parsedParmData
-		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
-		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'gbp')
-		self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
-		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
-		self.assertEqual(parsedParmData[CommandPrice.YEAR], '15')
-		self.assertEqual(parsedParmData[CommandPrice.HOUR], '22')
-		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
-		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
-		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
-		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
+		inputStr = "-ceth -fs0 -ugbp -d11/8/15 -t22:46 -eKraken"
+		commandError = self.requester._parseAndFillCommandPrice(inputStr)
+		self.assertEqual(commandError, self.commandError)
+		resultData = self.commandError.execute()
+
+		#formatting of request input string has been moved to end of Requester.getCommand !
+		self.assertEqual("ERROR - invalid partial request : -fs0 option violates the -fs option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 	def test_parseAndFillPartialCommandPriceInvalidOptionFiatSaveSpecNoFiatWithAmount(self):
 		commandPrice = self.requester.commandPrice
