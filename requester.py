@@ -132,7 +132,11 @@ class Requester:
 		-v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
 	'''
 	OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
-	OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
+	OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)" # note that
+												# the second group of the pattern will always be None
+												# for -f option. It is there so the code for handling
+												# fiat and price option can be similqr in
+												# self._fillOptionValueInfo() !
 	#OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)(\w+)(?:(?:\.)(\w+))?)|(0)"
 	#OPTION_FIAT_PARM_DATA_PATTERN =  r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
 	#OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
@@ -675,13 +679,14 @@ class Requester:
 
 		if match:
 			if len(match.groups()) == 5:
-				# case if OPTION_FIAT_PARM_DATA_PATTERN
+				# case if OPTION_FIAT_PARM_DATA_PATTERN or OPTION_PRICE_PARM_DATA_PATTERN
 				optionSaveFlag = match.group(1)
 				optionAmount = match.group(2)
 				optionSymbol = match.group(3)
 				optionExchange = match.group(4)
 				optionErase = match.group(5)
 			else:
+				# case if OPTION_VALUE_PARM_DATA_PATTERN
 				optionSaveFlag = match.group(1)
 				optionAmount = match.group(2)
 				optionSymbol = match.group(3)
