@@ -133,8 +133,10 @@ class Requester:
     '''
     OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
     OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
+    #OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)(\w+)(?:(?:\.)(\w+))?)|(0)"
+    #OPTION_FIAT_PARM_DATA_PATTERN =  r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
     #OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
-    OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
+    OPTION_PRICE_PARM_DATA_PATTERN =  r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
 
     REQUEST_TYPE_PARTIAL = 'PARTIAL'
     REQUEST_TYPE_FULL = 'FULL'
@@ -290,7 +292,7 @@ class Requester:
         The purpose of this method is precisely to acquire those order free full request parameters.
 
         Since DAY_MONTH_YEAR, HOUR_MINUTE, EXCHANGE and additional OPTIONS can be provided in any order
-        after CRYPTO and UNIT, this method differentiate them build an optional command price parm data
+        after CRYPTO and UNIT, this method differentiate them and build an optional command price parm data
         dictionary with the right key. This dictionary will be added to the CommandPrice parmData dictionary.
 
         :seqdiag_return optionalParsedParmDataDic
@@ -320,7 +322,7 @@ class Requester:
         # changed r"\d+/\d+(?:/\d+)*|^0$" into r"\d+/\d+(?:/\d+)*|^\d+$" was required so
         # that a full request like btc usd 1 12:45 bitfinex does generate an ERROR - date not valid
         # in CommandPrice. With the old versionk of th pattern, CommandPrice.DAY_MONTH_YEAR was none,
-        # which was considered like a valid full request with only the time providded, a feature which
+        # which was considered like a valid full request with only the time provided, a feature which
         # was not supported before !
         #
         # So, allowing the user to provide only the time in the full request implied that we are
@@ -335,10 +337,10 @@ class Requester:
                              r"(-[^vVfFpP]{1})([sS]?)([\w\d/:\.]+)": CommandPrice.UNSUPPORTED_OPTION_DATA,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
                              r"(-[^vVfFpP]{1})([sS]?)([\w\d/:\.]+)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
                              r"(-[^vVfFpP]{1})([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,
-                             r"(?:-[fF])([sS]?)([\w\d/:\.]+)": CommandPrice.OPTION_FIAT_DATA,
-                             r"(?:-[fF])([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
-                             r"(?:-[pP])([sS]?)([\w\d/:\.]+)": CommandPrice.OPTION_PRICE_DATA,
-                             r"(?:-[pP])([sS]?)([\w\d/:\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE}
+                             r"(?:-[fF])([sS]?)([\w\.]+)": CommandPrice.OPTION_FIAT_DATA,
+                             r"(?:-[fF])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
+                             r"(?:-[pP])([sS]?)([\w\.]+)": CommandPrice.OPTION_PRICE_DATA,
+                             r"(?:-[pP])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE}
 
         optionalParsedParmDataDic = {}
 
