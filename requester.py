@@ -8,7 +8,7 @@ CURRENCY_SYMBOL_MIN_LENGTH = 3
 
 class Requester:
     '''
-    Read in commands entered by the
+    Reads in commands entered by the
     user, typically
     
     oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave
