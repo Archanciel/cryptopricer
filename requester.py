@@ -132,13 +132,7 @@ class Requester:
 		-v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
 	'''
 	OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
-	OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)" # note that
-												# the second group of the pattern will always be None
-												# for -f option. It is there so the code for handling
-												# fiat and price option can be similqr in
-												# self._fillOptionValueInfo() !
-	#OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)(\w+)(?:(?:\.)(\w+))?)|(0)"
-	#OPTION_FIAT_PARM_DATA_PATTERN =  r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
+	OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
 	#OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
 	OPTION_PRICE_PARM_DATA_PATTERN =  r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
 
@@ -672,35 +666,55 @@ class Requester:
 		:param requestType: indicate if we are handling a full or a partial request
 		:return: self.commandPrice or self.commandError in case the -v option is invalid
 		'''
+		optionSaveFlag = None
+		optionErase = None
+		optionSymbol = None
+		optionAmount = None
 
 		requesterOptionPattern = self._getRequesterOptionPattern(optionType)
 
 		match = re.match(requesterOptionPattern, optionData)
 
 		if match:
-			if len(match.groups()) == 5:
-				# case if OPTION_FIAT_PARM_DATA_PATTERN or OPTION_PRICE_PARM_DATA_PATTERN
-				optionSaveFlag = match.group(1)
-				optionAmount = match.group(2)
-				optionSymbol = match.group(3)
-				optionExchange = match.group(4)
-				optionErase = match.group(5)
-			else:
-				# case if OPTION_VALUE_PARM_DATA_PATTERN
-				optionSaveFlag = match.group(1)
-				optionAmount = match.group(2)
-				optionSymbol = match.group(3)
-				optionErase = match.group(4)
-
-			if optionType == 'FIAT':
-				self.commandPrice.parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE] = optionExchange
-				if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
-					return self.handleInvalidOptionFormat(optionData, optionType, requestType)
-
-			if optionType == 'PRICE':
-				self.commandPrice.parsedParmData[CommandPrice.OPTION_PRICE_EXCHANGE] = optionExchange
-				if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
-					return self.handleInvalidOptionFormat(optionData, optionType, requestType)
+			# if len(match.groups()) == 5:
+			# 	# case if OPTION_FIAT_PARM_DATA_PATTERN or OPTION_PRICE_PARM_DATA_PATTERN
+			# 	optionSaveFlag = match.group(1)
+			# 	optionAmount = match.group(2)
+			# 	optionSymbol = match.group(3)
+			# 	optionExchange = match.group(4)
+			# 	optionErase = match.group(5)
+			# else:
+			# 	# case if OPTION_VALUE_PARM_DATA_PATTERN
+			# 	optionSaveFlag = match.group(1)
+			# 	optionAmount = match.group(2)
+			# 	optionSymbol = match.group(3)
+			# 	optionErase = match.group(4)
+			
+			if optionType == 'VALUE':
+				if len(match.groups()) == 4:
+					optionSaveFlag = match.group(1)
+					optionAmount = match.group(2)
+					optionSymbol = match.group(3)
+					optionErase = match.group(4)
+			elif optionType == 'FIAT':
+				if len(match.groups()) == 4:
+					optionSaveFlag = match.group(1)
+					optionSymbol = match.group(2)
+					optionExchange = match.group(3)
+					optionErase = match.group(4)
+					self.commandPrice.parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE] = optionExchange
+					if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
+						return self.handleInvalidOptionFormat(optionData, optionType, requestType)
+			elif optionType == 'PRICE':
+				if len(match.groups()) == 5:
+					optionSaveFlag = match.group(1)
+					optionAmount = match.group(2)
+					optionSymbol = match.group(3)
+					optionExchange = match.group(4)
+					optionErase = match.group(5)
+					self.commandPrice.parsedParmData[CommandPrice.OPTION_PRICE_EXCHANGE] = optionExchange
+					if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
+						return self.handleInvalidOptionFormat(optionData, optionType, requestType)
 
 			if optionErase == None:
 				if optionSymbol.isdigit():
@@ -708,8 +722,8 @@ class Requester:
 					optionAmount += optionSymbol
 					optionSymbol = ''
 
-				if optionAmount != '':
-					# if optionType == FIAT, optionAmount == '' !
+				if optionAmount != None:
+					# if optionType == FIAT, optionAmount == None !
 					commandPriceOptionAmountConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_AMOUNT')
 					self.commandPrice.parsedParmData[commandPriceOptionAmountConstantValue] = optionAmount
 
