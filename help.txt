@@ -180,10 +180,9 @@ the last [b][cy]-v[/b][/c] request !
 [cg]Valuation option format[/cg]: [b][cy]-v[/b][/c]999.9999zzz
 or [b][cy]-vs[/b][/c]999.9999zzz, [b][cy]s[/b][/c]
 is a [b][cy]save[/b][/c] additional modifier which causes
- the [b][cy]-v[/b][/c] option to be in effect across the
-subsequent partial requests and also to be  saved in
+ the [b][cy]-v[/b][/c] option to be saved in
 the request history. [b][cy]-v0[/b][/c] is used to cancel
-a currently active [b][cy]-vs[/b][/c] option.
+a currently active [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] option.
 
 If the last request was
 
@@ -196,34 +195,34 @@ returns
 
 [n]0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
 
-Using [b][cy]-vs[/b][/c] instead of [b][cy]-v[/b][/c] saves the value option, making it
-active for all subsequent PARTIAL requests. The [b][cy]-vs[/b][/c] option is also saved
-in the request history list.
+Using [b][cy]-vs[/b][/c] instead of [b][cy]-v[/b][/c] saves the value option in 
+the request history list.
 
-There are two ways of deactivating a currently in effect
-[b][cy]-vs[/b][/c] option:
+The [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] option remain active until 
+they are canceled. There are two ways of deactivating a currently in effect
+[b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] option:
 
     1/ enter a full request, which wipes out all the
     previously entered partial request settings
-    [n]2/ enter [b][cy]-v0[/b][/c] which cancels the [b][cy]-vs[/b][/c] valuation option
+    [n]2/ enter [b][cy]-v0[/b][/c] which cancels the [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] valuation option
 
-So, until the [b][cy]-vs[/b][/c] command is cancelled, it stays in effect
+So, until the [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] command is cancelled, it stays in effect
 and impacts any new partial request. This is the case
 provided that either the crypto [b][cy]-c[/b][/c], the
 unit [b][cy]-u[/b][/c] (counterparty) or the fiat [b][cy]-f[/b][/c] in effect or specified
 in the new request are compatible with the currency
-attached to the [b][cy]-vs[/b][/c] option.
+attached to the [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] option.
 
 Example:
 
-[cy]-vs0.1eth[/c] -->
+[cy]-v0.1eth[/c] -->
 [n]0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
 
 [cy]-cbtc[/c] -->
 [n]BTC/USD on Bitfinex:  21/11/17 00:00C 8096.9
 WARNING - currency value option symbol ETH currently
 in effect differs from both crypto (BTC) and unit (USD) of last request.
--vs parameter ignored
+-v parameter ignored
 
 Next entering
 
@@ -233,8 +232,8 @@ returns
 
 [n]0.00445236BTC/0.1ETH on Bitfinex:  21/11/17 00:00C 0.4445
 
-We see that now the previsously specified saved value
-option [cy]-vs0.1eth[/c] is applicable again. But now,
+We see that now the previsously specified value
+option [cy]-v0.1eth[/c] is applicable again. But now,
 ETH is no longer the [cy]-c[/c] crypto, but is the
 [cy]-u[/c] unit (counterparty). Examples implying fiat
 and value options are provided in the next fiat option section.
@@ -305,8 +304,8 @@ So, until the [b][cy]-fs[/b][/c] command is cancelled, it stays in effect
 and impacts any new partial request.STAYED HERE !
 
 Example:
-
-[cy]-fs0.1eth[/c] -->
+CORRECT  HELP !!!
+[cy]-feth[/c] -->
 [n]0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
 
 [cy]-cbtc[/c] -->
