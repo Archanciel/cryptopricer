@@ -3133,6 +3133,15 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs0.1btc -fschf', fullCommandStrWithSaveModeOptions)
 
+	def testGetPrintableResultForHistoricalRequestWithOptionValueSaveCryptoAmountSpecifiedOptionFiatSaveExchange(self):
+		inputStr = 'eth usd 12/09/17 all -vs0.1btc -fsbtc.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'1.41910915 ETH/417.36 USD/0.1 BTC.Kraken on CCCAGG: 12/09/17 00:00C 294.1 0.07046674', printResult)
+		self.assertEqual('eth usd 12/09/17 00:00 all', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 12/09/17 00:00 all -vs0.1btc -fsbtc.kraken', fullCommandStrWithSaveModeOptions)
+
 	def testGetPrintableResultForHistoricalRequestWithOptionValueCryptoAmountSpecifiedOptionFiatSave(self):
 		inputStr = 'btc usd 12/09/17 bitfinex -v0.1btc -fschf'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
