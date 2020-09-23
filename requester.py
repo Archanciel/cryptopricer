@@ -81,7 +81,8 @@ class Requester:
 						0:0, rejected.
 	'''
 
-	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (-\w\w?[\w\d/:\.]+))?(?: (-\w\w?[\w\d/:\.]+))?"
+#	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (-\w\w?[\w\d/:\.]+))?(?: (-\w\w?[\w\d/:\.]+))?"
+	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w\d/:\.]+))?(?: (-[a-zA-Z][a-zA-Z]?[\w\d/:\.]+))?"
 
 	'''
 	Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 or -ebittrex or -v0.00432btc
@@ -123,7 +124,8 @@ class Requester:
 						
 	Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken -v0.0044543eth
 	'''
-	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:\.]+))(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?"
+#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:\.]+))(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?"
+	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w\d/:\.]+))(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?"
 
 	'''
 	The next pattern splits the parameter data appended to the -v partial command.
@@ -703,7 +705,10 @@ class Requester:
 					optionExchange = match.group(3)
 					optionErase = match.group(4)
 					self.commandPrice.parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE] = optionExchange
-					if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
+					if (optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH)) or \
+						(optionErase == '0' and optionSaveFlag == None and optionSymbol == None and optionData != '0'):
+						# solving very difficult error message formatting for invalid -f option erase. -f0.01 in partial
+						# and full requests or -fs0.01 in partial and full requests. I spent days solving it !
 						return self.handleInvalidOptionFormat(optionData, optionType, requestType)
 			elif optionType == 'PRICE':
 				if len(match.groups()) == 5:
