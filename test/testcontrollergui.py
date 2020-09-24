@@ -3396,7 +3396,7 @@ class TestControllerGui(unittest.TestCase):
 		ethUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
 
 		#ensure fiat value of eth is correct
-		self.assertEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate)
+		self.assertAlmostEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate, places=1)
 
 	def testOptionFiatValueComputationIsCorrectPartialRequestHistoDayPrice(self):
 		'''
@@ -3472,7 +3472,7 @@ class TestControllerGui(unittest.TestCase):
 		ethUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
 
 		#ensure fiat value of eth is correct
-		self.assertEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate)
+		self.assertAlmostEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate, places=1)
 
 	def testOptionFiatValueComputationIsCorrectFullRequestHistoDayPriceNoSave(self):
 		'''
