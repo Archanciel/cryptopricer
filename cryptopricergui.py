@@ -445,6 +445,13 @@ class CryptoPricerGUI(BoxLayout):
 			return
 		
 		if isSelected:
+			# fixing crash when deleting last item of history list
+			itemNumber = len(self.requestListRV.data)
+			
+			if index == itemNumber:
+				index -= 1
+			# fixing crash when deleting last item of history list
+
 			requestStr = self.requestListRV.data[index]['text']
 			self.requestInput.text = requestStr
 			self.enableRequestListItemButtons()
@@ -521,12 +528,19 @@ class CryptoPricerGUI(BoxLayout):
 		# deleting from RecycleView list
 		self.requestListRV.data.pop(self.recycleViewCurrentSelIndex)
 		self.requestListRV._get_layout_manager().clear_selection()
-
-		if len(self.requestListRV.data) == 0:
+		
+		requestNb = len(self.requestListRV.data)
+		
+		if requestNb == 0:
 			self.disableRequestListItemButtons()
 			self.toggleHistoButton.disabled = True
 			self.showRequestList = False
 			self.requestInput.text = ''
+		
+		# fixing crash when deleting last item of history list
+		if requestNb == self.recycleViewCurrentSelIndex:
+			self.recycleViewCurrentSelIndex -= 1
+		# fixing crash when deleting last item of history list
 
 		if self.showRequestList:
 			self.adjustRequestListSize()
