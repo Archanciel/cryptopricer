@@ -954,7 +954,7 @@ class CryptoPricerGUIApp(App):
 		:return:
 		'''
 		if platform == 'android':
-			defaultpath = '/sdcard/.%(appname)s.ini'
+			defaultpath = '/sdcard/%(appname)s.ini'
 		elif platform == 'ios':
 			defaultpath = '~/Documents/%(appname)s.ini'
 		elif platform == 'win':
