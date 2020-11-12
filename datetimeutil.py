@@ -440,3 +440,7 @@ if __name__ == '__main__':
     gmtPlusList.append(gmtMinusList)
 
     print(gmtPlusList)
+
+    print('\nBug\n')
+    print(DateTimeUtil._formatPrintDateTimeFromIntComponents(12,11,20,15,2,'Europe/Zurich','DD/MM/YY HH:mm'))
+    print(DateTimeUtil.formatPrintDateTimeFromStringComponents('01','01','20','18','48','Europe/Zurich','DD/MM/YY HH:mm'))
