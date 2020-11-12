@@ -721,6 +721,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.resetListViewScrollToEnd()
 
 		self.manageStateOfRequestListButtons()
+		self.updateStatusBar('History file loaded: {}'.format(pathFilename))
 		self.refocusOnRequestInput()
 
 	def saveHistoryToFile(self, path, filename, isLoadAtStart):
