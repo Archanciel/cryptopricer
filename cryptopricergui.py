@@ -33,6 +33,8 @@ from guioutputformater import GuiOutputFormater
 from guiutil import GuiUtil
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
+FILE_LOADED = 0
+FILE_SAVED = 1
 CRYPTOPRICER_VERSION = 'CryptoPricer 2.0.1'
 fromAppBuilt = False
 
@@ -700,17 +702,27 @@ class CryptoPricerGUI(BoxLayout):
 			# no file selected. Load dialog remains open ..
 			return
 
-		pathFilename = os.path.join(path, filename[0])
-		self.loadHistoryFromPathFilename(pathFilename)
+		pathFileName = os.path.join(path, filename[0])
+		self.loadHistoryFromPathFilename(pathFileName)
 		self.dismissPopup()
+		self.displayFileActionOnStatusBar(pathFileName, FILE_LOADED)
 
-	def loadHistoryFromPathFilename(self, pathFilename):
-		dataFileNotFoundMessage = 'Data file\n' + pathFilename + 'not found. No history loaded.'
+	def displayFileActionOnStatusBar(self, pathFileName, actionType, isLoadAtStart=None):
+		if actionType == FILE_LOADED:
+			self.updateStatusBar('History file loaded:\n{}'.format(pathFileName))
+		else:
+			if isLoadAtStart:
+				self.updateStatusBar('History saved to file: {}.\nLoad at start activated.'.format(pathFileName))
+			else:
+				self.updateStatusBar('History saved to file: {}'.format(pathFileName))
 
-		if not self.ensureDataPathFileNameExist(pathFilename, dataFileNotFoundMessage):
+	def loadHistoryFromPathFilename(self, pathFileName):
+		dataFileNotFoundMessage = 'Data file\n' + pathFileName + 'not found. No history loaded.'
+
+		if not self.ensureDataPathFileNameExist(pathFileName, dataFileNotFoundMessage):
 			return
 
-		with open(pathFilename) as stream:
+		with open(pathFileName) as stream:
 			lines = stream.readlines()
 
 		lines = list(map(lambda line: line.strip('\n'), lines))
@@ -721,7 +733,6 @@ class CryptoPricerGUI(BoxLayout):
 		self.resetListViewScrollToEnd()
 
 		self.manageStateOfRequestListButtons()
-		self.updateStatusBar('History file loaded: {}'.format(pathFilename))
 		self.refocusOnRequestInput()
 
 	def saveHistoryToFile(self, path, filename, isLoadAtStart):
@@ -749,6 +760,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.configMgr.storeConfig()
 
 		self.dismissPopup()
+		self.displayFileActionOnStatusBar(pathFileName, FILE_SAVED, isLoadAtStart)
 		self.refocusOnRequestInput()
 
 	# --- end file chooser code ---
@@ -779,7 +791,7 @@ class CryptoPricerGUIApp(App):
 
 		if os.name != 'posix':
 			# running app om Windows
-			Config.set('graphics', 'width', '400')
+			Config.set('graphics', 'width', '600')
 			Config.set('graphics', 'height', '500')
 			Config.write()
 
@@ -981,6 +993,7 @@ class CryptoPricerGUIApp(App):
 
 			if historyFilePathFilename != '' and self.cryptoPricerGUI.ensureDataPathFileNameExist(historyFilePathFilename, dataFileNotFoundMessage):
 				self.cryptoPricerGUI.loadHistoryFromPathFilename(historyFilePathFilename)
+				self.cryptoPricerGUI.displayFileActionOnStatusBar(historyFilePathFilename, FILE_LOADED)
 
 if __name__ == '__main__':
 	dbApp = CryptoPricerGUIApp()
