@@ -33,6 +33,7 @@ from guioutputformater import GuiOutputFormater
 from guiutil import GuiUtil
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
+STATUS_BAR_ERROR_SUFFIX = ' --> ERROR ...'
 FILE_LOADED = 0
 FILE_SAVED = 1
 CRYPTOPRICER_VERSION = 'CryptoPricer 2.0.1'
@@ -162,7 +163,8 @@ class SaveDialog(FloatLayout):
 
 class CustomDropDown(DropDown):
 	saveButton = ObjectProperty(None)
-
+	statusToRequestInputButton = ObjectProperty(None)
+	
 	def __init__(self, owner):
 		super().__init__()
 		self.owner = owner
@@ -181,6 +183,12 @@ class CustomDropDown(DropDown):
 
 	def help(self):
 		self.owner.displayHelp()
+	
+	def copyStatusBarStrToRequestEntry(self):
+		statusBarStr = self.owner.statusBarTextInput.text
+		
+		self.owner.requestInput.text = statusBarStr.replace(STATUS_BAR_ERROR_SUFFIX, '')
+		self.owner.statusBarTextInput.text = ''
 
 class ScrollablePopup(Popup):
 	contentBox = ObjectProperty()
@@ -414,7 +422,7 @@ class CryptoPricerGUI(BoxLayout):
 		# displaying request in status bar
 
 		if 'ERROR' in outputResultStr:
-			self.updateStatusBar(requestStr + ' --> ' + 'ERROR ...')
+			self.updateStatusBar(requestStr + STATUS_BAR_ERROR_SUFFIX)
 		else:
 			if fullRequestStrWithSaveModeOptions:
 				if requestStr != fullRequestStrWithSaveModeOptions:
@@ -642,8 +650,20 @@ class CryptoPricerGUI(BoxLayout):
 		list.insert(newIndex, list.pop(oldIndex))
 
 	def openDropDownMenu(self, widget):
+		
+		if self.isRequest(self.statusBarTextInput.text):
+			self.dropDownMenu.statusToRequestInputButton.disabled = False
+		else:
+			self.dropDownMenu.statusToRequestInputButton.disabled = True
+		
 		self.dropDownMenu.open(widget)
 
+	def isRequest(self, statusBarStr):
+		if STATUS_BAR_ERROR_SUFFIX in statusBarStr:
+			return True
+		
+		return False
+	
 	def displayHelp(self):
 		self.dropDownMenu.dismiss()
 

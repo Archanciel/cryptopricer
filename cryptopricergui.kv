@@ -195,6 +195,7 @@
 
 <CustomDropDown>
     saveButton: save_Button
+    statusToRequestInputButton: status_to_request_input_Button
     Button:
         text: 'Load'
         size_hint_y: None
@@ -207,6 +208,13 @@
         height: '28dp'
         disabled: True
         on_release: root.showSave()
+    Button:
+        id: status_to_request_input_Button
+        text: 'Status >>'
+        size_hint_y: None
+        height: '28dp'
+        disabled: True
+        on_release: root.copyStatusBarStrToRequestEntry()
     Button:
         text: "Settings"
         size_hint_y: None
