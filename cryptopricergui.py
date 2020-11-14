@@ -562,7 +562,7 @@ class CryptoPricerGUI(BoxLayout):
 		requestListEntry = {'text': requestStr}
 
 		if not requestListEntry in self.requestListRV.data:
-			self.requestListRV.data.append(requestListEntry)
+			self.requestListRV.data.insert(self.recycleViewCurrentSelIndex, requestListEntry)
 
 		# Clear selection
 		self.requestListRV._get_layout_manager().clear_selection()
