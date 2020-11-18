@@ -385,6 +385,7 @@ class CryptoPricerGUI(BoxLayout):
 			requestStr)
 
 		self.outputResult(outputResultStr)
+		self.clearResultOutputButton.disabled = False
 
 		fullRequestListEntry = {'text': fullRequestStr}
 
@@ -517,8 +518,6 @@ class CryptoPricerGUI(BoxLayout):
 			# self.outputResultScrollView.scroll_to(100000)
 			# self.resultOutput.cursor = (10000,0)
 
-		self.clearResultOutputButton.disabled = False
-
 	def refocusOnRequestInput(self):
 		# defining a delay of 0.1 sec ensure the
 		# refocus works in all situations. Leaving
@@ -593,6 +592,7 @@ class CryptoPricerGUI(BoxLayout):
 
 	def replayAllRequests(self):
 		self.replayAllButton.disabled = True
+		self.clearResultOutputButton.disabled = True
 
 		t = threading.Thread(target=self.replayAllRequestsOnNewThread, args=())
 		t.daemon = True
@@ -608,6 +608,7 @@ class CryptoPricerGUI(BoxLayout):
 			self.outputResult(outputResultStr)
 
 		self.replayAllButton.disabled = False
+		self.clearResultOutputButton.disabled = False
 
 		# self.resultOutput.do_cursor_movement('cursor_pgdown')
 		self.refocusOnRequestInput()
