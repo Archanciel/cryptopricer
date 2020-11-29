@@ -11,10 +11,13 @@ from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 
+from configurationmanager import ConfigurationManager
+
 MOVE_DIRECTION_UP = 'moveItemUp'
 MOVE_DIRECTION_DOWN = 'moveItemDown'
 
 kv = """
+#: import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 <SelectableLabel>:
 	# Draw a background to indicate selection
@@ -26,40 +29,104 @@ kv = """
 			size: self.size
 
 <KivyPlayer>:
-	canvas:
-		Color:
-			rgba: 0.3, 0.3, 0.3, 1
-		Rectangle:
-			size: self.size
-			pos: self.pos
 	orientation: 'vertical'
+	#optimizing app size for your smartphone with Messagease keyboard
+    size_hint: 1, .62
+    pos_hint: {'x' : 0, 'y' : .38}
+ 
+    requestListRV: request_RecycleView_list
+    boxLayoutContainingRV: boxlayout_recycleview
+    requestInput: request_TextInput
+
+    padding: 5
+    spacing: 5
+    canvas.before:
+        Color:
+            rgb: [0.22,0.22,0.22]
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        size_hint_y: None
+        height: "28dp"
+        canvas.before:
+            Color:
+                rgb: [0,0,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        GridLayout:
+            cols: 2
+            TextInput:
+                id: request_TextInput
+                background_color: 0,0,0,0
+                foreground_color: 1,1,1,1
+                focus: True
+                multiline: False
+                #ENTER triggers root.submitRequest()
+                on_text_validate: root.submitRequest()
+                on_text: root.ensureLowercase()
+            Button:
+                id: toggle_app_size_Button
+                text: 'Full'
+                size_hint_x: None
+                width: 130
+                on_press: root.toggleAppPosAndSize()
+                
 	BoxLayout:
 		orientation: 'vertical'
 		BoxLayout:
-			size_hint_y: 0.3
-			Button:
-				id: moveItemDown
-				text: "Move item down"
-				on_release: controller.moveItemDown()
+	        size_hint_y: None
+	        height: "28dp"
+	        ToggleButton:
+	            id: toggle_history_list_Button
+	            text: "History"
+	            size_hint_x: 15
+	            disabled:False
+	            on_press: root.toggleRequestList()
+	        Button:
+	            id: delete_Button
+	            text: "Delete"
+	            size_hint_x: 15
+	            disabled: True
+	            on_press: root.deleteRequest()
+	        Button:
+	            id: replace_Button
+	            text: "Replace"
+	            size_hint_x: 15
+	            disabled: True
+	            on_press: root.replaceRequest()
 			Button:
 				id: moveItemUp
-				text: "Move item up"
-				on_release: controller.moveItemUp()
+				text: "^"
+	            size_hint_x: 8
+	            disabled: True
+				on_press: request_RecycleView_list.moveItemUp()
 			Button:
-				id: unselect_item
-				text: "Unselect item"
-				on_release: controller.unselectItem()
+				id: moveItemDown
+				text: "v"
+	            size_hint_x: 8
+	            disabled: True
+				on_press: request_RecycleView_list.moveItemDown()
+
 		BoxLayout:
+	        id: boxlayout_recycleview
+	        size_hint_y: None
+	        height: "0dp"
 			RecycleView:
 				id: RV_list_item
+	            scroll_y: 0 # forces scrolling to list bottom after adding an entry
+	            effect_cls: "ScrollEffect" # prevents overscrolling
 				viewclass: 'SelectableLabel'
 				scroll_type: ['bars', 'content']
 				scroll_wheel_distance: dp(114)
 				bar_width: dp(10)
 				SelectableRecycleBoxLayout:
-					id: controller
+					id: request_RecycleView_list
 					key_selection: 'selectable' # required so that 'selectable'
-												# key/value can be added to 
+												# key/value can be added to
 												# RecycleView data items
 					default_size: None, dp(36)
 					default_size_hint: 1, None
@@ -69,6 +136,25 @@ kv = """
 					multiselect: False
 					touch_multiselect: False
 					spacing: dp(2)
+
+    ScrollView:
+        id: scrlv_out
+        canvas.before:
+            Color:
+                rgb: [0,0,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        effect_cls: ScrollEffect #prevents overscrolling
+        scroll_y: 0 # forces scrolling to bottom after adding text
+        TextInput:
+            id: ro_output_TextInput
+            size_hint: (1, None)
+            height: max(self.minimum_height, scrlv_out.height) #required to enable scrolling when output starts to grow
+            readonly: True
+            background_color: 0,0,0,0
+            foreground_color: 1,1,1,1
+
 """
 
 Builder.load_string(kv)
@@ -161,15 +247,6 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 				
 				self.parent.data.pop(movedItemNewSeIndex)
 				self.parent.data.insert(movedItemNewSeIndex, {'text': movedValue, 'selectable': True})
-
-	def unselectItem(self):
-		kivyPlayer = self.parent.parent.parent.parent
-		kivyPlayer.isLineSelected = False
-		self.clear_selection()
-		
-		# required to update buttons status if the unselect button was pressed
-		# and the selected item was outside the visible part of the item list !
-		self.updateButtonStatus(kivyPlayer)
 	
 	def updateButtonStatus(self, kivyPlayer):
 		buttonIds = kivyPlayer.ids
@@ -232,23 +309,85 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		if kivyPlayer.isLineSelected:
 			buttonIds.moveItemDown.disabled = False
 			buttonIds.moveItemUp.disabled = False
-			buttonIds.unselect_item.disabled = False
 		else:
 			buttonIds.moveItemDown.disabled = True
 			buttonIds.moveItemUp.disabled = True
-			buttonIds.unselect_item.disabled = True
 
 class KivyPlayer(BoxLayout):
 	''' Main Kivy class for creating the initial BoxLayout '''
+
+	showRequestList = False
 
 	def __init__(self, **kwargs):
 		super(KivyPlayer, self).__init__(**kwargs)
 
 		# Set RV_list_item data
-		self.ids.RV_list_item.data = [{'text': 'line {}'.format(x), 'selectable': True} for x in range(15)]
+		self.ids.RV_list_item.data = [{'text': 'line {}'.format(x), 'selectable': True} for x in range(7)]
 		
 		# specify pre-selected node by its index in the data
-		self.ids.controller.selected_nodes = [0]
+#		self.requestListRV.selected_nodes = [0]
+		if os.name == 'posix':
+			configPath = '/sdcard/cryptopricer.ini'
+			requestListRVSpacing = 2
+		else:
+			configPath = 'c:\\temp\\cryptopricer.ini'
+#			self.toggleAppSizeButton.text = 'Half'  # correct on Windows version !
+
+		self.configMgr = ConfigurationManager(configPath)
+#		self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr, PriceRequester())
+		self.dataPath = self.configMgr.dataPath
+		self.histoListItemHeight = int(self.configMgr.histoListItemHeight)
+		self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
+		self.maxHistoListHeight = self.histoListMaxVisibleItems * self.histoListItemHeight
+
+		self.isLineSelected = False
+
+	def toggleRequestList(self):
+		'''
+		called by 'History' toggle button to toggle the display of the history
+		request list.
+		'''
+		if self.showRequestList:
+			# hiding RecycleView list
+			self.boxLayoutContainingRV.height = '0dp'
+
+#			self.disableRequestListItemButtons()
+			self.showRequestList = False
+		else:
+			# showing RecycleView list
+			self.adjustRequestListSize()
+			self.showRequestList = True
+			# self.resetListViewScrollToEnd()
+			# self.refocusOnRequestInput()
+
+	def adjustRequestListSize(self):
+		listItemNumber = len(self.requestListRV.recycleview.data)
+		self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
+
+		return listItemNumber
+
+	def resetListViewScrollToEnd(self):
+		maxVisibleItemNumber = self.histoListMaxVisibleItems
+		listLength = len(self.requestListRV.data)
+
+		if listLength > maxVisibleItemNumber:
+			# for the moment, I do not know how to scroll to end of RecyclweView !
+			# listView.scroll_to(listLength - maxVisibleItemNumber)
+			pass
+		else:
+			if self.showRequestList:
+				listItemNumber = self.adjustRequestListSize()
+				if listItemNumber == 0:
+					self.showRequestList = False
+					self.manageStateOfRequestListButtons()
+
+	def ensureLowercase(self):
+		'''
+		Ensure the input text control only contains lower cases.
+		'''
+		# Get the request from the TextInput
+		requestStr = self.requestInput.text
+		self.requestInput.text = requestStr.lower()
 
 class KivyApp(App):
 	def build(self):
@@ -257,7 +396,7 @@ class KivyApp(App):
 		if os.name != 'posix':
 			# running app om Windows
 			Config.set('graphics', 'width', '600')
-			Config.set('graphics', 'height', '500')
+			Config.set('graphics', 'height', '260')
 			Config.write()
 
 		return KivyPlayer()
