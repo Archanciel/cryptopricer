@@ -816,6 +816,7 @@ class CryptoPricerGUIApp(App):
 			Config.set('graphics', 'height', '500')
 			Config.write()
 
+		self.title = 'CryptoPricer GUI'
 		self.cryptoPricerGUI = CryptoPricerGUI()
 
 		return self.cryptoPricerGUI
