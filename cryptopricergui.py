@@ -1,4 +1,4 @@
-import os, threading
+import os, threading, logging
 from os.path import sep
 
 from kivy.app import App
@@ -42,56 +42,144 @@ fromAppBuilt = False
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 								 RecycleBoxLayout):
 	''' Adds selection and focus behaviour to the view. '''
-
+	
+	MOVE_DIRECTION_UP = 'moveItemUp'
+	MOVE_DIRECTION_DOWN = 'moveItemDown'
+	
 	# required to authorise unselecting a selected item
 	touch_deselect_last = BooleanProperty(True)
+	
+	def get_nodes(self):
+		nodes = self.get_selectable_nodes()
+		
+		if self.nodes_order_reversed:
+			nodes = nodes[::-1]
+		if not nodes:
+			return None, None
+		
+		selected = self.selected_nodes
+		
+		if not selected:  # nothing selected, select the first
+			return None, None
+		
+		if len(nodes) == 1:  # the only selectable node is selected already
+			return None, None
+		
+		last = nodes.index(selected[-1])
+		self.clear_selection()
+		
+		return last, nodes
+	
+	def moveItemUp(self):
+		last, nodes = self.get_nodes()
+		
+		if not nodes:
+			return
+		
+		if not last:
+			newSelIdx = -1
+			self.updateLineValues(SelectableRecycleBoxLayout.MOVE_DIRECTION_UP, last, newSelIdx)
+			self.select_node(nodes[newSelIdx])
+		else:
+			newSelIdx = last - 1
+			self.updateLineValues(SelectableRecycleBoxLayout.MOVE_DIRECTION_UP, last, newSelIdx)
+			self.select_node(nodes[newSelIdx])
+	
+	def moveItemDown(self):
+		last, nodes = self.get_nodes()
+		
+		if not nodes:
+			return
+		
+		if last == len(nodes) - 1:
+			newSelIdx = 0
+			self.updateLineValues(SelectableRecycleBoxLayout.MOVE_DIRECTION_DOWN, last, newSelIdx)
+			self.select_node(nodes[newSelIdx])
+		else:
+			newSelIdx = last + 1
+			self.updateLineValues(SelectableRecycleBoxLayout.MOVE_DIRECTION_DOWN, last, newSelIdx)
+			self.select_node(nodes[newSelIdx])
+	
+	def updateLineValues(self, moveDirection, movedItemSelIndex, movedItemNewSeIndex):
+		movedValue = self.parent.data[movedItemSelIndex]['text']
+		
+		if moveDirection == SelectableRecycleBoxLayout.MOVE_DIRECTION_DOWN:
+			if movedItemSelIndex > movedItemNewSeIndex:
+				# we are moving down the last list item. The item will be inserted at top
+				# of the list
+				self.parent.data.pop(movedItemSelIndex)
+				self.parent.data.insert(0, {'text': movedValue, 'selectable': True})
+			else:
+				replacedValue = self.parent.data[movedItemNewSeIndex]['text']
+				self.parent.data.pop(movedItemSelIndex)
+				self.parent.data.insert(movedItemSelIndex, {'text': replacedValue, 'selectable': True})
+				
+				self.parent.data.pop(movedItemNewSeIndex)
+				self.parent.data.insert(movedItemNewSeIndex, {'text': movedValue, 'selectable': True})
+		else:
+			# handling moving up
+			if movedItemSelIndex == 0:
+				# we are moving up the first item. The first item will be appended to the
+				# end of the list
+				self.parent.data.pop(movedItemSelIndex)
+				self.parent.data.append({'text': movedValue, 'selectable': True})
+			else:
+				replacedValue = self.parent.data[movedItemNewSeIndex]['text']
+				self.parent.data.pop(movedItemSelIndex)
+				self.parent.data.insert(movedItemSelIndex, {'text': replacedValue, 'selectable': True})
+				
+				self.parent.data.pop(movedItemNewSeIndex)
+				self.parent.data.insert(movedItemNewSeIndex, {'text': movedValue, 'selectable': True})
 
 class SelectableLabel(RecycleDataViewBehavior, Label):
 	''' Add selection support to the Label '''
 	index = None
 	selected = BooleanProperty(False)
 	selectable = BooleanProperty(True)
-
+	
 	def refresh_view_attrs(self, rv, index, data):
 		''' Catch and handle the view changes '''
-		self.rv = rv                            #<<------
+		self.rv = rv
 		self.index = index
+		
 		return super(SelectableLabel, self).refresh_view_attrs(
 			rv, index, data)
-
+	
 	def on_touch_down(self, touch):
 		''' Add selection on touch down '''
+		
+		cryptoPricerGUI = self.rv.parent.parent
+		logging.info('on_touch_down, index {}, text {}, selected {}'.format(self.index, self.text, self.selected))
+		
+		# reinitializing the current selection index. The index will be set - or not -
+		# in the apply_selection method !
+		cryptoPricerGUI.isLineSelected = False
+		
 		if super(SelectableLabel, self).on_touch_down(touch):
 			return True
 		if self.collide_point(*touch.pos) and self.selectable:
-			if self.rv.parent.parent.recycleViewCurrentSelIndex == self.index: #<<------
-				self.selected = False                                          #<<------
-				self.rv.parent.parent.recycleViewCurrentSelIndex = -1          #<<------
-			else:                                                              #<<------
-				self.rv.parent.parent.recycleViewCurrentSelIndex = self.index  #<<------
-
 			return self.parent.select_with_touch(self.index, touch)
-
+	
 	def apply_selection(self, rv, index, is_selected):
 		''' Respond to the selection of items in the view. '''
-		if rv.parent.parent.recycleViewCurrentSelIndex == index: #<<------
-			is_selected = True                                   #<<------
-			self.selected = False                                #<<------
-		else:                                                    #<<------
-			is_selected = False                                  #<<------
-			self.selected = True                                 #<<------
-
-		if not self.selected and not is_selected:
-			# case when adding a new list item
-			return
-		elif self.selected and not is_selected:
-			# toggling from selected to unselected
-			self.selected = False
-			rv.parent.parent.recycleViewSelectItem(index, self.selected)
+		self.selected = is_selected
+		
+		cryptoPricerGUI = rv.parent.parent
+		
+		if is_selected:
+			logging.info("selection set for {0}".format(rv.data[index]))
+			cryptoPricerGUI.isLineSelected = True  # will cause the buttons to be enabled
 		else:
-			# toggling from unselected to selected
-			self.selected = not self.selected
-			rv.parent.parent.recycleViewSelectItem(index, self.selected)
+			logging.info("selection removed for {0}".format(rv.data[index]))
+		
+		self.updateButtonStatus(cryptoPricerGUI)
+	
+	def updateButtonStatus(self, cryptoPricerGUI):
+		if cryptoPricerGUI.isLineSelected:
+			cryptoPricerGUI.enableRequestListItemButtons()
+		else:
+			cryptoPricerGUI.disableRequestListItemButtons()
+
 
 class SettingScrollOptions(SettingOptions):
 	'''
@@ -263,7 +351,9 @@ class CryptoPricerGUI(BoxLayout):
 		self.applyAppPosAndSize()
 		self.movedRequestNewIndex = -1
 		self.movingRequest = False
-
+		
+		self.isLineSelected = False
+	
 	def ensureDataPathExist(self, dataPath, message):
 		'''
 		Display a warning in a popup if the data path defined in the settings
@@ -387,7 +477,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.outputResult(outputResultStr)
 		self.clearResultOutputButton.disabled = False
 
-		fullRequestListEntry = {'text': fullRequestStr}
+		fullRequestListEntry = {'text': fullRequestStr, 'selectable': True}
 
 		if fullRequestStrWithSaveModeOptions != None:
 			if fullRequestListEntry in self.requestListRV.data:
@@ -396,7 +486,7 @@ class CryptoPricerGUI(BoxLayout):
 				# to the list. Otherwise, this would engender a duplicate !
 				self.requestListRV.data.remove(fullRequestListEntry)
 
-			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullRequestStrWithSaveModeOptions}
+			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullRequestStrWithSaveModeOptions, 'selectable': True}
 
 			if not fullRequestStrWithSaveModeOptionsListEntry in self.requestListRV.data:
 				self.requestListRV.data.append(fullRequestStrWithSaveModeOptionsListEntry)
@@ -566,7 +656,7 @@ class CryptoPricerGUI(BoxLayout):
 		requestStr = self.requestInput.text
 
 		# Add the updated data to the list if not already in
-		requestListEntry = {'text': requestStr}
+		requestListEntry = {'text': requestStr, 'selectable': True}
 
 		if not requestListEntry in self.requestListRV.data:
 			self.requestListRV.data.insert(self.recycleViewCurrentSelIndex, requestListEntry)
