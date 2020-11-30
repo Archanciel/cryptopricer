@@ -19,19 +19,10 @@ MOVE_DIRECTION_DOWN = 'moveItemDown'
 kv = """
 #: import ScrollEffect kivy.effects.scroll.ScrollEffect
 
-<SelectableLabel>:
-	# Draw a background to indicate selection
-	canvas.before:
-		Color:
-			rgba: (0.4, 0.4, 0.4, 1) if self.selected else (0.5, 0.5, 0.5, 1)
-		Rectangle:
-			pos: self.pos
-			size: self.size
-
 <KivyPlayer>:
 	orientation: 'vertical'
 	#optimizing app size for your smartphone with Messagease keyboard
-    size_hint: 1, .62
+    size_hint: 1, 1
     pos_hint: {'x' : 0, 'y' : .38}
  
     requestListRV: request_RecycleView_list
@@ -128,14 +119,14 @@ kv = """
 					key_selection: 'selectable' # required so that 'selectable'
 												# key/value can be added to
 												# RecycleView data items
-					default_size: None, dp(36)
+					default_size: None, dp(15)
 					default_size_hint: 1, None
 					size_hint_y: None
 					height: self.minimum_height
+					spacing: 0.5
 					orientation: 'vertical'
 					multiselect: False
 					touch_multiselect: False
-					spacing: dp(2)
 
     ScrollView:
         id: scrlv_out
@@ -155,27 +146,39 @@ kv = """
             background_color: 0,0,0,0
             foreground_color: 1,1,1,1
 
+<SelectableLabel>:
+    # Draw a background to indicate selection
+    canvas.before:
+        Color:
+            rgba: (1, 0, 0, 1) if self.selected else (.0, 0.9, .1, .3)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: (0, 0.9, .1, .3)
+
 """
 
 Builder.load_string(kv)
 
-class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
-								 RecycleBoxLayout):
-	''' Adds selection and focus behaviour to the view. '''
 
+class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
+                                 RecycleBoxLayout):
+	''' Adds selection and focus behaviour to the view. '''
+	
 	# required to authorize unselecting a selected item.
 	touch_deselect_last = BooleanProperty(True)
-
+	
 	def get_nodes(self):
 		nodes = self.get_selectable_nodes()
-
+		
 		if self.nodes_order_reversed:
 			nodes = nodes[::-1]
 		if not nodes:
 			return None, None
 		
 		selected = self.selected_nodes
-
+		
 		if not selected:  # nothing selected, select the first
 			return None, None
 		
@@ -184,7 +187,7 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 		
 		last = nodes.index(selected[-1])
 		self.clear_selection()
-
+		
 		return last, nodes
 	
 	def moveItemUp(self):
@@ -204,10 +207,10 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 	
 	def moveItemDown(self):
 		last, nodes = self.get_nodes()
-
+		
 		if not nodes:
 			return
-
+		
 		if last == len(nodes) - 1:
 			newSelIdx = 0
 			self.updateLineValues(MOVE_DIRECTION_DOWN, last, newSelIdx)
@@ -219,7 +222,7 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 	
 	def updateLineValues(self, moveDirection, movedItemSelIndex, movedItemNewSeIndex):
 		movedValue = self.parent.data[movedItemSelIndex]['text']
-
+		
 		if moveDirection == MOVE_DIRECTION_DOWN:
 			if movedItemSelIndex > movedItemNewSeIndex:
 				# we are moving down the last list item. The item will be inserted at top
@@ -260,35 +263,36 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 			buttonIds.moveItemUp.disabled = True
 			buttonIds.unselect_item.disabled = True
 
+
 class SelectableLabel(RecycleDataViewBehavior, Label):
 	''' Add selection support to the Label '''
 	index = None
 	selected = BooleanProperty(False)
 	selectable = BooleanProperty(True)
-
+	
 	def refresh_view_attrs(self, rv, index, data):
 		''' Catch and handle the view changes '''
 		self.rv = rv
 		self.index = index
-
+		
 		return super(SelectableLabel, self).refresh_view_attrs(
 			rv, index, data)
-
+	
 	def on_touch_down(self, touch):
 		''' Add selection on touch down '''
-
+		
 		kivyPlayer = self.rv.parent.parent.parent
 		logging.info('on_touch_down, index {}, text {}, selected {}'.format(self.index, self.text, self.selected))
-
+		
 		# reinitializing the current selection index. The index will be set - or not -
 		# in the apply_selection method !
 		kivyPlayer.isLineSelected = False
-
+		
 		if super(SelectableLabel, self).on_touch_down(touch):
 			return True
 		if self.collide_point(*touch.pos) and self.selectable:
 			return self.parent.select_with_touch(self.index, touch)
-
+	
 	def apply_selection(self, rv, index, is_selected):
 		''' Respond to the selection of items in the view. '''
 		self.selected = is_selected
@@ -297,7 +301,7 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		
 		if is_selected:
 			logging.info("selection set for {0}".format(rv.data[index]))
-			kivyPlayer.isLineSelected = True # will cause the buttons to be enabled
+			kivyPlayer.isLineSelected = True  # will cause the buttons to be enabled
 		else:
 			logging.info("selection removed for {0}".format(rv.data[index]))
 		
@@ -313,35 +317,36 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			buttonIds.moveItemDown.disabled = True
 			buttonIds.moveItemUp.disabled = True
 
+
 class KivyPlayer(BoxLayout):
 	''' Main Kivy class for creating the initial BoxLayout '''
-
+	
 	showRequestList = False
-
+	
 	def __init__(self, **kwargs):
 		super(KivyPlayer, self).__init__(**kwargs)
-
+		
 		# Set RV_list_item data
 		self.ids.RV_list_item.data = [{'text': 'line {}'.format(x), 'selectable': True} for x in range(7)]
 		
 		# specify pre-selected node by its index in the data
-#		self.requestListRV.selected_nodes = [0]
+		#		self.requestListRV.selected_nodes = [0]
 		if os.name == 'posix':
 			configPath = '/sdcard/cryptopricer.ini'
 			requestListRVSpacing = 2
 		else:
 			configPath = 'c:\\temp\\cryptopricer.ini'
-#			self.toggleAppSizeButton.text = 'Half'  # correct on Windows version !
-
+		#			self.toggleAppSizeButton.text = 'Half'  # correct on Windows version !
+		
 		self.configMgr = ConfigurationManager(configPath)
-#		self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr, PriceRequester())
+		#		self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr, PriceRequester())
 		self.dataPath = self.configMgr.dataPath
 		self.histoListItemHeight = int(self.configMgr.histoListItemHeight)
 		self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
 		self.maxHistoListHeight = self.histoListMaxVisibleItems * self.histoListItemHeight
-
+		
 		self.isLineSelected = False
-
+	
 	def toggleRequestList(self):
 		'''
 		called by 'History' toggle button to toggle the display of the history
@@ -350,26 +355,26 @@ class KivyPlayer(BoxLayout):
 		if self.showRequestList:
 			# hiding RecycleView list
 			self.boxLayoutContainingRV.height = '0dp'
-
-#			self.disableRequestListItemButtons()
+			
+			#			self.disableRequestListItemButtons()
 			self.showRequestList = False
 		else:
 			# showing RecycleView list
 			self.adjustRequestListSize()
 			self.showRequestList = True
-			# self.resetListViewScrollToEnd()
-			# self.refocusOnRequestInput()
-
+		# self.resetListViewScrollToEnd()
+		# self.refocusOnRequestInput()
+	
 	def adjustRequestListSize(self):
 		listItemNumber = len(self.requestListRV.recycleview.data)
 		self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
-
+		
 		return listItemNumber
-
+	
 	def resetListViewScrollToEnd(self):
 		maxVisibleItemNumber = self.histoListMaxVisibleItems
 		listLength = len(self.requestListRV.data)
-
+		
 		if listLength > maxVisibleItemNumber:
 			# for the moment, I do not know how to scroll to end of RecyclweView !
 			# listView.scroll_to(listLength - maxVisibleItemNumber)
@@ -380,7 +385,7 @@ class KivyPlayer(BoxLayout):
 				if listItemNumber == 0:
 					self.showRequestList = False
 					self.manageStateOfRequestListButtons()
-
+	
 	def ensureLowercase(self):
 		'''
 		Ensure the input text control only contains lower cases.
@@ -389,16 +394,18 @@ class KivyPlayer(BoxLayout):
 		requestStr = self.requestInput.text
 		self.requestInput.text = requestStr.lower()
 
+
 class KivyApp(App):
 	def build(self):
 		self.title = 'For CryptoPricer'
-
+		
 		if os.name != 'posix':
 			# running app om Windows
 			Config.set('graphics', 'width', '600')
-			Config.set('graphics', 'height', '260')
+			Config.set('graphics', 'height', '500')
 			Config.write()
-
+		
 		return KivyPlayer()
-	
+
+
 KivyApp().run()
