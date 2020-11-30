@@ -295,7 +295,7 @@ class TestPriceRequester(unittest.TestCase):
 
         resultData = self.priceRequester.getCurrentPrice(crypto, unit, exchange)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - There is no data for the symbol BBB")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Symbol BBB does not exist")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
         self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -321,7 +321,7 @@ class TestPriceRequester(unittest.TestCase):
 
         resultData = self.priceRequester.getCurrentPrice(crypto, unit, exchange)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - There is no data for any of the toSymbols USL")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - all market does not exist for this coin pair (BTC-USL)")
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
         self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))

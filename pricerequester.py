@@ -209,6 +209,7 @@ class PriceRequester:
                 errorMessage = self._uniformiseErorMessage(errorMessage, crypto, unit, exchange)
             else:
                 errorMessage = errorMessage.rstrip(' .')
+                errorMessage = errorMessage.replace('fsym', 'Symbol')
 
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'PROVIDER ERROR - ' + errorMessage)
         else:
