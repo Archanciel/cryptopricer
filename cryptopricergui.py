@@ -166,8 +166,10 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		cryptoPricerGUI = rv.parent.parent
 		
 		if is_selected:
+			selItemValue = rv.data[index]['text']
 			cryptoPricerGUI.isLineSelected = True  # will cause the buttons to be enabled
-		
+			cryptoPricerGUI.requestInput.text = selItemValue
+
 		self.updateButtonStatus(cryptoPricerGUI)
 	
 	def updateButtonStatus(self, cryptoPricerGUI):
