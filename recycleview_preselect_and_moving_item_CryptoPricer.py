@@ -250,18 +250,6 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 				
 				self.parent.data.pop(movedItemNewSeIndex)
 				self.parent.data.insert(movedItemNewSeIndex, {'text': movedValue, 'selectable': True})
-	
-	def updateButtonStatus(self, kivyPlayer):
-		buttonIds = kivyPlayer.ids
-		
-		if kivyPlayer.isLineSelected:
-			buttonIds.moveItemDown.disabled = False
-			buttonIds.moveItemUp.disabled = False
-			buttonIds.unselect_item.disabled = False
-		else:
-			buttonIds.moveItemDown.disabled = True
-			buttonIds.moveItemUp.disabled = True
-			buttonIds.unselect_item.disabled = True
 
 
 class SelectableLabel(RecycleDataViewBehavior, Label):
