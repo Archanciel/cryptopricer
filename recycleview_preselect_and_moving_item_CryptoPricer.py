@@ -281,7 +281,8 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			return self.parent.select_with_touch(self.index, touch)
 	
 	def apply_selection(self, rv, index, is_selected):
-		''' Respond to the selection of items in the view. '''
+		''' Respond to the selection of items in the view changing
+		the item color. '''
 		self.selected = is_selected
 		
 		kivyPlayer = rv.parent.parent.parent

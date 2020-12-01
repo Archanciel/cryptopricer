@@ -160,7 +160,8 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			return self.parent.select_with_touch(self.index, touch)
 	
 	def apply_selection(self, rv, index, is_selected):
-		''' Respond to the selection of items in the view. '''
+		# instance variable used in .kv file to change the selected item
+		# color !
 		self.selected = is_selected
 		
 		cryptoPricerGUI = rv.parent.parent
@@ -169,6 +170,8 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			selItemValue = rv.data[index]['text']
 			cryptoPricerGUI.isLineSelected = True  # will cause the buttons to be enabled
 			cryptoPricerGUI.requestInput.text = selItemValue
+		
+		cryptoPricerGUI.recycleViewSelectItem(index, is_selected)
 
 		self.updateButtonStatus(cryptoPricerGUI)
 	
