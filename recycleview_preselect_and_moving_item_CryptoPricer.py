@@ -20,23 +20,21 @@ kv = """
 #: import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 <KivyPlayer>:
-	orientation: 'vertical'
-	#optimizing app size for your smartphone with Messagease keyboard
-    size_hint: 1, 1
-    pos_hint: {'x' : 0, 'y' : .38}
- 
     requestListRV: request_RecycleView_list
     boxLayoutContainingRV: boxlayout_recycleview
     requestInput: request_TextInput
 
+    # adding main windows borders
     padding: 5
     spacing: 5
-    canvas.before:
-        Color:
-            rgb: [0.22,0.22,0.22]
-        Rectangle:
-            pos: self.pos
-            size: self.size
+    
+	canvas:
+		Color:
+			rgba: 0.3, 0.3, 0.3, 1
+		Rectangle:
+			size: self.size
+			pos: self.pos
+	orientation: 'vertical'
 
     BoxLayout:
         size_hint_y: None
@@ -68,6 +66,7 @@ kv = """
                 
 	BoxLayout:
 		orientation: 'vertical'
+        size_hint_y: 0.25
 		BoxLayout:
 	        size_hint_y: None
 	        height: "28dp"
@@ -287,9 +286,12 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		
 		kivyPlayer = rv.parent.parent.parent
 		
+		selItemValue = rv.data[index]['text']
+		
 		if is_selected:
-			logging.info("selection set for {0}".format(rv.data[index]))
+			logging.info("selection set for {0}".format(selItemValue))
 			kivyPlayer.isLineSelected = True  # will cause the buttons to be enabled
+			kivyPlayer.requestInput.text = selItemValue
 		else:
 			logging.info("selection removed for {0}".format(rv.data[index]))
 		
