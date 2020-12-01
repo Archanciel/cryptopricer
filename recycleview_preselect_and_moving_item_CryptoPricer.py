@@ -20,23 +20,17 @@ kv = """
 #: import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 <KivyPlayer>:
-	orientation: 'vertical'
-	#optimizing app size for your smartphone with Messagease keyboard
-    size_hint: 1, 1
-    pos_hint: {'x' : 0, 'y' : .38}
- 
     requestListRV: request_RecycleView_list
     boxLayoutContainingRV: boxlayout_recycleview
     requestInput: request_TextInput
 
-    padding: 5
-    spacing: 5
-    canvas.before:
-        Color:
-            rgb: [0.22,0.22,0.22]
-        Rectangle:
-            pos: self.pos
-            size: self.size
+	canvas:
+		Color:
+			rgba: 0.3, 0.3, 0.3, 1
+		Rectangle:
+			size: self.size
+			pos: self.pos
+	orientation: 'vertical'
 
     BoxLayout:
         size_hint_y: None
