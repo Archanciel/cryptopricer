@@ -1,4 +1,4 @@
-import os, threading, logging
+import os, threading
 from os.path import sep
 
 from kivy.app import App
@@ -149,7 +149,6 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		''' Add selection on touch down '''
 		
 		cryptoPricerGUI = self.rv.parent.parent
-		logging.info('on_touch_down, index {}, text {}, selected {}'.format(self.index, self.text, self.selected))
 		
 		# reinitializing the current selection index. The index will be set - or not -
 		# in the apply_selection method !
@@ -167,10 +166,7 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		cryptoPricerGUI = rv.parent.parent
 		
 		if is_selected:
-			logging.info("selection set for {0}".format(rv.data[index]))
 			cryptoPricerGUI.isLineSelected = True  # will cause the buttons to be enabled
-		else:
-			logging.info("selection removed for {0}".format(rv.data[index]))
 		
 		self.updateButtonStatus(cryptoPricerGUI)
 	
@@ -768,7 +764,6 @@ class CryptoPricerGUI(BoxLayout):
 			width = 54
 
 		popup = ScrollablePopup(title=CRYPTOPRICER_VERSION, size_hint=(None, None), size=popupSize)
-		formatedHelpTextPageList = ''
 
 		with open('help.txt') as helpFile:
 			formatedHelpTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(helpFile, width)
@@ -837,7 +832,7 @@ class CryptoPricerGUI(BoxLayout):
 			lines = stream.readlines()
 
 		lines = list(map(lambda line: line.strip('\n'), lines))
-		histoLines = [{'text' : val} for val in lines]
+		histoLines = [{'text' : val, 'selectable': True} for val in lines]
 		self.requestListRV.data = histoLines
 
 		# Reset the ListView
