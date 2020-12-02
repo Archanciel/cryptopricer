@@ -550,28 +550,6 @@ class CryptoPricerGUI(BoxLayout):
 		requestStr = self.requestInput.text
 		self.requestInput.text = requestStr.lower()
 
-	def recycleViewSelectItem(self, index, isSelected):
-		if self.recycleViewCurrentSelIndex != -1 and \
-			index != self.recycleViewCurrentSelIndex:
-			
-			return
-		
-		if isSelected:
-			# fixing crash when deleting last item of history list
-			itemNumber = len(self.requestListRV.data)
-			
-			if index == itemNumber:
-				index -= 1
-			# fixing crash when deleting last item of history list
-
-			requestStr = self.requestListRV.data[index]['text']
-			self.requestInput.text = requestStr
-			self.enableRequestListItemButtons()
-			self.refocusOnRequestInput()
-		else:
-			self.requestInput.text = ''
-			self.disableRequestListItemButtons()
-
 	def clearOutput(self):
 		self.resultOutput.text = ''
 		self.statusBarTextInput.text = ''
