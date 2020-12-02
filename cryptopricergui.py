@@ -130,6 +130,9 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 				
 				self.parent.data.pop(movedItemNewSeIndex)
 				self.parent.data.insert(movedItemNewSeIndex, {'text': movedValue, 'selectable': True})
+		
+		cryptoPricerGUI = self.parent.parent.parent
+		cryptoPricerGUI.recycleViewCurrentSelIndex = movedItemNewSeIndex
 
 class SelectableLabel(RecycleDataViewBehavior, Label):
 	''' Add selection support to the Label '''
@@ -154,6 +157,7 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			# here, the user manually deselects the selected item
 			cryptoPricerGUI.requestInput.text = ''
 			cryptoPricerGUI.isLineSelected = False
+			cryptoPricerGUI.recycleViewCurrentSelIndex = -1
 
 		if super(SelectableLabel, self).on_touch_down(touch):
 			return True
@@ -176,6 +180,7 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			# when the user deselects the selected item. This is done
 			# in on_touch_down()
 			cryptoPricerGUI.isLineSelected = True
+			cryptoPricerGUI.recycleViewCurrentSelIndex = index
 			cryptoPricerGUI.requestInput.text = selItemValue
 
 		self.updateButtonStatus(cryptoPricerGUI)
@@ -633,6 +638,7 @@ class CryptoPricerGUI(BoxLayout):
 		# deleting from RecycleView list
 		self.requestListRV.data.pop(self.recycleViewCurrentSelIndex)
 		self.requestListRV._get_layout_manager().clear_selection()
+		self.requestInput.text = ''
 		
 		requestNb = len(self.requestListRV.data)
 		
@@ -640,12 +646,6 @@ class CryptoPricerGUI(BoxLayout):
 			self.disableRequestListItemButtons()
 			self.toggleHistoButton.disabled = True
 			self.showRequestList = False
-			self.requestInput.text = ''
-		
-		# fixing crash when deleting last item of history list
-		if requestNb == self.recycleViewCurrentSelIndex:
-			self.recycleViewCurrentSelIndex -= 1
-		# fixing crash when deleting last item of history list
 
 		if self.showRequestList:
 			self.adjustRequestListSize()
