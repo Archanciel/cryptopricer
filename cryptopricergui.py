@@ -150,10 +150,11 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		
 		cryptoPricerGUI = self.rv.parent.parent
 		
-		# reinitializing the current selection index. The index will be set - or not -
-		# in the apply_selection method !
-		cryptoPricerGUI.isLineSelected = False
-		
+		if cryptoPricerGUI.isLineSelected:
+			# here, the user deselect the selected item
+			cryptoPricerGUI.requestInput.text = ''
+			cryptoPricerGUI.isLineSelected = False
+
 		if super(SelectableLabel, self).on_touch_down(touch):
 			return True
 		if self.collide_point(*touch.pos) and self.selectable:
@@ -170,8 +171,6 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			selItemValue = rv.data[index]['text']
 			cryptoPricerGUI.isLineSelected = True  # will cause the buttons to be enabled
 			cryptoPricerGUI.requestInput.text = selItemValue
-		
-		cryptoPricerGUI.recycleViewSelectItem(index, is_selected)
 
 		self.updateButtonStatus(cryptoPricerGUI)
 	

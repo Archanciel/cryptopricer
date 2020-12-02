@@ -271,9 +271,10 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		kivyPlayer = self.rv.parent.parent.parent
 		logging.info('on_touch_down, index {}, text {}, selected {}'.format(self.index, self.text, self.selected))
 		
-		# reinitializing the current selection index. The index will be set - or not -
-		# in the apply_selection method !
-		kivyPlayer.isLineSelected = False
+		if kivyPlayer.isLineSelected:
+			# here, the user deselect the selected item
+			kivyPlayer.requestInput.text = ''
+			kivyPlayer.isLineSelected = False
 		
 		if super(SelectableLabel, self).on_touch_down(touch):
 			return True
