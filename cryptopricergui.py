@@ -54,6 +54,7 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 		
 		if self.nodes_order_reversed:
 			nodes = nodes[::-1]
+			
 		if not nodes:
 			return None, None
 		
@@ -518,6 +519,7 @@ class CryptoPricerGUI(BoxLayout):
 		if self.showRequestList:
 			self.adjustRequestListSize()
 
+		self.clearHistoryListSelection()
 		self.manageStateOfRequestListButtons()
 		self.requestInput.text = ''
 
@@ -615,7 +617,7 @@ class CryptoPricerGUI(BoxLayout):
 	def deleteRequest(self, *args):
 		# deleting from RecycleView list
 		self.requestListRV.data.pop(self.recycleViewCurrentSelIndex)
-		self.requestListRV._get_layout_manager().clear_selection()
+		self.clearHistoryListSelection()
 		self.requestInput.text = ''
 		
 		requestNb = len(self.requestListRV.data)
@@ -631,7 +633,10 @@ class CryptoPricerGUI(BoxLayout):
 		self.manageStateOfRequestListButtons()
 
 		self.refocusOnRequestInput()
-
+	
+	def clearHistoryListSelection(self):
+		self.requestListRV._get_layout_manager().clear_selection()
+	
 	def replaceRequest(self, *args):
 		# Remove the selected item
 		self.requestListRV.data.pop(self.recycleViewCurrentSelIndex)
@@ -644,11 +649,6 @@ class CryptoPricerGUI(BoxLayout):
 
 		if not requestListEntry in self.requestListRV.data:
 			self.requestListRV.data.insert(self.recycleViewCurrentSelIndex, requestListEntry)
-
-		# Clear selection
-		# self.requestListRV._get_layout_manager().clear_selection()
-		# self.requestInput.text = ''
-		# self.disableRequestListItemButtons()
 
 		self.refocusOnRequestInput()
 
