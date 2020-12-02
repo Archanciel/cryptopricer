@@ -646,9 +646,9 @@ class CryptoPricerGUI(BoxLayout):
 			self.requestListRV.data.insert(self.recycleViewCurrentSelIndex, requestListEntry)
 
 		# Clear selection
-		self.requestListRV._get_layout_manager().clear_selection()
-		self.requestInput.text = ''
-		self.disableRequestListItemButtons()
+		# self.requestListRV._get_layout_manager().clear_selection()
+		# self.requestInput.text = ''
+		# self.disableRequestListItemButtons()
 
 		self.refocusOnRequestInput()
 
