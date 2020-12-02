@@ -36,7 +36,7 @@ from guiutil import GuiUtil
 STATUS_BAR_ERROR_SUFFIX = ' --> ERROR ...'
 FILE_LOADED = 0
 FILE_SAVED = 1
-CRYPTOPRICER_VERSION = 'CryptoPricer 2.0.1'
+CRYPTOPRICER_VERSION = 'CryptoPricer 2.1'
 fromAppBuilt = False
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
