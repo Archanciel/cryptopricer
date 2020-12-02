@@ -289,6 +289,7 @@ class CustomDropDown(DropDown):
 		
 		self.owner.requestInput.text = statusBarStr.replace(STATUS_BAR_ERROR_SUFFIX, '')
 		self.owner.statusBarTextInput.text = ''
+		self.statusToRequestInputButton.disabled = True
 
 class ScrollablePopup(Popup):
 	contentBox = ObjectProperty()
