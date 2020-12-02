@@ -151,7 +151,7 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		cryptoPricerGUI = self.rv.parent.parent
 		
 		if cryptoPricerGUI.isLineSelected:
-			# here, the user deselect the selected item
+			# here, the user manually deselects the selected item
 			cryptoPricerGUI.requestInput.text = ''
 			cryptoPricerGUI.isLineSelected = False
 
@@ -169,7 +169,13 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		
 		if is_selected:
 			selItemValue = rv.data[index]['text']
-			cryptoPricerGUI.isLineSelected = True  # will cause the buttons to be enabled
+			
+			# since apply_selection() is called for all the visible items,
+			# if one item is selected, this state must be stored in
+			# cryptoPricerGUI. The isLineSelected flag is set to False
+			# when the user deselects the selected item. This is done
+			# in on_touch_down()
+			cryptoPricerGUI.isLineSelected = True
 			cryptoPricerGUI.requestInput.text = selItemValue
 
 		self.updateButtonStatus(cryptoPricerGUI)
