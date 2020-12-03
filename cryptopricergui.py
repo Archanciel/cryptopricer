@@ -66,40 +66,41 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 		if len(nodes) == 1:  # the only selectable node is selected already
 			return None, None
 		
-		last = nodes.index(selected[-1])
+		currentSelIdx = nodes.index(selected[-1])
 		self.clear_selection()
 		
-		return last, nodes
+		return currentSelIdx, nodes
 	
 	def moveItemUp(self):
-		last, nodes = self.get_nodes()
+		currentSelIdx, nodes = self.get_nodes()
 		
 		if not nodes:
 			return
 		
-		if not last:
+		if not currentSelIdx:
+			# currentSelIdx == 0 --> first item is moved up
+			# which means it will become the last item !
 			newSelIdx = -1
-			self.updateLineValues(SelectableRecycleBoxLayout.MOVE_DIRECTION_UP, last, newSelIdx)
-			self.select_node(nodes[newSelIdx])
 		else:
-			newSelIdx = last - 1
-			self.updateLineValues(SelectableRecycleBoxLayout.MOVE_DIRECTION_UP, last, newSelIdx)
-			self.select_node(nodes[newSelIdx])
+			newSelIdx = currentSelIdx - 1
+			
+		self.updateLineValues(SelectableRecycleBoxLayout.MOVE_DIRECTION_UP, currentSelIdx, newSelIdx)
+		self.select_node(nodes[newSelIdx])
 	
 	def moveItemDown(self):
-		last, nodes = self.get_nodes()
+		currentSelIdx, nodes = self.get_nodes()
 		
 		if not nodes:
 			return
 		
-		if last == len(nodes) - 1:
+		if currentSelIdx == len(nodes) - 1:
+			# moving down last item puts it at first item position
 			newSelIdx = 0
-			self.updateLineValues(SelectableRecycleBoxLayout.MOVE_DIRECTION_DOWN, last, newSelIdx)
-			self.select_node(nodes[newSelIdx])
 		else:
-			newSelIdx = last + 1
-			self.updateLineValues(SelectableRecycleBoxLayout.MOVE_DIRECTION_DOWN, last, newSelIdx)
-			self.select_node(nodes[newSelIdx])
+			newSelIdx = currentSelIdx + 1
+			
+		self.updateLineValues(SelectableRecycleBoxLayout.MOVE_DIRECTION_DOWN, currentSelIdx, newSelIdx)
+		self.select_node(nodes[newSelIdx])
 	
 	def updateLineValues(self, moveDirection, movedItemSelIndex, movedItemNewSeIndex):
 		movedValue = self.parent.data[movedItemSelIndex]['text']
@@ -133,6 +134,9 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 				self.parent.data.insert(movedItemNewSeIndex, {'text': movedValue, 'selectable': True})
 		
 		cryptoPricerGUI = self.parent.parent.parent
+		
+		# cryptoPricerGUI.recycleViewCurrentSelIndex is used by the
+		# deleteRequest() and updateRequest() cryptoPricerGUI methods
 		cryptoPricerGUI.recycleViewCurrentSelIndex = movedItemNewSeIndex
 
 class SelectableLabel(RecycleDataViewBehavior, Label):
@@ -158,6 +162,9 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			# here, the user manually deselects the selected item
 			cryptoPricerGUI.requestInput.text = ''
 			cryptoPricerGUI.isLineSelected = False
+
+			# cryptoPricerGUI.recycleViewCurrentSelIndex is used by the
+			# deleteRequest() and updateRequest() cryptoPricerGUI methods
 			cryptoPricerGUI.recycleViewCurrentSelIndex = -1
 
 		if super(SelectableLabel, self).on_touch_down(touch):
@@ -181,6 +188,9 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			# when the user deselects the selected item. This is done
 			# in on_touch_down()
 			cryptoPricerGUI.isLineSelected = True
+
+			# cryptoPricerGUI.recycleViewCurrentSelIndex is used by the
+			# deleteRequest() and updateRequest() cryptoPricerGUI methods
 			cryptoPricerGUI.recycleViewCurrentSelIndex = index
 			cryptoPricerGUI.requestInput.text = selItemValue
 
@@ -687,43 +697,6 @@ class CryptoPricerGUI(BoxLayout):
 
 		# self.resultOutput.do_cursor_movement('cursor_pgdown')
 		self.refocusOnRequestInput()
-
-	def moveUpRequest(self):
-		oldIndex = self.recycleViewCurrentSelIndex
-
-		if oldIndex == -1:                                  #<<------
-			return
-		
-		newIndex = oldIndex - 1
-		requestTotalNumber = len(self.requestListRV.data)
-
-		if newIndex < 0:
-			# if first line request is moved up, it is moved at the end of the
-			# request history list
-			newIndex = requestTotalNumber - 1
-
-		self.moveItemInList(list=self.requestListRV.data, oldIndex=oldIndex, newIndex=newIndex)
-		self.recycleViewCurrentSelIndex = newIndex          #<<------
-		
-	def moveDownRequest(self):
-		oldIndex = self.recycleViewCurrentSelIndex
-		
-		if oldIndex == -1:                                  #<<------
-			return
-		
-		newIndex = oldIndex + 1
-		requestTotalNumber = len(self.requestListRV.data)
-
-		if newIndex == requestTotalNumber:
-			# if first line request is moved up, it is moved at the end of the
-			# request history list
-			newIndex = 0
-
-		self.moveItemInList(list=self.requestListRV.data, oldIndex=oldIndex, newIndex=newIndex)
-		self.recycleViewCurrentSelIndex = newIndex          #<<------
-		
-	def moveItemInList(self, list, oldIndex, newIndex):
-		list.insert(newIndex, list.pop(oldIndex))
 
 	def openDropDownMenu(self, widget):
 		
