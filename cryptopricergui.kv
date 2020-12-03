@@ -87,16 +87,30 @@
             on_press: root.replaceRequest()
         Button:
             id: moveUp_Button
-            text: "^"
             size_hint_x: 8
             disabled: True
             on_press: selectable_recyclebox_layout.moveItemUp()
+			StackLayout:
+				pos: self.parent.pos
+				size: self.parent.size
+				orientation: 'lr-tb'
+				Image:
+					source: 'arrow-up-32.png'
+					size_hint_x: 1
+					width: 74
         Button:
             id: moveDown_Button
-            text: "v"
             size_hint_x: 8
             disabled: True
             on_press: selectable_recyclebox_layout.moveItemDown()
+			StackLayout:
+				pos: self.parent.pos
+				size: self.parent.size
+				orientation: 'lr-tb'
+				Image:
+					source: 'arrow-down-32.png'
+					size_hint_x: 1
+					width: 74
         Button:
             id: replay_all_Button
             text: "Repl All"
