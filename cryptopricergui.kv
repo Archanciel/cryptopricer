@@ -95,7 +95,7 @@
 				size: self.parent.size
 				orientation: 'lr-tb'
 				Image:
-					source: 'arrow-up-32.png'
+					source: 'arrow-up-32-disabled.png' if self.parent.disabled else 'arrow-up-32.png'
 					size_hint_x: 1
 					width: 74
         Button:
@@ -108,7 +108,7 @@
 				size: self.parent.size
 				orientation: 'lr-tb'
 				Image:
-					source: 'arrow-down-32.png'
+					source: 'arrow-down-32-disabled.png' if self.parent.disabled else 'arrow-down-32.png'
 					size_hint_x: 1
 					width: 74
         Button:
