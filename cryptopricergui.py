@@ -60,7 +60,7 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 		
 		selected = self.selected_nodes
 		
-		if not selected:  # nothing selected, select the first
+		if not selected:  # nothing selected
 			return None, None
 		
 		if len(nodes) == 1:  # the only selectable node is selected already
@@ -565,7 +565,10 @@ class CryptoPricerGUI(BoxLayout):
 
 	def clearOutput(self):
 		self.resultOutput.text = ''
-		self.statusBarTextInput.text = ''
+		
+		if 'History' not in self.statusBarTextInput.text:
+			self.statusBarTextInput.text = ''
+
 		self.clearResultOutputButton.disabled = True
 		self.refocusOnRequestInput()
 
@@ -626,17 +629,25 @@ class CryptoPricerGUI(BoxLayout):
 		self.requestInput.focus = True
 
 	def deleteRequest(self, *args):
-		# deleting from RecycleView list
+		# deleting selected item from RecycleView list
 		self.requestListRV.data.pop(self.recycleViewCurrentSelIndex)
-		self.clearHistoryListSelection()
-		self.requestInput.text = ''
 		
-		requestNb = len(self.requestListRV.data)
+		remainingItemNb = len(self.requestListRV.data)
 		
-		if requestNb == 0:
+		if remainingItemNb == 0:
+			# no more item in RecycleView list
 			self.disableRequestListItemButtons()
 			self.toggleHistoButton.disabled = True
 			self.showRequestList = False
+		
+		currentSelItemIdx = self.requestListRVSelBoxLayout.selected_nodes[0]
+		
+		if currentSelItemIdx >= remainingItemNb:
+			# the case if the last item was deleted. Then, the new last item
+			# is selected
+			lastItemIdx = remainingItemNb - 1
+			self.requestListRVSelBoxLayout.selected_nodes = [lastItemIdx]
+			self.recycleViewCurrentSelIndex = lastItemIdx
 
 		if self.showRequestList:
 			self.adjustRequestListSize()
