@@ -194,14 +194,13 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			cryptoPricerGUI.recycleViewCurrentSelIndex = index
 			cryptoPricerGUI.requestInput.text = selItemValue
 
-		self.updateButtonStatus(cryptoPricerGUI)
+		self.updateStateOfRequestListSingleItemButtons(cryptoPricerGUI)
 	
-	def updateButtonStatus(self, cryptoPricerGUI):
+	def updateStateOfRequestListSingleItemButtons(self, cryptoPricerGUI):
 		if cryptoPricerGUI.isLineSelected:
-			cryptoPricerGUI.enableRequestListItemButtons()
+			cryptoPricerGUI.enableStateOfRequestListSingleItemButtons()
 		else:
-			cryptoPricerGUI.disableRequestListItemButtons()
-
+			cryptoPricerGUI.disableStateOfRequestListSingleItemButtons()
 
 class SettingScrollOptions(SettingOptions):
 	'''
@@ -462,13 +461,14 @@ class CryptoPricerGUI(BoxLayout):
 		request list.
 		'''
 		if self.showRequestList:
-			# hiding RecycleView list
+			# RecycleView request history list is currently displayed and
+			# will be hidden
 			self.boxLayoutContainingRV.height = '0dp'
-
-			self.disableRequestListItemButtons()
+			self.disableStateOfRequestListSingleItemButtons()
 			self.showRequestList = False
 		else:
-			# showing RecycleView list
+			# RecycleView request history list is currently hidden and
+			# will be displayed
 			self.adjustRequestListSize()
 			self.showRequestList = True
 			self.resetListViewScrollToEnd()
@@ -531,7 +531,7 @@ class CryptoPricerGUI(BoxLayout):
 			self.adjustRequestListSize()
 
 		self.clearHistoryListSelection()
-		self.manageStateOfRequestListButtons()
+		self.manageStateOfGlobalRequestListButtons()
 		self.requestInput.text = ''
 
 		# displaying request in status bar
@@ -585,13 +585,20 @@ class CryptoPricerGUI(BoxLayout):
 				listItemNumber = self.adjustRequestListSize()
 				if listItemNumber == 0:
 					self.showRequestList = False
-					self.manageStateOfRequestListButtons()
+					self.manageStateOfGlobalRequestListButtons()
 
-	def manageStateOfRequestListButtons(self):
+	def manageStateOfGlobalRequestListButtons(self):
 		'''
 		Enable or disable history request list related controls according to
 		the status of the list: filled with items or empty.
-		:return:
+
+		Only handles state of the request history list buttons which
+		operates on the list globally, not on specific items of the list.
+		
+		Those buttons are:
+			Display/hide request history list button
+			Replay all button
+			Save request history list menu item button
 		'''
 		if len(self.requestListRV.data) == 0:
 			# request list is empty
@@ -604,6 +611,8 @@ class CryptoPricerGUI(BoxLayout):
 			self.toggleHistoButton.disabled = False
 			self.replayAllButton.disabled = False
 			self.dropDownMenu.saveButton.disabled = False
+			
+			
 
 	def outputResult(self, resultStr):
 		if len(self.resultOutput.text) == 0:
@@ -636,7 +645,7 @@ class CryptoPricerGUI(BoxLayout):
 		
 		if remainingItemNb == 0:
 			# no more item in RecycleView list
-			self.disableRequestListItemButtons()
+			self.disableStateOfRequestListSingleItemButtons()
 			self.toggleHistoButton.disabled = True
 			self.showRequestList = False
 		
@@ -652,7 +661,7 @@ class CryptoPricerGUI(BoxLayout):
 		if self.showRequestList:
 			self.adjustRequestListSize()
 
-		self.manageStateOfRequestListButtons()
+		self.manageStateOfGlobalRequestListButtons()
 
 		self.refocusOnRequestInput()
 	
@@ -674,13 +683,13 @@ class CryptoPricerGUI(BoxLayout):
 
 		self.refocusOnRequestInput()
 
-	def enableRequestListItemButtons(self):
+	def enableStateOfRequestListSingleItemButtons(self):
 		self.deleteButton.disabled = False
 		self.replaceButton.disabled = False
 		self.moveUpButton.disabled = False
 		self.moveDownButton.disabled = False
 
-	def disableRequestListItemButtons(self):
+	def disableStateOfRequestListSingleItemButtons(self):
 		self.deleteButton.disabled = True
 		self.replaceButton.disabled = True
 		self.moveUpButton.disabled = True
@@ -807,11 +816,13 @@ class CryptoPricerGUI(BoxLayout):
 		lines = list(map(lambda line: line.strip('\n'), lines))
 		histoLines = [{'text' : val, 'selectable': True} for val in lines]
 		self.requestListRV.data = histoLines
+		self.requestListRVSelBoxLayout.clear_selection()
+		self.isLineSelected = False
 
 		# Reset the ListView
 		self.resetListViewScrollToEnd()
 
-		self.manageStateOfRequestListButtons()
+		self.manageStateOfGlobalRequestListButtons()
 		self.refocusOnRequestInput()
 
 	def saveHistoryToFile(self, path, filename, isLoadAtStart):
