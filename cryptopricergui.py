@@ -158,10 +158,11 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		
 		cryptoPricerGUI = self.rv.parent.parent
 		
-		if cryptoPricerGUI.isLineSelected:
-			# here, the user manually deselects the selected item
+		if len(cryptoPricerGUI.requestListRVSelBoxLayout.selected_nodes) == 1:
+			# here, the user manually deselects the selected item. When
+			# on_touch_down is called, if the item is selected, the
+			# requestListRVSelBoxLayout.selected_nodes list has one element !
 			cryptoPricerGUI.requestInput.text = ''
-			cryptoPricerGUI.isLineSelected = False
 
 			# cryptoPricerGUI.recycleViewCurrentSelIndex is used by the
 			# deleteRequest() and updateRequest() cryptoPricerGUI methods
@@ -181,26 +182,13 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		
 		if is_selected:
 			selItemValue = rv.data[index]['text']
-			
-			# since apply_selection() is called for all the visible items,
-			# if one item is selected, this state must be stored in
-			# cryptoPricerGUI. The isLineSelected flag is set to False
-			# when the user deselects the selected item. This is done
-			# in on_touch_down()
-			cryptoPricerGUI.isLineSelected = True
 
 			# cryptoPricerGUI.recycleViewCurrentSelIndex is used by the
 			# deleteRequest() and updateRequest() cryptoPricerGUI methods
 			cryptoPricerGUI.recycleViewCurrentSelIndex = index
 			cryptoPricerGUI.requestInput.text = selItemValue
 
-		self.updateStateOfRequestListSingleItemButtons(cryptoPricerGUI)
-	
-	def updateStateOfRequestListSingleItemButtons(self, cryptoPricerGUI):
-		if cryptoPricerGUI.isLineSelected:
-			cryptoPricerGUI.enableStateOfRequestListSingleItemButtons()
-		else:
-			cryptoPricerGUI.disableStateOfRequestListSingleItemButtons()
+		cryptoPricerGUI.enableStateOfRequestListSingleItemButtons()
 
 class SettingScrollOptions(SettingOptions):
 	'''
@@ -373,8 +361,6 @@ class CryptoPricerGUI(BoxLayout):
 		self.applyAppPosAndSize()
 		self.movedRequestNewIndex = -1
 		self.movingRequest = False
-		
-		self.isLineSelected = False
 	
 	def ensureDataPathExist(self, dataPath, message):
 		'''
@@ -464,6 +450,11 @@ class CryptoPricerGUI(BoxLayout):
 			# RecycleView request history list is currently displayed and
 			# will be hidden
 			self.boxLayoutContainingRV.height = '0dp'
+			
+			# when hidding the history request list, an item can be selected.
+			# For this reason, the disableStateOfRequestListSingleItemButtons()
+			# must be called explicitely called, otherwise the history request
+			# list items specific buttons remain active !
 			self.disableStateOfRequestListSingleItemButtons()
 			self.showRequestList = False
 		else:
@@ -684,11 +675,21 @@ class CryptoPricerGUI(BoxLayout):
 		self.refocusOnRequestInput()
 
 	def enableStateOfRequestListSingleItemButtons(self):
-		self.deleteButton.disabled = False
-		self.replaceButton.disabled = False
-		self.moveUpButton.disabled = False
-		self.moveDownButton.disabled = False
-
+		"""
+		This method handles the states of the single items of the request
+		history list.
+		"""
+		if len(self.requestListRVSelBoxLayout.selected_nodes):
+			# here, a request list item is selected and the
+			# requestListRVSelBoxLayout.selected_nodes list has one
+			# element !
+			self.deleteButton.disabled = False
+			self.replaceButton.disabled = False
+			self.moveUpButton.disabled = False
+			self.moveDownButton.disabled = False
+		else:
+			self.disableStateOfRequestListSingleItemButtons()
+	
 	def disableStateOfRequestListSingleItemButtons(self):
 		self.deleteButton.disabled = True
 		self.replaceButton.disabled = True
@@ -817,7 +818,6 @@ class CryptoPricerGUI(BoxLayout):
 		histoLines = [{'text' : val, 'selectable': True} for val in lines]
 		self.requestListRV.data = histoLines
 		self.requestListRVSelBoxLayout.clear_selection()
-		self.isLineSelected = False
 
 		# Reset the ListView
 		self.resetListViewScrollToEnd()
