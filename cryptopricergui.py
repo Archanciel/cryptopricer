@@ -133,11 +133,9 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 				self.parent.data.pop(movedItemNewSeIndex)
 				self.parent.data.insert(movedItemNewSeIndex, {'text': movedValue, 'selectable': True})
 		
-		cryptoPricerGUI = self.parent.parent.parent
-		
 		# cryptoPricerGUI.recycleViewCurrentSelIndex is used by the
 		# deleteRequest() and updateRequest() cryptoPricerGUI methods
-		cryptoPricerGUI.recycleViewCurrentSelIndex = movedItemNewSeIndex
+		self.cryptoPricerGUI.recycleViewCurrentSelIndex = movedItemNewSeIndex
 
 class SelectableLabel(RecycleDataViewBehavior, Label):
 	''' Add selection support to the Label '''
@@ -214,6 +212,7 @@ class SettingScrollOptions(SettingOptions):
 		content.add_widget(Widget(size_hint_y=None, height=dp(2)))
 		# add all the options
 		uid = str(self.uid)
+		
 		for option in self.options:
 			state = 'down' if option == self.value else 'normal'
 			btn = ToggleButton(text=option, state=state, group=uid, size=(popup.width, dp(55)), size_hint=(None, None))
@@ -603,8 +602,6 @@ class CryptoPricerGUI(BoxLayout):
 			self.replayAllButton.disabled = False
 			self.dropDownMenu.saveButton.disabled = False
 			
-			
-
 	def outputResult(self, resultStr):
 		if len(self.resultOutput.text) == 0:
 			self.resultOutput.text = resultStr
