@@ -984,8 +984,10 @@ class CryptoPricerGUIApp(App):
 					"section": "General",
 					"key": "dataPath"
 				}
-			]""" % TIME_ZONE_LIST)
-								)
+			]""" % TIME_ZONE_LIST)  # "key": "dataPath" above is the key in the app config file.
+								)   # To use another drive, simply define it as datapath value
+									# in the app config file
+
 		# add 'Layout' settings pannel
 		settings.add_json_panel("Layout", self.config, data=("""
 			[
