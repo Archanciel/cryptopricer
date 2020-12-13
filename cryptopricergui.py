@@ -33,6 +33,8 @@ from guioutputformater import GuiOutputFormater
 from guiutil import GuiUtil
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
+RV_LIST_ITEM_SPACING_ANDROID = 2
+RV_LIST_ITEM_SPACING_WINDOWS = 0.5
 STATUS_BAR_ERROR_SUFFIX = ' --> ERROR ...'
 FILE_LOADED = 0
 FILE_SAVED = 1
@@ -334,22 +336,22 @@ class CryptoPricerGUI(BoxLayout):
 
 		super(CryptoPricerGUI, self).__init__(**kwargs)
 		self.dropDownMenu = CustomDropDown(owner=self)
-		requestListRVSpacing = 0.5
 
 		if os.name == 'posix':
 			configPath = '/sdcard/cryptopricer.ini'
-			requestListRVSpacing = 2
+			requestListRVSpacing = RV_LIST_ITEM_SPACING_ANDROID
 		else:
 			configPath = 'c:\\temp\\cryptopricer.ini'
-			self.toggleAppSizeButton.text = 'Half'  # correct on Windows version !
+			requestListRVSpacing = RV_LIST_ITEM_SPACING_WINDOWS
+			self.toggleAppSizeButton.text = 'Half'  # correct on Windows !
 
 		self.configMgr = ConfigurationManager(configPath)
 		self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr, PriceRequester())
 		self.dataPath = self.configMgr.dataPath
 
-		self.updateRVListSizeParms(int(self.configMgr.histoListItemHeight),
-		                           int(self.configMgr.histoListVisibleSize),
-		                           requestListRVSpacing)
+		self.setRVListSizeParms(int(self.configMgr.histoListItemHeight),
+		                        int(self.configMgr.histoListVisibleSize),
+		                        requestListRVSpacing)
 		
 		self.appSize = self.configMgr.appSize
 		self.defaultAppPosAndSize = self.configMgr.appSize
@@ -358,16 +360,22 @@ class CryptoPricerGUI(BoxLayout):
 		self.movedRequestNewIndex = -1
 		self.movingRequest = False
 
-	def updateRVListSizeParmsSettingChanged(self):
-		self.updateRVListSizeParms(self.rvListItemHeight,
-		                           self.rvListMaxVisibleItems,
-		                           0.5)
-		self.adjustRequestListSize()
+	def rvListSizeSettingsChanged(self):
+		if os.name == 'posix':
+			rvListItemSpacing = RV_LIST_ITEM_SPACING_ANDROID
+		else:
+			rvListItemSpacing = RV_LIST_ITEM_SPACING_WINDOWS
+			
+		self.setRVListSizeParms(self.rvListItemHeight,
+		                        self.rvListMaxVisibleItems,
+		                        rvListItemSpacing)
+		if self.showRequestList:
+			self.adjustRequestListSize()
 
-	def updateRVListSizeParms(self,
-	                          rvListItemHeight,
-	                          rvListMaxVisibleItems,
-	                          rvListItemSpacing):
+	def setRVListSizeParms(self,
+	                       rvListItemHeight,
+	                       rvListMaxVisibleItems,
+	                       rvListItemSpacing):
 		self.rvListItemHeight = rvListItemHeight
 		self.rvListMaxVisibleItems = rvListMaxVisibleItems
 		self.maxRvListHeight = self.rvListMaxVisibleItems * self.rvListItemHeight
@@ -750,6 +758,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.dropDownMenu.dismiss()
 
 		popupSize = None
+		width = None
 
 		if platform == 'android':
 			popupSize = (980, 1200)
@@ -1046,10 +1055,10 @@ class CryptoPricerGUIApp(App):
 				self.root.applyAppPosAndSize()
 			elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT:
 				self.root.rvListItemHeight = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT, ConfigurationManager.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_ANDROID))
-				self.root.updateRVListSizeParmsSettingChanged()
+				self.root.rvListSizeSettingsChanged()
 			elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE:
 				self.root.rvListMaxVisibleItems = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE, ConfigurationManager.DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE))
-				self.root.updateRVListSizeParmsSettingChanged()
+				self.root.rvListSizeSettingsChanged()
 			elif key == ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION:
 				self.root.appSizeHalfProportion = float(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION, ConfigurationManager.DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION))
 				self.root.applyAppPosAndSize()
