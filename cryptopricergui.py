@@ -233,11 +233,17 @@ class SettingScrollOptions(SettingOptions):
 
 class FileChooserPopup(BoxLayout):
 	text = StringProperty()
+	# popupBoxLayout = ObjectProperty()
+	# diskRecycleBoxLayout = ObjectProperty()
+	# fileChooser = ObjectProperty()
+	# choosenFileText = ObjectProperty()
+	# pathList = ObjectProperty()
+	# currentPathField = ObjectProperty()
 	
-	def __init__(self, rootGUI, **kwargs):
+	def __init__(self, **kwargs):
 		self.register_event_type('on_answer')
 		super(FileChooserPopup, self).__init__(**kwargs)
-		self.rootGUI = rootGUI
+		self.rootGUI = self.root.owner
 		
 		if os.name != 'posix':
 			import string
@@ -842,7 +848,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.popup.dismiss()
 
 	def openLoadHistoryFileChooser(self):
-		fileChooserDialog = FileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
+		fileChooserDialog = FileChooserPopup(load=self.load, cancel=self.dismissPopup)
 		fileChooserDialog.fileChooser.rootpath = self.dataPath
 		self.popup = Popup(title="Load file", content=fileChooserDialog,
 						   size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
