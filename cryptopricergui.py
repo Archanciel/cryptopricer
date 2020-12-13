@@ -7,6 +7,7 @@ from kivy.config import Config
 from kivy.metrics import dp
 from kivy.properties import BooleanProperty
 from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
 from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -230,10 +231,60 @@ class SettingScrollOptions(SettingOptions):
 		btn.bind(on_release=popup.dismiss)
 		content.add_widget(btn)
 
-class LoadDialog(FloatLayout):
-	load = ObjectProperty(None)
-	cancel = ObjectProperty(None)
-	fileChooser = ObjectProperty(None)
+class FileChooserPopup(BoxLayout):
+	text = StringProperty()
+	
+	def __init__(self, rootGUI, **kwargs):
+		self.register_event_type('on_answer')
+		super(FileChooserPopup, self).__init__(**kwargs)
+		self.rootGUI = rootGUI
+		
+		if os.name != 'posix':
+			import string
+			available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
+			
+			self.pathList.data.append(
+				{'text': 'Data file location setting', 'selectable': True, 'path': 'c:\\temp\\cpdata'})
+			
+			for drive in available_drives:
+				self.pathList.data.append({'text': drive, 'selectable': True, 'path': drive})
+			
+			# sizing FileChooserPopup widgets
+			self.popupBoxLayout.size_hint_y = 0.17
+			self.choosenFileText.size_hint_y = 0.12
+		else:
+			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
+			                           'path': '/storage/emulated/0/download/Audiobooks'})
+			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'path': '/storage/emulated/0'})
+			
+			sdCardDir = SD_CARD_DIR_SMARTPHONE
+			
+			if not os.path.isdir(sdCardDir):
+				sdCardDir = SD_CARD_DIR_TABLET
+			
+			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'path': sdCardDir})
+			
+			# sizing FileChooserPopup widgets
+			self.popupBoxLayout.size_hint_y = 0.16
+			self.choosenFileText.size_hint_y = 0.08
+		
+		# specify pre-selected node by its index in the data
+		self.diskRecycleBoxLayout.selected_nodes = [0]
+	
+	def load(self, path, filename):
+		if not filename:
+			# no file selected. Load dialog remains open ..
+			return
+		
+		pathFileName = os.path.join(path, filename[0])
+		self.rootGUI.loadFile(pathFileName)
+		self.rootGUI.dismissPopup()
+	
+	def cancel(self):
+		self.rootGUI.dismissPopup()
+	
+	def on_answer(self, *args):
+		pass
 
 class SaveDialog(FloatLayout):
 	save = ObjectProperty(None)
@@ -791,7 +842,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.popup.dismiss()
 
 	def openLoadHistoryFileChooser(self):
-		fileChooserDialog = LoadDialog(load=self.load, cancel=self.dismissPopup)
+		fileChooserDialog = FileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		fileChooserDialog.fileChooser.rootpath = self.dataPath
 		self.popup = Popup(title="Load file", content=fileChooserDialog,
 						   size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
