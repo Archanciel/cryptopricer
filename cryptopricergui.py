@@ -346,20 +346,35 @@ class CryptoPricerGUI(BoxLayout):
 		self.configMgr = ConfigurationManager(configPath)
 		self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr, PriceRequester())
 		self.dataPath = self.configMgr.dataPath
-		self.histoListItemHeight = int(self.configMgr.histoListItemHeight)
-		self.histoListMaxVisibleItems = int(self.configMgr.histoListVisibleSize)
-		self.maxHistoListHeight = self.histoListMaxVisibleItems * self.histoListItemHeight
 
-		# setting RecycleView list item height from config
-		self.requestListRVSelBoxLayout.default_size = None, self.histoListItemHeight
-		self.requestListRVSelBoxLayout.spacing = requestListRVSpacing
-
+		self.updateRVListSizeParms(int(self.configMgr.histoListItemHeight),
+		                           int(self.configMgr.histoListVisibleSize),
+		                           requestListRVSpacing)
+		
 		self.appSize = self.configMgr.appSize
 		self.defaultAppPosAndSize = self.configMgr.appSize
 		self.appSizeHalfProportion = float(self.configMgr.appSizeHalfProportion)
 		self.applyAppPosAndSize()
 		self.movedRequestNewIndex = -1
 		self.movingRequest = False
+
+	def updateRVListSizeParmsSettingChanged(self):
+		self.updateRVListSizeParms(self.rvListItemHeight,
+		                           self.rvListMaxVisibleItems,
+		                           0.5)
+		self.adjustRequestListSize()
+
+	def updateRVListSizeParms(self,
+	                          rvListItemHeight,
+	                          rvListMaxVisibleItems,
+	                          rvListItemSpacing):
+		self.rvListItemHeight = rvListItemHeight
+		self.rvListMaxVisibleItems = rvListMaxVisibleItems
+		self.maxRvListHeight = self.rvListMaxVisibleItems * self.rvListItemHeight
+		
+		# setting RecycleView list item height from config
+		self.requestListRVSelBoxLayout.default_size = None, self.rvListItemHeight
+		self.requestListRVSelBoxLayout.spacing = rvListItemSpacing
 	
 	def ensureDataPathExist(self, dataPath, message):
 		'''
@@ -466,7 +481,7 @@ class CryptoPricerGUI(BoxLayout):
 
 	def adjustRequestListSize(self):
 		listItemNumber = len(self.requestListRV.data)
-		self.boxLayoutContainingRV.height = min(listItemNumber * self.histoListItemHeight, self.maxHistoListHeight)
+		self.boxLayoutContainingRV.height = min(listItemNumber * self.rvListItemHeight, self.maxRvListHeight)
 
 		return listItemNumber
 
@@ -563,7 +578,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.refocusOnRequestInput()
 
 	def resetListViewScrollToEnd(self):
-		maxVisibleItemNumber = self.histoListMaxVisibleItems
+		maxVisibleItemNumber = self.rvListMaxVisibleItems
 		listLength = len(self.requestListRV.data)
 
 		if listLength > maxVisibleItemNumber:
@@ -1030,9 +1045,11 @@ class CryptoPricerGUIApp(App):
 
 				self.root.applyAppPosAndSize()
 			elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT:
-				self.root.histoListItemHeight = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT, ConfigurationManager.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_ANDROID))
+				self.root.rvListItemHeight = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT, ConfigurationManager.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_ANDROID))
+				self.root.updateRVListSizeParmsSettingChanged()
 			elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE:
-				self.root.histoListMaxVisibleItems = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE, ConfigurationManager.DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE))
+				self.root.rvListMaxVisibleItems = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE, ConfigurationManager.DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE))
+				self.root.updateRVListSizeParmsSettingChanged()
 			elif key == ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION:
 				self.root.appSizeHalfProportion = float(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION, ConfigurationManager.DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION))
 				self.root.applyAppPosAndSize()
