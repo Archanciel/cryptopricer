@@ -231,19 +231,63 @@ class SettingScrollOptions(SettingOptions):
 		btn.bind(on_release=popup.dismiss)
 		content.add_widget(btn)
 
-class FileChooserPopup(BoxLayout):
-	text = StringProperty()
-	# popupBoxLayout = ObjectProperty()
-	# diskRecycleBoxLayout = ObjectProperty()
-	# fileChooser = ObjectProperty()
-	# choosenFileText = ObjectProperty()
-	# pathList = ObjectProperty()
-	# currentPathField = ObjectProperty()
+# File chooser classes
+
+SD_CARD_DIR_TABLET = '/storage/0000-0000'
+SD_CARD_DIR_SMARTPHONE = '/storage/9016-4EF8'
+
+class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavior,
+                                 RecycleBoxLayout):
+	''' Adds selection and focus behaviour to the view. '''
 	
-	def __init__(self, **kwargs):
-		self.register_event_type('on_answer')
+	# required to authorise unselecting a selected item
+	touch_deselect_last = BooleanProperty(True)
+
+
+class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
+	''' Add selection support to the Label '''
+	index = None
+	selected = BooleanProperty(False)
+	selectable = BooleanProperty(True)
+	
+	def refresh_view_attrs(self, rv, index, data):
+		''' Catch and handle the view changes '''
+		self.index = index
+		return super(SelectableLabelFileChooser, self).refresh_view_attrs(
+			rv, index, data)
+	
+	def on_touch_down(self, touch):
+		''' Add selection on touch down '''
+		if super(SelectableLabelFileChooser, self).on_touch_down(touch):
+			return True
+		if self.collide_point(*touch.pos) and self.selectable:
+			return self.parent.select_with_touch(self.index, touch)
+	
+	def apply_selection(self, rv, index, is_selected):
+		''' Respond to the selection of items in the view. '''
+		self.selected = is_selected
+		
+		if is_selected:
+			rootGUI = rv.parent.parent
+			selectedPath = rv.data[index]['path']
+			
+			if os.name != 'posix':
+				# we are on Windows
+				selectedPath = selectedPath + '\\'  # adding '\\' is required,otherwise,
+			# when selecting D:, the directory
+			# hosting the utility is selected !
+			
+			rootGUI.fileChooser.path = selectedPath
+			rootGUI.currentPathField.text = selectedPath
+
+class FileChooserPopup(BoxLayout):
+	load = ObjectProperty(None)
+	cancel = ObjectProperty(None)
+	
+	def __init__(self, rootGUI, **kwargs):
 		super(FileChooserPopup, self).__init__(**kwargs)
-		self.rootGUI = self.root.owner
+		
+		self.rootGUI = rootGUI
 		
 		if os.name != 'posix':
 			import string
@@ -848,12 +892,17 @@ class CryptoPricerGUI(BoxLayout):
 		self.popup.dismiss()
 
 	def openLoadHistoryFileChooser(self):
-		fileChooserDialog = FileChooserPopup(load=self.load, cancel=self.dismissPopup)
-		fileChooserDialog.fileChooser.rootpath = self.dataPath
-		self.popup = Popup(title="Load file", content=fileChooserDialog,
-						   size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
-		self.popup.open()
-		self.dropDownMenu.dismiss()
+		content = FileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
+		self._popup = Popup(title="RecycleView in Popup", content=content,
+							size_hint=(0.9, 0.9))
+		self._popup.open()
+
+		# fileChooserDialog = FileChooserPopup(load=self.load, cancel=self.dismissPopup)
+		# fileChooserDialog.fileChooser.rootpath = self.dataPath
+		# self.popup = Popup(title="Load file", content=fileChooserDialog,
+		# 				   size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
+		# self.popup.open()
+		# self.dropDownMenu.dismiss()
 
 	def openSaveHistoryFileChooser(self):
 		fileChooserDialog = SaveDialog(save=self.saveHistoryToFile, cancel=self.dismissPopup)
