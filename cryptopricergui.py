@@ -282,7 +282,7 @@ class CustomDropDown(DropDown):
 		message = 'Data path ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
 
 		if self.owner.ensureDataPathExist(self.owner.dataPath, message):
-			self.owner.openLoadHistoryFileChooser()
+			self.owner.openFileLoadPopup()
 
 	def showSave(self):
 		message = 'Data path ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
@@ -330,6 +330,92 @@ class ScrollablePopup(Popup):
 		self.setContentTextToCurrentPage()
 		self.scrollView.scroll_y = 1 # force scrolling to top
 
+SD_CARD_DIR_TABLET = '/storage/0000-0000'
+SD_CARD_DIR_SMARTPHONE = '/storage/9016-4EF8'
+
+class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavior,
+                                            RecycleBoxLayout):
+	''' Adds selection and focus behaviour to the view. '''
+	
+	# required to authorise unselecting a selected item
+	touch_deselect_last = BooleanProperty(True)
+
+class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
+	''' Add selection support to the Label '''
+	index = None
+	selected = BooleanProperty(False)
+	selectable = BooleanProperty(True)
+	
+	def refresh_view_attrs(self, rv, index, data):
+		''' Catch and handle the view changes '''
+		self.index = index
+		return super(SelectableLabelFileChooser, self).refresh_view_attrs(
+			rv, index, data)
+	
+	def on_touch_down(self, touch):
+		''' Add selection on touch down '''
+		if super(SelectableLabelFileChooser, self).on_touch_down(touch):
+			return True
+		if self.collide_point(*touch.pos) and self.selectable:
+			return self.parent.select_with_touch(self.index, touch)
+	
+	def apply_selection(self, rv, index, is_selected):
+		''' Respond to the selection of items in the view. '''
+		self.selected = is_selected
+		
+		if is_selected:
+			rootGUI = rv.parent.parent
+			selectedPath = rv.data[index]['path']
+			
+			if os.name != 'posix':
+				# we are on Windows
+				selectedPath = selectedPath + '\\'  # adding '\\' is required,otherwise,
+			# when selecting D:, the directory
+			# hosting the utility is selected !
+			
+			rootGUI.fileChooser.path = selectedPath
+			rootGUI.currentPathField.text = selectedPath
+
+class FileChooserPopup(BoxLayout):
+	load = ObjectProperty(None)
+	cancel = ObjectProperty(None)
+	
+	def __init__(self, rootGUI, **kwargs):
+		super(FileChooserPopup, self).__init__(**kwargs)
+		
+		self.rootGUI = rootGUI
+		
+		if os.name != 'posix':
+			import string
+			available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
+			
+			self.pathList.data.append(
+				{'text': 'Data file location setting', 'selectable': True, 'path': 'c:\\temp\\cpdata'})
+			
+			for drive in available_drives:
+				self.pathList.data.append({'text': drive, 'selectable': True, 'path': drive})
+			
+			# sizing FileChooserPopup widgets
+			self.popupBoxLayout.size_hint_y = 0.17
+			self.currentPathField.size_hint_y = 0.12
+		else:
+			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
+			                           'path': '/storage/emulated/0/download/Audiobooks'})
+			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'path': '/storage/emulated/0'})
+			
+			sdCardDir = SD_CARD_DIR_SMARTPHONE
+			
+			if not os.path.isdir(sdCardDir):
+				sdCardDir = SD_CARD_DIR_TABLET
+			
+			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'path': sdCardDir})
+			
+			# sizing FileChooserPopup widgets
+			self.popupBoxLayout.size_hint_y = 0.16
+			self.currentPathField.size_hint_y = 0.08
+		
+		# specify pre-selected node by its index in the data
+		self.diskRecycleBoxLayout.selected_nodes = [0]
 
 class CryptoPricerGUI(BoxLayout):
 	requestInput = ObjectProperty()
@@ -802,11 +888,10 @@ class CryptoPricerGUI(BoxLayout):
 		self.updateStatusBar('')
 		self.popup.dismiss()
 
-	def openLoadHistoryFileChooser(self):
-		fileChooserDialog = LoadDialog(load=self.load, cancel=self.dismissPopup)
-		fileChooserDialog.fileChooser.rootpath = self.dataPath
-		self.popup = Popup(title="Load file", content=fileChooserDialog,
-						   size_hint=(0.9, 0.6), pos_hint={'center': 1, 'top': 1})
+	def openFileLoadPopup(self):
+		content = FileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
+		self.popup = Popup(title="RecycleView in Popup", content=content,
+							size_hint=(0.9, 0.9))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 

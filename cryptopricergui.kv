@@ -352,3 +352,81 @@
             Button:
                 text: "Close"
                 on_press: root.dismiss()
+
+<FileChooserPopup>: # sub-class of BoxLayout
+    popupBoxLayout: popup_boxlayout
+	diskRecycleBoxLayout: selectable_recyclebox_layout_file_chooser
+	fileChooser: file_chooser
+	pathList: path_list
+	currentPathField: text_path_load
+	orientation: 'vertical'
+    BoxLayout:
+        id: popup_boxlayout
+        orientation: 'vertical'
+        #size_hint_y: 0.17 # value for Windows 10
+        #size_hint_y: 0.11 # value for Android tablet
+        size_hint_y: 0.16 # value for Android smartphone
+        RecycleView:
+            id: path_list
+            effect_cls: "ScrollEffect" # prevents overscrolling
+            viewclass: 'SelectableLabelFileChooser'
+            scroll_type: ['bars', 'content']
+            scroll_wheel_distance: dp(114)
+            bar_width: dp(10)
+            scroll_y: 1 # 0 forces scrolling to list bottom after adding
+                        # an item, 1 forces scrolling to list top
+            effect_cls: "ScrollEffect" # prevents overscrolling
+            SelectableRecycleBoxLayoutFileChooser:
+                id: selectable_recyclebox_layout_file_chooser
+                key_selection: 'selectable' # required so that 'selectable'
+                                            # key/value can be added to
+                                            # RecycleView data items
+                default_size: None, dp(28)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: False
+                touch_multiselect: False
+                spacing: dp(2)
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        FileChooserListView:
+            id: file_chooser
+            dirselect: True
+            on_selection: text_path_load.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: text_path_load
+            #size_hint_y: 0.12 # value for Windows 10
+            #size_hint_y: 0.05 # value for Android tablet
+            size_hint_y: 0.08 # value for Android smartphone
+            multiline: False
+            readonly: True
+
+        GridLayout:
+            cols: 2
+            size_hint_y: None
+            height: '28dp'
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+            Button:
+                text: "Load"
+                on_release: root.load(file_chooser.path, file_chooser.selection)
+
+<SelectableLabelFileChooser>:
+    # Draw a background to indicate selection
+    canvas.before:
+        Color:
+            rgba: (1, 0, 0, 1) if self.selected else (.0, 0.9, .1, .3)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: (0, 0.9, .1, .3)
+        Rectangle:
+            pos: self.pos
+            size: self.size
