@@ -376,12 +376,12 @@ class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
 			rootGUI.fileChooser.path = selectedPath
 			rootGUI.currentPathField.text = selectedPath
 
-class FileChooserPopup(BoxLayout):
+class LoadFileChooserPopup(BoxLayout):
 	load = ObjectProperty(None)
 	cancel = ObjectProperty(None)
 	
 	def __init__(self, rootGUI, **kwargs):
-		super(FileChooserPopup, self).__init__(**kwargs)
+		super(LoadFileChooserPopup, self).__init__(**kwargs)
 		
 		self.rootGUI = rootGUI
 		
@@ -395,7 +395,7 @@ class FileChooserPopup(BoxLayout):
 			for drive in available_drives:
 				self.pathList.data.append({'text': drive, 'selectable': True, 'path': drive})
 			
-			# sizing FileChooserPopup widgets
+			# sizing LoadFileChooserPopup widgets
 			self.popupBoxLayout.size_hint_y = 0.17
 			self.currentPathField.size_hint_y = 0.12
 		else:
@@ -410,7 +410,7 @@ class FileChooserPopup(BoxLayout):
 			
 			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'path': sdCardDir})
 			
-			# sizing FileChooserPopup widgets
+			# sizing LoadFileChooserPopup widgets
 			self.popupBoxLayout.size_hint_y = 0.16
 			self.currentPathField.size_hint_y = 0.08
 		
@@ -889,7 +889,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.popup.dismiss()
 
 	def openFileLoadPopup(self):
-		content = FileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
+		content = LoadFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		self.popup = Popup(title="RecycleView in Popup", content=content,
 							size_hint=(0.9, 0.9))
 		self.popup.open()
