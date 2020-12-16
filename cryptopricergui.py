@@ -241,35 +241,6 @@ class SettingScrollOptions(SettingOptions):
 		btn.bind(on_release=popup.dismiss)
 		content.add_widget(btn)
 
-class LoadDialog(FloatLayout):
-	load = ObjectProperty(None)
-	cancel = ObjectProperty(None)
-	fileChooser = ObjectProperty(None)
-
-class SaveDialog(FloatLayout):
-	save = ObjectProperty(None)
-	cancel = ObjectProperty(None)
-	fileChooser = ObjectProperty(None)
-	loadAtStartChkb = ObjectProperty(None)
-	filePathName = ObjectProperty(None)
-	owner = None
-
-	def toggleLoadAtStart(self, active):
-		if active:
-			self.owner.updateStatusBar('Load at start activated')
-		else:
-			self.owner.updateStatusBar('')
-
-	def saveFileSelected(self, filePathName):
-		self.filePathName.text = filePathName
-
-		if self.owner.isLoadAtStart(filePathName):
-			self.loadAtStartChkb.active = True
-			self.owner.updateStatusBar('Load at start active')
-		else:
-			self.loadAtStartChkb.active = False
-			self.owner.updateStatusBar('')
-
 class CustomDropDown(DropDown):
 	saveButton = ObjectProperty(None)
 	statusToRequestInputButton = ObjectProperty(None)
@@ -439,7 +410,7 @@ class SaveFileChooserPopup(BoxLayout):
 			
 			# sizing LoadFileChooserPopup widgets
 			self.popupBoxLayout.size_hint_y = 0.17
-			self.currentPathField.size_hint_y = 0.12
+			self.currentPathField.size_hint_y = 0.31
 		else:
 			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
 			                           'path': '/storage/emulated/0/download/Audiobooks'})
@@ -954,7 +925,7 @@ class CryptoPricerGUI(BoxLayout):
 	def openFileSavePopup(self):
 		content = SaveFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		self.popup = Popup(title="Save history to file", content=content,
-							size_hint=(0.9, 0.8))
+							size_hint=(0.9, 0.85))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 
