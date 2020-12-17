@@ -825,7 +825,7 @@ class CryptoPricerGUI(BoxLayout):
 	def openFileSavePopup(self):
 		content = SaveFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		self.popup = Popup(title="Save history to file", content=content,
-							size_hint=(0.9, 0.85))
+							size_hint=(0.9, 0.9))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 

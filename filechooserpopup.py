@@ -5,7 +5,7 @@ from kivy.uix.boxlayout import BoxLayout
 
 SD_CARD_DIR_TABLET = '/storage/0000-0000'
 SD_CARD_DIR_SMARTPHONE = '/storage/9016-4EF8'
-
+LOAD_AT_START_MSG = ' (load at start activated)'
 
 class FileChooserPopup(BoxLayout):
 	"""
@@ -121,7 +121,9 @@ class SaveFileChooserPopup(FileChooserPopup):
 		:param active:
 		:return:
 		"""
+		popupTitle = self.rootGUI.popup.title
+		
 		if active:
-			self.rootGUI.updateStatusBar('Load at start activated')
+			self.rootGUI.popup.title = popupTitle + LOAD_AT_START_MSG
 		else:
-			self.rootGUI.updateStatusBar('')
+			self.rootGUI.popup.title = popupTitle.replace(LOAD_AT_START_MSG, '')

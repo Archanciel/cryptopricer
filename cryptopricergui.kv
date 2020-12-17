@@ -287,9 +287,9 @@
 
 <LoadFileChooserPopup>: # sub-class of BoxLayout
     popupBoxLayout: popup_boxlayout
-	diskRecycleBoxLayout: selectable_recyclebox_layout_file_chooser
+	diskRecycleBoxLayout: disc_mem_RB_layout
 	fileChooser: file_chooser
-	pathList: path_list
+	pathList: path_mem_list
 	currentPathField: text_path_load
 	orientation: 'vertical'
     BoxLayout:
@@ -299,7 +299,7 @@
         #size_hint_y: 0.11 # value for Android tablet
         size_hint_y: 0.16 # value for Android smartphone
         RecycleView:
-            id: path_list
+            id: path_mem_list
             effect_cls: "ScrollEffect" # prevents overscrolling
             viewclass: 'SelectableLabelFileChooser'
             scroll_type: ['bars', 'content']
@@ -309,7 +309,7 @@
                         # an item, 1 forces scrolling to list top
             effect_cls: "ScrollEffect" # prevents overscrolling
             SelectableRecycleBoxLayoutFileChooser:
-                id: selectable_recyclebox_layout_file_chooser
+                id: disc_mem_RB_layout
                 key_selection: 'selectable' # required so that 'selectable'
                                             # key/value can be added to
                                             # RecycleView data items
@@ -351,9 +351,9 @@
 
 <SaveFileChooserPopup>: # sub-class of BoxLayout
     popupBoxLayout: popup_boxlayout
-	diskRecycleBoxLayout: selectable_recyclebox_layout_file_chooser
+	diskRecycleBoxLayout: disc_mem_RB_layout
 	fileChooser: file_chooser
-	pathList: path_list
+	pathList: path_mem_list
 	currentPathField: text_input
 	orientation: 'vertical'
     BoxLayout:
@@ -363,7 +363,7 @@
         #size_hint_y: 0.11 # value for Android tablet
         size_hint_y: 0.16 # value for Android smartphone
         RecycleView:
-            id: path_list
+            id: path_mem_list
             effect_cls: "ScrollEffect" # prevents overscrolling
             viewclass: 'SelectableLabelFileChooser'
             scroll_type: ['bars', 'content']
@@ -373,7 +373,7 @@
                         # an item, 1 forces scrolling to list top
             effect_cls: "ScrollEffect" # prevents overscrolling
             SelectableRecycleBoxLayoutFileChooser:
-                id: selectable_recyclebox_layout_file_chooser
+                id: disc_mem_RB_layout
                 key_selection: 'selectable' # required so that 'selectable'
                                             # key/value can be added to
                                             # RecycleView data items
