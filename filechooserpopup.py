@@ -32,6 +32,8 @@ class FileChooserPopup(BoxLayout):
 		:return:
 		"""
 		dataLocationFromSetting = self.rootGUI.configMgr.dataPath
+		import logging
+		logging.info(dataLocationFromSetting)
 		
 		if os.name != 'posix':
 			import string
@@ -45,8 +47,8 @@ class FileChooserPopup(BoxLayout):
 		
 		else:
 			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
-			                           'path': '/storage/emulated/0/download/Audiobooks'})
-			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'path': dataLocationFromSetting})
+			                           'path': dataLocationFromSetting})
+			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'path': '/storage/emulated/0'})
 			
 			sdCardDir = SD_CARD_DIR_SMARTPHONE
 			
@@ -98,7 +100,7 @@ class SaveFileChooserPopup(FileChooserPopup):
 			self.currentPathField.size_hint_y = 0.31
 		else:
 			self.popupBoxLayout.size_hint_y = 0.16
-			self.currentPathField.size_hint_y = 0.08
+			self.currentPathField.size_hint_y = 0.5
 	
 	def save(self, path, filename, isLoadAtStart):
 		"""
