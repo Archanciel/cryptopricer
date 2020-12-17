@@ -11,7 +11,6 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
@@ -27,6 +26,7 @@ from kivy.uix.widget import Widget
 from kivy.utils import platform
 
 from configurationmanager import ConfigurationManager
+from filechooserpopup import LoadFileChooserPopup, SaveFileChooserPopup
 from pricerequester import PriceRequester
 from controller import Controller
 from guioutputformater import GuiOutputFormater
@@ -301,9 +301,6 @@ class ScrollablePopup(Popup):
 		self.setContentTextToCurrentPage()
 		self.scrollView.scroll_y = 1 # force scrolling to top
 
-SD_CARD_DIR_TABLET = '/storage/0000-0000'
-SD_CARD_DIR_SMARTPHONE = '/storage/9016-4EF8'
-
 class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavior,
                                             RecycleBoxLayout):
 	''' Adds selection and focus behaviour to the view. '''
@@ -346,103 +343,6 @@ class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
 			
 			rootGUI.fileChooser.path = selectedPath
 			rootGUI.currentPathField.text = selectedPath
-
-class LoadFileChooserPopup(BoxLayout):
-	load = ObjectProperty(None)
-	cancel = ObjectProperty(None)
-	
-	def __init__(self, rootGUI, **kwargs):
-		super(LoadFileChooserPopup, self).__init__(**kwargs)
-		
-		self.rootGUI = rootGUI
-		
-		if os.name != 'posix':
-			import string
-			available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
-			
-			self.pathList.data.append(
-				{'text': 'Data file location setting', 'selectable': True, 'path': 'c:\\temp\\cpdata'})
-			
-			for drive in available_drives:
-				self.pathList.data.append({'text': drive, 'selectable': True, 'path': drive})
-			
-			# sizing LoadFileChooserPopup widgets
-			self.popupBoxLayout.size_hint_y = 0.17
-			self.currentPathField.size_hint_y = 0.12
-		else:
-			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
-			                           'path': '/storage/emulated/0/download/Audiobooks'})
-			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'path': '/storage/emulated/0'})
-			
-			sdCardDir = SD_CARD_DIR_SMARTPHONE
-			
-			if not os.path.isdir(sdCardDir):
-				sdCardDir = SD_CARD_DIR_TABLET
-			
-			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'path': sdCardDir})
-			
-			# sizing LoadFileChooserPopup widgets
-			self.popupBoxLayout.size_hint_y = 0.16
-			self.currentPathField.size_hint_y = 0.08
-		
-		# specify pre-selected node by its index in the data
-		self.diskRecycleBoxLayout.selected_nodes = [0]
-
-class SaveFileChooserPopup(BoxLayout):
-	load = ObjectProperty(None)
-	save = ObjectProperty(None)
-	cancel = ObjectProperty(None)
-	
-	def __init__(self, rootGUI, **kwargs):
-		super(SaveFileChooserPopup, self).__init__(**kwargs)
-		
-		self.rootGUI = rootGUI
-		
-		if os.name != 'posix':
-			import string
-			available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
-			
-			self.pathList.data.append(
-				{'text': 'Data file location setting', 'selectable': True, 'path': 'c:\\temp\\cpdata'})
-			
-			for drive in available_drives:
-				self.pathList.data.append({'text': drive, 'selectable': True, 'path': drive})
-			
-			# sizing LoadFileChooserPopup widgets
-			self.popupBoxLayout.size_hint_y = 0.17
-			self.currentPathField.size_hint_y = 0.31
-		else:
-			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
-			                           'path': '/storage/emulated/0/download/Audiobooks'})
-			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'path': '/storage/emulated/0'})
-			
-			sdCardDir = SD_CARD_DIR_SMARTPHONE
-			
-			if not os.path.isdir(sdCardDir):
-				sdCardDir = SD_CARD_DIR_TABLET
-			
-			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'path': sdCardDir})
-			
-			# sizing LoadFileChooserPopup widgets
-			self.popupBoxLayout.size_hint_y = 0.16
-			self.currentPathField.size_hint_y = 0.08
-		
-		# specify pre-selected node by its index in the data
-		self.diskRecycleBoxLayout.selected_nodes = [0]
-
-	def save(self, path, filename, isLoadAtStart):
-		if not filename:
-			# no file selected. Load dialog remains open ..
-			return
-
-		self.rootGUI.saveHistoryToFile(path, filename, isLoadAtStart)
-		self.rootGUI.dismissPopup()
-
-	def toggleLoadAtStart(self, active):
-		if active:
-			self.rootGUI.updateStatusBar('Load at start activated')
-		else:
-			self.rootGUI.updateStatusBar('')
 
 class CryptoPricerGUI(BoxLayout):
 	requestInput = ObjectProperty()
@@ -991,8 +891,6 @@ class CryptoPricerGUI(BoxLayout):
 				self.configMgr.loadAtStartPathFilename = ''
 
 		self.configMgr.storeConfig()
-
-		self.dismissPopup()
 		self.displayFileActionOnStatusBar(pathFileName, FILE_SAVED, isLoadAtStart)
 		self.refocusOnRequestInput()
 
