@@ -25,7 +25,7 @@
     requestListRVSelBoxLayout: selectable_recyclebox_layout
     boxLayoutContainingRV: boxlayout_recycleview
 
-	# adding main windows borders
+	# adding main windows borders. Does not impact sub widgets !
     padding: 5
     spacing: 5
 
@@ -410,6 +410,26 @@
                     size_hint_max_x: 60
                     size_hint_y: None
                     on_press: root.toggleLoadAtStart(self.active)
+
+            BoxLayout:
+                size_hint_y: None
+                Label:
+                    #id: text_input
+                    text: '/storage/emulated/0/CryptoPricerData/'
+                    font_size: '15sp'
+                    size_hint_x: 0.9
+                    size_hint_y: 1 # required so the chkbx is centered vertically !!
+                    height: self.texture_size[1] + dp(10)
+                    canvas.before:
+                        Color:
+                            rgba: 1, 0, 0, 0.5
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+				CheckBox:
+					#id: load_at_start
+					size_hint_x: None
+					on_press: root.toggleLoadAtStart(self.active)
 
         GridLayout:
             cols: 2
