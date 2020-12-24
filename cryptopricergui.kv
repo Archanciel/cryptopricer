@@ -5,91 +5,91 @@
 #: import CheckBox kivy.uix.checkbox.CheckBox
 
 <CryptoPricerGUI>:
-    orientation: "vertical"
-    #optimizing app size for your smartphone with Messagease keyboard
-    size_hint: 1, .62
-    pos_hint: {'x' : 0, 'y' : .38}
-    requestInput: request_TextInput
-    requestListRV: request_RecycleView_list
-    resultOutput: ro_output_TextInput
-    toggleHistoButton: toggle_history_list_Button
-    deleteButton: delete_Button
-    replaceButton: replace_Button
-    replayAllButton: replay_all_Button
-    moveUpButton: moveUp_Button
-    moveDownButton: moveDown_Button
-    statusBarScrollView: scrlv_status_bar
-    statusBarTextInput: status_bar
-    clearResultOutputButton: clear_output_Button
-    toggleAppSizeButton: toggle_app_size_Button
-    requestListRVSelBoxLayout: selectable_recyclebox_layout
-    boxLayoutContainingRV: boxlayout_recycleview
+	orientation: "vertical"
+	#optimizing app size for your smartphone with Messagease keyboard
+	size_hint: 1, .62
+	pos_hint: {'x' : 0, 'y' : .38}
+	requestInput: request_TextInput
+	requestListRV: request_RecycleView_list
+	resultOutput: ro_output_TextInput
+	toggleHistoButton: toggle_history_list_Button
+	deleteButton: delete_Button
+	replaceButton: replace_Button
+	replayAllButton: replay_all_Button
+	moveUpButton: moveUp_Button
+	moveDownButton: moveDown_Button
+	statusBarScrollView: scrlv_status_bar
+	statusBarTextInput: status_bar
+	clearResultOutputButton: clear_output_Button
+	toggleAppSizeButton: toggle_app_size_Button
+	requestListRVSelBoxLayout: selectable_recyclebox_layout
+	boxLayoutContainingRV: boxlayout_recycleview
 
 	# adding main windows borders. Does not impact sub widgets !
-    padding: 5
-    spacing: 5
+	padding: 5
+	spacing: 5
 
-    canvas.before:
-        Color:
-            rgb: [0.22,0.22,0.22]
-        Rectangle:
-            pos: self.pos
-            size: self.size
+	canvas.before:
+		Color:
+			rgb: [0.22,0.22,0.22]
+		Rectangle:
+			pos: self.pos
+			size: self.size
 
-    BoxLayout:
-        size_hint_y: None
-        height: "28dp"
-        canvas.before:
-            Color:
-                rgb: [0,0,0]
-            Rectangle:
-                pos: self.pos
-                size: self.size
+	BoxLayout:
+		size_hint_y: None
+		height: "28dp"
+		canvas.before:
+			Color:
+				rgb: [0,0,0]
+			Rectangle:
+				pos: self.pos
+				size: self.size
 
-        GridLayout:
-            cols: 2
-            TextInput:
-                id: request_TextInput
-                background_color: 0,0,0,0
-                foreground_color: 1,1,1,1
-                focus: True
-                multiline: False
-                #ENTER triggers root.submitRequest()
-                on_text_validate: root.submitRequest()
-                on_text: root.ensureLowercase()
-            Button:
-                id: toggle_app_size_Button
-                text: 'Full'
-                size_hint_x: None
-                width: 130
-                on_press: root.toggleAppPosAndSize()
+		GridLayout:
+			cols: 2
+			TextInput:
+				id: request_TextInput
+				background_color: 0,0,0,0
+				foreground_color: 1,1,1,1
+				focus: True
+				multiline: False
+				#ENTER triggers root.submitRequest()
+				on_text_validate: root.submitRequest()
+				on_text: root.ensureLowercase()
+			Button:
+				id: toggle_app_size_Button
+				text: 'Full'
+				size_hint_x: None
+				width: 130
+				on_press: root.toggleAppPosAndSize()
 
-    BoxLayout:
-        size_hint_y: None
-        height: "28dp"
-        ToggleButton:
-            id: toggle_history_list_Button
-            text: "History"
-            size_hint_x: 15
-            disabled:True
-            on_press: root.toggleRequestList()
-        Button:
-            id: delete_Button
-            text: "Delete"
-            size_hint_x: 15
-            disabled: True
-            on_press: root.deleteRequest()
-        Button:
-            id: replace_Button
-            text: "Replace"
-            size_hint_x: 15
-            disabled: True
-            on_press: root.replaceRequest()
-        Button:
-            id: moveUp_Button
-            size_hint_x: 8
-            disabled: True
-            on_press: selectable_recyclebox_layout.moveItemUp()
+	BoxLayout:
+		size_hint_y: None
+		height: "28dp"
+		ToggleButton:
+			id: toggle_history_list_Button
+			text: "History"
+			size_hint_x: 15
+			disabled:True
+			on_press: root.toggleRequestList()
+		Button:
+			id: delete_Button
+			text: "Delete"
+			size_hint_x: 15
+			disabled: True
+			on_press: root.deleteRequest()
+		Button:
+			id: replace_Button
+			text: "Replace"
+			size_hint_x: 15
+			disabled: True
+			on_press: root.replaceRequest()
+		Button:
+			id: moveUp_Button
+			size_hint_x: 8
+			disabled: True
+			on_press: selectable_recyclebox_layout.moveItemUp()
 			StackLayout:
 				pos: self.parent.pos
 				size: self.parent.size
@@ -98,11 +98,11 @@
 					source: 'arrow-up-32-disabled.png' if self.parent.disabled else 'arrow-up-32.png'
 					size_hint_x: 1
 					width: 74
-        Button:
-            id: moveDown_Button
-            size_hint_x: 8
-            disabled: True
-            on_press: selectable_recyclebox_layout.moveItemDown()
+		Button:
+			id: moveDown_Button
+			size_hint_x: 8
+			disabled: True
+			on_press: selectable_recyclebox_layout.moveItemDown()
 			StackLayout:
 				pos: self.parent.pos
 				size: self.parent.size
@@ -111,347 +111,347 @@
 					source: 'arrow-down-32-disabled.png' if self.parent.disabled else 'arrow-down-32.png'
 					size_hint_x: 1
 					width: 74
-        Button:
-            id: replay_all_Button
-            text: "Repl All"
-            size_hint_x: 15
-            disabled: True
-            on_press: root.replayAllRequests()
-        Button:
-            id: menu_Button
-            text: "..."
-            size_hint_x: 13
-            on_release: root.openDropDownMenu(self)
+		Button:
+			id: replay_all_Button
+			text: "Repl All"
+			size_hint_x: 15
+			disabled: True
+			on_press: root.replayAllRequests()
+		Button:
+			id: menu_Button
+			text: "..."
+			size_hint_x: 13
+			on_release: root.openDropDownMenu(self)
 
-    BoxLayout:
-        id: boxlayout_recycleview
-        size_hint_y: None
-        height: "0dp"
+	BoxLayout:
+		id: boxlayout_recycleview
+		size_hint_y: None
+		height: "0dp"
 
-        RecycleView:
-            id: request_RecycleView_list
-            scroll_y: 0 # forces scrolling to list bottom after adding an entry
-            effect_cls: "ScrollEffect" # prevents overscrolling
-            viewclass: 'SelectableLabel'
-            scroll_type: ['bars', 'content']
-            scroll_wheel_distance: dp(114)
-            bar_width: dp(10)
+		RecycleView:
+			id: request_RecycleView_list
+			scroll_y: 0 # forces scrolling to list bottom after adding an entry
+			effect_cls: "ScrollEffect" # prevents overscrolling
+			viewclass: 'SelectableLabel'
+			scroll_type: ['bars', 'content']
+			scroll_wheel_distance: dp(114)
+			bar_width: dp(10)
 
-            SelectableRecycleBoxLayout:
-                id: selectable_recyclebox_layout
-                cryptoPricerGUI: root
-                key_selection: 'selectable' # required so that 'selectable'
-                                            # key/value can be added to
-                                            # RecycleView data items
-                default_size: None, dp(15)
-                default_size_hint: 1, None
-                size_hint_y: None
-                height: self.minimum_height
-                spacing: 0.5
-                orientation: 'vertical'
-                multiselect: False
-                touch_multiselect: False
+			SelectableRecycleBoxLayout:
+				id: selectable_recyclebox_layout
+				cryptoPricerGUI: root
+				key_selection: 'selectable' # required so that 'selectable'
+											# key/value can be added to
+											# RecycleView data items
+				default_size: None, dp(15)
+				default_size_hint: 1, None
+				size_hint_y: None
+				height: self.minimum_height
+				spacing: 0.5
+				orientation: 'vertical'
+				multiselect: False
+				touch_multiselect: False
 
-    ScrollView:
-        id: scrlv_out
-        canvas.before:
-            Color:
-                rgb: [0,0,0]
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        effect_cls: ScrollEffect #prevents overscrolling
-        scroll_y: 0 # forces scrolling to bottom after adding text
-        TextInput:
-            id: ro_output_TextInput
-            size_hint: (1, None)
-            height: max(self.minimum_height, scrlv_out.height) #required to enable scrolling when output starts to grow
-            readonly: True
-            background_color: 0,0,0,0
-            foreground_color: 1,1,1,1
+	ScrollView:
+		id: scrlv_out
+		canvas.before:
+			Color:
+				rgb: [0,0,0]
+			Rectangle:
+				pos: self.pos
+				size: self.size
+		effect_cls: ScrollEffect #prevents overscrolling
+		scroll_y: 0 # forces scrolling to bottom after adding text
+		TextInput:
+			id: ro_output_TextInput
+			size_hint: (1, None)
+			height: max(self.minimum_height, scrlv_out.height) #required to enable scrolling when output starts to grow
+			readonly: True
+			background_color: 0,0,0,0
+			foreground_color: 1,1,1,1
 
-    BoxLayout:
-        size_hint_y: None
-        height: "43dp" # enables two lines display for fiat computation formula
-        canvas.before:
-            Color:
-                rgb: [0,0,0]
-            Rectangle:
-                pos: self.pos
-                size: self.size
+	BoxLayout:
+		size_hint_y: None
+		height: "43dp" # enables two lines display for fiat computation formula
+		canvas.before:
+			Color:
+				rgb: [0,0,0]
+			Rectangle:
+				pos: self.pos
+				size: self.size
 
-        GridLayout:
-            cols: 2
-            ScrollView:
-                id: scrlv_status_bar
-                do_scroll_y: False # limiting to horizontal scrolling
-                effect_cls: ScrollEffect #prevents overscrolling
-                TextInput:
-                    id: status_bar
-                    size_hint: (None, 1) # if remopved, scrolling no longer working. 1 required for correct 2 lines display !
-                    background_color: 0,0,0,0
-                    foreground_color: 1,1,1,1
-                    width: scrlv_status_bar.width
-                    readonly: True
-                    multiline: False
-                    on_text: root.statusBarTextChanged()
-            Button:
-                id: clear_output_Button
-                text: 'Clear'
-                size_hint_x: None
-                width: 130
-                disabled: True
-                on_press: root.clearOutput()
+		GridLayout:
+			cols: 2
+			ScrollView:
+				id: scrlv_status_bar
+				do_scroll_y: False # limiting to horizontal scrolling
+				effect_cls: ScrollEffect #prevents overscrolling
+				TextInput:
+					id: status_bar
+					size_hint: (None, 1) # if remopved, scrolling no longer working. 1 required for correct 2 lines display !
+					background_color: 0,0,0,0
+					foreground_color: 1,1,1,1
+					width: scrlv_status_bar.width
+					readonly: True
+					multiline: False
+					on_text: root.statusBarTextChanged()
+			Button:
+				id: clear_output_Button
+				text: 'Clear'
+				size_hint_x: None
+				width: 130
+				disabled: True
+				on_press: root.clearOutput()
 
 <SelectableLabel>:
-    # Draw a background to indicate selection
-    canvas.before:
-        Color:
-            rgba: (1, 0, 0, 1) if self.selected else (.0, 0.9, .1, .3)
-        Rectangle:
-            pos: self.pos
-            size: self.size
-        Color:
-            rgba: (0, 0.9, .1, .3)
+	# Draw a background to indicate selection
+	canvas.before:
+		Color:
+			rgba: (1, 0, 0, 1) if self.selected else (.0, 0.9, .1, .3)
+		Rectangle:
+			pos: self.pos
+			size: self.size
+		Color:
+			rgba: (0, 0.9, .1, .3)
 
 <CustomDropDown>
-    saveButton: save_Button
-    statusToRequestInputButton: status_to_request_input_Button
-    Button:
-        text: 'Load'
-        size_hint_y: None
-        height: '28dp'
-        on_release: root.showLoad()
-    Button:
-        id: save_Button
-        text: 'Save'
-        size_hint_y: None
-        height: '28dp'
-        disabled: True
-        on_release: root.showSave()
-    Button:
-        id: status_to_request_input_Button
-        text: 'Status >'
-        size_hint_y: None
-        height: '28dp'
-        disabled: True
-        on_release: root.copyStatusBarStrToRequestEntry()
-    Button:
-        text: "Settings"
-        size_hint_y: None
-        height: '28dp'
-        on_press: app.open_settings()
-    Button:
-        text: 'Help'
-        size_hint_y: None
-        height: '28dp'
-        on_release: root.help()
+	saveButton: save_Button
+	statusToRequestInputButton: status_to_request_input_Button
+	Button:
+		text: 'Load'
+		size_hint_y: None
+		height: '28dp'
+		on_release: root.showLoad()
+	Button:
+		id: save_Button
+		text: 'Save'
+		size_hint_y: None
+		height: '28dp'
+		disabled: True
+		on_release: root.showSave()
+	Button:
+		id: status_to_request_input_Button
+		text: 'Status >'
+		size_hint_y: None
+		height: '28dp'
+		disabled: True
+		on_release: root.copyStatusBarStrToRequestEntry()
+	Button:
+		text: "Settings"
+		size_hint_y: None
+		height: '28dp'
+		on_press: app.open_settings()
+	Button:
+		text: 'Help'
+		size_hint_y: None
+		height: '28dp'
+		on_release: root.help()
 
 <ScrollablePopup>:
-    id: scr_popup
-    auto_dismiss: False
-    contentBox: content_box
-    scrollView: scroll_view
+	id: scr_popup
+	auto_dismiss: False
+	contentBox: content_box
+	scrollView: scroll_view
 
-    BoxLayout:
-        id: content_box
-        orientation: "vertical"
-        content: content_text
+	BoxLayout:
+		id: content_box
+		orientation: "vertical"
+		content: content_text
 
-        ScrollView:
-            id: scroll_view
-            effect_cls: "ScrollEffect" # prevents overscrolling
-            do_scroll_x: False # limiting to vertical scrolling
-            Label:
-                id: content_text
-                size_hint_y: None
-                height: self.texture_size[1]
-                text_size: (self.width-20), None
-                line_height: 0.9
-                valign: "top"
-                markup: True
+		ScrollView:
+			id: scroll_view
+			effect_cls: "ScrollEffect" # prevents overscrolling
+			do_scroll_x: False # limiting to vertical scrolling
+			Label:
+				id: content_text
+				size_hint_y: None
+				height: self.texture_size[1]
+				text_size: (self.width-20), None
+				line_height: 0.9
+				valign: "top"
+				markup: True
 
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint_y: None
-            height: '40dp'
-            Button:
-                text: "Previous page"
-                on_press: scr_popup.previousPage()
-            Button:
-                text: "Next page"
-                on_press: scr_popup.nextPage()
-            Button:
-                text: "Close"
-                on_press: root.dismiss()
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint_y: None
+			height: '40dp'
+			Button:
+				text: "Previous page"
+				on_press: scr_popup.previousPage()
+			Button:
+				text: "Next page"
+				on_press: scr_popup.nextPage()
+			Button:
+				text: "Close"
+				on_press: root.dismiss()
 
 <LoadFileChooserPopup>: # sub-class of BoxLayout
-    popupBoxLayout: popup_boxlayout
+	popupBoxLayout: popup_boxlayout
 	diskRecycleBoxLayout: disc_mem_RB_layout
 	fileChooser: file_chooser
 	pathList: path_mem_list
 	currentPathField: text_path_load
 	orientation: 'vertical'
-    BoxLayout:
-        id: popup_boxlayout
-        orientation: 'vertical'
-        #size_hint_y: 0.17 # value for Windows 10
-        #size_hint_y: 0.11 # value for Android tablet
-        size_hint_y: 0.16 # value for Android smartphone
-        RecycleView:
-            id: path_mem_list
-            effect_cls: "ScrollEffect" # prevents overscrolling
-            viewclass: 'SelectableLabelFileChooser'
-            scroll_type: ['bars', 'content']
-            scroll_wheel_distance: dp(114)
-            bar_width: dp(10)
-            scroll_y: 1 # 0 forces scrolling to list bottom after adding
-                        # an item, 1 forces scrolling to list top
-            effect_cls: "ScrollEffect" # prevents overscrolling
-            SelectableRecycleBoxLayoutFileChooser:
-                id: disc_mem_RB_layout
-                key_selection: 'selectable' # required so that 'selectable'
-                                            # key/value can be added to
-                                            # RecycleView data items
-                default_size: None, dp(28)
-                default_size_hint: 1, None
-                size_hint_y: None
-                height: self.minimum_height
-                orientation: 'vertical'
-                multiselect: False
-                touch_multiselect: False
-                spacing: dp(2)
+	BoxLayout:
+		id: popup_boxlayout
+		orientation: 'vertical'
+		#size_hint_y: 0.17 # value for Windows 10
+		#size_hint_y: 0.11 # value for Android tablet
+		size_hint_y: 0.16 # value for Android smartphone
+		RecycleView:
+			id: path_mem_list
+			effect_cls: "ScrollEffect" # prevents overscrolling
+			viewclass: 'SelectableLabelFileChooser'
+			scroll_type: ['bars', 'content']
+			scroll_wheel_distance: dp(114)
+			bar_width: dp(10)
+			scroll_y: 1 # 0 forces scrolling to list bottom after adding
+						# an item, 1 forces scrolling to list top
+			effect_cls: "ScrollEffect" # prevents overscrolling
+			SelectableRecycleBoxLayoutFileChooser:
+				id: disc_mem_RB_layout
+				key_selection: 'selectable' # required so that 'selectable'
+											# key/value can be added to
+											# RecycleView data items
+				default_size: None, dp(28)
+				default_size_hint: 1, None
+				size_hint_y: None
+				height: self.minimum_height
+				orientation: 'vertical'
+				multiselect: False
+				touch_multiselect: False
+				spacing: dp(2)
 
-    BoxLayout:
-        orientation: 'vertical'
+	BoxLayout:
+		orientation: 'vertical'
 
-        FileChooserListView:
-            id: file_chooser
-            dirselect: True
-            on_selection: text_path_load.text = self.selection and self.selection[0] or ''
+		FileChooserListView:
+			id: file_chooser
+			dirselect: True
+			on_selection: text_path_load.text = self.selection and self.selection[0] or ''
 
-        TextInput:
-            id: text_path_load
-            #size_hint_y: 0.12 # value for Windows 10
-            #size_hint_y: 0.05 # value for Android tablet
-            size_hint_y: 0.08 # value for Android smartphone
-            multiline: False
-            readonly: True
+		TextInput:
+			id: text_path_load
+			#size_hint_y: 0.12 # value for Windows 10
+			#size_hint_y: 0.05 # value for Android tablet
+			size_hint_y: 0.08 # value for Android smartphone
+			multiline: False
+			readonly: True
 
-        GridLayout:
-            cols: 2
-            size_hint_y: None
-            height: '28dp'
-            Button:
-                text: "Cancel"
-                on_release: root.cancel()
-            Button:
-                text: "Load"
-                on_release: root.load(file_chooser.path, file_chooser.selection)
+		GridLayout:
+			cols: 2
+			size_hint_y: None
+			height: '28dp'
+			Button:
+				text: "Cancel"
+				on_release: root.cancel()
+			Button:
+				text: "Load"
+				on_release: root.load(file_chooser.path, file_chooser.selection)
 
 <SaveFileChooserPopup>: # sub-class of BoxLayout
-    popupBoxLayout: popup_boxlayout
+	popupBoxLayout: popup_boxlayout
 	diskRecycleBoxLayout: disc_mem_RB_layout
 	fileChooser: file_chooser
 	pathList: path_mem_list
 	currentPathField: text_input
 	orientation: 'vertical'
-    BoxLayout:
-        id: popup_boxlayout
-        orientation: 'vertical'
-        #size_hint_y: 0.17 # value for Windows 10
-        #size_hint_y: 0.11 # value for Android tablet
-        size_hint_y: 0.16 # value for Android smartphone
-        RecycleView:
-            id: path_mem_list
-            effect_cls: "ScrollEffect" # prevents overscrolling
-            viewclass: 'SelectableLabelFileChooser'
-            scroll_type: ['bars', 'content']
-            scroll_wheel_distance: dp(114)
-            bar_width: dp(10)
-            scroll_y: 1 # 0 forces scrolling to list bottom after adding
-                        # an item, 1 forces scrolling to list top
-            effect_cls: "ScrollEffect" # prevents overscrolling
-            SelectableRecycleBoxLayoutFileChooser:
-                id: disc_mem_RB_layout
-                key_selection: 'selectable' # required so that 'selectable'
-                                            # key/value can be added to
-                                            # RecycleView data items
-                default_size: None, dp(28)
-                default_size_hint: 1, None
-                size_hint_y: None
-                height: self.minimum_height
-                orientation: 'vertical'
-                multiselect: False
-                touch_multiselect: False
-                spacing: dp(2)
+	BoxLayout:
+		id: popup_boxlayout
+		orientation: 'vertical'
+		#size_hint_y: 0.17 # value for Windows 10
+		#size_hint_y: 0.11 # value for Android tablet
+		size_hint_y: 0.16 # value for Android smartphone
+		RecycleView:
+			id: path_mem_list
+			effect_cls: "ScrollEffect" # prevents overscrolling
+			viewclass: 'SelectableLabelFileChooser'
+			scroll_type: ['bars', 'content']
+			scroll_wheel_distance: dp(114)
+			bar_width: dp(10)
+			scroll_y: 1 # 0 forces scrolling to list bottom after adding
+						# an item, 1 forces scrolling to list top
+			effect_cls: "ScrollEffect" # prevents overscrolling
+			SelectableRecycleBoxLayoutFileChooser:
+				id: disc_mem_RB_layout
+				key_selection: 'selectable' # required so that 'selectable'
+											# key/value can be added to
+											# RecycleView data items
+				default_size: None, dp(28)
+				default_size_hint: 1, None
+				size_hint_y: None
+				height: self.minimum_height
+				orientation: 'vertical'
+				multiselect: False
+				touch_multiselect: False
+				spacing: dp(2)
 
-    BoxLayout:
-        orientation: 'vertical'
+	BoxLayout:
+		orientation: 'vertical'
 
-        FileChooserListView:
-            id: file_chooser
-            dirselect: True
-            on_selection: text_input.text = self.selection and self.selection[0] or ''
+		FileChooserListView:
+			id: file_chooser
+			dirselect: True
+			on_selection: text_input.text = self.selection and self.selection[0] or ''
 
-        BoxLayout:
-            orientation: 'vertical'
-            #size_hint_y: 0.12 # value for Windows 10
-            #size_hint_y: 0.05 # value for Android tablet
-            size_hint_y: 0.1 # value for Android smartphone
-            BoxLayout:
-                size_hint_y: None
-                TextInput:
-                    id: text_input
-                    multiline: False
-                    readonly: True
-                CheckBox:
-                    id: load_at_start
-                    size_hint_max_x: 60
-                    size_hint_y: None
-                    on_press: root.toggleLoadAtStart(self.active)
+		BoxLayout:
+			orientation: 'vertical'
+			#size_hint_y: 0.12 # value for Windows 10
+			#size_hint_y: 0.05 # value for Android tablet
+			size_hint_y: 0.1 # value for Android smartphone
+			BoxLayout:
+				size_hint_y: None
+				TextInput:
+					id: text_input
+					multiline: False
+					readonly: True
+				CheckBox:
+					id: load_at_start
+					size_hint_max_x: 60
+					size_hint_y: None
+					on_press: root.toggleLoadAtStart(self.active)
 
-            BoxLayout:
-                size_hint_y: None
-                Label:
-                    #id: text_input
-                    text: '/storage/emulated/0/CryptoPricerData/'
-                    font_size: '15sp'
-                    size_hint_x: 0.9
-                    size_hint_y: 1 # required so the chkbx is centered vertically !!
-                    height: self.texture_size[1] + dp(10)
-                    canvas.before:
-                        Color:
-                            rgba: 1, 0, 0, 0.5
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
+			BoxLayout:
+				size_hint_y: None
+				Label:
+					#id: text_input
+					text: '/storage/emulated/0/CryptoPricerData/'
+					font_size: '15sp'
+					size_hint_x: 0.9
+					size_hint_y: 1 # required so the chkbx is centered vertically !!
+					height: self.texture_size[1] + dp(10)
+					canvas.before:
+						Color:
+							rgba: 1, 0, 0, 0.5
+						Rectangle:
+							pos: self.pos
+							size: self.size
 				CheckBox:
 					#id: load_at_start
 					size_hint_x: None
 					on_press: root.toggleLoadAtStart(self.active)
 
-        GridLayout:
-            cols: 2
-            size_hint_y: None
-            height: '28dp'
-            Button:
-                text: "Cancel"
-                on_release: root.cancel()
-            Button:
-                text: "Save"
-                on_release: root.save(file_chooser.path, text_input.text, load_at_start.active)
+		GridLayout:
+			cols: 2
+			size_hint_y: None
+			height: '28dp'
+			Button:
+				text: "Cancel"
+				on_release: root.cancel()
+			Button:
+				text: "Save"
+				on_release: root.save(file_chooser.path, text_input.text, load_at_start.active)
 
 <SelectableLabelFileChooser>:
-    # Draw a background to indicate selection
-    canvas.before:
-        Color:
-            rgba: (1, 0, 0, 1) if self.selected else (.0, 0.9, .1, .3)
-        Rectangle:
-            pos: self.pos
-            size: self.size
-        Color:
-            rgba: (0, 0.9, .1, .3)
-        Rectangle:
-            pos: self.pos
-            size: self.size
+	# Draw a background to indicate selection
+	canvas.before:
+		Color:
+			rgba: (1, 0, 0, 1) if self.selected else (.0, 0.9, .1, .3)
+		Rectangle:
+			pos: self.pos
+			size: self.size
+		Color:
+			rgba: (0, 0.9, .1, .3)
+		Rectangle:
+			pos: self.pos
+			size: self.size
