@@ -11,9 +11,6 @@ class FileChooserPopup(BoxLayout):
 	"""
 	
 	"""
-	POPUP_SIZE_PROPORTION_x = 0.8
-	POPUP_SIZE_PROPORTION_y = 0.62
-	
 	load = ObjectProperty(None)
 #	save = ObjectProperty(None)
 	cancel = ObjectProperty(None)
@@ -33,6 +30,14 @@ class FileChooserPopup(BoxLayout):
 		# specify pre-selected node by its index in the data
 		self.diskRecycleBoxLayout.selected_nodes = [0]
 
+	def sizeFileChooser(self):
+		if os.name != 'posix':
+			self.popupSizeProportion_x = 0.8
+			self.popupSizeProportion_y = 0.8
+		else:
+			self.popupSizeProportion_x = 0.8
+			self.popupSizeProportion_y = 0.62
+	
 	def fillDriveOrMemoryList(self):
 		"""
 		
@@ -77,6 +82,8 @@ class LoadFileChooserPopup(FileChooserPopup):
 		
 		:return:
 		"""
+		super().sizeFileChooser()
+		
 		if os.name != 'posix':
 			self.popupBoxLayout.size_hint_y = 0.17
 			self.currentPathField.size_hint_y = 0.12
@@ -96,6 +103,8 @@ class SaveFileChooserPopup(FileChooserPopup):
 		
 		:return:
 		"""
+		super().sizeFileChooser()
+
 		if os.name != 'posix':
 			self.gridLayoutPathField.size_hint_y = 0.12
 			self.loadAtStartChkBox.size_hint_x = 0.06

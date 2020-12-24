@@ -818,16 +818,16 @@ class CryptoPricerGUI(BoxLayout):
 	def openFileLoadPopup(self):
 		content = LoadFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		self.popup = Popup(title="Select history file to load", content=content,
-							pos_hint={'top': 0.92},	
-							size_hint=(LoadFileChooserPopup.POPUP_SIZE_PROPORTION_x, LoadFileChooserPopup.POPUP_SIZE_PROPORTION_y))
+		                   pos_hint={'top': 0.92},
+		                   size_hint=(content.popupSizeProportion_x, content.popupSizeProportion_y))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 
 	def openFileSavePopup(self):
 		content = SaveFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		self.popup = Popup(title="Save history to file", content=content,
-							pos_hint={'top': 0.98},
-							size_hint=(SaveFileChooserPopup.POPUP_SIZE_PROPORTION_x, SaveFileChooserPopup.POPUP_SIZE_PROPORTION_y))
+		                   pos_hint={'top': 0.98},
+		                   size_hint=(content.popupSizeProportion_x, content.popupSizeProportion_y))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 
