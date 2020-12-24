@@ -4,14 +4,15 @@ from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 
 SD_CARD_DIR_TABLET = '/storage/0000-0000'
-path_file_name_text_input = '/storage/9016-4EF8'
+SD_CARD_DIR_SMARTPHONE = '/storage/9016-4EF8'
 LOAD_AT_START_MSG = ' (load at start activated)'
 
 class FileChooserPopup(BoxLayout):
 	"""
 	
 	"""
-	POPUP_SIZE_PROPORTION = 0.8
+	POPUP_SIZE_PROPORTION_x = 0.8
+	POPUP_SIZE_PROPORTION_y = 0.62
 	
 	load = ObjectProperty(None)
 #	save = ObjectProperty(None)
@@ -20,14 +21,15 @@ class FileChooserPopup(BoxLayout):
 	def __init__(self, rootGUI, **kwargs):
 		super(FileChooserPopup, self).__init__(**kwargs)
 		
+		self.sdCardDir = None
 		self.rootGUI = rootGUI
-		
-		# sizing FileChooserPopup widgets. Method defined in sub classes
-		self.sizeFileChooser()
 		
 		# fillig the drive list (on Windows) or memory list (on Android)
 		self.fillDriveOrMemoryList()
 
+		# sizing FileChooserPopup widgets. Method defined in sub classes
+		self.sizeFileChooser()
+		
 		# specify pre-selected node by its index in the data
 		self.diskRecycleBoxLayout.selected_nodes = [0]
 
@@ -99,10 +101,10 @@ class SaveFileChooserPopup(FileChooserPopup):
 			self.loadAtStartChkBox.size_hint_x = 0.06
 		else:
 			if self.sdCardDir == SD_CARD_DIR_SMARTPHONE:
-				self.gridLayoutPathField.size_hint_y = 0.035
-				self.loadAtStartChkBox.size_hint_x = 0.17
+				self.gridLayoutPathField.size_hint_y = 0.08
+				self.loadAtStartChkBox.size_hint_x = 0.12
 			else:
-				self.gridLayoutPathField.size_hint_y = 0.023
+				self.gridLayoutPathField.size_hint_y = 0.05
 				self.loadAtStartChkBox.size_hint_x = 0.06
 	
 	def save(self, pathOnly, pathFileName, isLoadAtStart):
