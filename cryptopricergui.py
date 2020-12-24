@@ -250,13 +250,13 @@ class CustomDropDown(DropDown):
 		self.owner = owner
 
 	def showLoad(self):
-		message = 'Data path ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
+		message = 'Data pathOnly ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata pathOnly value using the Settings menu.'
 
 		if self.owner.ensureDataPathExist(self.owner.dataPath, message):
 			self.owner.openFileLoadPopup()
 
 	def showSave(self):
-		message = 'Data path ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
+		message = 'Data pathOnly ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata pathOnly value using the Settings menu.'
 
 		if self.owner.ensureDataPathExist(self.owner.dataPath, message):
 			self.owner.openFileSavePopup()
@@ -333,7 +333,7 @@ class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
 		
 		if is_selected:
 			rootGUI = rv.parent.parent
-			selectedPath = rv.data[index]['path']
+			selectedPath = rv.data[index]['pathOnly']
 			
 			if os.name != 'posix':
 				# we are on Windows
@@ -410,8 +410,8 @@ class CryptoPricerGUI(BoxLayout):
 	
 	def ensureDataPathExist(self, dataPath, message):
 		'''
-		Display a warning in a popup if the data path defined in the settings
-		does not exist and return False. If path ok, returns True. This prevents
+		Display a warning in a popup if the data pathOnly defined in the settings
+		does not exist and return False. If pathOnly ok, returns True. This prevents
 		exceptions at load or save or settings save time.
 		:return:
 		'''
@@ -435,7 +435,7 @@ class CryptoPricerGUI(BoxLayout):
 
 	def ensureDataPathFileNameExist(self, dataPathFileName, message):
 		'''
-		Display a warning in a popup if the passed data path file name
+		Display a warning in a popup if the passed data pathOnly file name
 		does not exist and return False. If dataPathFileName ok, returns True.
 		This prevents exceptions at load or save or settings save time.
 		:return:
@@ -818,14 +818,14 @@ class CryptoPricerGUI(BoxLayout):
 	def openFileLoadPopup(self):
 		content = LoadFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		self.popup = Popup(title="Select history file to load", content=content,
-							size_hint=(0.9, 0.9))
+		                   size_hint=(LoadFileChooserPopup.POPUP_SIZE_PROPORTION, LoadFileChooserPopup.POPUP_SIZE_PROPORTION))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 
 	def openFileSavePopup(self):
 		content = SaveFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		self.popup = Popup(title="Save history to file", content=content,
-							size_hint=(0.9, 0.9))
+							size_hint=(SaveFileChooserPopup.POPUP_SIZE_PROPORTION, SaveFileChooserPopup.POPUP_SIZE_PROPORTION))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 
@@ -868,11 +868,10 @@ class CryptoPricerGUI(BoxLayout):
 		self.manageStateOfGlobalRequestListButtons()
 		self.refocusOnRequestInput()
 
-	def saveHistoryToFile(self, path, filename, isLoadAtStart):
-		dataPathNotExistMessage = self.buildDataPathNotExistMessage(path)
-		pathFileName = os.path.join(path, filename)
+	def saveHistoryToFile(self, pathOnly, pathFileName, isLoadAtStart):
+		dataPathNotExistMessage = self.buildDataPathNotExistMessage(pathOnly)
 
-		if not filename or not self.ensureDataPathExist(path, dataPathNotExistMessage):
+		if not pathFileName or not self.ensureDataPathExist(pathOnly, dataPathNotExistMessage):
 			# no file selected. Save dialog remains open ..
 			return
 
@@ -897,7 +896,7 @@ class CryptoPricerGUI(BoxLayout):
 	# --- end file chooser code ---
 
 	def buildDataPathNotExistMessage(self, path):
-		return 'Data path ' + path + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
+		return 'Data pathOnly ' + path + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata pathOnly value using the Settings menu.'
 
 	def isLoadAtStart(self, filePathName):
 		return self.configMgr.loadAtStartPathFilename == filePathName
@@ -1022,7 +1021,7 @@ class CryptoPricerGUIApp(App):
 					"key": "referencecurrency",
 					"options": ["USD", "EURO", "CHF", "GBP"]
 				},
-				{"type": "path",
+				{"type": "pathOnly",
 					"title": "Data files location",
 					"desc": "Set the directory where the app data files like history files are stored",
 					"section": "General",
@@ -1114,7 +1113,7 @@ class CryptoPricerGUIApp(App):
 
 	def on_start(self):
 		'''
-		Testing at app start if data path defined in settings does exist
+		Testing at app start if data pathOnly defined in settings does exist
 		and if history file loaded at start app does exist. Since a warning popup
 		is displayed in case of invalid data, this must be performed here and
 		not in CryptoPricerGUI.__init__ where no popup could be displayed.

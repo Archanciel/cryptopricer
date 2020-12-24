@@ -354,7 +354,9 @@
 	diskRecycleBoxLayout: disc_mem_RB_layout
 	fileChooser: file_chooser
 	pathList: path_mem_list
-	currentPathField: text_input
+	gridLayoutPathField: grid_layout_path_field
+	currentPathField: path_file_name_text_input
+	loadAtStartChkBox: load_at_start_chk_box
 	orientation: 'vertical'
 	BoxLayout:
 		id: popup_boxlayout
@@ -392,22 +394,23 @@
 		FileChooserListView:
 			id: file_chooser
 			dirselect: True
-			on_selection: text_input.text = self.selection and self.selection[0] or ''
+			on_selection: path_file_name_text_input.text = self.selection and self.selection[0] or ''
 
         GridLayout:
+            id: grid_layout_path_field
             #size_hint_y: 0.023 # tablet
             #size_hint_y: 0.035 # smartphone
-            size_hint_y: 0.11 # Windows
+            size_hint_y: 0.12 # Windows
             cols: 2
             GridLayout:
                 rows: 1
                 TextInput:
-                    id: text_input
+                    id: path_file_name_text_input
                     font_size: '15sp'
                     multiline: False
-                    readonly: True
+                    readonly: False
                 CheckBox:
-                    id: load_at_start
+                    id: load_at_start_chk_box
                     #size_hint_x: 0.17 # smartphone
                     size_hint_x: 0.06 # tablet, Windows
                     on_press: root.toggleLoadAtStart(self.active)
@@ -421,7 +424,7 @@
 				on_release: root.cancel()
 			Button:
 				text: "Save"
-				on_release: root.save(file_chooser.path, text_input.text, load_at_start.active)
+				on_release: root.save(file_chooser.path, path_file_name_text_input.text, load_at_start_chk_box.active)
 
 <SelectableLabelFileChooser>:
 	# Draw a background to indicate selection

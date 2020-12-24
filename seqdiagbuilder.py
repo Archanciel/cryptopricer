@@ -1483,7 +1483,7 @@ class SeqDiagBuilder:
     @staticmethod
     def _extractPackageSpec(pythonClassFilePath):
         '''
-        Extract the package part of the class file path. The package component will be required
+        Extract the package part of the class file pathOnly. The package component will be required
         later when instanciating the class.
 
         :param pythonClassFilePath:
@@ -1493,7 +1493,7 @@ class SeqDiagBuilder:
         pythonisedProjectPath = SeqDiagBuilder._pythoniseFilePath(SeqDiagBuilder._projectPath)
         packageSpec = pythonisedPythonClassFilePath.replace(pythonisedProjectPath, '')
 
-        #handling file path containg either \\ (windows like) or / (unix like)
+        #handling file pathOnly containg either \\ (windows like) or / (unix like)
         packageSpec = packageSpec.replace('.', '', 1)
 
         return packageSpec
