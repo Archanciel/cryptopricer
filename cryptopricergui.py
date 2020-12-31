@@ -11,7 +11,6 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
@@ -27,6 +26,7 @@ from kivy.uix.widget import Widget
 from kivy.utils import platform
 
 from configurationmanager import ConfigurationManager
+from filechooserpopup import LoadFileChooserPopup, SaveFileChooserPopup
 from pricerequester import PriceRequester
 from controller import Controller
 from guioutputformater import GuiOutputFormater
@@ -250,13 +250,13 @@ class CustomDropDown(DropDown):
 		self.owner = owner
 
 	def showLoad(self):
-		message = 'Data path ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
+		message = 'Data pathOnly ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata pathOnly value using the Settings menu.'
 
 		if self.owner.ensureDataPathExist(self.owner.dataPath, message):
 			self.owner.openFileLoadPopup()
 
 	def showSave(self):
-		message = 'Data path ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
+		message = 'Data pathOnly ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata pathOnly value using the Settings menu.'
 
 		if self.owner.ensureDataPathExist(self.owner.dataPath, message):
 			self.owner.openFileSavePopup()
@@ -301,9 +301,6 @@ class ScrollablePopup(Popup):
 		self.setContentTextToCurrentPage()
 		self.scrollView.scroll_y = 1 # force scrolling to top
 
-SD_CARD_DIR_TABLET = '/storage/0000-0000'
-SD_CARD_DIR_SMARTPHONE = '/storage/9016-4EF8'
-
 class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavior,
                                             RecycleBoxLayout):
 	''' Adds selection and focus behaviour to the view. '''
@@ -336,7 +333,7 @@ class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
 		
 		if is_selected:
 			rootGUI = rv.parent.parent
-			selectedPath = rv.data[index]['path']
+			selectedPath = rv.data[index]['pathOnly']
 			
 			if os.name != 'posix':
 				# we are on Windows
@@ -346,103 +343,6 @@ class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
 			
 			rootGUI.fileChooser.path = selectedPath
 			rootGUI.currentPathField.text = selectedPath
-
-class LoadFileChooserPopup(BoxLayout):
-	load = ObjectProperty(None)
-	cancel = ObjectProperty(None)
-	
-	def __init__(self, rootGUI, **kwargs):
-		super(LoadFileChooserPopup, self).__init__(**kwargs)
-		
-		self.rootGUI = rootGUI
-		
-		if os.name != 'posix':
-			import string
-			available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
-			
-			self.pathList.data.append(
-				{'text': 'Data file location setting', 'selectable': True, 'path': 'c:\\temp\\cpdata'})
-			
-			for drive in available_drives:
-				self.pathList.data.append({'text': drive, 'selectable': True, 'path': drive})
-			
-			# sizing LoadFileChooserPopup widgets
-			self.popupBoxLayout.size_hint_y = 0.17
-			self.currentPathField.size_hint_y = 0.12
-		else:
-			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
-			                           'path': '/storage/emulated/0/download/Audiobooks'})
-			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'path': '/storage/emulated/0'})
-			
-			sdCardDir = SD_CARD_DIR_SMARTPHONE
-			
-			if not os.path.isdir(sdCardDir):
-				sdCardDir = SD_CARD_DIR_TABLET
-			
-			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'path': sdCardDir})
-			
-			# sizing LoadFileChooserPopup widgets
-			self.popupBoxLayout.size_hint_y = 0.16
-			self.currentPathField.size_hint_y = 0.08
-		
-		# specify pre-selected node by its index in the data
-		self.diskRecycleBoxLayout.selected_nodes = [0]
-
-class SaveFileChooserPopup(BoxLayout):
-	load = ObjectProperty(None)
-	save = ObjectProperty(None)
-	cancel = ObjectProperty(None)
-	
-	def __init__(self, rootGUI, **kwargs):
-		super(SaveFileChooserPopup, self).__init__(**kwargs)
-		
-		self.rootGUI = rootGUI
-		
-		if os.name != 'posix':
-			import string
-			available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
-			
-			self.pathList.data.append(
-				{'text': 'Data file location setting', 'selectable': True, 'path': 'c:\\temp\\cpdata'})
-			
-			for drive in available_drives:
-				self.pathList.data.append({'text': drive, 'selectable': True, 'path': drive})
-			
-			# sizing LoadFileChooserPopup widgets
-			self.popupBoxLayout.size_hint_y = 0.17
-			self.currentPathField.size_hint_y = 0.31
-		else:
-			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
-			                           'path': '/storage/emulated/0/download/Audiobooks'})
-			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'path': '/storage/emulated/0'})
-			
-			sdCardDir = SD_CARD_DIR_SMARTPHONE
-			
-			if not os.path.isdir(sdCardDir):
-				sdCardDir = SD_CARD_DIR_TABLET
-			
-			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'path': sdCardDir})
-			
-			# sizing LoadFileChooserPopup widgets
-			self.popupBoxLayout.size_hint_y = 0.16
-			self.currentPathField.size_hint_y = 0.08
-		
-		# specify pre-selected node by its index in the data
-		self.diskRecycleBoxLayout.selected_nodes = [0]
-
-	def save(self, path, filename, isLoadAtStart):
-		if not filename:
-			# no file selected. Load dialog remains open ..
-			return
-
-		self.rootGUI.saveHistoryToFile(path, filename, isLoadAtStart)
-		self.rootGUI.dismissPopup()
-
-	def toggleLoadAtStart(self, active):
-		if active:
-			self.rootGUI.updateStatusBar('Load at start activated')
-		else:
-			self.rootGUI.updateStatusBar('')
 
 class CryptoPricerGUI(BoxLayout):
 	requestInput = ObjectProperty()
@@ -510,8 +410,8 @@ class CryptoPricerGUI(BoxLayout):
 	
 	def ensureDataPathExist(self, dataPath, message):
 		'''
-		Display a warning in a popup if the data path defined in the settings
-		does not exist and return False. If path ok, returns True. This prevents
+		Display a warning in a popup if the data pathOnly defined in the settings
+		does not exist and return False. If pathOnly ok, returns True. This prevents
 		exceptions at load or save or settings save time.
 		:return:
 		'''
@@ -535,7 +435,7 @@ class CryptoPricerGUI(BoxLayout):
 
 	def ensureDataPathFileNameExist(self, dataPathFileName, message):
 		'''
-		Display a warning in a popup if the passed data path file name
+		Display a warning in a popup if the passed data pathOnly file name
 		does not exist and return False. If dataPathFileName ok, returns True.
 		This prevents exceptions at load or save or settings save time.
 		:return:
@@ -918,14 +818,16 @@ class CryptoPricerGUI(BoxLayout):
 	def openFileLoadPopup(self):
 		content = LoadFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		self.popup = Popup(title="Select history file to load", content=content,
-							size_hint=(0.9, 0.9))
+		                   pos_hint={'top': 0.92},
+		                   size_hint=(content.popupSizeProportion_x, content.popupSizeProportion_y))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 
 	def openFileSavePopup(self):
 		content = SaveFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		self.popup = Popup(title="Save history to file", content=content,
-							size_hint=(0.9, 0.85))
+		                   pos_hint={'top': 0.98},
+		                   size_hint=(content.popupSizeProportion_x, content.popupSizeProportion_y))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 
@@ -968,11 +870,10 @@ class CryptoPricerGUI(BoxLayout):
 		self.manageStateOfGlobalRequestListButtons()
 		self.refocusOnRequestInput()
 
-	def saveHistoryToFile(self, path, filename, isLoadAtStart):
-		dataPathNotExistMessage = self.buildDataPathNotExistMessage(path)
-		pathFileName = os.path.join(path, filename)
+	def saveHistoryToFile(self, pathOnly, pathFileName, isLoadAtStart):
+		dataPathNotExistMessage = self.buildDataPathNotExistMessage(pathOnly)
 
-		if not filename or not self.ensureDataPathExist(path, dataPathNotExistMessage):
+		if not pathFileName or not self.ensureDataPathExist(pathOnly, dataPathNotExistMessage):
 			# no file selected. Save dialog remains open ..
 			return
 
@@ -991,15 +892,13 @@ class CryptoPricerGUI(BoxLayout):
 				self.configMgr.loadAtStartPathFilename = ''
 
 		self.configMgr.storeConfig()
-
-		self.dismissPopup()
 		self.displayFileActionOnStatusBar(pathFileName, FILE_SAVED, isLoadAtStart)
 		self.refocusOnRequestInput()
 
 	# --- end file chooser code ---
 
 	def buildDataPathNotExistMessage(self, path):
-		return 'Data path ' + path + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
+		return 'Data pathOnly ' + path + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata pathOnly value using the Settings menu.'
 
 	def isLoadAtStart(self, filePathName):
 		return self.configMgr.loadAtStartPathFilename == filePathName
@@ -1124,7 +1023,7 @@ class CryptoPricerGUIApp(App):
 					"key": "referencecurrency",
 					"options": ["USD", "EURO", "CHF", "GBP"]
 				},
-				{"type": "path",
+				{"type": "pathOnly",
 					"title": "Data files location",
 					"desc": "Set the directory where the app data files like history files are stored",
 					"section": "General",
@@ -1216,7 +1115,7 @@ class CryptoPricerGUIApp(App):
 
 	def on_start(self):
 		'''
-		Testing at app start if data path defined in settings does exist
+		Testing at app start if data pathOnly defined in settings does exist
 		and if history file loaded at start app does exist. Since a warning popup
 		is displayed in case of invalid data, this must be performed here and
 		not in CryptoPricerGUI.__init__ where no popup could be displayed.
