@@ -62,7 +62,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 		:param copyResultToClipboard: set to True by default. Whreplaying all requests
 									  stored in history, set to False, which avoids
 									  problem on Android
-		:seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStr
+		:seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
 		:return: 1/ full command string with no command option corresponding to a full or partial price request
 					entered by the user or empty string if the command generated an error msg.
 				 2/ full request command with any non save command option

@@ -1534,9 +1534,9 @@ GUI -> Controller: getPrintableResultForInput(inputStr, copyResultToClipboard=Tr
 			activate GuiOutputFormater
 			GuiOutputFormater <-- GuiOutputFormater: return requestDateDMY, requestDateHM
 			deactivate GuiOutputFormater
-		Controller <-- GuiOutputFormater: return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+		Controller <-- GuiOutputFormater: return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, ...
 		deactivate GuiOutputFormater
-	GUI <-- Controller: return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+	GUI <-- Controller: return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, ...
 	deactivate Controller
 @enduml''', commands)
 

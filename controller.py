@@ -67,7 +67,7 @@ class Controller:
         :param copyResultToClipboard: set to True by default. Whreplaying all requests
                                       stored in history, set to False, which avoids
                                       problem on Android
-        :seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+        :seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
 
         :return: 1/ printable request result
                  2/ full request command without any command option
