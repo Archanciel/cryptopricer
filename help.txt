@@ -259,18 +259,18 @@ then entering
 
 returns
 
-ETH/BTC/USD.CCCAGG on BitTrex: 28/10/19 18:38R 0.01939 182.0755902
+ETH/BTC/USD.AVG on BitTrex: 28/10/19 18:38R 0.01939 182.0755902
 
 which means that the ETH price in BTC on BitTrex of 0.01939 converted in USD
 equals 182.0755902, this for the BTC/USD price of 9390.13 obtained
-on CCCAGG (average BTC price).
+on AVG (average BTC price).
 
 To state it differently, the USD conversion calculation is
 
 0.01939 * 9390.13 = 182.0755902
 
 It is possible to specify the exchange from which the fiat conversion rate will be
-obtained (CCCAGG is the default if no exchange is specified).
+obtained (AVG is the default if no exchange is specified).
 
 Example: if the last request was
 
