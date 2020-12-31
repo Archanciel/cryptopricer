@@ -118,9 +118,9 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00C 4360.62\n', contentList[1])
-            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00C 4360.62\n', contentList[3])
-            self.assertEqual('BTC/USD on CCCAGG: 25/09/17 00:00C 3932.83\n', contentList[5])
+            self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62\n', contentList[1])
+            self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62\n', contentList[3])
+            self.assertEqual('BTC/USD on AVG: 25/09/17 00:00C 3932.83\n', contentList[5])
 
 
     def testControllerHistoDayPriceThenEmptyPartialParms(self):
@@ -147,7 +147,7 @@ class TestController(unittest.TestCase):
 
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
-            self.assertEqual('BTC/USD on CCCAGG: 30/09/17 00:00C 4360.62\n', contentList[1])
+            self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62\n', contentList[1])
             self.assertEqual('ERROR - invalid partial request -t\n', contentList[3])
             self.assertEqual('ERROR - invalid partial request -d\n', contentList[5])
             self.assertEqual('ERROR - invalid partial request -e\n', contentList[7])
@@ -317,7 +317,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -328,8 +328,8 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
 
 
     def testControllerBugSpecifyTimeAfterAskedRT001(self):
@@ -368,7 +368,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -378,8 +378,8 @@ class TestController(unittest.TestCase):
                                                                         nowYearStr,
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
 
 
     def testControllerBugSpecifyTimeAfterAskedRT700ThenReaskRT(self):
@@ -418,7 +418,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -429,11 +429,11 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
 
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -444,7 +444,7 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
 
 
     def testControllerBugSpecifyDateAfterAskedRT2910(self):
@@ -491,7 +491,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -501,8 +501,8 @@ class TestController(unittest.TestCase):
                                                                         nowYearStr,
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
             self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
 
 
@@ -537,7 +537,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -548,10 +548,10 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(tenDaysBeforeNowDayStr, tenDaysBeforeNowMonthStr, tenDaysBeforeNowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C'.format(tenDaysBeforeNowDayStr, tenDaysBeforeNowMonthStr, tenDaysBeforeNowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -562,7 +562,7 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
 
 
     def testControllerBugSpecifyFutureDateAfterAskedRTThenAskRTAgain(self):
@@ -609,7 +609,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -620,11 +620,11 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
             self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[6][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -635,7 +635,7 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[6][:-1])) #removing \n from contentList entry !
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[6][:-1])) #removing \n from contentList entry !
 
 
     def testControllerBugChangeCryptoAfterAskedRT(self):
@@ -666,7 +666,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -677,9 +677,9 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -690,7 +690,7 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+#            self.assertEqual('ETH/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
 
     def testControllerBugChangeCryptoAfterAskedRTThenAskRTAgain(self):
         stdin = sys.stdin
@@ -720,7 +720,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -731,9 +731,9 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -744,9 +744,9 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+#            self.assertEqual('ETH/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -757,7 +757,7 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1]))
+#            self.assertEqual('ETH/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1]))
 
 
     def testControllerBugAskRTTwice(self):
@@ -788,7 +788,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -799,9 +799,9 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -812,7 +812,7 @@ class TestController(unittest.TestCase):
                                                                         resultNoEndPrice,
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
-#            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
 
 
     def testControllerInvalidYearThenValidDDMMInFuture(self):
@@ -857,7 +857,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual("ERROR - 201 not conform to accepted year format (YYYY, YY or '')\n", contentList[1])
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneYearBeforeYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneYearBeforeYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
             self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneDayAfterNowYearStr), contentList[4][:-1])
 
 
@@ -904,7 +904,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual("ERROR - 999 not conform to accepted month format (MM or M)\n", contentList[1])
-            self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneYearBeforeYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
+            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneYearBeforeYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
             self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneDayAfterNowYearStr), contentList[4][:-1])
 
 
@@ -1485,7 +1485,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+            expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
                                                                         nowDayStr,
@@ -1497,7 +1497,7 @@ class TestController(unittest.TestCase):
                                                                         expectedPrintResultNoDateTimeNoEndPrice)
 
             # self.assertEqual(
-            #     'BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+            #     'BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
             #                                                      nowMinuteStr),
             #     UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
             self.assertEqual('ERROR - invalid partial request -t03.45: in -t03.45, 03.45 must respect HH:mm format', contentList[3][:-1])

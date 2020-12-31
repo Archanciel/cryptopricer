@@ -1456,7 +1456,7 @@ participant Parent
             priceType = 'M'
 
         self.assertEqual(
-            'ETH/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+            'ETH/BTC on AVG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
                                                         UtilityForTest.removeOneEndPriceFromResult(printResult))
         self.assertEqual('eth btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStr)
         self.assertEqual(None, fullCommandStrWithSaveModeOptions)

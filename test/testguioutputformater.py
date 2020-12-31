@@ -714,7 +714,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 		self.printer.printDataToConsole(resultData)
 		sys.stdout = stdout
-		self.assertEqual('BTC/USD/CHF.CCCAGG on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
+		self.assertEqual('BTC/USD/CHF.AVG on BitTrex: {}R \n'.format(dateTimeString), capturedStdout.getvalue())
 
 	def testPrintCryptoPriceHistoricalOptionFiat(self):
 		# btc usd 12/9/17 bittrex -feur
@@ -742,7 +742,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 		self.printer.printDataToConsole(resultData)
 		sys.stdout = stdout
-		self.assertEqual('BTC/USD/EUR.CCCAGG on BitTrex: 12/09/17 00:00C 4122 3463.7166\n', capturedStdout.getvalue())
+		self.assertEqual('BTC/USD/EUR.AVG on BitTrex: 12/09/17 00:00C 4122 3463.7166\n', capturedStdout.getvalue())
 
 	def testPrintCryptoPriceHistoricalOptionFiatSave(self):
 		# btc usd 12/9/17 bittrex -fseur
@@ -771,7 +771,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 		self.printer.printDataToConsole(resultData)
 		sys.stdout = stdout
-		self.assertEqual('BTC/USD/EUR.CCCAGG on BitTrex: 12/09/17 00:00C 4122 3463.7166\n', capturedStdout.getvalue())
+		self.assertEqual('BTC/USD/EUR.AVG on BitTrex: 12/09/17 00:00C 4122 3463.7166\n', capturedStdout.getvalue())
 
 	def testPrintCryptoPriceHistoricalOptionFiatExchange(self):
 		# mco eth 12/9/17 binance -fbtc.kraken
@@ -1385,7 +1385,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 		self.printer.printDataToConsole(resultData)
 		sys.stdout = stdout
-		self.assertEqual('{} BTC/{} USD/{} CHF.CCCAGG on BitTrex: {}R {} {}\n'.format(optionValueCrypto, optionValueUnit, optionValueFiat, dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
+		self.assertEqual('{} BTC/{} USD/{} CHF.AVG on BitTrex: {}R {} {}\n'.format(optionValueCrypto, optionValueUnit, optionValueFiat, dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
 		fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
 			resultData)
 		self.assertEqual('btc usd 0 bittrex -vs1000chf', fullCommandStrWithSaveModeOptions)
@@ -1634,7 +1634,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 		self.printer.printDataToConsole(resultData)
 		sys.stdout = stdout
-		self.assertEqual('{} BTC/{} USD/{} CHF.CCCAGG on BitTrex: {}R {} {}\n'.format(optionValueCrypto, optionValueUnit, optionValueFiat, dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
+		self.assertEqual('{} BTC/{} USD/{} CHF.AVG on BitTrex: {}R {} {}\n'.format(optionValueCrypto, optionValueUnit, optionValueFiat, dateTimeString, unitPrice, optionFiatComputedAmount), capturedStdout.getvalue())
 		fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
 			resultData)
 		self.assertEqual('btc usd 0 bittrex -vs1000chf -fschf', fullCommandStrWithSaveModeOptions)

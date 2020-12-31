@@ -69,7 +69,7 @@ class TestControllerGui(unittest.TestCase):
 			contentList = inFile.readlines()
 			
 			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 			
 			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 			                                                            nowHourStr,
@@ -78,10 +78,10 @@ class TestControllerGui(unittest.TestCase):
 			                                                            nowYearStr,
 			                                                            resultNoEndPrice,
 			                                                            expectedPrintResultNoDateTimeNoEndPrice)
-#			self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
+#			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
 			
 			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 			
 			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 			                                                            nowHourStr,
@@ -91,7 +91,7 @@ class TestControllerGui(unittest.TestCase):
 			                                                            resultNoEndPrice,
 			                                                            expectedPrintResultNoDateTimeNoEndPrice)
 			
-#			self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
+#			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
 
 
 	def testControllerBugSpecifyDateBegOfYear(self):
@@ -118,7 +118,7 @@ class TestControllerGui(unittest.TestCase):
 			priceType = 'M'
 
 		self.assertEqual(
-			'MCO/BTC on CCCAGG: ' + '0{}/0{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+			'MCO/BTC on AVG: ' + '0{}/0{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
 														UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('mco btc 0{}/0{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -210,7 +210,7 @@ class TestControllerGui(unittest.TestCase):
 			priceType = 'M'
 
 		self.assertEqual(
-			'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+			'MCO/BTC on AVG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
 														UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -221,7 +221,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+			'MCO/BTC on AVG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
 														UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -756,7 +756,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 			
 		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex'
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -766,7 +766,7 @@ class TestControllerGui(unittest.TestCase):
 														  resultNoEndPrice,
 														  expectedPrintResultNoDateTimeNoEndPrice)
 
-#		self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#		self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -ebitfinex'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
 #								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
 		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions) #empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -777,7 +777,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R'
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -786,7 +786,7 @@ class TestControllerGui(unittest.TestCase):
 														  nowYearStr,
 														  resultNoEndPrice,
 														  expectedPrintResultNoDateTimeNoEndPrice)
-#		self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#		self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
 #								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
 		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions) #empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -802,7 +802,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R\nWarning - unsupported option -zooo in request btc usd 0 all -zooo'
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R\nWarning - unsupported option -zooo in request btc usd 0 all -zooo'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -811,7 +811,7 @@ class TestControllerGui(unittest.TestCase):
 														  nowYearStr,
 														  resultNoEndPrice,
 														  expectedPrintResultNoDateTimeNoEndPrice)
-#		self.assertEqual('BTC/USD on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request btc usd 0 all -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#		self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request btc usd 0 all -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
 #								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
 		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions) #empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -822,7 +822,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on CCCAGG: R\nWarning - unsupported option -zooo in request -ueth -zooo'
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on AVG: R\nWarning - unsupported option -zooo in request -ueth -zooo'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -831,7 +831,7 @@ class TestControllerGui(unittest.TestCase):
 														  nowYearStr,
 														  resultNoEndPrice,
 														  expectedPrintResultNoDateTimeNoEndPrice)
-#		self.assertEqual('BTC/ETH on CCCAGG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request -ueth -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#		self.assertEqual('BTC/ETH on AVG: ' + '{}/{}/{} {}:{}R\nWarning - unsupported option -zooo in request -ueth -zooo'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
 #									nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))#removing \n from contentList entry !
 		self.assertEqual('btc eth 0 all', fullCommandStrNoOptions) #empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1056,7 +1056,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'ETH/USD on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+			'ETH/USD on AVG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
 															   requestMinuteStr, priceType),
 			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('eth usd {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1116,7 +1116,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'ETH/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
+			'ETH/BTC on AVG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
 															   requestMinuteStr, priceType),
 			UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('eth btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1520,7 +1520,7 @@ class TestControllerGui(unittest.TestCase):
 			priceType = 'M'
 
 		self.assertEqual(
-			'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+			'MCO/BTC on AVG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
 														UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1530,7 +1530,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+			'MCO/BTC on AVG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
 														UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1560,7 +1560,7 @@ class TestControllerGui(unittest.TestCase):
 			priceType = 'M'
 
 		self.assertEqual(
-			'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+			'MCO/BTC on AVG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
 														UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1570,7 +1570,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'MCO/BTC on CCCAGG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
+			'MCO/BTC on AVG: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr, priceType),
 														UtilityForTest.removeAllPricesFromCommandValueResult(printResult))
 		self.assertEqual('mco btc {}/{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual('mco btc {}/{}/{} {}:{} all -vs12mco'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrWithSaveModeOptions)
@@ -2703,7 +2703,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		resultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on CCCAGG: R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -vs100.2usd -ebitfinex'
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R\nWarning - unsupported option -ebitfinex in request btc usd 0 all -vs100.2usd -ebitfinex'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -2849,7 +2849,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		resultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC/USD.CCCAGG on Bitfinex: R'
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC/USD.AVG on Bitfinex: R'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -2860,7 +2860,7 @@ class TestControllerGui(unittest.TestCase):
 														  expectedPrintResultNoDateTimeNoEndPrice)
 
 #		self.assertEqual(
-#			'ETH/BTC/USD.CCCAGG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#			'ETH/BTC/USD.AVG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
 #															   nowMinuteStr),
 #			UtilityForTest.removeTwoEndPricesFromResult(printResult))
 		self.assertEqual('eth btc 0 bitfinex', fullCommandStrNoOptions)
@@ -2902,7 +2902,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		resultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC/USD.CCCAGG on Bitfinex: R'
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC/USD.AVG on Bitfinex: R'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -2913,7 +2913,7 @@ class TestControllerGui(unittest.TestCase):
 														  expectedPrintResultNoDateTimeNoEndPrice)
 
 #		self.assertEqual(
-#			'ETH/BTC/USD.CCCAGG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
+#			'ETH/BTC/USD.AVG on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
 #															   nowMinuteStr),
 #			UtilityForTest.removeTwoEndPricesFromResult(printResult))
 		self.assertEqual('eth btc 0 bitfinex', fullCommandStrNoOptions)
@@ -3031,7 +3031,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		resultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD/CHF.CCCAGG on Bitfinex: R'
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD/CHF.AVG on Bitfinex: R'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -3050,7 +3050,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		resultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD/CHF.CCCAGG on Bitfinex: R'
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD/CHF.AVG on Bitfinex: R'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -3066,7 +3066,7 @@ class TestControllerGui(unittest.TestCase):
 		#fourth command: '' to replay lst command
 		inputStr = ''
 		resultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD/CHF.CCCAGG on Bitfinex: R'
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD/CHF.AVG on Bitfinex: R'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -3084,7 +3084,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		resultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD/CHF.CCCAGG on Bitfinex: R'
+		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD/CHF.AVG on Bitfinex: R'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -3120,7 +3120,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.1 BTC/414.94 USD/415.35494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.1 BTC/414.94 USD/415.35494 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs0.1btc', fullCommandStrWithSaveModeOptions)
 
@@ -3129,7 +3129,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.1 BTC/414.94 USD/415.35494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.1 BTC/414.94 USD/415.35494 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs0.1btc -fschf', fullCommandStrWithSaveModeOptions)
 
@@ -3138,7 +3138,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'1.41910915 ETH/417.36 USD/0.1 BTC.Kraken on CCCAGG: 12/09/17 00:00C 294.1 0.07046674', printResult)
+			'1.41910915 ETH/417.36 USD/0.1 BTC.Kraken on AVG: 12/09/17 00:00C 294.1 0.07046674', printResult)
 		self.assertEqual('eth usd 12/09/17 00:00 all', fullCommandStrNoOptions)
 		self.assertEqual('eth usd 12/09/17 00:00 all -vs0.1btc -fsbtc.kraken', fullCommandStrWithSaveModeOptions)
 
@@ -3147,7 +3147,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.1 BTC/414.94 USD/415.35494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.1 BTC/414.94 USD/415.35494 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -fschf', fullCommandStrWithSaveModeOptions)
 
@@ -3156,7 +3156,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.1 BTC/414.94 USD/415.35494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.1 BTC/414.94 USD/415.35494 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -3165,7 +3165,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.2409987 BTC/1000 USD/1001 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.2409987 BTC/1000 USD/1001 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs1000usd', fullCommandStrWithSaveModeOptions)
 
@@ -3174,7 +3174,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.2409987 BTC/1000 USD/1001 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.2409987 BTC/1000 USD/1001 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs1000usd -fschf', fullCommandStrWithSaveModeOptions)
 
@@ -3183,7 +3183,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.2409987 BTC/1000 USD/1001 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.2409987 BTC/1000 USD/1001 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -fschf', fullCommandStrWithSaveModeOptions)
 
@@ -3192,7 +3192,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.2409987 BTC/1000 USD/1001 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.2409987 BTC/1000 USD/1001 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -3202,7 +3202,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.24075794 BTC/999.000999 USD/1000 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs1000chf', fullCommandStrWithSaveModeOptions)
 
@@ -3211,7 +3211,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.24075794 BTC/999.000999 USD/1000 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs1000chf -fschf', fullCommandStrWithSaveModeOptions)
 
@@ -3221,7 +3221,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.24075794 BTC/999.000999 USD/1000 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs1000chf -fschf', fullCommandStrWithSaveModeOptions)
 
@@ -3230,7 +3230,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.24075794 BTC/999.000999 USD/1000 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -fschf', fullCommandStrWithSaveModeOptions)
 
@@ -3239,7 +3239,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.24075794 BTC/999.000999 USD/1000 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -3248,7 +3248,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'0.24075794 BTC/999.000999 USD/1000 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'0.24075794 BTC/999.000999 USD/1000 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs1000chf -fschf', fullCommandStrWithSaveModeOptions)
@@ -3258,7 +3258,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'10 BTC/41494 USD/41535.494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'10 BTC/41494 USD/41535.494 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -fchf', fullCommandStrWithOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -vs10btc', fullCommandStrWithSaveModeOptions)
@@ -3268,7 +3268,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'10 BTC/41494 USD/41535.494 CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
+			'10 BTC/41494 USD/41535.494 CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -v10btc', fullCommandStrWithOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -fschf', fullCommandStrWithSaveModeOptions)
@@ -3278,7 +3278,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'BTC/USD/CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -vs option ignored', printResult)
+			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -vs option ignored', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -3288,7 +3288,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'BTC/USD/CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -v option ignored', printResult)
+			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -v option ignored', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
@@ -3297,7 +3297,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'BTC/USD/CHF.CCCAGG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -v option ignored', printResult)
+			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -v option ignored', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -v1000eth -fchf', fullCommandStrWithOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -3327,7 +3327,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('0.706 BTC/10 ETH/2947.7 CHF.CCCAGG on Binance: 12/09/17 00:00C 14.16430595 4175.21246459', printResult)
+		self.assertEqual('0.706 BTC/10 ETH/2947.7 CHF.AVG on Binance: 12/09/17 00:00C 14.16430595 4175.21246459', printResult)
 		self.assertEqual('btc eth 12/09/17 00:00 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithOptions)
 		self.assertEqual('btc eth 12/09/17 00:00 binance -vs10eth -fschf', fullCommandStrWithSaveModeOptions)
@@ -3472,7 +3472,7 @@ class TestControllerGui(unittest.TestCase):
 		ethUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
 
 		#ensure fiat value of eth is correct
-		self.assertAlmostEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate, delta=0.4)
+		self.assertAlmostEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate, delta=0.5)
 
 	def testOptionFiatValueComputationIsCorrectFullRequestHistoDayPriceNoSave(self):
 		'''
@@ -3559,7 +3559,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'ETH/BTC/CHF.CCCAGG on Binance: 12/09/17 00:00C 0.0706 293.854144', printResult)
+			'ETH/BTC/CHF.AVG on Binance: 12/09/17 00:00C 0.0706 293.854144', printResult)
 		self.assertEqual('eth btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithOptions)
 		self.assertEqual('eth btc 12/09/17 00:00 binance -fschf', fullCommandStrWithSaveModeOptions)

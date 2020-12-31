@@ -50,19 +50,19 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 				dateTimeStr += 'R'  # adding RT symbol
 
 			cryptoUnitPart = self._formatCryptoUnitPart(resultData)
-
 			fiatComputedAmount = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
-
+			cryptoExchange = self.convertCCCAGGExchangeName(resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+			
 			if fiatComputedAmount != None:
 				formattedFiatComputedAmountStr = self._formatPriceFloatToStr(fiatComputedAmount, self.PRICE_FLOAT_FORMAT)
 				outputStr = cryptoUnitPart + ' on {}: {} {} {}'.format(
-					resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
+					cryptoExchange,
 					dateTimeStr,
 					formattedPriceStr,
 					formattedFiatComputedAmountStr)
 			else:
 				outputStr = cryptoUnitPart + ' on {}: {} {}'.format(
-					resultData.getValue(resultData.RESULT_KEY_EXCHANGE),
+					cryptoExchange,
 					dateTimeStr,
 					formattedPriceStr)
 		else:
@@ -79,10 +79,12 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 				return '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
 									  resultData.getValue(resultData.RESULT_KEY_UNIT))
 			else:
+				fiatExchange = self.convertCCCAGGExchangeName(exchangeName=resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+				
 				return '{}/{}/{}.{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
 											resultData.getValue(resultData.RESULT_KEY_UNIT),
 											resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
-											resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+											fiatExchange)
 		else:
 			formattedPriceCryptoStr = self._formatPriceFloatToStr(
 				float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)), self.PRICE_FLOAT_FORMAT)
@@ -96,14 +98,22 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 			else:
 				formattedPriceFiatStr = self._formatPriceFloatToStr(
 					float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT)), self.PRICE_FLOAT_FORMAT)
-				return '{} {}/{} {}/{} {}.{}'.format(formattedPriceCryptoStr,
-												  resultData.getValue(resultData.RESULT_KEY_CRYPTO),
-												  formattedPriceUnitStr,
-												  resultData.getValue(resultData.RESULT_KEY_UNIT),
-												  formattedPriceFiatStr,
-												  resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
-												  resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+				fiatExchange = self.convertCCCAGGExchangeName(exchangeName=resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
 
+				return '{} {}/{} {}/{} {}.{}'.format(formattedPriceCryptoStr,
+													 resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+													 formattedPriceUnitStr,
+													 resultData.getValue(resultData.RESULT_KEY_UNIT),
+													 formattedPriceFiatStr,
+													 resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
+													 fiatExchange)
+	
+	def convertCCCAGGExchangeName(self, exchangeName):
+		if exchangeName == 'CCCAGG':
+			exchangeName = 'AVG'
+			
+		return exchangeName
+	
 	def _formatPriceFloatToStr(self, floatNb, floatFormat):
 		'''
 		Format prices returned by crypto price provider.
