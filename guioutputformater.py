@@ -62,7 +62,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 		:param copyResultToClipboard: set to True by default. Whreplaying all requests
 									  stored in history, set to False, which avoids
 									  problem on Android
-		:seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions
+		:seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStr
 		:return: 1/ full command string with no command option corresponding to a full or partial price request
 					entered by the user or empty string if the command generated an error msg.
 				 2/ full request command with any non save command option
@@ -110,7 +110,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 		if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE):
 			if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
 				# in case the value command generated a warning, if the value command data contains a crypto or unit
-				# different from the crypto or unit of tthe request, the fullCommandStrWithSaveModeOptions remains
+				# different from the crypto or unit of tthe request, the fullCommandStr remains
 				# None and wont't be stored in the request history list of the GUI !
 				fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -vs{}{}'.format(commandDic[
 					CommandPrice.OPTION_VALUE_AMOUNT], commandDic[CommandPrice.OPTION_VALUE_SYMBOL])
@@ -128,42 +128,33 @@ class GuiOutputFormater(AbstractOutputFormater):
 		if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
 			if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
 				# in case the value command generated a warning, if the value command data contains a crypto or unit
-				# different from the crypto or unit of tthe request, the fullCommandStrWithSaveModeOptions remains
+				# different from the crypto or unit of tthe request, the fullCommandStr remains
 				# None and wont't be stored in the request history list of the GUI !
 				if fullCommandStrWithSaveModeOptions:
 					# case when option value exist and is in save mode
-					requestFiatExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
-					if requestFiatExchange:
-						fullCommandStrWithSaveModeOptions = fullCommandStrWithSaveModeOptions + ' -fs{}.{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL],
-																												   requestFiatExchange)
-					else:
-						fullCommandStrWithSaveModeOptions = fullCommandStrWithSaveModeOptions + ' -fs{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL])
+					fullCommandStrWithSaveModeOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
+																								fullCommandStrWithSaveModeOptions,
+																								isOptionFiatSave=True)
 				else:
 					# case when no option value exist in save mode
-					requestFiatExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
-					if requestFiatExchange:
-						fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -fs{}.{}'.format(commandDic[
-							CommandPrice.OPTION_FIAT_SYMBOL], requestFiatExchange)
-					else:
-						fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -fs{}'.format(commandDic[CommandPrice.OPTION_FIAT_SYMBOL])
+					fullCommandStrWithSaveModeOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
+																								fullCommandStrNoOptions,
+																								isOptionFiatSave=True)
 
 				fullCommandStrForStatusBar = fullCommandStrWithSaveModeOptions + self._buildUnitFiatComputationString(resultData)
 		else:
 			fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
-			fiatOptionExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
 			if not fullCommandStrWithOptions:
 				if fiatOptionSymbol:
-					if fiatOptionExchange:
-						fullCommandStrWithOptions = fullCommandStrNoOptions + ' -f{}.{}'.format(fiatOptionSymbol, fiatOptionExchange)
-					else:
-						fullCommandStrWithOptions = fullCommandStrNoOptions + ' -f{}'.format(fiatOptionSymbol)
+					fullCommandStrWithOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
+																							fullCommandStrNoOptions,
+																							isOptionFiatSave=False)
 			else:
 				if fiatOptionSymbol:
-					if fiatOptionExchange:
-						fullCommandStrWithOptions = fullCommandStrWithOptions + ' -f{}.{}'.format(fiatOptionSymbol,
-																								  fiatOptionExchange)
-					else:
-						fullCommandStrWithOptions = fullCommandStrWithOptions + ' -f{}'.format(fiatOptionSymbol)
+					fullCommandStrWithOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
+																							fullCommandStrWithOptions,
+																							isOptionFiatSave=False)
+
 			if fullCommandStrWithOptions:
 				fullCommandStrForStatusBar = fullCommandStrWithOptions + self._buildUnitFiatComputationString(resultData)
 
@@ -172,7 +163,36 @@ class GuiOutputFormater(AbstractOutputFormater):
 		SeqDiagBuilder.recordFlow()
 
 		return fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
+	
+	def _addFiatOptionInfoToFullCommandStr(self,
+										   commandDic,
+										   fullCommandStr,
+										   isOptionFiatSave):
+		"""
+		
+		:param commandDic:
+		:param fullCommandStr: full command string with or without value option
+		:param isOptionFiatSave
+		
+		:return:
+		"""
+		if isOptionFiatSave:
+			fiatOptionStr = ' -fs{}'
+		else:
+			fiatOptionStr = ' -f{}'
 
+		requestFiatExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
+		
+		if requestFiatExchange:
+			fullCommandStr = fullCommandStr + (fiatOptionStr + '.{}').format(
+				commandDic[CommandPrice.OPTION_FIAT_SYMBOL],
+				requestFiatExchange)
+		else:
+			fullCommandStr = fullCommandStr + fiatOptionStr.format(
+				commandDic[CommandPrice.OPTION_FIAT_SYMBOL])
+			
+		return fullCommandStr
+	
 	def _buildUnitFiatComputationString(self, resultData):
 		priceStr = self._formatPriceFloatToStr(resultData.getValue(resultData.RESULT_KEY_PRICE), self.PRICE_FLOAT_FORMAT)
 		fiatComputedAmountStr = self._formatPriceFloatToStr(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT), self.PRICE_FLOAT_FORMAT)

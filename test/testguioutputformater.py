@@ -521,6 +521,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 			resultData)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 		self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
+		self.assertEqual('btc usd 0 bittrex -v0.01btc', fullCommandStrWithOptions)
 
 
 	def testGetCryptoPriceRealTimeWithOptionValueSave(self):
@@ -1210,6 +1211,19 @@ class TestGuiOutputFormater(unittest.TestCase):
 			resultData)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 		self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
+		self.assertEqual('btc usd 0 bittrex -v1000chf -fchf.kraken', fullCommandStrWithOptions)
+
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, None)
+		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
+							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
+							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
+							 'OPTION_VALUE_AMOUNT': optionValueAmount, 'OPTION_VALUE_SYMBOL': optionValueSymbol, 'OPTION_VALUE_SAVE': None,'OPTION_FIAT_DATA': None,
+							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': None, 'OPTION_FIAT_SAVE': None})
+		fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+			resultData)
+		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+		self.assertEqual('btc usd 0 bittrex', fullCommandStringNoOptions)
+		self.assertEqual('btc usd 0 bittrex -v1000chf -fchf', fullCommandStrWithOptions)
 
 	def testGetCryptoPriceRealTimeWithValueSaveAndFiatFlag(self):
 		#correspond to command btc usd 0 bittrex -vs1000chf -fchf.kraken
