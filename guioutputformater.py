@@ -125,6 +125,8 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 		# handling option fiat
 
+		fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
+
 		if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
 			# save mode is active
 			if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
@@ -135,27 +137,30 @@ class GuiOutputFormater(AbstractOutputFormater):
 					# case when option value exist and is in save mode
 					fullCommandStrWithSaveModeOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
 																								fullCommandStrWithSaveModeOptions,
+																								fiatOptionSymbol,
 																								isOptionFiatSave=True)
 				else:
 					# case when no option value exist in save mode
 					fullCommandStrWithSaveModeOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
 																								fullCommandStrNoOptions,
+																								fiatOptionSymbol,
 																								isOptionFiatSave=True)
 
 				fullCommandStrForStatusBar = fullCommandStrWithSaveModeOptions + self._buildUnitFiatComputationString(resultData)
 		else:
 			# save mode is not active
-			fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
 			if not fullCommandStrWithOptions:
 				if fiatOptionSymbol:
 					fullCommandStrWithOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
-																							fullCommandStrNoOptions,
-																							isOptionFiatSave=False)
+																						fullCommandStrNoOptions,
+																						fiatOptionSymbol,
+																						isOptionFiatSave=False)
 			else:
 				if fiatOptionSymbol:
 					fullCommandStrWithOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
-																							fullCommandStrWithOptions,
-																							isOptionFiatSave=False)
+																						fullCommandStrWithOptions,
+																						fiatOptionSymbol,
+																						isOptionFiatSave=False)
 
 			if fullCommandStrWithOptions:
 				fullCommandStrForStatusBar = fullCommandStrWithOptions + self._buildUnitFiatComputationString(resultData)
@@ -169,11 +174,13 @@ class GuiOutputFormater(AbstractOutputFormater):
 	def _addFiatOptionInfoToFullCommandStr(self,
 										   commandDic,
 										   fullCommandStr,
+										   fiatOptionSymbol,
 										   isOptionFiatSave):
 		"""
 		
 		:param commandDic:
 		:param fullCommandStr: full command string with or without value option
+		:param fiatOptionSymbol
 		:param isOptionFiatSave
 		
 		:return:
@@ -186,12 +193,9 @@ class GuiOutputFormater(AbstractOutputFormater):
 		requestFiatExchange = commandDic[CommandPrice.OPTION_FIAT_EXCHANGE]
 		
 		if requestFiatExchange:
-			fullCommandStr = fullCommandStr + (fiatOptionStr + '.{}').format(
-				commandDic[CommandPrice.OPTION_FIAT_SYMBOL],
-				requestFiatExchange)
+			fullCommandStr = fullCommandStr + (fiatOptionStr + '.{}').format(fiatOptionSymbol, requestFiatExchange)
 		else:
-			fullCommandStr = fullCommandStr + fiatOptionStr.format(
-				commandDic[CommandPrice.OPTION_FIAT_SYMBOL])
+			fullCommandStr = fullCommandStr + fiatOptionStr.format(fiatOptionSymbol)
 			
 		return fullCommandStr
 	

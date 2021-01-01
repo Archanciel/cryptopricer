@@ -1105,6 +1105,10 @@ class TestController(unittest.TestCase):
         previousDate = now.shift(days = -2)
         previsousDateDay = previousDate.day
         previsousDateMonth = previousDate.month
+        
+        if previousDate.year < now.year:
+            print('{} skipped due to current date {}'.format('testControllerRTThenHistoMinuteThenRThenNewUnit()', now))
+            return
 
         stdin = sys.stdin
         sys.stdin = StringIO('eth usd 0 bitfinex\n-d{}/{}\n-d0\n-ubtc\nq\ny'.format(previsousDateDay, previsousDateMonth))
@@ -1342,6 +1346,10 @@ class TestController(unittest.TestCase):
         yesterdayDay = yesterday.day
         yesterdayMonth = yesterday.month
 
+        if yesterday.year < now.year:
+            print('{} skipped due to current date {}'.format('testControllerScenarioModel()', now))
+            return
+
         stdin = sys.stdin
         sys.stdin = StringIO('eth usd 0 bitfinex\n-d{}/{}\n-d0\n-ubtc\nq\ny'.format(yesterdayDay, yesterdayMonth))
 
@@ -1505,3 +1513,5 @@ class TestController(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+	# t = TestController()
+	# t.testControllerRTThenHistoMinuteThenRThenNewUnit()

@@ -1437,6 +1437,11 @@ participant Parent
         now = DateTimeUtil.localNow(timezoneStr)
         eightDaysBeforeArrowDate = now.shift(days=-8)
 
+        if eightDaysBeforeArrowDate.year < now.year:
+            print('{} skipped due to current date {}'.format('testControllerRTThenHistoMinuteThenRThenNewUnit()', now))
+            SeqDiagBuilder.deactivate()
+            return
+
         eightDaysBeforeYearStr, eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
 
         requestYearStr = eightDaysBeforeYearStr
@@ -1468,7 +1473,6 @@ participant Parent
 
         SeqDiagBuilder.deactivate()
 
-#        print(commands)
         self.assertEqual(
 '''@startuml
 

@@ -209,9 +209,8 @@ class Processor:
         :return:
         '''
         if (day + month + year) == 0:
-            # when the user specifies 0 for either the date,
-            # this means current price is asked and date components
-            # are set to zero !
+            # when the user specifies 0 for the date, this means current price is asked and
+            # date components are set to zero !
             resultData = self.priceRequester.getCurrentPrice(currency, targetCurrency, exchange)
 
             if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
@@ -224,8 +223,12 @@ class Processor:
             # getting historical price, either histo day or histo minute
             timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
             timeStampUtcNoHHMM = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, 0, 0, 0, 'UTC')
-            resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(currency, targetCurrency, timeStampLocal,
-                                                                              timeStampUtcNoHHMM, exchange)
+            resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(currency,
+                                                                              targetCurrency,
+                                                                              timeStampLocal,
+                                                                              localTz,
+                                                                              timeStampUtcNoHHMM,
+                                                                              exchange)
 
             if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
                 # adding date time info if no error returned

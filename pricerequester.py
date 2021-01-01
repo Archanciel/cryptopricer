@@ -29,7 +29,13 @@ class PriceRequester:
             #occurs when run in QPython under Python 3.2
             self.ctx = None
       
-    def getHistoricalPriceAtUTCTimeStamp(self, crypto, unit, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange):
+    def getHistoricalPriceAtUTCTimeStamp(self,
+                                         crypto,
+                                         unit,
+                                         timeStampLocalForHistoMinute,
+                                         localTz,
+                                         timeStampUTCNoHHMMForHistoDay,
+                                         exchange):
         '''
         Why do we pass two different time stamp to the method ?
         
@@ -61,7 +67,7 @@ class PriceRequester:
         resultData.setValue(ResultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(ResultData.RESULT_KEY_EXCHANGE, exchange)
 
-        if DateTimeUtil.isTimeStampOlderThan(timeStampLocalForHistoMinute, dayNumberInt=MINUTE_PRICE_DAY_NUMBER_LIMIT):
+        if DateTimeUtil.isTimeStampOlderThan(timeStampLocalForHistoMinute, localTz, dayNumberInt=MINUTE_PRICE_DAY_NUMBER_LIMIT):
             return self._getHistoDayPriceAtUTCTimeStamp(crypto, unit, timeStampUTCNoHHMMForHistoDay, exchange, resultData)
         else:
             return self._getHistoMinutePriceAtUTCTimeStamp(crypto, unit, timeStampLocalForHistoMinute, exchange, resultData)

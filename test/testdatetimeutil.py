@@ -160,22 +160,41 @@ class TestDateTimeUtil(unittest.TestCase):
 
     def testIsTimeStampOlderThanSevenDays(self):
         DAYS_BEFORE = -7
-        dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE).to('Europe/Zurich')
-        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, abs(DAYS_BEFORE)))
+        localTimeZone = 'Europe/Zurich'
+        dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE).to(localTimeZone)
+        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, localTimeZone, abs(DAYS_BEFORE)))
 
 
     def testIsTimeStampOlderThanSevenDaysPlusOneSecond(self):
         DAYS_BEFORE = -7
         SECOND_BEFORE = -1
+        localTimeZone = 'Europe/Zurich'
         dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE, seconds = SECOND_BEFORE).to('Europe/Zurich')
-        self.assertTrue(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, abs(DAYS_BEFORE)))
+        self.assertTrue(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, localTimeZone, abs(DAYS_BEFORE)))
+
+
+    def testIsTimeStampOlderThanSevenDaysPlusOneSecondAgainsUTCTimwe(self):
+        DAYS_BEFORE = -7
+        SECOND_BEFORE = -1
+        localTimeZone = None
+        dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE, seconds = SECOND_BEFORE).to('Europe/Zurich')
+        self.assertTrue(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, localTimeZone, abs(DAYS_BEFORE)))
 
 
     def testIsTimeStampOlderThanSevenDaysMinusOneSecond(self):
         DAYS_BEFORE = -7
         SECOND_AFTER = 1
+        localTimeZone = 'Europe/Zurich'
         dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE, seconds = SECOND_AFTER).to('Europe/Zurich')
-        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, abs(DAYS_BEFORE)))
+        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, localTimeZone, abs(DAYS_BEFORE)))
+
+
+    def testIsTimeStampOlderThanSevenDaysMinusOneSecondAgainsUTCTimwe(self):
+        DAYS_BEFORE = -7
+        SECOND_AFTER = 1
+        localTimeZone = None
+        dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE, seconds = SECOND_AFTER).to('Europe/Zurich')
+        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, localTimeZone, abs(DAYS_BEFORE)))
 
 
     def testLocalNow(self):
