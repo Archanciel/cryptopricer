@@ -192,7 +192,7 @@ class TestControllerGui(unittest.TestCase):
 		eightDaysBeforeArrowDate = now.shift(days=-8)
 		
 		if eightDaysBeforeArrowDate.year < now.year:
-			print('{} skipped due to current date {}'.format('testGetPrintableResultForReplayHistoDay()', now))
+			print('{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format('testGetPrintableResultForReplayHistoDay()', now))
 			return
 		
 		eightDaysBeforeYearStr, eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
@@ -1039,7 +1039,7 @@ class TestControllerGui(unittest.TestCase):
 		threeDaysBeforeArrowDate = now.shift(days=-3)
 		
 		if threeDaysBeforeArrowDate.year < now.year:
-			print('{} skipped due to current date {}'.format('testGetPrintableResultForRealThenAddVSCommandAndChangeExchangeTimeCryptoDate()', now))
+			print('{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format('testGetPrintableResultForRealThenAddVSCommandAndChangeExchangeTimeCryptoDate()', now))
 			return
 		
 		threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
@@ -1099,7 +1099,7 @@ class TestControllerGui(unittest.TestCase):
 		threeDaysBeforeArrowDate = now.shift(days=-3)
 		
 		if threeDaysBeforeArrowDate.year < now.year:
-			print('{} skipped due to current date {}'.format('testGetPrintableResultForRealThenChangeUnitExchangeTimeAddVSCommandAndChangeCryptoDate()', now))
+			print('{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format('testGetPrintableResultForRealThenChangeUnitExchangeTimeAddVSCommandAndChangeCryptoDate()', now))
 			return
 		
 		threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
@@ -1162,7 +1162,7 @@ class TestControllerGui(unittest.TestCase):
 		threeDaysBeforeArrowDate = now.shift(days=-3)
 		
 		if threeDaysBeforeArrowDate.year < now.year:
-			print('{} skipped due to current date {}'.format('testGetPrintableResultForHistoMinuteWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning()', now))
+			print('{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format('testGetPrintableResultForHistoMinuteWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning()', now))
 			return
 		
 		threeDaysBeforeYearStr, threeDaysBeforeMonthStr, threeDaysBeforeDayStr, threeDaysBeforeHourStr, threeDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(threeDaysBeforeArrowDate)
@@ -1210,7 +1210,7 @@ class TestControllerGui(unittest.TestCase):
 		tenDaysBeforeArrowDate = now.shift(days=-10)
 		
 		if tenDaysBeforeArrowDate.year < now.year:
-			print('{} skipped due to current date {}'.format('testGetPrintableResultForHistoDayWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning()', now))
+			print('{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format('testGetPrintableResultForHistoDayWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning()', now))
 			return
 		
 		tenDaysBeforeYearStr, tenDaysBeforeMonthStr, tenDaysBeforeDayStr, tenDaysBeforeHourStr, tenDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(tenDaysBeforeArrowDate)
@@ -1518,7 +1518,7 @@ class TestControllerGui(unittest.TestCase):
 		eightDaysBeforeArrowDate = now.shift(days=-8)
 		
 		if eightDaysBeforeArrowDate.year < now.year:
-			print('{} skipped due to current date {}'.format('testControllerBugSpecifyOptionValueAfterAskHistoDay()', now))
+			print('{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format('testControllerBugSpecifyOptionValueAfterAskHistoDay()', now))
 			return
 		
 		eightDaysBeforeYearStr, eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
@@ -1562,7 +1562,7 @@ class TestControllerGui(unittest.TestCase):
 		eightDaysBeforeArrowDate = now.shift(days=-8)
 		
 		if eightDaysBeforeArrowDate.year < now.year:
-			print('{} skipped due to current date {}'.format('testControllerBugSpecifyOptionValueSaveAfterAskHistoDay()', now))
+			print('{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format('testControllerBugSpecifyOptionValueSaveAfterAskHistoDay()', now))
 			return
 		
 		eightDaysBeforeYearStr, eightDaysBeforeMonthStr, eightDaysBeforeDayStr, eightDaysBeforeHourStr, eightDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(eightDaysBeforeArrowDate)
@@ -1606,7 +1606,7 @@ class TestControllerGui(unittest.TestCase):
 		fiveDaysBeforeArrowDate = now.shift(days=-5)
 		
 		if fiveDaysBeforeArrowDate.year < now.year:
-			print('{} skipped due to current date {}'.format('testControllerBugSpecifyOptionValueAfterAskHistoMinute()', now))
+			print('{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format('testControllerBugSpecifyOptionValueAfterAskHistoMinute()', now))
 			return
 		
 		fiveDaysBeforeYearStr, fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
@@ -1652,7 +1652,7 @@ class TestControllerGui(unittest.TestCase):
 		fiveDaysBeforeArrowDate = now.shift(days=-5)
 		
 		if fiveDaysBeforeArrowDate.year < now.year:
-			print('{} skipped due to current date {}'.format('testControllerBugSpecifyOptionValueSaveAfterAskHistoMinute()', now))
+			print('{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format('testControllerBugSpecifyOptionValueSaveAfterAskHistoMinute()', now))
 			return
 		
 		fiveDaysBeforeYearStr, fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
@@ -3684,7 +3684,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveModeOptions)
 		self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance\n(0.002049 * 14.16430595 = 0.02902266)', fullCommandStrForStatusBar)
 
-		#second command: -cbtc -ueth Here, unit is equal to fiat which causes warning
+		#second command: -cbtc -ueth Here, unit is equal to fiat which causes the test case to generate a warning
 		inputStr = '-ceth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3742,4 +3742,5 @@ if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
+	tst.testGetPrintableResultForRealThenChangeUnitExchangeTimeAddVSCommandAndChangeCryptoDate()
 	tst.testControllerBugSpecifyDateBegOfYear()
