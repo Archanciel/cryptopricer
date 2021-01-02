@@ -66,14 +66,17 @@ class TestPriceRequester(unittest.TestCase):
 		crypto = 'BTC'
 		unit = 'USD'
 		exchange = 'CCCAGG'
-		timeStampLocal = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 23:59:59", 'Europe/Zurich',
+		localTimeZone = 'Europe/Zurich'
+		timeStampLocal = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 23:59:59", localTimeZone,
 																"YYYY/MM/DD HH:mm:ss")
 		timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
 																	"YYYY/MM/DD HH:mm:ss")
-		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, unit,
-																			 timeStampLocal,
-																			 timeStampUtcNoHHMM,
-																			 exchange)
+		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
+																		  unit,
+																		  timeStampLocal,
+																		  localTimeZone,
+																		  timeStampUtcNoHHMM,
+																		  exchange)
 		self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
 		priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP),
 																	   'UTC')
@@ -89,15 +92,18 @@ class TestPriceRequester(unittest.TestCase):
 		crypto = 'BTC'
 		unit = 'USD'
 		exchange = 'CCCAGG'
+		localTimeZone = 'Europe/Zurich'
 
-		timeStampLocal = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 12:59:59", 'Europe/Zurich',
+		timeStampLocal = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 12:59:59", localTimeZone,
 																"YYYY/MM/DD HH:mm:ss")
 		timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
 																	"YYYY/MM/DD HH:mm:ss")
-		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, unit,
-																			 timeStampLocal,
-																			 timeStampUtcNoHHMM,
-																			 exchange)
+		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
+																		  unit,
+																		  timeStampLocal,
+																		  localTimeZone,
+																		  timeStampUtcNoHHMM,
+																		  exchange)
 
 		self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
 		priceArrowUTCDateTime = DateTimeUtil.timeStampToArrowLocalDate(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP),
@@ -144,10 +150,12 @@ class TestPriceRequester(unittest.TestCase):
 		utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-2)
 
 		# for histominute price,
-		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, unit,
-																			 utcArrowDateTimeObj.timestamp,
-																			 utcArrowDateTimeObj.timestamp,
-																			 exchange)
+		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
+																		  unit,
+																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp,
+																		  localTz=None,
+																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
+																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
 		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
@@ -175,10 +183,12 @@ class TestPriceRequester(unittest.TestCase):
 		utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-2)
 
 		#here, since histominute price is fetched, time stamp UTC no HHMM for histoDay wil not be used !
-		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, unit,
-																			 utcArrowDateTimeObj.timestamp,
-																			 utcArrowDateTimeObj.timestamp,
-																			 exchange)
+		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
+																		  unit,
+																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp,
+																		  localTz=None,
+																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
+																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD)")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
@@ -195,10 +205,12 @@ class TestPriceRequester(unittest.TestCase):
 		utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-12)
 
 		#here, since histominute price is fetched, time stamp UTC no HHMM for histoDay wil not be used !
-		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, unit,
-																			 utcArrowDateTimeObj.timestamp,
-																			 utcArrowDateTimeObj.timestamp,
-																			 exchange)
+		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
+																		  unit,
+																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp,
+																		  localTz=None,
+																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
+																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD)")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
@@ -215,10 +227,12 @@ class TestPriceRequester(unittest.TestCase):
 		utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-12)
 
 		#here, since histominute price is fetched, time stamp UTC no HHMM for histoDay wil not be used !
-		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto, unit,
-																			 utcArrowDateTimeObj.timestamp,
-																			 utcArrowDateTimeObj.timestamp,
-																			 exchange)
+		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
+																		  unit,
+																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp,
+																		  localTz=None,
+																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
+																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD)")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
@@ -234,19 +248,19 @@ class TestPriceRequester(unittest.TestCase):
 
 	def testGetMinuteHistoricalPriceForCryptoUnitPairNotSupportedByExchange(self):
 		crypto = 'BTC'
-
 		unit = 'USD'
 		exchange = 'Binance'
+		localTimeZone = 'Europe/Zurich'
 		#time stamp is always UTC !
-		LOCAL_TIME_ZONE = 'Europe/Zurich'
-		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		now = DateTimeUtil.localNow(localTimeZone)
 		timeStampLocalNow = now.timestamp
 		timeStampUtcNow = DateTimeUtil.utcNowTimeStamp()
 		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
-																		   unit,
-																		   timeStampLocalNow,
-																		   timeStampUtcNow,
-																		   exchange)
+																		  unit,
+																		  timeStampLocalNow,
+																		  localTimeZone,
+																		  timeStampUtcNow,
+																		  exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD)")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
@@ -259,16 +273,18 @@ class TestPriceRequester(unittest.TestCase):
 
 		unit = 'USD'
 		exchange = 'Binance'
+		localTimeZone = 'Europe/Zurich'
 		#time stamp is always UTC !
-		timeStampLocalMidDay = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 12:59:59", 'Europe/Zurich',
+		timeStampLocalMidDay = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 12:59:59", localTimeZone,
 																"YYYY/MM/DD HH:mm:ss")
 		timeStampUtcNoHHMM = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'UTC',
 																	"YYYY/MM/DD HH:mm:ss")
 		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
-																		   unit,
-																		   timeStampLocalMidDay,
-																		   timeStampUtcNoHHMM,
-																		   exchange)
+																		  unit,
+																		  timeStampLocalMidDay,
+																		  localTimeZone,
+																		  timeStampUtcNoHHMM,
+																		  exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD)")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))

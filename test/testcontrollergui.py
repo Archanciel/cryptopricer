@@ -3739,4 +3739,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 if __name__ == '__main__':
-	unittest.main()
+#	unittest.main()
+	tst = TestControllerGui()
+	tst.setUp()
+	tst.testControllerBugSpecifyDateBegOfYear()

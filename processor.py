@@ -237,6 +237,7 @@ class Processor:
                     requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
                     requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(dateTimeFormat)
                 else:
+                    # histominute price returned
                     requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
                     requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 
