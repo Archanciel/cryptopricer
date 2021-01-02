@@ -113,8 +113,8 @@ class TestControllerGui(unittest.TestCase):
 			minuteStr = '00'
 			priceType = 'C'
 		else:
-			hourStr = nowHourStr
-			minuteStr = nowMinuteStr
+			hourStr = '00'
+			minuteStr = '00'
 			priceType = 'M'
 
 		self.assertEqual(
@@ -253,6 +253,53 @@ class TestControllerGui(unittest.TestCase):
 		else:
 			hourStr = fiveDaysBeforeHourStr
 			minuteStr = fiveDaysBeforeMinuteStr
+			priceType = 'M'
+
+		self.assertEqual(
+			'ETH/BTC on Binance: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr, priceType),
+														UtilityForTest.removeOneEndPriceFromResult(printResult))
+		self.assertEqual('eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr), fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+		#next command: '' to replay lst command
+		inputStr = ''
+		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual(
+			'ETH/BTC on Binance: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr, priceType),
+														UtilityForTest.removeOneEndPriceFromResult(printResult))
+		self.assertEqual('eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr), fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+
+	def testGetPrintableResultForReplayHistoMinuteDayMonthOnly(self):
+		timezoneStr = LOCAL_TIME_ZONE
+		now = DateTimeUtil.localNow(timezoneStr)
+		fiveDaysBeforeArrowDate = now.shift(days=-2)
+		
+		if fiveDaysBeforeArrowDate.year < now.year:
+			print(
+				'{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format(
+					'testGetPrintableResultForReplayHistoMinuteDayMonthOnly()', now))
+			return
+		
+		fiveDaysBeforeYearStr, fiveDaysBeforeMonthStr, fiveDaysBeforeDayStr, fiveDaysBeforeHourStr, fiveDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(fiveDaysBeforeArrowDate)
+
+		requestDayStr = fiveDaysBeforeDayStr
+		requestMonthStr = fiveDaysBeforeMonthStr
+		requestHourStr = fiveDaysBeforeHourStr
+		requestMinuteStr = fiveDaysBeforeMinuteStr
+		inputStr = 'eth btc {}/{} binance'.format(requestDayStr, requestMonthStr)
+		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		if DateTimeUtil.isDateOlderThan(fiveDaysBeforeArrowDate, 7):
+			hourStr = '00'
+			minuteStr = '00'
+			priceType = 'C'
+		else:
+			hourStr = '00'
+			minuteStr = '00'
 			priceType = 'M'
 
 		self.assertEqual(
@@ -3742,5 +3789,6 @@ if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
-	tst.testGetPrintableResultForRealThenChangeUnitExchangeTimeAddVSCommandAndChangeCryptoDate()
+#	tst.testGetPrintableResultForRealThenChangeUnitExchangeTimeAddVSCommandAndChangeCryptoDate()
+	tst.testGetPrintableResultForReplayHistoMinuteDayMonthOnly()
 	tst.testControllerBugSpecifyDateBegOfYear()
