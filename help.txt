@@ -37,6 +37,8 @@ Full requests do specify all the request parameter values.
 
     [b][cy]8:34[/c][/b] --> here, since no date is specified, current date is assumed.
 
+    [b][cy]21[/c][/b] --> if no month and no time are specified, an error is generated.
+
 [b][cr]WARNING[/c][/b]: specifying time makes sense only for dates not older than 7 days. Prices older
 than 7 days are 'close' prices. Since there's no notion of a close price for crypto's,
 the last price of the date at UTC 23.59 is returned as 'close' price.
