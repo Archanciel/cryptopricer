@@ -27,8 +27,8 @@ Full requests do specify all the request parameter values.
     [b][cy]0[/cy][/b] for RT
 
     [b][cy]21/12[/c][/b] or [b][cy]21/12/19[/c][/b] or [b][cy]21/12/2019[/c][/b].
-    If no year is specified, current year is assumed. If no time is specified, current time
-    is assumed.
+    If no year is specified, current year is assumed. If no time is specified,
+    00:00 time is assumed.
 
     [b][cy]21/12 8:34[/c][/b] --> current year assumed.
 
