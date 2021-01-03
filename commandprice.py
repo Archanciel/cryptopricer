@@ -141,8 +141,8 @@ class CommandPrice(AbstractCommand):
 		if monthStr != None:
 			month = int(monthStr)
 		else:
-			month = localNow.month
- 
+			raise ValueError('This should not happen since the entered date was not validated above !')
+
 		yearStr = self.parsedParmData[self.YEAR]
 
 		if yearStr != None:
@@ -154,21 +154,27 @@ class CommandPrice(AbstractCommand):
 				year = 0
 		else:
 			year = localNow.year
-
+		
 		hourStr = self.parsedParmData[self.HOUR]
-
-		if hourStr != None:
-			hour = int(hourStr)
-		else:
-			hour = 0
-
 		minuteStr = self.parsedParmData[self.MINUTE]
 
-		if minuteStr != None:
-			minute = int(minuteStr)
+		if hourStr is None and minuteStr is None: # and day == localNow.day and month == localNow.month:
+			# day = 0
+			# month = 0
+			# year = 0
+			hour = localNow.hour
+			minute = localNow.minute
 		else:
-			minute = 0
-
+			if hourStr != None:
+				hour = int(hourStr)
+			else:
+				hour = 0
+	
+			if minuteStr != None:
+				minute = int(minuteStr)
+			else:
+				minute = 0
+		
 		# storing the parsed parm gata dictionary before it
 		# may be modified in case the user requested a RT
 		# price. The initial dictionary wiLl be added to the
@@ -396,7 +402,7 @@ class CommandPrice(AbstractCommand):
 				return resultData
 
 			try:
-				date = DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr),
+				DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr),
 																int(hourStr), int(minuteStr), 0,
 																self.configManager.localTimeZone)
 			except ValueError as e:

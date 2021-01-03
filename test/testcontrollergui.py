@@ -170,22 +170,33 @@ class TestControllerGui(unittest.TestCase):
 														  resultNoEndPrice,
 														  expectedPrintResultNoDateTimeNoEndPrice)
 
-#nowMonthStr,
-
-#														  nowYearStr,
-
-#														  resultNoEndPrice,
-
-#														  expectedPrintResultNoDateTimeNoEndPrice)
-
-#
-
-#		self.assertEqual(
-
-#			'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(no		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
-
-
+	
+	def testGetPrintableResultForDayMonthOnlyRealTime(self):
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		
+		# first command: RT price request
+		inputStr = 'eth usd {}/{} bitfinex'.format(nowDayStr, nowMonthStr)
+		printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+		                                                            nowHourStr,
+		                                                            nowMinuteStr,
+		                                                            nowMonthStr,
+		                                                            nowYearStr,
+		                                                            resultNoEndPrice,
+		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+		
+		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
+	
 	def testGetPrintableResultForReplayHistoDay(self):
 		timezoneStr = LOCAL_TIME_ZONE
 		now = DateTimeUtil.localNow(timezoneStr)
@@ -3786,9 +3797,10 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 if __name__ == '__main__':
-#	unittest.main()
-	tst = TestControllerGui()
-	tst.setUp()
-#	tst.testGetPrintableResultForRealThenChangeUnitExchangeTimeAddVSCommandAndChangeCryptoDate()
-	tst.testGetPrintableResultForReplayHistoMinuteDayMonthOnly()
-	tst.testControllerBugSpecifyDateBegOfYear()
+	unittest.main()
+	# tst = TestControllerGui()
+	# tst.setUp()
+	# tst.testGetPrintableResultForRealThenChangeUnitExchangeTimeAddVSCommandAndChangeCryptoDate()
+	# tst.testGetPrintableResultForDayMonthOnlyRealTime()
+	# tst.testGetPrintableResultForReplayHistoMinuteDayMonthOnly()
+	# tst.testControllerBugSpecifyDateBegOfYear()
