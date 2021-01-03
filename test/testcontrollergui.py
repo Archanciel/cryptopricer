@@ -72,24 +72,24 @@ class TestControllerGui(unittest.TestCase):
 			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 			
 			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-			                                                            nowHourStr,
-			                                                            nowMinuteStr,
-			                                                            nowMonthStr,
-			                                                            nowYearStr,
-			                                                            resultNoEndPrice,
-			                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																		nowHourStr,
+																		nowMinuteStr,
+																		nowMonthStr,
+																		nowYearStr,
+																		resultNoEndPrice,
+																		expectedPrintResultNoDateTimeNoEndPrice)
 #			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
 			
 			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])
 			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
 			
 			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-			                                                            nowHourStr,
-			                                                            nowMinuteStr,
-			                                                            nowMonthStr,
-			                                                            nowYearStr,
-			                                                            resultNoEndPrice,
-			                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																		nowHourStr,
+																		nowMinuteStr,
+																		nowMonthStr,
+																		nowYearStr,
+																		resultNoEndPrice,
+																		expectedPrintResultNoDateTimeNoEndPrice)
 			
 #			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
 
@@ -140,12 +140,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-		                                                            nowHourStr,
-		                                                            nowMinuteStr,
-		                                                            nowMonthStr,
-		                                                            nowYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -305,7 +305,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(
 			'ETH/BTC on Binance: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr, priceType),
 														UtilityForTest.removeOneEndPriceFromResult(printResult))
-		self.assertEqual('eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr), fullCommandStrNoOptions)
+		self.assertEqual('eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 		#next command: '' to replay lst command
@@ -316,7 +316,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(
 			'ETH/BTC on Binance: ' + '{}/{}/{} {}:{}{}'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr, priceType),
 														UtilityForTest.removeOneEndPriceFromResult(printResult))
-		self.assertEqual('eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, requestHourStr, requestMinuteStr), fullCommandStrNoOptions)
+		self.assertEqual('eth btc {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
 
 
@@ -334,12 +334,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-		                                                            nowHourStr,
-		                                                            nowMinuteStr,
-		                                                            nowMonthStr,
-		                                                            nowYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -653,12 +653,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -706,12 +706,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -759,12 +759,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -902,12 +902,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -951,12 +951,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1010,12 +1010,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -1069,12 +1069,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-		                                                            nowHourStr,
-		                                                            nowMinuteStr,
-		                                                            nowMonthStr,
-		                                                            nowYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
@@ -2558,12 +2558,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -2581,12 +2581,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -2604,12 +2604,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
 		# 													   requestMinuteStr),
@@ -2626,12 +2626,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
@@ -2649,12 +2649,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
 		# 													   requestMinuteStr),
@@ -2671,12 +2671,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		# self.assertEqual(
 		# 	'ETH/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
 		# 													   requestMinuteStr),
@@ -2693,12 +2693,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		# self.assertEqual(
 		# 	'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
 		# 													   requestMinuteStr),
@@ -2715,12 +2715,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		# self.assertEqual(
 		# 	'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
 		# 													   requestMinuteStr),
@@ -2737,12 +2737,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		# self.assertEqual(
 		# 	'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
 		# 													   requestMinuteStr),
@@ -2759,12 +2759,12 @@ class TestControllerGui(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD on Bitfinex: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, requestDayStr,
-		                                                            requestHourStr,
-		                                                            requestMinuteStr,
-		                                                            requestMonthStr,
-		                                                            requestYearStr,
-		                                                            resultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	requestHourStr,
+																	requestMinuteStr,
+																	requestMonthStr,
+																	requestYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		# self.assertEqual(
 		# 	'NEO/USD on Bitfinex: ' + '{}/{}/{} {}:{}R'.format(requestDayStr, requestMonthStr, requestYearStr, requestHourStr,
 		# 													   requestMinuteStr),
