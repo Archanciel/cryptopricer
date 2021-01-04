@@ -285,7 +285,7 @@
 				text: "Close"
 				on_press: root.dismiss()
 
-<LoadFileChooserPopup>: # sub-class of BoxLayout
+<LoadFileChooserPopup>: # sub-class of FileChooserPopup
 	popupBoxLayout: popup_boxlayout
 	diskRecycleBoxLayout: disc_mem_RB_layout
 	fileChooser: file_chooser
@@ -349,7 +349,7 @@
 				text: "Load"
 				on_release: root.load(file_chooser.path, file_chooser.selection)
 
-<SaveFileChooserPopup>: # sub-class of BoxLayout
+<SaveFileChooserPopup>: # sub-class of FileChooserPopup
 	popupBoxLayout: popup_boxlayout
 	diskRecycleBoxLayout: disc_mem_RB_layout
 	fileChooser: file_chooser

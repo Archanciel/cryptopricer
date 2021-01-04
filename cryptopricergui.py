@@ -870,14 +870,27 @@ class CryptoPricerGUI(BoxLayout):
 		self.manageStateOfGlobalRequestListButtons()
 		self.refocusOnRequestInput()
 
-	def saveHistoryToFile(self, pathOnly, pathFileName, isLoadAtStart):
-		dataPathNotExistMessage = self.buildDataPathNotExistMessage(pathOnly)
-
-		if not pathFileName or not self.ensureDataPathExist(pathOnly, dataPathNotExistMessage):
-			# no file selected. Save dialog remains open ..
+	def saveHistoryToFile(self, existingPathOnly, savingPathFileName, isLoadAtStart):
+		"""
+		
+		:param existingPathOnly: this is the current path in the FileChooser dialog
+		:param savingPathFileName: path + file name specified by the user in the
+			   path file name TextInput save dialog field
+		:param isLoadAtStart: value of the load at start CheckBox
+		"""
+		if not savingPathFileName:
+			# no file selected. Save dialog remains open ...
+			return
+		
+		pathElemLst = savingPathFileName.split(sep)
+		pathContainedInFilePathName = sep.join(pathElemLst[:-1])
+		savingPathNotExistMessage = self.buildDataPathContainedInFilePathNameNotExistMessage(pathContainedInFilePathName)
+		
+		if not self.ensureDataPathExist(pathContainedInFilePathName, savingPathNotExistMessage):
+			# data path defined specified in saved file path name does not exist. Error popup is displayed.
 			return
 
-		with open(pathFileName, 'w') as stream:
+		with open(savingPathFileName, 'w') as stream:
 			for listEntry in self.requestListRV.data:
 				line = listEntry['text']
 				line = line + '\n'
@@ -886,19 +899,22 @@ class CryptoPricerGUI(BoxLayout):
 		# saving in config file if the saved file
 		# is to be loaded at application start
 		if isLoadAtStart:
-			self.configMgr.loadAtStartPathFilename = pathFileName
+			self.configMgr.loadAtStartPathFilename = savingPathFileName
 		else:
-			if self.configMgr.loadAtStartPathFilename == pathFileName:
+			if self.configMgr.loadAtStartPathFilename == savingPathFileName:
 				self.configMgr.loadAtStartPathFilename = ''
 
 		self.configMgr.storeConfig()
-		self.displayFileActionOnStatusBar(pathFileName, FILE_SAVED, isLoadAtStart)
+		self.displayFileActionOnStatusBar(savingPathFileName, FILE_SAVED, isLoadAtStart)
 		self.refocusOnRequestInput()
 
 	# --- end file chooser code ---
 
-	def buildDataPathNotExistMessage(self, path):
+	def buildDataPathDefinedInSettingsNotExistMessage(self, path):
 		return 'Data path ' + path + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
+
+	def buildDataPathContainedInFilePathNameNotExistMessage(self, path):
+		return 'Path ' + path + '\ndoes not exist !\nEither create the directory or\nmodify the path.'
 
 	def isLoadAtStart(self, filePathName):
 		return self.configMgr.loadAtStartPathFilename == filePathName
@@ -1121,7 +1137,7 @@ class CryptoPricerGUIApp(App):
 		not in CryptoPricerGUI.__init__ where no popup could be displayed.
 		:return:
 		'''
-		dataPathNotExistMessage = self.cryptoPricerGUI.buildDataPathNotExistMessage(self.cryptoPricerGUI.dataPath)
+		dataPathNotExistMessage = self.cryptoPricerGUI.buildDataPathDefinedInSettingsNotExistMessage(self.cryptoPricerGUI.dataPath)
 
 		if self.cryptoPricerGUI.ensureDataPathExist(self.cryptoPricerGUI.dataPath, dataPathNotExistMessage):
 			# loading the load at start history file if defined

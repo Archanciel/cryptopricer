@@ -128,7 +128,7 @@ class SaveFileChooserPopup(FileChooserPopup):
 			# no file selected or file name defined. Load dialog remains open ..
 			return
 
-		self.rootGUI.saveHistoryToFile(pathOnly,pathFileName, isLoadAtStart)
+		self.rootGUI.saveHistoryToFile(pathOnly, pathFileName, isLoadAtStart)
 		self.rootGUI.dismissPopup()
 
 	def toggleLoadAtStart(self, active):
