@@ -1023,7 +1023,7 @@ class CryptoPricerGUIApp(App):
 					"key": "referencecurrency",
 					"options": ["USD", "EURO", "CHF", "GBP"]
 				},
-				{"type": "pathOnly",
+				{"type": "path",
 					"title": "Data files location",
 					"desc": "Set the directory where the app data files like history files are stored",
 					"section": "General",
