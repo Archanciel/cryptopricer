@@ -290,6 +290,7 @@
 	diskRecycleBoxLayout: disc_mem_RB_layout
 	fileChooser: file_chooser
 	pathList: path_mem_list
+	gridLayoutPathField: grid_layout_path_field
 	currentPathField: text_path_load
 	orientation: 'vertical'
 	BoxLayout:
@@ -330,13 +331,28 @@
 			dirselect: True
 			on_selection: text_path_load.text = self.selection and self.selection[0] or ''
 
-		TextInput:
-			id: text_path_load
+        GridLayout:
+            id: grid_layout_path_field
+            #size_hint_y: 0.023 # tablet
+            #size_hint_y: 0.035 # smartphone
+            size_hint_y: 0.12 # Windows
+            cols: 2
+            GridLayout:
+                rows: 1
+                TextInput:
+                    id: text_path_load
+                    font_size: '15sp'
+                    multiline: False
+                    readonly: True
+
+
+		#TextInput:
+			#id: text_path_load
 			#size_hint_y: 0.12 # value for Windows 10
 			#size_hint_y: 0.05 # value for Android tablet
-			size_hint_y: 0.08 # value for Android smartphone
-			multiline: False
-			readonly: True
+			#size_hint_y: 0.08 # value for Android smartphone
+			#multiline: False
+			#readonly: True
 
 		GridLayout:
 			cols: 2

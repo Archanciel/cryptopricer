@@ -34,10 +34,16 @@ class FileChooserPopup(BoxLayout):
 		if os.name != 'posix':
 			self.popupSizeProportion_x = 0.8
 			self.popupSizeProportion_y = 0.8
+			self.gridLayoutPathField.size_hint_y = 0.12
 		else:
 			self.popupSizeProportion_x = 0.8
 			self.popupSizeProportion_y = 0.62
-	
+
+			if self.sdCardDir == SD_CARD_DIR_SMARTPHONE:
+				self.gridLayoutPathField.size_hint_y = 0.08
+			else:
+				self.gridLayoutPathField.size_hint_y = 0.05
+
 	def fillDriveOrMemoryList(self):
 		"""
 		
@@ -76,20 +82,6 @@ class LoadFileChooserPopup(FileChooserPopup):
 	"""
 	def __init__(self, rootGUI, **kwargs):
 		super(LoadFileChooserPopup, self).__init__(rootGUI, **kwargs)
-	
-	def sizeFileChooser(self):
-		"""
-		
-		:return:
-		"""
-		super().sizeFileChooser()
-		
-		if os.name != 'posix':
-			self.popupBoxLayout.size_hint_y = 0.17
-			self.currentPathField.size_hint_y = 0.12
-		else:
-			self.popupBoxLayout.size_hint_y = 0.16
-			self.currentPathField.size_hint_y = 0.08
 
 class SaveFileChooserPopup(FileChooserPopup):
 	"""
@@ -106,14 +98,11 @@ class SaveFileChooserPopup(FileChooserPopup):
 		super().sizeFileChooser()
 
 		if os.name != 'posix':
-			self.gridLayoutPathField.size_hint_y = 0.12
 			self.loadAtStartChkBox.size_hint_x = 0.06
 		else:
 			if self.sdCardDir == SD_CARD_DIR_SMARTPHONE:
-				self.gridLayoutPathField.size_hint_y = 0.08
 				self.loadAtStartChkBox.size_hint_x = 0.12
 			else:
-				self.gridLayoutPathField.size_hint_y = 0.05
 				self.loadAtStartChkBox.size_hint_x = 0.06
 	
 	def save(self, pathOnly, pathFileName, isLoadAtStart):
