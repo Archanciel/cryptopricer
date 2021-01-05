@@ -89,7 +89,9 @@ class SaveFileChooserPopup(FileChooserPopup):
 	"""
 	def __init__(self, rootGUI, **kwargs):
 		super(SaveFileChooserPopup, self).__init__(rootGUI, **kwargs)
-	
+
+		self.loadAtStartFilePathName = ''
+
 	def sizeFileChooser(self):
 		"""
 		
@@ -120,6 +122,19 @@ class SaveFileChooserPopup(FileChooserPopup):
 		self.rootGUI.saveHistoryToFile(pathOnly, pathFileName, isLoadAtStart)
 		self.rootGUI.dismissPopup()
 
+	def setCurrentLoadAtStartFile(self, loadAtStartFilePathName):
+		self.loadAtStartFilePathName = loadAtStartFilePathName
+	
+	def updateLoadAtStartCheckBox(self):
+		"""
+		Method called when the currentPath TextInput field content is modified.
+		"""
+		currentSaveFilePathName = self.currentPathField.text
+		if currentSaveFilePathName == self.loadAtStartFilePathName:
+			self.loadAtStartChkBox.active = True
+		else:
+			self.loadAtStartChkBox.active = False
+	
 	def toggleLoadAtStart(self, active):
 		"""
 		
