@@ -37,11 +37,12 @@ class FileChooserPopup(BoxLayout):
 			self.gridLayoutPathField.size_hint_y = 0.12
 		else:
 			self.popupSizeProportion_x = 0.8
-			self.popupSizeProportion_y = 0.62
 
 			if self.sdCardDir == SD_CARD_DIR_SMARTPHONE:
+				self.popupSizeProportion_y = 0.72
 				self.gridLayoutPathField.size_hint_y = 0.08
 			else:
+				self.popupSizeProportion_y = 0.82
 				self.gridLayoutPathField.size_hint_y = 0.05
 
 	def fillDriveOrMemoryList(self):
