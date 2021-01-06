@@ -31,18 +31,24 @@ class FileChooserPopup(BoxLayout):
 		self.diskRecycleBoxLayout.selected_nodes = [0]
 
 	def sizeFileChooser(self):
+		"""
+		This method sets the popup size and position values used by the rootGUI
+		openFileLoadPopup() or openFileSavePopup() methods as well as the file
+		chooser	fields size.
+		"""
 		if os.name != 'posix':
 			self.popupSizeProportion_x = 0.8
 			self.popupSizeProportion_y = 0.8
+			self.popupPos_top = 0.92
 			self.gridLayoutPathField.size_hint_y = 0.12
 		else:
 			self.popupSizeProportion_x = 0.8
+			self.popupSizeProportion_y = 0.62
+			self.popupPos_top = 0.92
 
 			if self.sdCardDir == SD_CARD_DIR_SMARTPHONE:
-				self.popupSizeProportion_y = 0.72
 				self.gridLayoutPathField.size_hint_y = 0.08
 			else:
-				self.popupSizeProportion_y = 0.82
 				self.gridLayoutPathField.size_hint_y = 0.05
 
 	def fillDriveOrMemoryList(self):
