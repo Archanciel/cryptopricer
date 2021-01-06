@@ -810,9 +810,7 @@ class CryptoPricerGUI(BoxLayout):
 	def dismissPopup(self):
 		'''
 		Act as a call back function for the cancel button of the load and save dialog
-		:return: nothing
 		'''
-		self.updateStatusBar('')
 		self.popup.dismiss()
 
 	def openFileLoadPopup(self):
