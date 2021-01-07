@@ -44,11 +44,12 @@ class FileChooserPopup(BoxLayout):
 		else:
 			self.popupSizeProportion_x = 0.8
 			self.popupSizeProportion_y = 0.62
-			self.popupPos_top = 0.92
 
 			if self.sdCardDir == SD_CARD_DIR_SMARTPHONE:
+				self.popupPos_top = 0.95
 				self.gridLayoutPathField.size_hint_y = 0.08
 			else:
+				self.popupPos_top = 0.92
 				self.gridLayoutPathField.size_hint_y = 0.05
 
 	def fillDriveOrMemoryList(self):
@@ -72,7 +73,7 @@ class FileChooserPopup(BoxLayout):
 		
 		else:
 			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
-			                           'pathOnly': dataLocationFromSetting})
+									   'pathOnly': dataLocationFromSetting})
 			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'pathOnly': '/storage/emulated/0'})
 			
 			self.sdCardDir = SD_CARD_DIR_SMARTPHONE
