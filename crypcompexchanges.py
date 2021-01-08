@@ -83,6 +83,10 @@ class CrypCompExchanges:
                      'BXINTH': ['BXinth', 'ETH', 'BTC'],
                      'GATEIO': ['Gateio', 'ETH', 'BTC'],
                      'HUOBIPRO': ['HuobiPro', 'ETH', 'BTC'],
+                     'KUCOIN': ['KuCoin', 'ETH', 'BTC'],
+                     'FATBTC': ['Fatbtc', 'ETH', 'BTC'],
+                     'BILAXY': ['Bilaxy', 'ETH', 'BTC'],
+                     'UNISWAP': ['Uniswap (V2)', 'ETH', 'BTC'],
                      'OKEX': ['OKEX', 'ETH', 'BTC']}
 
 

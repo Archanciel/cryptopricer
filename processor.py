@@ -1,6 +1,9 @@
 from datetimeutil import DateTimeUtil
 from resultdata import ResultData
 
+# This error message is consistant with the provider error 'HitBTC market does not exist for this coin pair (BTC-USD)' !
+MARKET_NOT_SUPPORTED_ERROR = "ERROR - {} market does not exist or is not yet supported by the application"
+
 class Processor:
     '''
     This class is used as Receiver by the Command component in the Command pattern.
@@ -99,7 +102,7 @@ class Processor:
                 validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
             except(KeyError):
                 resultData = ResultData()
-                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} market does not exist for this coin pair ({}-{})".format(exchange, crypto, unit))
+                resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, MARKET_NOT_SUPPORTED_ERROR.format(exchange))
                 return resultData
 
         validFiatExchangeSymbol = None
@@ -110,9 +113,7 @@ class Processor:
             except(KeyError):
                 resultData = ResultData()
                 resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-                                    "ERROR - {} market does not exist for this coin pair ({}-{})".format(optionFiatExchange,
-                                                                                                         unit,
-                                                                                                         optionFiatSymbol))
+                                    MARKET_NOT_SUPPORTED_ERROR.format(optionFiatExchange))
                 return resultData
 
         localTz = self.configManager.localTimeZone
