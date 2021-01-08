@@ -183,7 +183,7 @@ class TestCommandPrice(unittest.TestCase):
 
         resultData = self.commandPrice.execute()
 
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - Unknown market does not exist for this coin pair (BTC-USD)")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - Unknown market does not exist or is not yet supported by the application")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
@@ -289,7 +289,7 @@ class TestCommandPrice(unittest.TestCase):
 
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - Unknown market does not exist for this coin pair (BTC-USD)")
+                         "ERROR - Unknown market does not exist or is not yet supported by the application")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
