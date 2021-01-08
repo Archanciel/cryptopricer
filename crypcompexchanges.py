@@ -86,7 +86,7 @@ class CrypCompExchanges:
                      'KUCOIN': ['KuCoin', 'ETH', 'BTC'],
                      'FATBTC': ['Fatbtc', 'ETH', 'BTC'],
                      'BILAXY': ['Bilaxy', 'ETH', 'BTC'],
-                     'UNISWAP': ['Uniswap (V2)', 'ETH', 'BTC'],
+                     'UNISWAP': ['Uniswap', 'ETH', 'BTC'],
                      'OKEX': ['OKEX', 'ETH', 'BTC']}
 
 
