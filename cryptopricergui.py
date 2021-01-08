@@ -823,9 +823,16 @@ class CryptoPricerGUI(BoxLayout):
 
 	def openFileSavePopup(self):
 		saveFileChooser = SaveFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
-		saveFileChooser.setCurrentLoadAtStartFile(self.configMgr.loadAtStartPathFilename)
+		loadAtStartFilePathName = self.configMgr.loadAtStartPathFilename
+		saveFileChooser.setCurrentLoadAtStartFile(loadAtStartFilePathName)
 		
-		self.popup = Popup(title="Save history to file", content=saveFileChooser,
+		if loadAtStartFilePathName:
+			loadAtStartFileName = loadAtStartFilePathName.split(sep)[-1]
+			popupTitle = "Save history to file ({} loaded at start)".format(loadAtStartFileName)
+		else:
+			popupTitle = "Save history to file"
+
+		self.popup = Popup(title=popupTitle, content=saveFileChooser,
 		                   pos_hint={'top': saveFileChooser.popupPos_top},
 		                   size_hint=(saveFileChooser.popupSizeProportion_x, saveFileChooser.popupSizeProportion_y))
 		self.popup.open()
