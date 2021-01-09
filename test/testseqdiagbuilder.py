@@ -1492,7 +1492,7 @@ participant PriceRequester
 		Obtains the RT or historical rates from the Cryptocompare web site
 	end note
 participant GuiOutputFormater
-GUI -> Controller: getPrintableResultForInput(inputStr, copyResultToClipboard=True)
+GUI -> Controller: getPrintableResultForInput(inputStr)
 	activate Controller
 	Controller -> Requester: getCommand(inputStr)
 		activate Requester
@@ -1613,7 +1613,7 @@ participant PriceRequester
 		web site
 	end note
 participant GuiOutputFormater
-GUI -> Controller: getPrintableResultForInput(inputStr, ...)
+GUI -> Controller: getPrintableResultForInput(inputStr)
 	activate Controller
 	Controller -> Requester: getCommand(inputStr)
 		activate Requester

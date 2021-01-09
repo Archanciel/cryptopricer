@@ -14,31 +14,19 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 		pass
 
 	@abstractmethod
-	def printDataToConsole(self):
+	def printDataToConsole(self, resultData):
 		'''
 		Output formated data in the console
 		:return: nothing
 		'''
 		pass
 
-	@abstractmethod
-	def toClipboard(self, numericVal):
-		pass
-
-	@abstractmethod
-	def fromClipboard(self):
-		pass
-
-	def getPrintableData(self, resultData, copyResultToClipboard=True):
+	def getPrintableData(self, resultData):
 		errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
 
 		if errorMsg == None:
 			price = resultData.getValue(resultData.RESULT_KEY_PRICE)
 			formattedPriceStr = self._formatPriceFloatToStr(price, self.PRICE_FLOAT_FORMAT)
-
-			if copyResultToClipboard:
-				self.toClipboard(formattedPriceStr)
-
 			dateTimeStr = resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING)
 			priceType = resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE)
 

@@ -302,7 +302,7 @@ class ScrollablePopup(Popup):
 		self.scrollView.scroll_y = 1 # force scrolling to top
 
 class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavior,
-                                            RecycleBoxLayout):
+											RecycleBoxLayout):
 	''' Adds selection and focus behaviour to the view. '''
 	
 	# required to authorise unselecting a selected item
@@ -374,8 +374,8 @@ class CryptoPricerGUI(BoxLayout):
 		self.dataPath = self.configMgr.dataPath
 
 		self.setRVListSizeParms(int(self.configMgr.histoListItemHeight),
-		                        int(self.configMgr.histoListVisibleSize),
-		                        requestListRVSpacing)
+								int(self.configMgr.histoListVisibleSize),
+								requestListRVSpacing)
 		
 		self.appSize = self.configMgr.appSize
 		self.defaultAppPosAndSize = self.configMgr.appSize
@@ -391,15 +391,15 @@ class CryptoPricerGUI(BoxLayout):
 			rvListItemSpacing = RV_LIST_ITEM_SPACING_WINDOWS
 			
 		self.setRVListSizeParms(self.rvListItemHeight,
-		                        self.rvListMaxVisibleItems,
-		                        rvListItemSpacing)
+								self.rvListMaxVisibleItems,
+								rvListItemSpacing)
 		if self.showRequestList:
 			self.adjustRequestListSize()
 
 	def setRVListSizeParms(self,
-	                       rvListItemHeight,
-	                       rvListMaxVisibleItems,
-	                       rvListItemSpacing):
+						   rvListItemHeight,
+						   rvListMaxVisibleItems,
+						   rvListItemSpacing):
 		self.rvListItemHeight = rvListItemHeight
 		self.rvListMaxVisibleItems = rvListMaxVisibleItems
 		self.maxRvListHeight = self.rvListMaxVisibleItems * self.rvListItemHeight
@@ -782,7 +782,7 @@ class CryptoPricerGUI(BoxLayout):
 
 		for listEntry in self.requestListRV.data:
 			outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions, fullCommandStrForStatusBar = \
-				self.controller.getPrintableResultForInput(listEntry['text'], copyResultToClipboard=False)
+				self.controller.getPrintableResultForInput(listEntry['text'])
 			self.outputResult(outputResultStr)
 
 		self.replayAllButton.disabled = False
@@ -843,8 +843,8 @@ class CryptoPricerGUI(BoxLayout):
 	def openFileLoadPopup(self):
 		loadFileChooser = LoadFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		self.popup = Popup(title="Select history file to load", content=loadFileChooser,
-		                   pos_hint={'top': loadFileChooser.popupPos_top},
-		                   size_hint=(loadFileChooser.popupSizeProportion_x, loadFileChooser.popupSizeProportion_y))
+						   pos_hint={'top': loadFileChooser.popupPos_top},
+						   size_hint=(loadFileChooser.popupSizeProportion_x, loadFileChooser.popupSizeProportion_y))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 
@@ -860,8 +860,8 @@ class CryptoPricerGUI(BoxLayout):
 			popupTitle = "Save history to file"
 
 		self.popup = Popup(title=popupTitle, content=saveFileChooser,
-		                   pos_hint={'top': saveFileChooser.popupPos_top},
-		                   size_hint=(saveFileChooser.popupSizeProportion_x, saveFileChooser.popupSizeProportion_y))
+						   pos_hint={'top': saveFileChooser.popupPos_top},
+						   size_hint=(saveFileChooser.popupSizeProportion_x, saveFileChooser.popupSizeProportion_y))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
 

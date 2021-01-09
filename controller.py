@@ -1,5 +1,4 @@
-import os
-import sys
+import sys, os
 
 from commandcrypto import CommandCrypto
 from commanderror import CommandError
@@ -57,16 +56,13 @@ class Controller:
                 print(strToPrint)
 
 
-    def getPrintableResultForInput(self, inputStr, copyResultToClipboard=True):
+    def getPrintableResultForInput(self, inputStr):
         '''
         Return the printable request result, the full request command without any command option and
         the full request command with any specified save mode option (option which is to be saved in the
         command history list.
 
         :param inputStr:
-        :param copyResultToClipboard: set to True by default. Whreplaying all requests
-                                      stored in history, set to False, which avoids
-                                      problem on Android
         :seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
 
         :return: 1/ printable request result
@@ -94,9 +90,9 @@ class Controller:
         result = command.execute()
 
         if result != '':
-            printResult = self.printer.getPrintableData(result, copyResultToClipboard)
+            printResult = self.printer.getPrintableData(result)
             fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
-                result, copyResultToClipboard)
+                result)
             
             return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
 

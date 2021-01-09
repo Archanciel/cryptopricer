@@ -1,5 +1,3 @@
-import os
-
 from commandprice import CommandPrice
 from abstractoutputformater import AbstractOutputFormater
 from datetimeutil import DateTimeUtil
@@ -11,24 +9,14 @@ class GuiOutputFormater(AbstractOutputFormater):
 		'''
 		Ctor. The parm activateClipboard with default value set to False was added to prevent SeqDiagBuilder
 		unit tests in TestSeqDiagBuilder where the CryptoPricer Condtroller class were implied to crash the Pycharm
-		unit test environment. This crask was due to an obscure problem in the Pycharm unit test framework. This
+		unit test environment. This crash was due to an obscure problem in the Pycharm unit test framework. This
 		failure only happened if the kivy clipboard class was imported.
 
 		:param configurationMgr:
 		:param activateClipboard:
 		'''
-		# commented code below does not run in Pydroid since Pydroid does not support
-		# the sl4a lib
-		# if os.name == 'posix':
-		#     import android
-		#     self._clipboard = android.Android()
-		# else:
-		self.activateClipboard = activateClipboard
-
-		if self.activateClipboard:
-			from kivy.core.clipboard import Clipboard
-			self._clipboard = Clipboard
-
+		
+		super().__init__()
 		self.configurationMgr = configurationMgr
 
 	def printDataToConsole(self, resultData):
@@ -241,18 +229,6 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 		return requestDateDMY, requestDateHM
 
-	def toClipboard(self, numericVal):
-		if not self.activateClipboard:
-			return
-
-		self._clipboard.copy(str(numericVal))
-
-	def fromClipboard(self):
-		if not self.activateClipboard:
-			return 'Clipboard not available since not activated at ConsoleOutputFormater initialisation'
-		else:
-			return self._clipboard.paste()
-
 
 if __name__ == '__main__':
 	pr = GuiOutputFormater()
@@ -266,7 +242,3 @@ if __name__ == '__main__':
 	print('With formatting:               ' + yFormatted)
 	print('With formatting no trailing 0: ' + pr._formatPriceFloatToStr(y))
 	print()
-
-	a = 12.56
-	pr.toClipboard(a)
-	print('Clipboard: ' + pr.fromClipboard())
