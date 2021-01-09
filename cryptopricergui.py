@@ -524,6 +524,14 @@ class CryptoPricerGUI(BoxLayout):
 		request list
 		:return:
 		'''
+		self.executeOnlineRequestOnNewThread(asyncOnlineRequestFunction=self.submitRequestOnNewThread, kwargs={})
+
+	def submitRequestOnNewThread(self):
+		'''
+		Submit the request, output the result and add the request to the
+		request list
+		:return:
+		'''
 		# Get the request from the TextInput
 		requestStr = self.requestInput.text
 
@@ -591,6 +599,11 @@ class CryptoPricerGUI(BoxLayout):
 				else:
 					self.updateStatusBar(fullCommandStrForStatusBar)
 
+
+		self.replayAllButton.disabled = False
+		self.clearResultOutputButton.disabled = False
+
+		# self.resultOutput.do_cursor_movement('cursor_pgdown')
 		self.refocusOnRequestInput()
 
 	def ensureLowercase(self):
@@ -742,10 +755,24 @@ class CryptoPricerGUI(BoxLayout):
 		self.moveDownButton.disabled = True
 
 	def replayAllRequests(self):
+		"""
+		Method linked to the Replay All button in kv file.
+		"""
+		self.executeOnlineRequestOnNewThread(asyncOnlineRequestFunction=self.replayAllRequestsOnNewThread, kwargs={})
+
+	def executeOnlineRequestOnNewThread(self, asyncOnlineRequestFunction, kwargs):
+		"""
+		This generic method first disable the buttons whose usage could disturb
+		the passed asyncFunction. It then executes the asyncFunction on a new thread.
+		When the asyncFunction is finished, it reenables the disabled buttons.
+		
+		:param asyncOnlineRequestFunction:
+		:param kwargs: keyword args dic for the asyncOnlineRequestFunction
+		"""
 		self.replayAllButton.disabled = True
 		self.clearResultOutputButton.disabled = True
 
-		t = threading.Thread(target=self.replayAllRequestsOnNewThread, args=())
+		t = threading.Thread(target=asyncOnlineRequestFunction, args=(), kwargs=kwargs)
 		t.daemon = True
 		t.start()
 
