@@ -1515,7 +1515,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr, copyResultToClipboard=Tr
 			activate Processor
 			Processor -> Processor: _getPrice(currency, targetCurrency, exchange, year, month, day, hour, minute, dateTimeFormat, localTz)
 				activate Processor
-				Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, unit, timeStampLocalForHistoMinute, timeStampUTCNoHHMMForHistoDay, exchange)
+				Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, unit, timeStampLocalForHistoMinute, localTz, timeStampUTCNoHHMMForHistoDay, exchange)
 					activate PriceRequester
 					note right
 						Obtainins a minute price if request date < 7 days from now, else a day close price.
