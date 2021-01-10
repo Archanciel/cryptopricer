@@ -5,7 +5,7 @@ from datetimeutil import DateTimeUtil
 
 class GuiOutputFormater(AbstractOutputFormater):
 
-	def __init__(self, configurationMgr, activateClipboard=False):
+	def __init__(self, configurationMgr):
 		'''
 		Ctor. The parm activateClipboard with default value set to False was added to prevent SeqDiagBuilder
 		unit tests in TestSeqDiagBuilder where the CryptoPricer Condtroller class were implied to crash the Pycharm
@@ -13,7 +13,6 @@ class GuiOutputFormater(AbstractOutputFormater):
 		failure only happened if the kivy clipboard class was imported.
 
 		:param configurationMgr:
-		:param activateClipboard:
 		'''
 		
 		super().__init__()
@@ -28,7 +27,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 		print(outputStr)
 
-	def getFullCommandString(self, resultData, copyResultToClipboard=True):
+	def getFullCommandString(self, resultData):
 		'''
 		Recreate the full command string corresponding to a full or partial price request entered by the user.
 
@@ -47,9 +46,6 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 		:param copyResultToClipboard:
 		:param resultData: result of the last full or partial request
-		:param copyResultToClipboard: set to True by default. Whreplaying all requests
-									  stored in history, set to False, which avoids
-									  problem on Android
 		:seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar
 
 		:return: 1/ full command string with no command option corresponding to a full or partial price request
