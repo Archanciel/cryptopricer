@@ -50,12 +50,14 @@ class GuiOutputFormater(AbstractOutputFormater):
 		:param copyResultToClipboard: set to True by default. Whreplaying all requests
 									  stored in history, set to False, which avoids
 									  problem on Android
-		:seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
+		:seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar
+
 		:return: 1/ full command string with no command option corresponding to a full or partial price request
 					entered by the user or empty string if the command generated an error msg.
 				 2/ full request command with any non save command option
 				 3/ full command string with command option in save mode or none if no command option in save mode
 					is in effect or if the command option generated a warning.
+				 4/ full command string for status bar
 
 				 Ex: 1/ eth usd 0 bitfinex
 					 2/ None
@@ -89,8 +91,8 @@ class GuiOutputFormater(AbstractOutputFormater):
 												 requestDateHM + ' ' + \
 												 commandDic[CommandPrice.EXCHANGE]
 
-		fullCommandStrWithSaveModeOptions = None
-		fullCommandStrWithOptions = None
+		fullCommandStrWithSaveOptions = None
+		fullCommandStrWithNoSaveOptions = None
 		fullCommandStrForStatusBar = None
 
 		# handling option value
@@ -100,16 +102,16 @@ class GuiOutputFormater(AbstractOutputFormater):
 				# in case the value command generated a warning, if the value command data contains a crypto or unit
 				# different from the crypto or unit of tthe request, the fullCommandStr remains
 				# None and wont't be stored in the request history list of the GUI !
-				fullCommandStrWithSaveModeOptions = fullCommandStrNoOptions + ' -vs{}{}'.format(commandDic[
+				fullCommandStrWithSaveOptions = fullCommandStrNoOptions + ' -vs{}{}'.format(commandDic[
 					CommandPrice.OPTION_VALUE_AMOUNT], commandDic[CommandPrice.OPTION_VALUE_SYMBOL])
-				fullCommandStrForStatusBar = fullCommandStrWithSaveModeOptions
+				fullCommandStrForStatusBar = fullCommandStrWithSaveOptions
 		else:
 			valueOptionAmountStr = commandDic[CommandPrice.OPTION_VALUE_AMOUNT]
 			valueOptionSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
 			if valueOptionAmountStr and valueOptionSymbolStr:
 				# even in case the value command generated a warning, it will be displayed in the status bar !
-				fullCommandStrWithOptions = fullCommandStrNoOptions + ' -v{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
-				fullCommandStrForStatusBar = fullCommandStrWithOptions
+				fullCommandStrWithNoSaveOptions = fullCommandStrNoOptions + ' -v{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
+				fullCommandStrForStatusBar = fullCommandStrWithNoSaveOptions
 
 		# handling option fiat
 
@@ -121,43 +123,47 @@ class GuiOutputFormater(AbstractOutputFormater):
 				# in case the value command generated a warning, if the value command data contains a crypto or unit
 				# different from the crypto or unit of tthe request, the fullCommandStr remains
 				# None and wont't be stored in the request history list of the GUI !
-				if fullCommandStrWithSaveModeOptions:
+				if fullCommandStrWithSaveOptions:
 					# case when option value exist and is in save mode
-					fullCommandStrWithSaveModeOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
-																								fullCommandStrWithSaveModeOptions,
+					fullCommandStrWithSaveOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
+																								fullCommandStrWithSaveOptions,
 																								fiatOptionSymbol,
 																								isOptionFiatSave=True)
 				else:
 					# case when no option value exist in save mode
-					fullCommandStrWithSaveModeOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
+					fullCommandStrWithSaveOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
 																								fullCommandStrNoOptions,
 																								fiatOptionSymbol,
 																								isOptionFiatSave=True)
 
-				fullCommandStrForStatusBar = fullCommandStrWithSaveModeOptions + self._buildUnitFiatComputationString(resultData)
+				fullCommandStrForStatusBar = fullCommandStrWithSaveOptions + self._buildUnitFiatComputationString(resultData)
 		else:
 			# save mode is not active
-			if not fullCommandStrWithOptions:
+			if not fullCommandStrWithNoSaveOptions:
 				if fiatOptionSymbol:
-					fullCommandStrWithOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
+					fullCommandStrWithNoSaveOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
 																						fullCommandStrNoOptions,
 																						fiatOptionSymbol,
 																						isOptionFiatSave=False)
 			else:
 				if fiatOptionSymbol:
-					fullCommandStrWithOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
-																						fullCommandStrWithOptions,
+					fullCommandStrWithNoSaveOptions = self._addFiatOptionInfoToFullCommandStr(commandDic,
+																						fullCommandStrWithNoSaveOptions,
 																						fiatOptionSymbol,
 																						isOptionFiatSave=False)
 
-			if fullCommandStrWithOptions:
-				fullCommandStrForStatusBar = fullCommandStrWithOptions + self._buildUnitFiatComputationString(resultData)
+			if fullCommandStrWithNoSaveOptions:
+				fullCommandStrForStatusBar = fullCommandStrWithNoSaveOptions + self._buildUnitFiatComputationString(resultData)
 
 		from seqdiagbuilder import SeqDiagBuilder
 
 		SeqDiagBuilder.recordFlow()
+		import logging
+		logging.info('fullCommandStrWithNoSaveOptions: {}'.format(fullCommandStrWithNoSaveOptions))
+		logging.info('fullCommandStrWithSaveOptions: {}'.format(fullCommandStrWithSaveOptions))
+		logging.info('fullCommandStrForStatusBar: {}'.format(fullCommandStrForStatusBar))
 
-		return fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
+		return fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar
 	
 	def _addFiatOptionInfoToFullCommandStr(self,
 										   commandDic,

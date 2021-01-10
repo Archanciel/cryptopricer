@@ -63,38 +63,39 @@ class Controller:
         command history list.
 
         :param inputStr:
-        :seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
+        :seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar
 
         :return: 1/ printable request result
                  2/ full request command without any command option
-                 3/ full request command with any non save command option
-                 4/ full request command with any specified save mode option, None if no save mode option
+                 3/ full request command with any non save command option(s)
+                 4/ full request command with any specified save mode option(s), None if no save mode option
                     is in effect
+				 5/ full command string for status bar
 
                  Ex: 1/ 0.1 ETH/36 USD on Bitfinex: 21/11/17 10:00 360
                      2/ eth usd 0 bitfinex
-                     3/ None (value command with save mode in effect !)
+                     3/ None (one command option with save mode in effect !)
                      4/ eth usd 0 bitfinex -vs0.1eth
 
                      1/ 0.1 ETH/36 USD on Bitfinex: 21/11/17 10:00 360
                      2/ eth usd 0 bitfinex
                      3/ eth usd 0 bitfinex -v0.1eth
-                     4/ None (no value command save option in effect)
+                     4/ None (no command save option in effect)
 
                      1/ ETH/USD on Bitfinex: 21/11/17 10:00 360
                      2/ eth usd 0 bitfinex
-                     3/ None (no value command in effect)
-                     4/ None (no value command save option in effect)
+                     3/ None (no command option in effect)
+                     4/ None (no command save option in effect)
         '''
         command = self.requester.getCommand(inputStr)
         result = command.execute()
 
         if result != '':
             printResult = self.printer.getPrintableData(result)
-            fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
+            fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
                 result)
             
-            return printResult, fullCommandStrNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar
+            return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar
 
 
 if __name__ == '__main__':
