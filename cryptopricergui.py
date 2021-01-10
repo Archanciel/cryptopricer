@@ -534,7 +534,8 @@ class CryptoPricerGUI(BoxLayout):
 		'''
 		# Get the request from the TextInput
 		requestStr = self.requestInput.text
-
+		import logging
+		logging.info('Request: {}'.format(requestStr))
 		# purpose of the informations obtained from the business layer:
 		#   outputResultStr - for the output text zone
 		#   fullRequestStr - for the request history list
