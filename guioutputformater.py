@@ -157,22 +157,6 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 		return fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	
-	def _addFiatOptionInfoToFullCommandStr(self,
-										   commandDic,
-										   fullCommandStr,
-										   fiatOptionSymbol,
-										   isOptionFiatSave):
-		"""
-		
-		:param commandDic:
-		:param fullCommandStr: full command string with or without value option
-		:param fiatOptionSymbol
-		:param isOptionFiatSave
-		
-		:return:
-		"""
-		return fullCommandStr + self._buildFiatOptionInfo(commandDic, fiatOptionSymbol, isOptionFiatSave)
-	
 	def _buildFiatOptionInfo(self,
 										   commandDic,
 										   fiatOptionSymbol,
