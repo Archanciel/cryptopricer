@@ -1715,5 +1715,230 @@ class TestGuiOutputFormater(unittest.TestCase):
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc', fullCommandStrWithSaveOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc\n(0.00000746 * 94250.7068803 = 0.70311027)', fullCommandStrForStatusBar)
 
+	def testGetFullCommandStringOptionValueNoSaveOptionFiatSave(self):
+		# btc usd 12/9/17 bittrex -fseur
+		crypto = 'KRL'
+		unit = 'BTC'
+		fiat = 'CHSB'
+		cryptoUnitExchange = 'HitBTC'
+		requestDateStr = '20/12/20 00:00'
+		requestTimeStamp = 1608422400
+		cryptoPriceInUnit = 0.00000746
+		priceType = ResultData.PRICE_TYPE_HISTO_DAY
+		optionValueInCrypto = 2169.75
+		optionValueInUnit = 0.016186335
+		optionValueInFiat = 1525.5735155513667
+		optionValueSave = None
+		optionFiatExchange = 'HitBTC'
+		optionFiatUnitInFiatRate = 94250.7068803016
+		optionFiatCryptoInFiatRate = 0.7031102733270499
+		optionFiazSave = 's'
+
+		resultData = ResultData()
+		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'krl',
+																		  'UNIT': 'btc',
+																		  'EXCHANGE': 'hitbtc',
+																		  'DAY': '20',
+																		  'MONTH': '12',
+																		  'YEAR': '20',
+																		  'HOUR': '00',
+																		  'MINUTE': '00',
+																		  'DMY': None,
+																		  'HM': None,
+																		  'PRICE_TYPE': 'HISTO',
+																		  'OPTION_VALUE_DATA': None,
+																		  'OPTION_VALUE_AMOUNT': '2169.75',
+																		  'OPTION_VALUE_SYMBOL': 'krl',
+																		  'OPTION_VALUE_SAVE': 's',
+																		  'OPTION_FIAT_DATA': None,
+																		  'OPTION_FIAT_SYMBOL': 'chsb',
+																		  'OPTION_FIAT_EXCHANGE': 'hitbtc',
+																		  'OPTION_FIAT_AMOUNT': None,
+																		  'OPTION_FIAT_SAVE': 's',
+																		  'OPTION_PRICE_DATA': None,
+																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_SYMBOL': None,
+																		  'OPTION_PRICE_EXCHANGE': None,
+																		  'OPTION_PRICE_SAVE': None,
+																		  'UNSUPPORTED_OPTION': None,
+																		  'UNSUPPORTED_OPTION_MODIFIER': None,
+																		  'UNSUPPORTED_OPTION_DATA': None})
+		resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+		resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+		resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
+		resultData.setValue(resultData.RESULT_KEY_EXCHANGE, cryptoUnitExchange)
+		resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, priceType)
+		resultData.setValue(resultData.RESULT_KEY_PRICE, cryptoPriceInUnit)
+		resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestDateStr)
+		resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, requestTimeStamp)
+
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, optionValueInCrypto)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, optionValueInUnit)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, optionValueInFiat)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE, optionValueSave)
+
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, optionFiatExchange)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, optionFiatCryptoInFiatRate)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, optionFiatUnitInFiatRate)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiazSave)
+
+		fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -fschsb.hitbtc', fullCommandStrWithSaveOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fschsb.hitbtc\n(0.00000746 * 94250.7068803 = 0.70311027)', fullCommandStrForStatusBar)
+
+	def testGetFullCommandStringOptionValueSaveOptionFiatNoSave(self):
+		# btc usd 12/9/17 bittrex -fseur
+		crypto = 'KRL'
+		unit = 'BTC'
+		fiat = 'CHSB'
+		cryptoUnitExchange = 'HitBTC'
+		requestDateStr = '20/12/20 00:00'
+		requestTimeStamp = 1608422400
+		cryptoPriceInUnit = 0.00000746
+		priceType = ResultData.PRICE_TYPE_HISTO_DAY
+		optionValueInCrypto = 2169.75
+		optionValueInUnit = 0.016186335
+		optionValueInFiat = 1525.5735155513667
+		optionValueSave = 's'
+		optionFiatExchange = 'HitBTC'
+		optionFiatUnitInFiatRate = 94250.7068803016
+		optionFiatCryptoInFiatRate = 0.7031102733270499
+		optionFiazSave = None
+
+		resultData = ResultData()
+		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'krl',
+																		  'UNIT': 'btc',
+																		  'EXCHANGE': 'hitbtc',
+																		  'DAY': '20',
+																		  'MONTH': '12',
+																		  'YEAR': '20',
+																		  'HOUR': '00',
+																		  'MINUTE': '00',
+																		  'DMY': None,
+																		  'HM': None,
+																		  'PRICE_TYPE': 'HISTO',
+																		  'OPTION_VALUE_DATA': None,
+																		  'OPTION_VALUE_AMOUNT': '2169.75',
+																		  'OPTION_VALUE_SYMBOL': 'krl',
+																		  'OPTION_VALUE_SAVE': 's',
+																		  'OPTION_FIAT_DATA': None,
+																		  'OPTION_FIAT_SYMBOL': 'chsb',
+																		  'OPTION_FIAT_EXCHANGE': 'hitbtc',
+																		  'OPTION_FIAT_AMOUNT': None,
+																		  'OPTION_FIAT_SAVE': 's',
+																		  'OPTION_PRICE_DATA': None,
+																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_SYMBOL': None,
+																		  'OPTION_PRICE_EXCHANGE': None,
+																		  'OPTION_PRICE_SAVE': None,
+																		  'UNSUPPORTED_OPTION': None,
+																		  'UNSUPPORTED_OPTION_MODIFIER': None,
+																		  'UNSUPPORTED_OPTION_DATA': None})
+		resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+		resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+		resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
+		resultData.setValue(resultData.RESULT_KEY_EXCHANGE, cryptoUnitExchange)
+		resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, priceType)
+		resultData.setValue(resultData.RESULT_KEY_PRICE, cryptoPriceInUnit)
+		resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestDateStr)
+		resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, requestTimeStamp)
+
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, optionValueInCrypto)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, optionValueInUnit)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, optionValueInFiat)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE, optionValueSave)
+
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, optionFiatExchange)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, optionFiatCryptoInFiatRate)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, optionFiatUnitInFiatRate)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiazSave)
+
+		fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -fchsb.hitbtc', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl', fullCommandStrWithSaveOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fchsb.hitbtc\n(0.00000746 * 94250.7068803 = 0.70311027)', fullCommandStrForStatusBar)
+
+	def testGetFullCommandStringOptionValueNoSaveOptionFiatNoSave(self):
+		# btc usd 12/9/17 bittrex -fseur
+		crypto = 'KRL'
+		unit = 'BTC'
+		fiat = 'CHSB'
+		cryptoUnitExchange = 'HitBTC'
+		requestDateStr = '20/12/20 00:00'
+		requestTimeStamp = 1608422400
+		cryptoPriceInUnit = 0.00000746
+		priceType = ResultData.PRICE_TYPE_HISTO_DAY
+		optionValueInCrypto = 2169.75
+		optionValueInUnit = 0.016186335
+		optionValueInFiat = 1525.5735155513667
+		optionValueSave = None
+		optionFiatExchange = 'HitBTC'
+		optionFiatUnitInFiatRate = 94250.7068803016
+		optionFiatCryptoInFiatRate = 0.7031102733270499
+		optionFiazSave = None
+
+		resultData = ResultData()
+		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'krl',
+																		  'UNIT': 'btc',
+																		  'EXCHANGE': 'hitbtc',
+																		  'DAY': '20',
+																		  'MONTH': '12',
+																		  'YEAR': '20',
+																		  'HOUR': '00',
+																		  'MINUTE': '00',
+																		  'DMY': None,
+																		  'HM': None,
+																		  'PRICE_TYPE': 'HISTO',
+																		  'OPTION_VALUE_DATA': None,
+																		  'OPTION_VALUE_AMOUNT': '2169.75',
+																		  'OPTION_VALUE_SYMBOL': 'krl',
+																		  'OPTION_VALUE_SAVE': 's',
+																		  'OPTION_FIAT_DATA': None,
+																		  'OPTION_FIAT_SYMBOL': 'chsb',
+																		  'OPTION_FIAT_EXCHANGE': 'hitbtc',
+																		  'OPTION_FIAT_AMOUNT': None,
+																		  'OPTION_FIAT_SAVE': 's',
+																		  'OPTION_PRICE_DATA': None,
+																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_SYMBOL': None,
+																		  'OPTION_PRICE_EXCHANGE': None,
+																		  'OPTION_PRICE_SAVE': None,
+																		  'UNSUPPORTED_OPTION': None,
+																		  'UNSUPPORTED_OPTION_MODIFIER': None,
+																		  'UNSUPPORTED_OPTION_DATA': None})
+		resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+		resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
+		resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
+		resultData.setValue(resultData.RESULT_KEY_EXCHANGE, cryptoUnitExchange)
+		resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, priceType)
+		resultData.setValue(resultData.RESULT_KEY_PRICE, cryptoPriceInUnit)
+		resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestDateStr)
+		resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, requestTimeStamp)
+
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, optionValueInCrypto)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, optionValueInUnit)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, optionValueInFiat)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE, optionValueSave)
+
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL, fiat)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, optionFiatExchange)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, optionFiatCryptoInFiatRate)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, optionFiatUnitInFiatRate)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiazSave)
+
+		fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fchsb.hitbtc', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fchsb.hitbtc\n(0.00000746 * 94250.7068803 = 0.70311027)', fullCommandStrForStatusBar)
+
 if __name__ == '__main__':
 	unittest.main()

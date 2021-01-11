@@ -540,8 +540,8 @@ class CryptoPricerGUI(BoxLayout):
 		#   outputResultStr - for the output text zone
 		#   fullRequestStr - for the request history list
 		#   fullRequestStrWithOptions - for the status bar
-		#   fullRequestStrWithSaveModeOptions - for the request history list
-		outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+		#   fullCommandStrWithSaveOptionsForHistoryList - for the request history list
+		outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			requestStr)
 
 		self.outputResult(outputResultStr)
@@ -549,14 +549,14 @@ class CryptoPricerGUI(BoxLayout):
 
 		fullRequestListEntry = {'text': fullRequestStr, 'selectable': True}
 
-		if fullRequestStrWithSaveModeOptions != None:
+		if fullCommandStrWithSaveOptionsForHistoryList != None:
 			if fullRequestListEntry in self.requestListRV.data:
 				# if the full request string corresponding to the full request string with options is already
 				# in the history list, it is removed before the full request string with options is added
 				# to the list. Otherwise, this would engender a duplicate !
 				self.requestListRV.data.remove(fullRequestListEntry)
 
-			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullRequestStrWithSaveModeOptions, 'selectable': True}
+			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullCommandStrWithSaveOptionsForHistoryList, 'selectable': True}
 
 			if not fullRequestStrWithSaveModeOptionsListEntry in self.requestListRV.data:
 				self.requestListRV.data.append(fullRequestStrWithSaveModeOptionsListEntry)
@@ -586,8 +586,8 @@ class CryptoPricerGUI(BoxLayout):
 		if 'ERROR' in outputResultStr:
 			self.updateStatusBar(requestStr + STATUS_BAR_ERROR_SUFFIX)
 		else:
-			if fullRequestStrWithSaveModeOptions:
-				if requestStr != fullRequestStrWithSaveModeOptions:
+			if fullCommandStrWithSaveOptionsForHistoryList:
+				if requestStr != fullCommandStrWithSaveOptionsForHistoryList:
 					self.updateStatusBar(requestStr + ' --> ' + fullCommandStrForStatusBar)
 				else:
 					self.updateStatusBar(fullCommandStrForStatusBar)
@@ -782,7 +782,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.outputResult('')
 
 		for listEntry in self.requestListRV.data:
-			outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullRequestStrWithSaveModeOptions, fullCommandStrForStatusBar = \
+			outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = \
 				self.controller.getPrintableResultForInput(listEntry['text'])
 			self.outputResult(outputResultStr)
 
