@@ -150,10 +150,10 @@ class GuiOutputFormater(AbstractOutputFormater):
 		from seqdiagbuilder import SeqDiagBuilder
 
 		SeqDiagBuilder.recordFlow()
-		import logging
-		logging.info('fullCommandStrWithNoSaveOptions: {}'.format(fullCommandStrWithNoSaveOptions))
-		logging.info('fullCommandStrWithSaveOptionsForHistoryList: {}'.format(fullCommandStrWithSaveOptionsForHistoryList))
-		logging.info('fullCommandStrForStatusBar: {}'.format(fullCommandStrForStatusBar))
+		# import logging
+		# logging.info('fullCommandStrWithNoSaveOptions: {}'.format(fullCommandStrWithNoSaveOptions))
+		# logging.info('fullCommandStrWithSaveOptionsForHistoryList: {}'.format(fullCommandStrWithSaveOptionsForHistoryList))
+		# logging.info('fullCommandStrForStatusBar: {}'.format(fullCommandStrForStatusBar))
 
 		return fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	
