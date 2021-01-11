@@ -370,7 +370,7 @@ class CryptoPricerGUI(BoxLayout):
 			self.toggleAppSizeButton.text = 'Half'  # correct on Windows !
 
 		self.configMgr = ConfigurationManager(configPath)
-		self.controller = Controller(GuiOutputFormater(self.configMgr, activateClipboard=True), self.configMgr, PriceRequester())
+		self.controller = Controller(GuiOutputFormater(self.configMgr), self.configMgr, PriceRequester())
 		self.dataPath = self.configMgr.dataPath
 
 		self.setRVListSizeParms(int(self.configMgr.histoListItemHeight),
