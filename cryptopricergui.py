@@ -538,32 +538,32 @@ class CryptoPricerGUI(BoxLayout):
 		# logging.info('Request: {}'.format(requestStr))
 		# purpose of the informations obtained from the business layer:
 		#   outputResultStr - for the output text zone
-		#   fullRequestStr - for the request history list
-		#   fullRequestStrWithOptions - for the status bar
-		#   fullCommandStrWithSaveOptionsForHistoryList - for the request history list
-		outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+		#   fullRequestStrNoOptions - for the request history list
+		#   fullRequestStrWithNoSaveModeOptions - for the status bar
+		#   fullCommandStrWithSaveModeOptionsForHistoryList - for the request history list
+		outputResultStr, fullRequestStrNoOptions, fullRequestStrWithNoSaveModeOptions, fullCommandStrWithSaveModeOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			requestStr)
 
 		self.outputResult(outputResultStr)
 		self.clearResultOutputButton.disabled = False
 
-		fullRequestListEntry = {'text': fullRequestStr, 'selectable': True}
+		fullRequestListEntry = {'text': fullRequestStrNoOptions, 'selectable': True}
 
-		if fullCommandStrWithSaveOptionsForHistoryList != None:
+		if fullCommandStrWithSaveModeOptionsForHistoryList != None:
 			if fullRequestListEntry in self.requestListRV.data:
 				# if the full request string corresponding to the full request string with options is already
 				# in the history list, it is removed before the full request string with options is added
 				# to the list. Otherwise, this would engender a duplicate !
 				self.requestListRV.data.remove(fullRequestListEntry)
 
-			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullCommandStrWithSaveOptionsForHistoryList, 'selectable': True}
+			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullCommandStrWithSaveModeOptionsForHistoryList, 'selectable': True}
 
 			if not fullRequestStrWithSaveModeOptionsListEntry in self.requestListRV.data:
 				self.requestListRV.data.append(fullRequestStrWithSaveModeOptionsListEntry)
 
 			# Reset the ListView
 			self.resetListViewScrollToEnd()
-		elif fullRequestStr != '' and not fullRequestListEntry in self.requestListRV.data:
+		elif fullRequestStrNoOptions != '' and not fullRequestListEntry in self.requestListRV.data:
 			# Add the full request to the ListView if not already in
 
 			# if an identical full request string with options is in the history, it is not
@@ -586,18 +586,28 @@ class CryptoPricerGUI(BoxLayout):
 		if 'ERROR' in outputResultStr:
 			self.updateStatusBar(requestStr + STATUS_BAR_ERROR_SUFFIX)
 		else:
-			if fullCommandStrWithSaveOptionsForHistoryList:
-				if requestStr != fullCommandStrWithSaveOptionsForHistoryList:
+			if fullCommandStrWithSaveModeOptionsForHistoryList:
+				if requestStr != fullCommandStrWithSaveModeOptionsForHistoryList:
+					# the case when an option with save mode was added as a partial request !
+					# Also, if an option was cancelled (-v0 for example) and another option
+					# in save mode remains active (-fschf for example)
 					self.updateStatusBar(requestStr + ' --> ' + fullCommandStrForStatusBar)
 				else:
+					# here, a full request with option(s) in save mode was executed
 					self.updateStatusBar(fullCommandStrForStatusBar)
 			else:
-				if not fullRequestStrWithOptions:
-					fullCommandStrForStatusBar = fullRequestStr
+				if not fullRequestStrWithNoSaveModeOptions:
+					# here, neither options in save mode nor options without save mode are in the request.
+					# This happens either if a full request with no option was executed or if the active
+					# option(s) were cancelled (-v0 or/and -f0)
+					fullCommandStrForStatusBar = fullRequestStrNoOptions
 
-				if requestStr != fullRequestStrWithOptions:
+				if fullRequestStrWithNoSaveModeOptions and requestStr != fullRequestStrWithNoSaveModeOptions:
+					# the case when an option without save mode was added as a partial request !
 					self.updateStatusBar(requestStr + ' --> ' + fullCommandStrForStatusBar)
 				else:
+					# here, a full request with no option (so no option with or without save mode
+					# was executed
 					self.updateStatusBar(fullCommandStrForStatusBar)
 
 

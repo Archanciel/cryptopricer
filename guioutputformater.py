@@ -35,15 +35,23 @@ class GuiOutputFormater(AbstractOutputFormater):
 		format as specified in the configuration file. Even if the request only contained partial date time info,
 		the full command string no options contains a full date time specification.
 
-		The full command string no options will be stored in the command history list so it can be replayed or saved to file.
-		An empty string is returned if the command generated an error (empty string will not be added to history !
+		The full command string no options will be stored in the command history list so it can be replayed or
+		saved to file. An empty string is returned if the command generated an error (an empty string will not
+		be added to the history list !)
 
-		In case an option to the command with save mode is in effect - for example -vs -, then the full
-		command with the save mode option is returned as well. In the GUI, the full command with save mode will
-		replace the full command string no options in the command history list. Otherwise, if no command option in save mode
-		is in effect (no option or -v for example), then None is returned as second return value and
-		no full command string no options will NOT have to be replaced in the command history list.
-
+		In case an option with save mode is added to the command - for example -vs -, then the full
+		command with the save mode option is returned as well (fullCommandStrWithSaveOptionsForHistoryList).
+		In the GUI, the full command with save mode option will	replace the corresponding full command string
+		no options (fullCommandStrNoOptions) in the command history list. If the added command option is not
+		in save mode (no option or -v for example), then None is returned for fullCommandStrWithSaveOptionsForHistoryList
+		and	the corresponding full command string no options (fullCommandStrNoOptions) will NOT have
+		to be replaced in the command history list.
+		
+		Finally, what is the usefulness of the fullCommandStrWithNoSaveOptions returned string ? It
+		serves to differentiate a partial request with option(s) without save mode from a full request
+		with with option(s) without save mode. In case of partial request, the status bar content is
+		different from the case of a full requesr.
+		
 		:param copyResultToClipboard:
 		:param resultData: result of the last full or partial request
 		:seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
@@ -116,36 +124,37 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 		fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
 
-		if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
-			# save mode is active
-			if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
-				# in case the value command generated a warning, if the value command data contains a crypto or unit
-				# different from the crypto or unit of the request, the fullCommandStr remains
-				# None and will not be stored in the request history list of the GUI !
+		if fiatOptionSymbol:
+			if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
+				# save mode is active
+				if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
+					# in case the value command generated a warning, if the value command data contains a crypto or unit
+					# different from the crypto or unit of the request, the fullCommandStr remains
+					# None and will not be stored in the request history list of the GUI !
+					fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
+															   fiatOptionSymbol,
+															   isOptionFiatSave=True)
+					if fullCommandStrWithSaveOptionsForHistoryList:
+						# case when option value exist and is in save mode
+						fullCommandStrWithSaveOptionsForHistoryList += fiatOptionInfo
+					else:
+						# case when no option value exist in save mode
+						fullCommandStrWithSaveOptionsForHistoryList = fullCommandStrNoOptions + fiatOptionInfo
+	
+					fullCommandStrForStatusBar = fullCommandStrNoOptions + valueOptionStr + fiatOptionInfo + self._buildUnitFiatComputationString(resultData)
+			else:
+				# save mode is not active
 				fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
 														   fiatOptionSymbol,
-														   isOptionFiatSave=True)
-				if fullCommandStrWithSaveOptionsForHistoryList:
-					# case when option value exist and is in save mode
-					fullCommandStrWithSaveOptionsForHistoryList += fiatOptionInfo
+														   isOptionFiatSave=False)
+				if not fullCommandStrWithNoSaveOptions:
+					if fiatOptionSymbol:
+						fullCommandStrWithNoSaveOptions = fullCommandStrNoOptions + fiatOptionInfo
 				else:
-					# case when no option value exist in save mode
-					fullCommandStrWithSaveOptionsForHistoryList = fullCommandStrNoOptions + fiatOptionInfo
-
+					if fiatOptionSymbol:
+						fullCommandStrWithNoSaveOptions += fiatOptionInfo
+	
 				fullCommandStrForStatusBar = fullCommandStrNoOptions + valueOptionStr + fiatOptionInfo + self._buildUnitFiatComputationString(resultData)
-		else:
-			# save mode is not active
-			fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
-													   fiatOptionSymbol,
-													   isOptionFiatSave=False)
-			if not fullCommandStrWithNoSaveOptions:
-				if fiatOptionSymbol:
-					fullCommandStrWithNoSaveOptions = fullCommandStrNoOptions + fiatOptionInfo
-			else:
-				if fiatOptionSymbol:
-					fullCommandStrWithNoSaveOptions += fiatOptionInfo
-
-			fullCommandStrForStatusBar = fullCommandStrNoOptions + valueOptionStr + fiatOptionInfo + self._buildUnitFiatComputationString(resultData)
 
 		from seqdiagbuilder import SeqDiagBuilder
 

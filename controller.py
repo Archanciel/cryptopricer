@@ -60,7 +60,8 @@ class Controller:
 		'''
 		Return the printable request result, the full request command without any command option and
 		the full request command with any specified save mode option (option which is to be saved in the
-		command history list.
+		command history list. A detailed explanation of the usefulness of the returned values is available
+		in the GuiOutputFormater.getFullCommandString(( method documentation.
 
 		:param inputStr:
 		:seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
