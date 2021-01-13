@@ -197,10 +197,20 @@ class GuiOutputFormater(AbstractOutputFormater):
 		priceStr = self._formatPriceFloatToStr(resultData.getValue(resultData.RESULT_KEY_PRICE), self.PRICE_FLOAT_FORMAT)
 		fiatComputedAmountStr = self._formatPriceFloatToStr(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT), self.PRICE_FLOAT_FORMAT)
 		fiatRateStr = self._formatPriceFloatToStr(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE), self.PRICE_FLOAT_FORMAT)
+		cryptoUnitPair = '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+										resultData.getValue(resultData.RESULT_KEY_UNIT))
+		unitFiatPair = '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_UNIT),
+									  resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+		cryptoFiatPair = '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+									  resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 
-		return '\n({} * {} = {})'.format(priceStr,
-										 fiatRateStr,
-										 fiatComputedAmountStr)
+		
+		return '\n({} {} * {} {} = {} {})'.format(priceStr,
+												  cryptoUnitPair,
+												  fiatRateStr,
+												  unitFiatPair,
+												  fiatComputedAmountStr,
+												  cryptoFiatPair)
 
 	def _buildFullDateAndTimeStrings(self, commandDic, timezoneStr):
 		'''

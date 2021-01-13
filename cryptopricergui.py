@@ -368,6 +368,7 @@ class CryptoPricerGUI(BoxLayout):
 			configPath = 'c:\\temp\\cryptopricer.ini'
 			requestListRVSpacing = RV_LIST_ITEM_SPACING_WINDOWS
 			self.toggleAppSizeButton.text = 'Half'  # correct on Windows !
+			self.boxLayoutContainingStatusBar.height = "63dp"
 
 		self.configMgr = ConfigurationManager(configPath)
 		self.controller = Controller(GuiOutputFormater(self.configMgr), self.configMgr, PriceRequester())

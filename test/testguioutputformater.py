@@ -1713,7 +1713,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc', fullCommandStrWithSaveOptions)
-		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc\n(0.00000746 * 94250.7068803 = 0.70311027)', fullCommandStrForStatusBar)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHSB = 0.70311027 KRL/CHSB)', fullCommandStrForStatusBar)
 
 	def testGetFullCommandStringOptionValueNoSaveOptionFiatSave(self):
 		# btc usd 12/9/17 bittrex -fseur
@@ -1788,7 +1788,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl', fullCommandStrWithNoSaveOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -fschsb.hitbtc', fullCommandStrWithSaveOptions)
-		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fschsb.hitbtc\n(0.00000746 * 94250.7068803 = 0.70311027)', fullCommandStrForStatusBar)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fschsb.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHSB = 0.70311027 KRL/CHSB)', fullCommandStrForStatusBar)
 
 	def testGetFullCommandStringOptionValueSaveOptionFiatNoSave(self):
 		# btc usd 12/9/17 bittrex -fseur
@@ -1863,7 +1863,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -fchsb.hitbtc', fullCommandStrWithNoSaveOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl', fullCommandStrWithSaveOptions)
-		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fchsb.hitbtc\n(0.00000746 * 94250.7068803 = 0.70311027)', fullCommandStrForStatusBar)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fchsb.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHSB = 0.70311027 KRL/CHSB)', fullCommandStrForStatusBar)
 
 	def testGetFullCommandStringOptionValueNoSaveOptionFiatNoSave(self):
 		# btc usd 12/9/17 bittrex -fseur
@@ -1938,7 +1938,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fchsb.hitbtc', fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptions)
-		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fchsb.hitbtc\n(0.00000746 * 94250.7068803 = 0.70311027)', fullCommandStrForStatusBar)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fchsb.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHSB = 0.70311027 KRL/CHSB)', fullCommandStrForStatusBar)
 
 if __name__ == '__main__':
 	unittest.main()

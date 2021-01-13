@@ -18,6 +18,7 @@
 	replayAllButton: replay_all_Button
 	moveUpButton: moveUp_Button
 	moveDownButton: moveDown_Button
+	boxLayoutContainingStatusBar: boxlayout_statusbar
 	statusBarScrollView: scrlv_status_bar
 	statusBarTextInput: status_bar
 	clearResultOutputButton: clear_output_Button
@@ -171,6 +172,7 @@
 			foreground_color: 1,1,1,1
 
 	BoxLayout:
+		id: boxlayout_statusbar
 		size_hint_y: None
 		height: "43dp" # enables two lines display for fiat computation formula
 		canvas.before:
@@ -184,7 +186,7 @@
 			cols: 2
 			ScrollView:
 				id: scrlv_status_bar
-				do_scroll_y: False # limiting to horizontal scrolling
+#				do_scroll_y: False # limiting to horizontal scrolling
 				effect_cls: ScrollEffect #prevents overscrolling
 				TextInput:
 					id: status_bar
