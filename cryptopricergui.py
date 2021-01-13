@@ -364,6 +364,11 @@ class CryptoPricerGUI(BoxLayout):
 		if os.name == 'posix':
 			configPath = '/sdcard/cryptopricer.ini'
 			requestListRVSpacing = RV_LIST_ITEM_SPACING_ANDROID
+			if GuiUtil.onSmartPhone():
+				self.boxLayoutContainingStatusBar.height = "63dp"
+			else:
+				self.boxLayoutContainingStatusBar.height = "43dp"
+
 		else:
 			configPath = 'c:\\temp\\cryptopricer.ini'
 			requestListRVSpacing = RV_LIST_ITEM_SPACING_WINDOWS

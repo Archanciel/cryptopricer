@@ -3,8 +3,8 @@ import os
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 
-SD_CARD_DIR_TABLET = '/storage/0000-0000'
-SD_CARD_DIR_SMARTPHONE = '/storage/9016-4EF8'
+from guiutil import GuiUtil
+
 LOAD_AT_START_MSG = ' (load at start activated)'
 
 class FileChooserPopup(BoxLayout):
@@ -30,6 +30,9 @@ class FileChooserPopup(BoxLayout):
 		# specify pre-selected node by its index in the data
 		self.diskRecycleBoxLayout.selected_nodes = [0]
 
+	def onSmartPhone(self):
+		return GuiUtil.onSmartPhone()
+	
 	def sizeFileChooser(self):
 		"""
 		This method sets the popup size and position values used by the rootGUI
@@ -45,13 +48,13 @@ class FileChooserPopup(BoxLayout):
 			self.popupSizeProportion_x = 0.8
 			self.popupSizeProportion_y = 0.62
 
-			if self.sdCardDir == SD_CARD_DIR_SMARTPHONE:
-				self.popupPos_top = 0.95
+			if self.onSmartPhone():
+				self.popupPos_top = 0.98
 				self.gridLayoutPathField.size_hint_y = 0.08
 			else:
 				self.popupPos_top = 0.92
 				self.gridLayoutPathField.size_hint_y = 0.05
-
+	
 	def fillDriveOrMemoryList(self):
 		"""
 		
@@ -76,10 +79,10 @@ class FileChooserPopup(BoxLayout):
 									   'pathOnly': dataLocationFromSetting})
 			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'pathOnly': '/storage/emulated/0'})
 			
-			self.sdCardDir = SD_CARD_DIR_SMARTPHONE
-			
-			if not os.path.isdir(self.sdCardDir):
-				self.sdCardDir = SD_CARD_DIR_TABLET
+			if self.onSmartPhone():
+				self.sdCardDir = GuiUtil.SD_CARD_DIR_SMARTPHONE
+			else:
+				self.sdCardDir = GuiUtil.SD_CARD_DIR_TABLET
 			
 			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'pathOnly': self.sdCardDir})
 
@@ -110,7 +113,7 @@ class SaveFileChooserPopup(FileChooserPopup):
 		if os.name != 'posix':
 			self.loadAtStartChkBox.size_hint_x = 0.06
 		else:
-			if self.sdCardDir == SD_CARD_DIR_SMARTPHONE:
+			if self.onSmartPhone():
 				self.loadAtStartChkBox.size_hint_x = 0.12
 			else:
 				self.loadAtStartChkBox.size_hint_x = 0.06
