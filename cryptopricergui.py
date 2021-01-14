@@ -564,8 +564,12 @@ class CryptoPricerGUI(BoxLayout):
 				self.requestListRV.data.remove(fullRequestListEntry)
 
 			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullCommandStrWithSaveModeOptionsForHistoryList, 'selectable': True}
+			
+			# used to avoid replacing btc usd 20/12/20 all -vs100usd by btc usd 20/12/20 00:00 all -vs100usd !
+			fullRequestStrWithSaveModeOptionsListEntryNoZeroTime = {'text': fullCommandStrWithSaveModeOptionsForHistoryList.replace(' 00:00', ''), 'selectable': True}
 
-			if not fullRequestStrWithSaveModeOptionsListEntry in self.requestListRV.data:
+			if not fullRequestStrWithSaveModeOptionsListEntry in self.requestListRV.data and \
+				not fullRequestStrWithSaveModeOptionsListEntryNoZeroTime in self.requestListRV.data:
 				self.requestListRV.data.append(fullRequestStrWithSaveModeOptionsListEntry)
 
 			# Reset the ListView
