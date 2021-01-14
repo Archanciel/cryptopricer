@@ -849,8 +849,6 @@ class CryptoPricerGUI(BoxLayout):
 		self.statusBarTextInput.text = messageStr
 
 	# --- file chooser code ---
-	def getStartPath(self):
-		return "D:\\Users\\Jean-Pierre"
 
 	def dismissPopup(self):
 		'''
