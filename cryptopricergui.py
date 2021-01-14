@@ -389,7 +389,8 @@ class CryptoPricerGUI(BoxLayout):
 		self.applyAppPosAndSize()
 		self.movedRequestNewIndex = -1
 		self.movingRequest = False
-
+		self.currentLoadedFathFileName = ''
+	
 	def rvListSizeSettingsChanged(self):
 		if os.name == 'posix':
 			rvListItemSpacing = RV_LIST_ITEM_SPACING_ANDROID
@@ -506,7 +507,7 @@ class CryptoPricerGUI(BoxLayout):
 			# when hidding the history request list, an item can be selected.
 			# For this reason, the disableStateOfRequestListSingleItemButtons()
 			# must be called explicitely called, otherwise the history request
-			# list items specific buttons remain active !
+			# list items specific buttons remain isLoadAtStartChkboxActive !
 			self.disableStateOfRequestListSingleItemButtons()
 			self.showRequestList = False
 		else:
@@ -596,7 +597,7 @@ class CryptoPricerGUI(BoxLayout):
 				if requestStr != fullCommandStrWithSaveModeOptionsForHistoryList:
 					# the case when an option with save mode was added as a partial request !
 					# Also, if an option was cancelled (-v0 for example) and another option
-					# in save mode remains active (-fschf for example)
+					# in save mode remains isLoadAtStartChkboxActive (-fschf for example)
 					self.updateStatusBar(requestStr + ' --> ' + fullCommandStrForStatusBar)
 				else:
 					# here, a full request with option(s) in save mode was executed
@@ -604,7 +605,7 @@ class CryptoPricerGUI(BoxLayout):
 			else:
 				if not fullRequestStrWithNoSaveModeOptions:
 					# here, neither options in save mode nor options without save mode are in the request.
-					# This happens either if a full request with no option was executed or if the active
+					# This happens either if a full request with no option was executed or if the isLoadAtStartChkboxActive
 					# option(s) were cancelled (-v0 or/and -f0)
 					fullCommandStrForStatusBar = fullRequestStrNoOptions
 
@@ -859,38 +860,56 @@ class CryptoPricerGUI(BoxLayout):
 
 	def openFileLoadPopup(self):
 		loadFileChooser = LoadFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
-		self.popup = Popup(title="Select history file to load", content=loadFileChooser,
+		popupTitle = self.buildFileChooserPopupTitle(FILE_LOADED)
+		
+		self.popup = Popup(title=popupTitle, content=loadFileChooser,
 						   pos_hint={'top': loadFileChooser.popupPos_top},
 						   size_hint=(loadFileChooser.popupSizeProportion_x, loadFileChooser.popupSizeProportion_y))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
-
+	
 	def openFileSavePopup(self):
 		saveFileChooser = SaveFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		loadAtStartFilePathName = self.configMgr.loadAtStartPathFilename
 		saveFileChooser.setCurrentLoadAtStartFile(loadAtStartFilePathName)
 		
-		if loadAtStartFilePathName:
-			loadAtStartFileName = loadAtStartFilePathName.split(sep)[-1]
-			popupTitle = "Save history to file ({} loaded at start)".format(loadAtStartFileName)
-		else:
-			popupTitle = "Save history to file"
+		popupTitle = self.buildFileChooserPopupTitle(FILE_SAVED)
 
 		self.popup = Popup(title=popupTitle, content=saveFileChooser,
 						   pos_hint={'top': saveFileChooser.popupPos_top},
 						   size_hint=(saveFileChooser.popupSizeProportion_x, saveFileChooser.popupSizeProportion_y))
 		self.popup.open()
 		self.dropDownMenu.dismiss()
-
+	
+	def buildFileChooserPopupTitle(self, fileAction):
+		if fileAction == FILE_LOADED:
+			popupTitleAction = LoadFileChooserPopup.LOAD_FILE_POPUP_TITLE
+		else:
+			popupTitleAction = SaveFileChooserPopup.SAVE_FILE_POPUP_TITLE
+		
+		loadAtStartFilePathName = self.configMgr.loadAtStartPathFilename
+		
+		if loadAtStartFilePathName == self.currentLoadedFathFileName:
+			loadAtStartFileName = loadAtStartFilePathName.split(sep)[-1]
+			if loadAtStartFileName != '':
+				popupTitle = "{} ({} loaded at start)".format(popupTitleAction, loadAtStartFileName)
+			else:
+				popupTitle = "{} (no file loaded)".format(popupTitleAction)
+		else:
+			loadFileName = self.currentLoadedFathFileName.split(sep)[-1]
+			popupTitle = "{} ({} loaded)".format(popupTitleAction, loadFileName)
+		
+		return popupTitle
+	
 	def load(self, path, filename):
 		if not filename:
 			# no file selected. Load dialog remains open ..
 			return
-
-		pathFileName = os.path.join(path, filename[0])
-		self.loadHistoryFromPathFilename(pathFileName)
+		
+		currentLoadedFathFileName = os.path.join(path, filename[0])
+		self.loadHistoryFromPathFilename(currentLoadedFathFileName)
 		self.dismissPopup()
-		self.displayFileActionOnStatusBar(pathFileName, FILE_LOADED)
+		self.displayFileActionOnStatusBar(currentLoadedFathFileName, FILE_LOADED)
 
 	def displayFileActionOnStatusBar(self, pathFileName, actionType, isLoadAtStart=None):
 		if actionType == FILE_LOADED:
@@ -902,6 +921,7 @@ class CryptoPricerGUI(BoxLayout):
 				self.updateStatusBar('History saved to file: {}'.format(pathFileName))
 
 	def loadHistoryFromPathFilename(self, pathFileName):
+		self.currentLoadedFathFileName = pathFileName
 		dataFileNotFoundMessage = 'Data file\n' + pathFileName + 'not found. No history loaded.'
 
 		if not self.ensureDataPathFileNameExist(pathFileName, dataFileNotFoundMessage):
@@ -932,7 +952,8 @@ class CryptoPricerGUI(BoxLayout):
 		if not savingPathFileName:
 			# no file selected. Save dialog remains open ...
 			return
-		
+
+		self.currentLoadedFathFileName = savingPathFileName
 		pathElemLst = savingPathFileName.split(sep)
 		pathContainedInFilePathName = sep.join(pathElemLst[:-1])
 		savingPathNotExistMessage = self.buildDataPathContainedInFilePathNameNotExistMessage(pathContainedInFilePathName)

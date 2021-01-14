@@ -1,4 +1,5 @@
 import os
+from os.path import sep
 
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
@@ -8,6 +9,8 @@ from guiutil import GuiUtil
 LOAD_AT_START_MSG = ' (load at start activated)'
 
 class FileChooserPopup(BoxLayout):
+	LOAD_FILE_POPUP_TITLE = 'Select history file to load'
+	SAVE_FILE_POPUP_TITLE = 'Save history to file'
 	"""
 	
 	"""
@@ -140,21 +143,37 @@ class SaveFileChooserPopup(FileChooserPopup):
 		"""
 		Method called when the currentPath TextInput field content is modified.
 		"""
+
+		# update load at start checkbox
+		
 		currentSaveFilePathName = self.currentPathField.text
+		
 		if currentSaveFilePathName == self.loadAtStartFilePathName:
 			self.loadAtStartChkBox.active = True
 		else:
 			self.loadAtStartChkBox.active = False
+
+		# update save file chooser popup title
+		
+		self.updateSaveFileChooserPopupTitle(currentSaveFilePathName, self.loadAtStartChkBox.active)
+	
+	def updateSaveFileChooserPopupTitle(self, currentSaveFilePathName, isLoadAtStartChkboxActive):
+		currentSaveFileName = currentSaveFilePathName.split(sep)[-1]
+		
+		if currentSaveFileName == '':
+			# the case when opening the save file dialog after loading a file
+			return
+		
+		if isLoadAtStartChkboxActive:
+			self.rootGUI.popup.title = '{} {}'.format(FileChooserPopup.SAVE_FILE_POPUP_TITLE,
+													  currentSaveFileName) + LOAD_AT_START_MSG
+		else:
+			self.rootGUI.popup.title = '{} {}'.format(FileChooserPopup.SAVE_FILE_POPUP_TITLE, currentSaveFileName)
 	
 	def toggleLoadAtStart(self, active):
 		"""
-		
+		Method called when checking/unchecking the load at start checkbox
+
 		:param active:
-		:return:
 		"""
-		popupTitle = self.rootGUI.popup.title
-		
-		if active:
-			self.rootGUI.popup.title = popupTitle + LOAD_AT_START_MSG
-		else:
-			self.rootGUI.popup.title = popupTitle.replace(LOAD_AT_START_MSG, '')
+		self.updateSaveFileChooserPopupTitle(self.currentPathField.text, active)

@@ -126,7 +126,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 		if fiatOptionSymbol:
 			if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
-				# save mode is active
+				# save mode is isLoadAtStartChkboxActive
 				if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
 					# in case the value command generated a warning, if the value command data contains a crypto or unit
 					# different from the crypto or unit of the request, the fullCommandStr remains
@@ -143,7 +143,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 	
 					fullCommandStrForStatusBar = fullCommandStrNoOptions + valueOptionStr + fiatOptionInfo + self._buildUnitFiatComputationString(resultData)
 			else:
-				# save mode is not active
+				# save mode is not isLoadAtStartChkboxActive
 				fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
 														   fiatOptionSymbol,
 														   isOptionFiatSave=False)
