@@ -7,7 +7,6 @@ from kivy.config import Config
 from kivy.metrics import dp
 from kivy.properties import BooleanProperty
 from kivy.properties import ObjectProperty
-from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
@@ -17,6 +16,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
+from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.settings import SettingOptions
 from kivy.uix.settings import SettingSpacer
@@ -40,6 +40,7 @@ FILE_LOADED = 0
 FILE_SAVED = 1
 CRYPTOPRICER_VERSION = 'CryptoPricer 2.1'
 fromAppBuilt = False
+
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 								 RecycleBoxLayout):
@@ -149,6 +150,7 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 		# deleteRequest() and updateRequest() cryptoPricerGUI methods
 		self.cryptoPricerGUI.recycleViewCurrentSelIndex = movedItemNewSeIndex
 
+
 class SelectableLabel(RecycleDataViewBehavior, Label):
 	''' Add selection support to the Label '''
 	index = None
@@ -201,6 +203,7 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 
 		cryptoPricerGUI.enableStateOfRequestListSingleItemButtons()
 
+
 class SettingScrollOptions(SettingOptions):
 	'''
 	This class is used in the Kivy Settings dialog to display in a sccrollable way
@@ -241,6 +244,7 @@ class SettingScrollOptions(SettingOptions):
 		btn.bind(on_release=popup.dismiss)
 		content.add_widget(btn)
 
+
 class CustomDropDown(DropDown):
 	saveButton = ObjectProperty(None)
 	statusToRequestInputButton = ObjectProperty(None)
@@ -270,6 +274,7 @@ class CustomDropDown(DropDown):
 		self.owner.requestInput.text = statusBarStr.replace(STATUS_BAR_ERROR_SUFFIX, '')
 		self.owner.statusBarTextInput.text = ''
 		self.statusToRequestInputButton.disabled = True
+
 
 class ScrollablePopup(Popup):
 	contentBox = ObjectProperty()
@@ -301,48 +306,6 @@ class ScrollablePopup(Popup):
 		self.setContentTextToCurrentPage()
 		self.scrollView.scroll_y = 1 # force scrolling to top
 
-class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavior,
-											RecycleBoxLayout):
-	''' Adds selection and focus behaviour to the view. '''
-	
-	# required to authorise unselecting a selected item
-	touch_deselect_last = BooleanProperty(True)
-
-class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
-	''' Add selection support to the Label '''
-	index = None
-	selected = BooleanProperty(False)
-	selectable = BooleanProperty(True)
-	
-	def refresh_view_attrs(self, rv, index, data):
-		''' Catch and handle the view changes '''
-		self.index = index
-		return super(SelectableLabelFileChooser, self).refresh_view_attrs(
-			rv, index, data)
-	
-	def on_touch_down(self, touch):
-		''' Add selection on touch down '''
-		if super(SelectableLabelFileChooser, self).on_touch_down(touch):
-			return True
-		if self.collide_point(*touch.pos) and self.selectable:
-			return self.parent.select_with_touch(self.index, touch)
-	
-	def apply_selection(self, rv, index, is_selected):
-		''' Respond to the selection of items in the view. '''
-		self.selected = is_selected
-		
-		if is_selected:
-			rootGUI = rv.parent.parent
-			selectedPath = rv.data[index]['pathOnly']
-			
-			if os.name != 'posix':
-				# we are on Windows
-				selectedPath = selectedPath + '\\'  # adding '\\' is required,otherwise,
-			# when selecting D:, the directory
-			# hosting the utility is selected !
-			
-			rootGUI.fileChooser.path = selectedPath
-			rootGUI.currentPathField.text = selectedPath
 
 class CryptoPricerGUI(BoxLayout):
 	requestInput = ObjectProperty()
@@ -541,9 +504,8 @@ class CryptoPricerGUI(BoxLayout):
 		'''
 		# Get the request from the TextInput
 		requestStr = self.requestInput.text
-		# import logging
-		# logging.info('Request: {}'.format(requestStr))
-		# purpose of the informations obtained from the business layer:
+
+		# purpose of the data obtained from the business layer:
 		#   outputResultStr - for the output text zone
 		#   fullRequestStrNoOptions - for the request history list
 		#   fullRequestStrWithNoSaveModeOptions - for the status bar
@@ -1001,6 +963,7 @@ class CryptoPricerGUI(BoxLayout):
 		for line_label in self.statusBarTextInput._lines_labels:
 			width_calc = max(width_calc, line_label.width + 20)   # add 20 to avoid automatically creating a new line
 		self.statusBarTextInput.width = width_calc
+
 
 class CryptoPricerGUIApp(App):
 	settings_cls = SettingsWithTabbedPanel

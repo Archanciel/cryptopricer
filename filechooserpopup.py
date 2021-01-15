@@ -2,11 +2,64 @@ import os
 from os.path import sep
 
 from kivy.properties import ObjectProperty
+from kivy.properties import BooleanProperty
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.uix.recycleview.views import RecycleDataViewBehavior
+from kivy.uix.recycleview.layout import LayoutSelectionBehavior
+from kivy.uix.behaviors import FocusBehavior
 
 from guiutil import GuiUtil
 
 LOAD_AT_START_MSG = ' (load at start activated)'
+
+
+class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
+	''' Add selection support to the Label '''
+	index = None
+	selected = BooleanProperty(False)
+	selectable = BooleanProperty(True)
+	
+	def refresh_view_attrs(self, rv, index, data):
+		''' Catch and handle the view changes '''
+		self.index = index
+		return super(SelectableLabelFileChooser, self).refresh_view_attrs(
+			rv, index, data)
+	
+	def on_touch_down(self, touch):
+		''' Add selection on touch down '''
+		if super(SelectableLabelFileChooser, self).on_touch_down(touch):
+			return True
+		if self.collide_point(*touch.pos) and self.selectable:
+			return self.parent.select_with_touch(self.index, touch)
+	
+	def apply_selection(self, rv, index, is_selected):
+		''' Respond to the selection of items in the view. '''
+		self.selected = is_selected
+		
+		if is_selected:
+			rootGUI = rv.parent.parent
+			selectedPath = rv.data[index]['pathOnly']
+			
+			selectedPath = selectedPath + sep  # adding '\\' is required, otherwise,
+			# on Windows, when selecting D:, the
+			# directory hosting the utility is
+			# selected ! On Android, the file save
+			# text input field is not ended by '/'
+			# which causes a bug corrected on 15.1.21
+			
+			rootGUI.fileChooser.path = selectedPath
+			rootGUI.currentPathField.text = selectedPath
+
+
+class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavior,
+                                            RecycleBoxLayout):
+	''' Adds selection and focus behaviour to the view. '''
+	
+	# required to authorise unselecting a selected item
+	touch_deselect_last = BooleanProperty(True)
+
 
 class FileChooserPopup(BoxLayout):
 	LOAD_FILE_POPUP_TITLE = 'Select history file to load'
@@ -64,8 +117,6 @@ class FileChooserPopup(BoxLayout):
 		:return:
 		"""
 		dataLocationFromSetting = self.rootGUI.configMgr.dataPath
-		import logging
-		logging.info(dataLocationFromSetting)
 		
 		if os.name != 'posix':
 			import string
@@ -96,6 +147,7 @@ class LoadFileChooserPopup(FileChooserPopup):
 	"""
 	def __init__(self, rootGUI, **kwargs):
 		super(LoadFileChooserPopup, self).__init__(rootGUI, **kwargs)
+
 
 class SaveFileChooserPopup(FileChooserPopup):
 	"""
