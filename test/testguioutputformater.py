@@ -1657,7 +1657,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		optionFiatExchange = 'HitBTC'
 		optionFiatUnitInFiatRate = 94250.7068803016
 		optionFiatCryptoInFiatRate = 0.7031102733270499
-		optionFiazSave = 's'
+		optionFiatSave = 's'
 
 		resultData = ResultData()
 		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'krl',
@@ -1706,7 +1706,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, optionFiatExchange)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, optionFiatCryptoInFiatRate)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, optionFiatUnitInFiatRate)
-		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiazSave)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSave)
 
 		fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
 
@@ -1732,7 +1732,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		optionFiatExchange = 'HitBTC'
 		optionFiatUnitInFiatRate = 94250.7068803016
 		optionFiatCryptoInFiatRate = 0.7031102733270499
-		optionFiazSave = 's'
+		optionFiatSave = 's'
 
 		resultData = ResultData()
 		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'krl',
@@ -1781,7 +1781,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, optionFiatExchange)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, optionFiatCryptoInFiatRate)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, optionFiatUnitInFiatRate)
-		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiazSave)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSave)
 
 		fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
 
@@ -1807,7 +1807,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		optionFiatExchange = 'HitBTC'
 		optionFiatUnitInFiatRate = 94250.7068803016
 		optionFiatCryptoInFiatRate = 0.7031102733270499
-		optionFiazSave = None
+		optionFiatSave = None
 
 		resultData = ResultData()
 		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'krl',
@@ -1856,7 +1856,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, optionFiatExchange)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, optionFiatCryptoInFiatRate)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, optionFiatUnitInFiatRate)
-		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiazSave)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSave)
 
 		fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
 
@@ -1882,7 +1882,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		optionFiatExchange = 'HitBTC'
 		optionFiatUnitInFiatRate = 94250.7068803016
 		optionFiatCryptoInFiatRate = 0.7031102733270499
-		optionFiazSave = None
+		optionFiatSave = None
 
 		resultData = ResultData()
 		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'krl',
@@ -1931,7 +1931,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE, optionFiatExchange)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT, optionFiatCryptoInFiatRate)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_RATE, optionFiatUnitInFiatRate)
-		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiazSave)
+		resultData.setValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSave)
 
 		fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
 

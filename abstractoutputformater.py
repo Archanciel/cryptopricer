@@ -67,17 +67,27 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 				return '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
 									  resultData.getValue(resultData.RESULT_KEY_UNIT))
 			else:
-				fiatExchange = self.convertCCCAGGExchangeName(exchangeName=resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+				cryptoUnitExchange = resultData.getValue(resultData.RESULT_KEY_EXCHANGE)
+				fiatOptionExchange = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE)
 				
-				return '{}/{}/{}.{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
-											resultData.getValue(resultData.RESULT_KEY_UNIT),
-											resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
-											fiatExchange)
+				if fiatOptionExchange == cryptoUnitExchange:
+					# the case if the -f fiat symbol equals either the crypto or the unit symbol
+					return '{}/{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+												resultData.getValue(resultData.RESULT_KEY_UNIT),
+												resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+				else:
+					convertedFiatExchange = self.convertCCCAGGExchangeName(exchangeName=fiatOptionExchange)
+					
+					return '{}/{}/{}.{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+												resultData.getValue(resultData.RESULT_KEY_UNIT),
+												resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
+												convertedFiatExchange)
 		else:
 			formattedPriceCryptoStr = self._formatPriceFloatToStr(
 				float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO)), self.PRICE_FLOAT_FORMAT)
 			formattedPriceUnitStr = self._formatPriceFloatToStr(
 				float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT)), self.PRICE_FLOAT_FORMAT)
+			
 			if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL) is None:
 				return '{} {}/{} {}'.format(formattedPriceCryptoStr,
 											resultData.getValue(resultData.RESULT_KEY_CRYPTO),
@@ -86,15 +96,27 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 			else:
 				formattedPriceFiatStr = self._formatPriceFloatToStr(
 					float(resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT)), self.PRICE_FLOAT_FORMAT)
-				fiatExchange = self.convertCCCAGGExchangeName(exchangeName=resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
+				cryptoUnitExchange = resultData.getValue(resultData.RESULT_KEY_EXCHANGE)
+				fiatOptionExchange = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE)
 
-				return '{} {}/{} {}/{} {}.{}'.format(formattedPriceCryptoStr,
-													 resultData.getValue(resultData.RESULT_KEY_CRYPTO),
-													 formattedPriceUnitStr,
-													 resultData.getValue(resultData.RESULT_KEY_UNIT),
-													 formattedPriceFiatStr,
-													 resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
-													 fiatExchange)
+				if fiatOptionExchange == cryptoUnitExchange:
+					# the case if the -f fiat symbol equals either the crypto or the unit symbol
+					return '{} {}/{} {}/{} {}'.format(formattedPriceCryptoStr,
+														 resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+														 formattedPriceUnitStr,
+														 resultData.getValue(resultData.RESULT_KEY_UNIT),
+														 formattedPriceFiatStr,
+														 resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+				else:
+					convertedFiatExchange = self.convertCCCAGGExchangeName(exchangeName=fiatOptionExchange)
+	
+					return '{} {}/{} {}/{} {}.{}'.format(formattedPriceCryptoStr,
+														 resultData.getValue(resultData.RESULT_KEY_CRYPTO),
+														 formattedPriceUnitStr,
+														 resultData.getValue(resultData.RESULT_KEY_UNIT),
+														 formattedPriceFiatStr,
+														 resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
+														 convertedFiatExchange)
 	
 	def convertCCCAGGExchangeName(self, exchangeName):
 		if exchangeName == 'CCCAGG':

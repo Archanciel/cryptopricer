@@ -3660,7 +3660,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'MCO/BTC/ETH.Binance on Binance: 12/09/17 00:00C 0.002049 0.02902266', printResult)
+			'MCO/BTC/ETH on Binance: 12/09/17 00:00C 0.002049 0.02902266', printResult)
 		self.assertEqual('mco btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3682,7 +3682,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'MCO/BTC/ETH.Binance on Binance: 12/09/17 00:00C 0.002049 0.02902266', printResult)
+			'MCO/BTC/ETH on Binance: 12/09/17 00:00C 0.002049 0.02902266', printResult)
 		self.assertEqual('mco btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3693,7 +3693,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'BTC/ETH/ETH.Binance on Binance: 12/09/17 00:00C 14.16430595 14.16430595', printResult)
+			'BTC/ETH/ETH on Binance: 12/09/17 00:00C 14.16430595 14.16430595', printResult)
 		self.assertEqual('btc eth 12/09/17 00:00 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('btc eth 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3725,7 +3725,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'MCO/BTC/ETH.Binance on Binance: 12/09/17 00:00C 0.002049 0.02902266', printResult)
+			'MCO/BTC/ETH on Binance: 12/09/17 00:00C 0.002049 0.02902266', printResult)
 		self.assertEqual('mco btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3736,7 +3736,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'ETH/BTC/ETH.Binance on Binance: 12/09/17 00:00C 0.0706 1', printResult)
+			'ETH/BTC/ETH on Binance: 12/09/17 00:00C 0.0706 1', printResult)
 		self.assertEqual('eth btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('eth btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3747,7 +3747,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'10 ETH/0.706 BTC/10 ETH.Binance on Binance: 12/09/17 00:00C 0.0706 1', printResult)
+			'10 ETH/0.706 BTC/10 ETH on Binance: 12/09/17 00:00C 0.0706 1', printResult)
 		self.assertEqual('eth btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('eth btc 12/09/17 00:00 binance -vs10eth -fseth.binance', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3758,7 +3758,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'141.64305949 ETH/10 BTC/141.64305949 ETH.Binance on Binance: 12/09/17 00:00C 0.0706 1', printResult)
+			'141.64305949 ETH/10 BTC/141.64305949 ETH on Binance: 12/09/17 00:00C 0.0706 1', printResult)
 		self.assertEqual('eth btc 12/09/17 00:00 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('eth btc 12/09/17 00:00 binance -vs10btc -fseth.binance', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3791,7 +3791,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'2169.75 KRL/0.01618633 BTC/1525.57351555 CHSB.HitBTC on HitBTC: 20/12/20 00:00C 0.00000746 0.70311027', printResult)
+			'2169.75 KRL/0.01618633 BTC/1525.57351555 CHSB on HitBTC: 20/12/20 00:00C 0.00000746 0.70311027', printResult)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3802,7 +3802,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'2169.75 KRL/0.01618633 BTC/1525.57351555 CHSB.HitBTC on HitBTC: 20/12/20 00:00C 0.00000746 0.70311027', printResult)
+			'2169.75 KRL/0.01618633 BTC/1525.57351555 CHSB on HitBTC: 20/12/20 00:00C 0.00000746 0.70311027', printResult)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl', fullCommandStrWithNoSaveOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -fschsb.hitbtc', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3814,7 +3814,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'2169.75 KRL/0.01618633 BTC/1525.57351555 CHSB.HitBTC on HitBTC: 20/12/20 00:00C 0.00000746 0.70311027', printResult)
+			'2169.75 KRL/0.01618633 BTC/1525.57351555 CHSB on HitBTC: 20/12/20 00:00C 0.00000746 0.70311027', printResult)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3825,7 +3825,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'2169.75 KRL/0.01618633 BTC/1525.57351555 CHSB.HitBTC on HitBTC: 20/12/20 00:00C 0.00000746 0.70311027', printResult)
+			'2169.75 KRL/0.01618633 BTC/1525.57351555 CHSB on HitBTC: 20/12/20 00:00C 0.00000746 0.70311027', printResult)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -fchsb.hitbtc', fullCommandStrWithNoSaveOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl', fullCommandStrWithSaveOptionsForHistoryList)
@@ -3843,8 +3843,56 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken\n(0.00000746 KRL/BTC * 23480.7 BTC/USD = 0.17516602 KRL/USD)', fullCommandStrForStatusBar)
 
+	def testOptionValueOptionFiatFullRequestHistoDayPriceFiatEqualsUnit(self):
+		# first request where both value and fiat options are saved
+		inputStr = 'eth usd 19/02/18 kraken -v0.3821277eth -fusd'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'0.3821277 ETH/359.44459973 USD/359.44459973 USD on Kraken: 19/02/18 00:00C 940.64 940.64', printResult)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -v0.3821277eth -fusd', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -v0.3821277eth -fusd\n(940.64 ETH/USD * 1 USD/USD = 940.64 ETH/USD)', fullCommandStrForStatusBar)
+
+	def testOptionValueOptionFiatFullRequestHistoDayPriceFiatEqualsCrypto(self):
+		# first request where both value and fiat options are saved
+		inputStr = 'eth usd 19/02/18 kraken -v0.3821277eth -feth'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'0.3821277 ETH/359.44459973 USD/0.3821277 ETH on Kraken: 19/02/18 00:00C 940.64 1', printResult)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -v0.3821277eth -feth', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -v0.3821277eth -feth\n(940.64 ETH/USD * 0.00106311 USD/ETH = 1 ETH/ETH)', fullCommandStrForStatusBar)
+
+	def testOptionValueSaveOptionFiatSaveFullRequestHistoDayPriceFiatEqualsUnit(self):
+		# first request where both value and fiat options are saved
+		inputStr = 'eth usd 19/02/18 kraken -vs0.3821277eth -fsusd'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'0.3821277 ETH/359.44459973 USD/359.44459973 USD on Kraken: 19/02/18 00:00C 940.64 940.64', printResult)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth -fsusd', fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth -fsusd\n(940.64 ETH/USD * 1 USD/USD = 940.64 ETH/USD)', fullCommandStrForStatusBar)
+
+	def testOptionValueSaveOptionFiatSaveFullRequestHistoDayPriceFiatEqualsCrypto(self):
+		# first request where both value and fiat options are saved
+		inputStr = 'eth usd 19/02/18 kraken -vs0.3821277eth -fseth'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'0.3821277 ETH/359.44459973 USD/0.3821277 ETH on Kraken: 19/02/18 00:00C 940.64 1', printResult)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth -fseth', fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth -fseth\n(940.64 ETH/USD * 0.00106311 USD/ETH = 1 ETH/ETH)', fullCommandStrForStatusBar)
+
 if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
-	tst.testOptionValueOptionFiatFullRequestHistoDayPrice()
+	tst.testOptionValueOptionFiatFullRequestHistoDayPriceFiatEqualsCrypto()
