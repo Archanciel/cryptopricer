@@ -328,7 +328,7 @@ class CryptoPricerGUI(BoxLayout):
 			configPath = '/sdcard/cryptopricer.ini'
 			requestListRVSpacing = RV_LIST_ITEM_SPACING_ANDROID
 			if GuiUtil.onSmartPhone():
-				self.boxLayoutContainingStatusBar.height = "63dp"
+				self.boxLayoutContainingStatusBar.height = "73dp"
 			else:
 				self.boxLayoutContainingStatusBar.height = "43dp"
 
