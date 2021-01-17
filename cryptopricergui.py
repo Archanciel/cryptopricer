@@ -522,7 +522,7 @@ class CryptoPricerGUI(BoxLayout):
 			if fullRequestListEntry in self.requestListRV.data:
 				# if the full request string corresponding to the full request string with options is already
 				# in the history list, it is removed before the full request string with options is added
-				# to the list. Otherwise, this would engender a duplicate !
+				# to the list. Otherwise, this would create a duplicate !
 				self.requestListRV.data.remove(fullRequestListEntry)
 
 			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullCommandStrWithSaveModeOptionsForHistoryList, 'selectable': True}

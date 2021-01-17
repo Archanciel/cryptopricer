@@ -51,8 +51,8 @@ class PriceRequester:
         price time stamp must not be dependant from the location 
         from which the request is sent. Instead, the "close" price
         is the one at the passed date with hour and minute set to 0.
-        This date is not a loculiszd date, but a UTC localization
-        independant date.
+        This date is not a localiszd date, but a UTC localization
+        independent date.
         
         When you go on the Cryptocompare site and you search for 
         historical prices, the close price for a given date is

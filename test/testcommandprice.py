@@ -19,6 +19,7 @@ class TestCommandPrice(unittest.TestCase):
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptopricer.ini'
         else:
+            # on Windows
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         self.configMgr = ConfigurationManager(FILE_PATH)

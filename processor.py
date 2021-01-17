@@ -194,8 +194,8 @@ class Processor:
 				  localTz):
 		'''
 		Returns the price of 1 unit of currency in targetCurrency. Ex: currency == btc,
-		targetCurrency == usd --> returned price: 1 btc == 10000 usd. Or currency == chf,
-		targetCurrency == huf (Hungarian Forint) --> returned price: 1 chf == 330 huf.
+		targetCurrency == usd --> returned price: 1 btc == 10000 usd.
+		
 		:param currency:
 		:param targetCurrency:
 		:param exchange:

@@ -3892,7 +3892,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth -fseth\n(940.64 ETH/USD * 0.00106311 USD/ETH = 1 ETH/ETH)', fullCommandStrForStatusBar)
 
 	def testOptionValueNoSaveOptionFiatSaveFullRequestHistoDayPriceFiatEqualsUnit(self):
-		# first request where both value and fiat options are saved
+		# first request
 		inputStr = 'eth usd 19/02/18 kraken -v0.3821277eth -fsusd'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3904,7 +3904,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('eth usd 19/02/18 00:00 kraken -v0.3821277eth -fsusd\n(940.64 ETH/USD * 1 USD/USD = 940.64 ETH/USD)', fullCommandStrForStatusBar)
 
 	def testOptionValueSaveOptionFiatNoSaveFullRequestHistoDayPriceFiatEqualsCrypto(self):
-		# first request where both value and fiat options are saved
+		# first request
 		inputStr = 'eth usd 19/02/18 kraken -vs0.3821277eth -feth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3916,7 +3916,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth -feth\n(940.64 ETH/USD * 0.00106311 USD/ETH = 1 ETH/ETH)', fullCommandStrForStatusBar)
 
 	def testPartialRequestHistoDayPriceSettingUnitToUnsupportedPairAtThisDate(self):
-		# full request where both value and fiat options are saved
+		# full request where pairs ok
 		inputStr = 'eth usd 19/01/18 00:00 kraken -vs0.3821277eth -feth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3927,7 +3927,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('eth usd 19/01/18 00:00 kraken -feth', fullCommandStrWithNoSaveOptions)
 		self.assertEqual('eth usd 19/01/18 00:00 kraken -vs0.3821277eth -feth\n(1048 ETH/USD * 0.0009542 USD/ETH = 1 ETH/ETH)', fullCommandStrForStatusBar)
 
-		# partial request
+		# partial request pair not supported at this date
 		inputStr = '-uchf'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3938,7 +3938,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testPartialRequestHistoDayPriceSettingDateCausingUnsupportedFiatPairAtThisDate(self):
-		# full request where both value and fiat options are saved
+		# full request where pairs ok
 		inputStr = 'eth usd 01/01/21 00:00 kraken -vs0.3821277eth -fschf.kraken'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3949,7 +3949,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('eth usd 01/01/21 00:00 kraken -vs0.3821277eth -fschf.kraken\n(730.85 ETH/USD * 0.8893 USD/CHF = 649.944905 ETH/CHF)', fullCommandStrForStatusBar)
 
-		# partial request
+		# partial request changing date so that pair not supported
 		inputStr = '-d1/1/18'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3960,7 +3960,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testPartialRequestHistoDayPriceSettingFiatToUnsupportedUnitFiatPairAtThisDate(self):
-		# full request where both value and fiat options are saved
+		# full request pair ok
 		inputStr = 'eth usd 19/01/18 00:00 kraken -vs0.3821277eth -feth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3971,7 +3971,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('eth usd 19/01/18 00:00 kraken -feth', fullCommandStrWithNoSaveOptions)
 		self.assertEqual('eth usd 19/01/18 00:00 kraken -vs0.3821277eth -feth\n(1048 ETH/USD * 0.0009542 USD/ETH = 1 ETH/ETH)', fullCommandStrForStatusBar)
 
-		# partial request
+		# partial request changing fiat so pair not supported at this date
 		inputStr = '-fchf.kraken'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
