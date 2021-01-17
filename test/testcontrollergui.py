@@ -3982,7 +3982,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrForStatusBar)
 
 if __name__ == '__main__':
-#	unittest.main()
-	tst = TestControllerGui()
-	tst.setUp()
-	tst.testPartialRequestHistoDayPriceSettingFiatToUnsupportedUnitFiatPairAtThisDate()
+	unittest.main()
+	# tst = TestControllerGui()
+	# tst.setUp()
+	# tst.testPartialRequestHistoDayPriceSettingFiatToUnsupportedUnitFiatPairAtThisDate()
