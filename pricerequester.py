@@ -212,7 +212,7 @@ class PriceRequester:
             errorMessage = dic['Message']
 
             if not isRealTime:
-                errorMessage = self._uniformiseErorMessage(errorMessage, crypto, unit, exchange)
+                errorMessage = self._uniformiseErrorMessage(errorMessage, crypto, unit, exchange)
             else:
                 errorMessage = errorMessage.rstrip(' .')
                 errorMessage = errorMessage.replace('fsym', 'Symbol')
@@ -225,7 +225,7 @@ class PriceRequester:
         return resultData
 
 
-    def _uniformiseErorMessage(self, errorMessage, crypto, unit, exchange):
+    def _uniformiseErrorMessage(self, errorMessage, crypto, unit, exchange):
         '''
         this method transform the provider error msg returned by the historical price queries
         (histo minute and histo day so they look identical to the error msg returned for the same

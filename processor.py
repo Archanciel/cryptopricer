@@ -381,6 +381,8 @@ class Processor:
 
 			return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
 
+#si fiatExchange = cryptoUnitExchange, alors _getPrice not useful !
+
 		fiatResultData = self._getPrice(unit,
 										fiat,
 										fiatExchange,
@@ -414,12 +416,20 @@ class Processor:
 				return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
 			else:
 				errorMsg = fiatResultData.getValue(fiatResultData.RESULT_KEY_ERROR_MSG)
-
+				dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day,
+																					 month,
+																					 year,
+																					 hour,
+																					 minute,
+																					 localTz,
+																					 dateTimeFormat)
+				
 				if 'market does not exist for this coin pair' in errorMsg:
-					errorMsg = 'PROVIDER ERROR - fiat option coin pair {}/{} or {}/{} not supported by exchange {}'.format(fiat, unit, unit, fiat, fiatExchange)
+					errorMsg = 'PROVIDER ERROR - fiat option coin pair {}/{} or {}/{} not supported by exchange {} on date {} {}'.format(fiat, unit, unit, fiat, fiatExchange, dateDMY, dateHM)
 				else:
 					# making the error msg specific to the fiat option
 					errorMsg = errorMsg.replace('Requesting', 'Requesting fiat option coin pair {}/{} or'.format(unit, fiat))
+					errorMsg += ' on date {} {}'.format(dateDMY, dateHM)
 
 				fiatResultData.setValue(fiatResultData.RESULT_KEY_ERROR_MSG, errorMsg)
 

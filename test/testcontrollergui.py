@@ -3891,8 +3891,98 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth -fseth\n(940.64 ETH/USD * 0.00106311 USD/ETH = 1 ETH/ETH)', fullCommandStrForStatusBar)
 
+	def testOptionValueNoSaveOptionFiatSaveFullRequestHistoDayPriceFiatEqualsUnit(self):
+		# first request where both value and fiat options are saved
+		inputStr = 'eth usd 19/02/18 kraken -v0.3821277eth -fsusd'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'0.3821277 ETH/359.44459973 USD/359.44459973 USD on Kraken: 19/02/18 00:00C 940.64 940.64', printResult)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -fsusd', fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -v0.3821277eth', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -v0.3821277eth -fsusd\n(940.64 ETH/USD * 1 USD/USD = 940.64 ETH/USD)', fullCommandStrForStatusBar)
+
+	def testOptionValueSaveOptionFiatNoSaveFullRequestHistoDayPriceFiatEqualsCrypto(self):
+		# first request where both value and fiat options are saved
+		inputStr = 'eth usd 19/02/18 kraken -vs0.3821277eth -feth'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'0.3821277 ETH/359.44459973 USD/0.3821277 ETH on Kraken: 19/02/18 00:00C 940.64 1', printResult)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth', fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -feth', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth -feth\n(940.64 ETH/USD * 0.00106311 USD/ETH = 1 ETH/ETH)', fullCommandStrForStatusBar)
+
+	def testPartialRequestHistoDayPriceSettingUnitToUnsupportedPairAtThisDate(self):
+		# full request where both value and fiat options are saved
+		inputStr = 'eth usd 19/01/18 00:00 kraken -vs0.3821277eth -feth'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'0.3821277 ETH/400.4698296 USD/0.3821277 ETH on Kraken: 19/01/18 00:00C 1048 1', printResult)
+		self.assertEqual('eth usd 19/01/18 00:00 kraken', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 19/01/18 00:00 kraken -vs0.3821277eth', fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('eth usd 19/01/18 00:00 kraken -feth', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('eth usd 19/01/18 00:00 kraken -vs0.3821277eth -feth\n(1048 ETH/USD * 0.0009542 USD/ETH = 1 ETH/ETH)', fullCommandStrForStatusBar)
+
+		# partial request
+		inputStr = '-uchf'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual('PROVIDER ERROR - Requesting ETH/CHF price for date 19/01/18 00:00 on exchange Kraken returned invalid value 0', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
+	def testPartialRequestHistoDayPriceSettingDateCausingUnsupportedFiatPairAtThisDate(self):
+		# full request where both value and fiat options are saved
+		inputStr = 'eth usd 01/01/21 00:00 kraken -vs0.3821277eth -fschf.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'0.3821277 ETH/279.27802955 USD/248.36195167 CHF on Kraken: 01/01/21 00:00C 730.85 649.944905', printResult)
+		self.assertEqual('eth usd 01/01/21 00:00 kraken', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 01/01/21 00:00 kraken -vs0.3821277eth -fschf.kraken', fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual('eth usd 01/01/21 00:00 kraken -vs0.3821277eth -fschf.kraken\n(730.85 ETH/USD * 0.8893 USD/CHF = 649.944905 ETH/CHF)', fullCommandStrForStatusBar)
+
+		# partial request
+		inputStr = '-d1/1/18'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual('PROVIDER ERROR - fiat option coin pair CHF/USD or USD/CHF not supported by exchange Kraken on date 01/01/18 00:00', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
+	def testPartialRequestHistoDayPriceSettingFiatToUnsupportedUnitFiatPairAtThisDate(self):
+		# full request where both value and fiat options are saved
+		inputStr = 'eth usd 19/01/18 00:00 kraken -vs0.3821277eth -feth'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'0.3821277 ETH/400.4698296 USD/0.3821277 ETH on Kraken: 19/01/18 00:00C 1048 1', printResult)
+		self.assertEqual('eth usd 19/01/18 00:00 kraken', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 19/01/18 00:00 kraken -vs0.3821277eth', fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('eth usd 19/01/18 00:00 kraken -feth', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('eth usd 19/01/18 00:00 kraken -vs0.3821277eth -feth\n(1048 ETH/USD * 0.0009542 USD/ETH = 1 ETH/ETH)', fullCommandStrForStatusBar)
+
+		# partial request
+		inputStr = '-fchf.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual('PROVIDER ERROR - fiat option coin pair CHF/USD or USD/CHF not supported by exchange Kraken on date 19/01/18 00:00', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
 if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
-	tst.testOptionValueOptionFiatFullRequestHistoDayPriceFiatEqualsCrypto()
+	tst.testPartialRequestHistoDayPriceSettingFiatToUnsupportedUnitFiatPairAtThisDate()

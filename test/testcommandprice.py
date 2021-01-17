@@ -1109,7 +1109,7 @@ class TestCommandPrice(unittest.TestCase):
 
         errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
         print(errorMsg)
-        self.assertEqual('PROVIDER ERROR - fiat option coin pair CHF/USD or USD/CHF not supported by exchange Kraken',
+        self.assertEqual('PROVIDER ERROR - fiat option coin pair CHF/USD or USD/CHF not supported by exchange Kraken on date 12/09/17 10:05',
                          errorMsg)
 
 if __name__ == '__main__':
