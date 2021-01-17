@@ -35,7 +35,7 @@ class DateTimeUtil:
 		'''
 		arrowObj = arrow.get(dateTimeStr, dateTimeFormatArrow).replace(tzinfo=timeZoneStr)
 
-		return arrowObj.timestamp  # timestamp is independant from timezone !
+		return arrowObj.int_timestamp  # timestamp is independant from timezone !
 
 
 	@staticmethod
@@ -83,7 +83,7 @@ class DateTimeUtil:
 		:param timeZoneStr: like 'Europe/Zurich' or 'US/Pacific'
 		:return: UTC/GMT timezone independent timestamp.
 		'''
-		return arrow.get(year, month, day, hour, minute, second).replace(tzinfo=timeZoneStr).timestamp
+		return arrow.get(year, month, day, hour, minute, second).replace(tzinfo=timeZoneStr).int_timestamp
 
 
 	@staticmethod
@@ -109,7 +109,7 @@ class DateTimeUtil:
 		:param dayNumberInt: int day number
 		:return: True or False
 		'''
-		return ((arrow.utcnow().timestamp - dateTimeArrowObject.to('UTC').timestamp) / dayNumberInt) > DateTimeUtil.SECONDS_PER_DAY
+		return ((arrow.utcnow().int_timestamp - dateTimeArrowObject.to('UTC').int_timestamp) / dayNumberInt) > DateTimeUtil.SECONDS_PER_DAY
 
 
 	@staticmethod
@@ -121,7 +121,7 @@ class DateTimeUtil:
 		:param dateArrowObjectBefore:
 		:return: True or False
 		'''
-		return dateArrowObjectAfter.timestamp > dateArrowObjectBefore.timestamp
+		return dateArrowObjectAfter.int_timestamp > dateArrowObjectBefore.int_timestamp
 
 
 	@staticmethod
@@ -137,9 +137,9 @@ class DateTimeUtil:
 		'''
 		
 		if timeZoneStr is None:
-			return ((arrow.utcnow().timestamp - timeStamp) / dayNumberInt) > DateTimeUtil.SECONDS_PER_DAY
+			return ((arrow.utcnow().int_timestamp - timeStamp) / dayNumberInt) > DateTimeUtil.SECONDS_PER_DAY
 		else:
-			return ((arrow.utcnow().to(timeZoneStr).timestamp - timeStamp) / dayNumberInt) > DateTimeUtil.SECONDS_PER_DAY
+			return ((arrow.utcnow().to(timeZoneStr).int_timestamp - timeStamp) / dayNumberInt) > DateTimeUtil.SECONDS_PER_DAY
 
 	@staticmethod
 	def utcNowTimeStamp():
@@ -147,7 +147,7 @@ class DateTimeUtil:
 		Return the current UTC time stamp
 		:return: current time zone independant (UTC) time stamp
 		'''
-		return arrow.utcnow().timestamp
+		return arrow.utcnow().int_timestamp
 
 
 	@staticmethod
@@ -168,7 +168,7 @@ class DateTimeUtil:
 		:return: time stamp of the day containing inDayTimeStamp, but at midnight precisely
 		'''
 		endOfDayDateTimeArrowObject = arrow.Arrow.utcfromtimestamp(inDayTimeStamp).replace(hour=23, minute=59, second=59)
-		return endOfDayDateTimeArrowObject.timestamp
+		return endOfDayDateTimeArrowObject.int_timestamp
 
 
 	@staticmethod
@@ -393,25 +393,25 @@ class DateTimeUtil:
 if __name__ == '__main__':
 	utcArrowDateTimeObj_endOfPreviousDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/29 23:59:59", 'UTC',
 																	  "YYYY/MM/DD HH:mm:ss")
-	print('endOfPreviousDay.timestamp: ' + str(utcArrowDateTimeObj_endOfPreviousDay.timestamp) + ' ' + utcArrowDateTimeObj_endOfPreviousDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
+	print('endOfPreviousDay.timestamp: ' + str(utcArrowDateTimeObj_endOfPreviousDay.int_timestamp) + ' ' + utcArrowDateTimeObj_endOfPreviousDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
 	utcArrowDateTimeObj_begOfCurrentDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 00:00:00", 'UTC',
 																	  "YYYY/MM/DD HH:mm:ss")
-	print('begOfCurrentDay.timestamp;  ' + str(utcArrowDateTimeObj_begOfCurrentDay.timestamp) + ' ' + utcArrowDateTimeObj_begOfCurrentDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
+	print('begOfCurrentDay.timestamp;  ' + str(utcArrowDateTimeObj_begOfCurrentDay.int_timestamp) + ' ' + utcArrowDateTimeObj_begOfCurrentDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
 
 	utcArrowDateTimeObj_endOfCurrentDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 23:59:59", 'UTC',
 																	  "YYYY/MM/DD HH:mm:ss")
-	print('endOfCurrentDay.timestamp:  ' + str(utcArrowDateTimeObj_endOfCurrentDay.timestamp) + ' ' + utcArrowDateTimeObj_endOfCurrentDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
+	print('endOfCurrentDay.timestamp:  ' + str(utcArrowDateTimeObj_endOfCurrentDay.int_timestamp) + ' ' + utcArrowDateTimeObj_endOfCurrentDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
 	utcArrowDateTimeObj_midOfCurrentDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 13:59:59", 'UTC',
 																	  "YYYY/MM/DD HH:mm:ss")
-	print('midOfCurrentDay.timestamp:  ' + str(utcArrowDateTimeObj_midOfCurrentDay.timestamp) + ' ' + utcArrowDateTimeObj_midOfCurrentDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
+	print('midOfCurrentDay.timestamp:  ' + str(utcArrowDateTimeObj_midOfCurrentDay.int_timestamp) + ' ' + utcArrowDateTimeObj_midOfCurrentDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
 
 	utcArrowDateTimeObj_midOfCurrentDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/29 22:00:00", 'UTC',
 																	  "YYYY/MM/DD HH:mm:ss")
-	print('midOfCurrentDay.timestamp:  ' + str(utcArrowDateTimeObj_midOfCurrentDay.timestamp) + ' ' + utcArrowDateTimeObj_midOfCurrentDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
+	print('midOfCurrentDay.timestamp:  ' + str(utcArrowDateTimeObj_midOfCurrentDay.int_timestamp) + ' ' + utcArrowDateTimeObj_midOfCurrentDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
 
-	print('essai                    :  ' + str(utcArrowDateTimeObj_midOfCurrentDay.timestamp) + ' ' + utcArrowDateTimeObj_midOfCurrentDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
+	print('essai                    :  ' + str(utcArrowDateTimeObj_midOfCurrentDay.int_timestamp) + ' ' + utcArrowDateTimeObj_midOfCurrentDay.format("YYYY/MM/DD HH:mm:ss ZZ"))
 
-	tsEOD = DateTimeUtil.shiftTimeStampToEndOfDay(utcArrowDateTimeObj_begOfCurrentDay.timestamp)
+	tsEOD = DateTimeUtil.shiftTimeStampToEndOfDay(utcArrowDateTimeObj_begOfCurrentDay.int_timestamp)
 	print('shifted:                    ' + str(tsEOD))
 
 	timezoneStr = 'Europe/Zurich'
