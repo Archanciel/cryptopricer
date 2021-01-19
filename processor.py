@@ -376,12 +376,41 @@ class Processor:
 			else:
 				fiatExchange = 'CCCAGG'
 
-		if unit == fiat:
+		if fiat == unit:
 			fiatConversionRate = 1
 
 			return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
+		elif fiat == crypto and fiatExchange == cryptoUnitExchange:
+			# memorizing previously obtained crypto/unit price
+			cryptoUnitPrice = resultData.getValue(resultData.RESULT_KEY_PRICE)
+			fiatResultData = self._getPrice(unit,
+											fiat,
+											fiatExchange,
+											year,
+											month,
+											day,
+											hour,
+											minute,
+											dateTimeFormat,
+											localTz)
+			
+			if not fiatResultData.isError():
+				# indicates that unit/fiat pair is supported by the fiatExchange which equals
+				# the cryptoUnitExchange
+				fiatConversionRate = cryptoUnitPrice
+			else:
+				# indicates that fiat/unit pair is supported by the fiatExchange which equals
+				# the cryptoUnitExchange and that the fiatConversionRate is the inverse of
+				# cryptoUnitPrice
+				# Example:
+				#   Request: eth usd 19/02/18 kraken -v0.3821277eth -feth
+				#   Unit = USD, Fiat = ETH
+				#   Result: 0.3821277 ETH/359.44459973 USD/0.3821277 ETH on Kraken: 19/02/18 00:00C 940.64 1
+				#   Computation: 940.64 ETH/USD * 0.00106311 USD/ETH = 1 ETH/ETH
+				#   USD/ETH = 1 / ETH/USD
+				fiatConversionRate = 1 / cryptoUnitPrice
 
-#si fiatExchange = cryptoUnitExchange, alors _getPrice not useful !
+			return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
 
 		fiatResultData = self._getPrice(unit,
 										fiat,

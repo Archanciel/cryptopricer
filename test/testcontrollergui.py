@@ -3462,7 +3462,7 @@ class TestControllerGui(unittest.TestCase):
 
 		btcUsdRate = float(re.findall(r".* ([\d\.]+)", printResult)[0])
 
-		#second command: eth btc histo day price request with usd fiat option
+		#second command: eth btc current price request with usd fiat option
 		inputStr = 'eth btc 0 binance -fsusd.kraken'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3534,7 +3534,7 @@ class TestControllerGui(unittest.TestCase):
 
 		btcUsdRate = float(re.findall(r".* ([\d\.]+)", printResult)[0])
 
-		#second command: eth btc histo day price request
+		#second command: eth btc current price request
 		inputStr = 'eth btc 0 binance'
 		_, _, _, _, _ = self.controller.getPrintableResultForInput(inputStr)
 
@@ -3731,7 +3731,6 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance', fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual('mco btc 12/09/17 00:00 binance -fseth.binance\n(0.002049 MCO/BTC * 14.16430595 BTC/ETH = 0.02902266 MCO/ETH)', fullCommandStrForStatusBar)
 
-		#second command: -cbtc -ueth Here, unit is equal to fiat which causes the test case to generate a warning
 		inputStr = '-ceth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3981,8 +3980,96 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrForStatusBar)
 
+	def testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsUnit(self):
+		'''
+		This test verifies that the fiat computed amount is correct
+		:return:
+		'''
+		#first command: eth btc current price on kraken request
+		inputStr = 'eth btc 0 kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('eth btc 0 kraken', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+
+		ethBtcCurrentPrice = float(re.findall(r".* ([\d\.]+)", printResult)[0])
+
+		#second command: eth btc current price request with eth fiat option
+		inputStr = 'eth btc 0 kraken -vs3eth -fseth.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('eth btc 0 kraken', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual('eth btc 0 kraken -vs3eth -fseth.kraken', fullCommandStrWithSaveOptionsForHistoryList)
+
+		ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0])
+		ethEthFiatRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
+
+		#ensure fiat value of eth in eth is correct
+		self.assertAlmostEqual(round(ethBtcRate * ethEthFiatRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethBtcCurrentPrice, delta=0.4)
+
+		#'eth btc 0 kraken -vs3eth -fseth.kraken
+		#(0.03835 ETH/BTC * 26.0756193 BTC/ETH = 1 ETH/ETH)'
+		fullCommandStrForStatusBar = fullCommandStrForStatusBar.replace('\n', ' ').replace('(', '')
+		
+		ethBtcRateInStatusBarStr = float(re.findall(r"(\d+\.\d+|\d)", fullCommandStrForStatusBar)[2])
+		btcEthRateInStatusBarStr = float(re.findall(r"(\d+\.\d+|\d)", fullCommandStrForStatusBar)[3])
+		ethEthRateInStatusBarStr = float(re.findall(r"(\d+\.\d+|\d)", fullCommandStrForStatusBar)[4])
+
+		self.assertAlmostEqual(ethBtcRateInStatusBarStr, ethBtcCurrentPrice, delta=0.1)
+		self.assertAlmostEqual(btcEthRateInStatusBarStr, 1 / ethBtcCurrentPrice, delta=0.1)
+		self.assertEqual(ethEthRateInStatusBarStr, 1)
+
+	def testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsCrypto(self):
+		'''
+		This test verifies that the fiat computed amount is correct
+		:return:
+		'''
+		#first command: eth btc current price on kraken request
+		inputStr = 'eth btc 0 kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('eth btc 0 kraken', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+
+		ethBtcCurrentPrice = float(re.findall(r".* ([\d\.]+)", printResult)[0])
+
+		#second command: eth btc current price request with eth fiat option
+		inputStr = 'eth btc 0 kraken -vs3eth -fsbtc.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('eth btc 0 kraken', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual('eth btc 0 kraken -vs3eth -fsbtc.kraken', fullCommandStrWithSaveOptionsForHistoryList)
+
+		ethBtcRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][0])
+		ethBtcFiatRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
+
+		#ensure fiat value of eth in btc is correct
+		self.assertAlmostEqual(round(ethBtcRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethBtcFiatRate, delta=0.4)
+		
+		# 'eth btc 0 kraken -vs3eth -fsbtc.kraken
+		# (0.03835 ETH/BTC * 1 BTC/BTC = 0.03835 ETH/BTC)'
+		fullCommandStrForStatusBar = fullCommandStrForStatusBar.replace('\n', ' ').replace('(', '')
+		
+		ethBtcRateInStatusBarStr = float(re.findall(r"(\d+\.\d+|\d)", fullCommandStrForStatusBar)[2])
+		btcEthRateInStatusBarStr = float(re.findall(r"(\d+\.\d+|\d)", fullCommandStrForStatusBar)[3])
+		ethBtcFiatRateInStatusBarStr = float(re.findall(r"(\d+\.\d+|\d)", fullCommandStrForStatusBar)[4])
+		
+		self.assertAlmostEqual(ethBtcRateInStatusBarStr, ethBtcCurrentPrice, delta=0.1)
+		self.assertEqual(btcEthRateInStatusBarStr, 1)
+		self.assertAlmostEqual(ethBtcFiatRateInStatusBarStr, ethBtcCurrentPrice, delta=0.1)
+
+
 if __name__ == '__main__':
 	unittest.main()
 	# tst = TestControllerGui()
 	# tst.setUp()
-	# tst.testPartialRequestHistoDayPriceSettingFiatToUnsupportedUnitFiatPairAtThisDate()
+	# tst.testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsUnit()
+	# tst.testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsCrypto()
