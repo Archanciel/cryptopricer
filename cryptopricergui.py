@@ -199,8 +199,8 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 			# deleteRequest() and updateRequest() cryptoPricerGUI methods
 			cryptoPricerGUI.recycleViewCurrentSelIndex = index
 			cryptoPricerGUI.requestInput.text = selItemValue
-			cryptoPricerGUI.refocusOnRequestInput()
-
+		
+		cryptoPricerGUI.refocusOnRequestInput()
 		cryptoPricerGUI.enableStateOfRequestListSingleItemButtons()
 
 
