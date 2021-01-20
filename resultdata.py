@@ -22,6 +22,15 @@ class ResultData:
 	RESULT_KEY_OPTION_FIAT_EXCHANGE = 'OPTION_FIAT_EXCHANGE'              # store the fiat exchange of the -f option
 	RESULT_KEY_OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'                      # store True or False to indicate if the fiat option is to be stored in history (-fs) or not (-f)
 
+	# In a further version, the price -p option will be added. This option will enable the
+	# user to specify a price value in fiat and obtain the corresponding unit rate.
+	#
+	# For example, if you want to purchase CHSB tokens at price 0.3 USDC. The request
+	# chsb btc 0 hitbtc -p0.3USD -fusd.kraken will display
+	# 1 CHSB/0.0000085 BTC/0.3 USD.Kraken on HitBTC 20/01/21 20:45R 0.00000865 0.30587441
+	# which means that currently the CHSB is quoted at 0.00000865 BTC on HitBTC (which
+	# corresponds to a value of 0.30587441 USD on Kraken, but that to buy it at 0.3 USD,
+	# the buy order must set the price in BTC to 0.0000085 !
 	RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT = 'OPTION_PRICE_SPECIFIED_AMOUNT'          # store the crypto or unit user entered value for -v option. Ex: 0.1 if -v0.1btc
 	RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT = 'OPTION_PRICE_COMPUTED_UNIT_AMOUNT'  # store the price in unit corresponding to the amount specified in the option synbol specified
 																						# for the -p option. Ex: if crypto is eth and unit is btc and option is -p300usd,

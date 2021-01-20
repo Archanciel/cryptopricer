@@ -121,7 +121,7 @@ Options can be added to both full and partial requests in order to obtain additi
 informations. [i]Remember that options added to a full request must be specified at the end of the request[/i].
 
 Currently, CryptoPricer supports two options: the
-valuation [b][cy]-v[/b][/c] option and the fiat [b][cy]-f[/b][/c] option.
+value [b][cy]-v[/b][/c] option and the fiat [b][cy]-f[/b][/c] option.
 
 In a further version, the price
 [b][cy]-p[/b][/c] option will be added. This option will enable you to specify a price value in fiat and obtain the 
@@ -133,13 +133,22 @@ and you want to know what limit buy order in BTC you have to place in order
 to purchase your ETH at a rate of 650 USD.
 
 [cy]eth btc 0 binance -p650usd.kraken[/c] -->
-[n]ETH/BTC on Binance: 16/12/17 22:10R 0.03556 0.03357976
+[n]ETH/BTC on Binance: 16/12/17 22:10R 0.03556 [cr]0.03357976[/c]
+[n]
 [n][i]Currently the BTC/USD rate on Kraken is 19356.9. So, the ETH at this rate
 is valued at 0.03556 x 19 356.9 = 688.331364. So, your limit buy order must be placed
-at
-[n]0.03556 / 688.331364 x 650 = 0.03357976.[/i]
+at 0.03556 / 688.331364 x 650 = [cr]0.03357976[/c].[/i]
 
-[n][cg]Valuation option[/cg]: [b][cy]-v[/b][/c][i]amount[/i]CURRENCY or
+Second example in a different format displaying more information: you want to purchase CHSB tokens at price 0.3 USDC. The request
+
+[cy]chsb btc 0 hitbtc -p0.3USD -fusd.kraken[/c] -->
+[n]1 CHSB/[cr]0.0000085[/c] BTC/0.3 USD.Kraken on HitBTC 20/01/21 20:45R 0.00000865 0.30587441
+[n]
+[n][i]indicates that currently the CHSB is quoted at 0.00000865 BTC on HitBTC (which
+corresponds to a value of 0.30587441 USD on Kraken), but that to buy it at 0.3 USD,
+the limit buy order must set the price to 0,00000865 / 0,30537441 * 0.3 = [cr]0.0000085[/c] BTC ![/i]
+
+[n][cg]Value option[/cg]: [b][cy]-v[/b][/c][i]amount[/i]CURRENCY or
 [b][cy]-vs[/b][/c][i]amount[/i]CURRENCY or [b][cy]-v0[/b][/c] to
 cancel it
 
