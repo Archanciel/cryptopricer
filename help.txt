@@ -106,11 +106,17 @@ Examples: the next partial requests follow the before last full request describe
 [cy]-uusd[/c] -->
 [n]ETH/USD on Bitfinex: 21/01/17C 0.01185
 
-[cy]-d12/05 -ubtc -ekraken[/c] -->
+[cy]-d12 -ubtc -ekraken[/c] -->
+[n]ETH/BTC on Kraken: 12/01/17 00:00C 0.012
+
+[cy]-d12/05[/c] -->
 [n]ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
 
 [cy]-t22:55[/c] -->
 [n]ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
+[n][i]Here, the time entered would be used only if the date currently in effect
+was less than 7 days before now, which means that a minute price could be obtained
+from the rate provider ![/i]
 
 [b][cr]IMPORTANT[/c][/b]: entering a full request wipes out all the previously entered partial
 request settings !
