@@ -26,9 +26,9 @@ Full requests do specify all the request parameter values.
 
     [b][cy]0[/cy][/b] for RT
 
-    [b][cy]21/12[/c][/b] or [b][cy]21/12/19[/c][/b] or [b][cy]21/12/2019[/c][/b].
-    If no year is specified, current year is assumed. If no time is specified,
-    00:00 time is assumed.
+    [b][cy]21[/c][/b] or [b][cy]21/12[/c][/b] or [b][cy]21/12/19[/c][/b] or [b][cy]21/12/2019[/c][/b].
+    If day only is specified, current time, month and year are assumed. If no year is specified, current
+    year is assumed. If no time is specified, current time is assumed.
 
     [b][cy]21/12 8:34[/c][/b] --> current year assumed.
 
@@ -37,11 +37,12 @@ Full requests do specify all the request parameter values.
 
     [b][cy]8:34[/c][/b] --> here, since no date is specified, current date is assumed.
 
-    [b][cy]21[/c][/b] --> if no month and no time are specified, an error is generated.
+    [b][cy]21[/c][/b] --> here, since only day is specified, current time, month and 
+    year are assumed.
 
 [b][cr]WARNING[/c][/b]: specifying time makes sense only for dates not older than 7 days. Prices older
 than 7 days are 'close' prices. Since there's no notion of a close price for crypto's,
-the last price of the date at UTC 23.59 is returned as 'close' price.
+the last price of the date at UTC 23.59 is returned as 'close' price and the displayed time is 00:00.
 
 [b][cg]Output price qualifiers[/c][/b]:
 
@@ -66,6 +67,10 @@ Examples: assume we are on 16/12/17 at 22:10
 [cy]eth btc 15 8:45 bitfinex[/c] -->
 [n]ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
 [n][i]Here, only the day and time were given. The current month and year were assumed[/i]
+
+[cy]eth btc 15 bitfinex[/c] -->
+[n]ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
+[n][i]Here, only the day was provided. The current time, month and year were assumed[/i]
 
 [cy]eth btc 21/1 13:45 bitfinex[/c] -->
 [n]ETH/BTC on Bitfinex: 21/01/17C 0.01185
@@ -108,6 +113,12 @@ Examples: the next partial requests follow the before last full request describe
 
 [cy]-d12 -ubtc -ekraken[/c] -->
 [n]ETH/BTC on Kraken: 12/01/17 00:00C 0.012
+
+[cy]-d12 17:45[/c] -->
+[n]ETH/BTC on Kraken: 12/01/17 00:00C 0.012
+[n][i]Here, the time entered is ignored. In order for the time to be applied in
+a partial request, [cy]-d[/c] and [cy]-t[/c] must be entered: [cy]-d12 -t17:45[/c]
+in this case ! [/i]
 
 [cy]-d12/05[/c] -->
 [n]ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
