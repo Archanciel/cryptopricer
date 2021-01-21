@@ -342,6 +342,19 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - date not valid")
 
+    def testExecuteHistoDayPriceOnlyDaySpecified(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertIsNone(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
 
     def testExecuteRealTimePriceInvalidYearThreeDigit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'

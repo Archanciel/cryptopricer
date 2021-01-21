@@ -1370,8 +1370,8 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		if nowMonthStr == eightDaysBeforeMonthStr:
-			# this test can only be performed after the 8th day of the mnnth,
-			# othervise, the test which assumes that we try a full request with only day and time
+			# this test can only be performed after the 8th day of the month,
+			# otherwise, the test which assumes that we try a full request with only day and time
 			# specified, but with the day number set to 8 days before today - so, in the future
 			# if we are between the 1st and the 8th since the month is not specified, can not be run.
 			self.assertEqual(
@@ -1382,6 +1382,36 @@ class TestControllerGui(unittest.TestCase):
 																   nowMinuteStr), fullCommandStrNoOptions)
 			self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
+
+	def testGetPrintableResultForDayOnlyRequest_2daysBefore(self):
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+
+		oneDaysBeforeArrowDate = now.shift(days=-1)
+
+		oneDaysBeforeYearStr, oneDaysBeforeMonthStr, oneDaysBeforeDayStr, oneDaysBeforeHourStr, oneDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneDaysBeforeArrowDate)
+
+		inputStr = 'btc usd {} bitfinex'.format(oneDaysBeforeDayStr)
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		if nowMonthStr == oneDaysBeforeMonthStr:
+			# this test can only be performed after the first day of the month,
+			# otherwise, the test which assumes that we try a full request with only day
+			# specified, but with the day number set to 1 day before today - so, in the future
+			# if we are on the 1st day of month.
+			#
+			# Example: if we are on 1/3/2021, one day before is 28/2. The request
+			# will happen on date 28/3/2021, so in the future, and date will be shifted
+			# to the previous year with a warning telling the shift occurred.
+			self.assertEqual(
+				'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'.format(oneDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+																   nowMinuteStr),
+				UtilityForTest.removeOneEndPriceFromResult(printResult))
+			self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(oneDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+																   nowMinuteStr), fullCommandStrNoOptions)
+			self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
 	def testGetPrintableResultForDayOnlyAndTimeFullRequest_1daysAfter(self):
 		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
@@ -4071,5 +4101,5 @@ if __name__ == '__main__':
 	unittest.main()
 	# tst = TestControllerGui()
 	# tst.setUp()
-	# tst.testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsUnit()
+	# tst.testGetPrintableResultForDayOnlyRequest_2daysBefore()
 	# tst.testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsCrypto()

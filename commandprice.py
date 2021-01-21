@@ -354,9 +354,20 @@ class CommandPrice(AbstractCommand):
 				# only when user enters -d0 for RT price,
 				# is yearStr equal to '0' since 0 is put
 				# by Requesèer into day, month and year !
-				resultData = ResultData()
-				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - date not valid")
-				return resultData
+				if dayStr is not None and monthStr is None and yearStr is None:
+					# here, only the day was specified in the full request.
+					# Example: chsb btc 19 hitbtc.
+					# Handling day only date in full request makes it coherent
+					# with partial -d request where -d23 for example is ok !
+					self.parsedParmData[self.MONTH] = localNow.format('MM')
+					self.parsedParmData[self.YEAR] = localNow.format('YYYY')
+					self.parsedParmData[self.HOUR] = str(localNow.hour)
+					self.parsedParmData[self.MINUTE] = str(localNow.minute)
+					return True
+				else:
+					resultData = ResultData()
+					resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - date not valid")
+					return resultData
 			elif len(monthStr) > 2:
 				resultData = ResultData()
 				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
@@ -396,7 +407,7 @@ class CommandPrice(AbstractCommand):
 				return resultData
 
 			try:
-				date = DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr),
+				_ = DateTimeUtil.dateTimeComponentsToArrowLocalDate(int(dayStr), int(monthStr), int(yearStr),
 																int(hourStr), int(minuteStr), 0,
 																self.configManager.localTimeZone)
 			except ValueError as e:
