@@ -254,6 +254,8 @@
 	auto_dismiss: False
 	contentBox: content_box
 	scrollView: scroll_view
+	nextPageButton: next_page_button
+	prevPageButton: prev_page_button
 
 	BoxLayout:
 		id: content_box
@@ -278,9 +280,11 @@
 			size_hint_y: None
 			height: '40dp'
 			Button:
+			    id: prev_page_button
 				text: "Previous page"
 				on_press: scr_popup.previousPage()
 			Button:
+			    id: next_page_button
 				text: "Next page"
 				on_press: scr_popup.nextPage()
 			Button:

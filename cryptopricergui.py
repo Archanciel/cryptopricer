@@ -286,25 +286,34 @@ class ScrollablePopup(Popup):
 		self.formatedTextPageList = formatedTextPageList
 		self.currentPage = 0
 		self.setContentTextToCurrentPage()
+		self.prevPageButton.disabled = True
 
 	def setContentTextToCurrentPage(self):
 		self.contentBox.content.text = self.formatedTextPageList[self.currentPage]
-
+	
 	def previousPage(self):
 		self.currentPage -= 1
 
-		if self.currentPage < 0:
-			self.currentPage = 0
+		if self.currentPage == 0:
+			self.prevPageButton.disabled = True
+		else:
+			self.prevPageButton.disabled = False
 
+		self.nextPageButton.disabled = False
 		self.setContentTextToCurrentPage()
 		self.scrollView.scroll_y = 0 # force scrolling to bottom
 
 	def nextPage(self):
 		self.currentPage += 1
+		
+		helpPageNumber = len(self.formatedTextPageList)
+		
+		if self.currentPage == helpPageNumber - 1:
+			self.nextPageButton.disabled = True
+		else:
+			self.nextPageButton.disabled = False
 
-		if self.currentPage == len(self.formatedTextPageList):
-			self.currentPage = len(self.formatedTextPageList) - 1
-
+		self.prevPageButton.disabled = False
 		self.setContentTextToCurrentPage()
 		self.scrollView.scroll_y = 1 # force scrolling to top
 
