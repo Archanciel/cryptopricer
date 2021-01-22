@@ -1,4 +1,4 @@
-[b][cg]CryptoPricer purpose[/b][/c]
+[b][cg]CryptoPricer app purpose[/b][/c]
 
 The CryptoPricer application offers a handy way to obtain real time (RT) and historical
 cryptocurrency prices.
@@ -44,7 +44,7 @@ Full requests do specify all the request parameter values.
 than 7 days are 'close' prices. Since there's no notion of a close price for crypto's,
 the last price of the date at UTC 23.59 is returned as 'close' price and the displayed time is 00:00.
 
-[b][cg]Output price qualifiers[/c][/b]:
+[b][cg]Output price qualifiers[/c][/b]
 
     [n][b][cy]R[/c][/b] = RT
     [n][b][cy]M[/c][/b] = Minute price (precision at the minute)
@@ -84,7 +84,7 @@ Examples: assume we are on 16/12/17 at 22:10
 
 [b][cr]WARNING[/c][/b]: <options> MUST be specified at the end of the full request
 and preceded by [b][cy]-[/c][/b]. They are documented later in the help.
-
+[p]
 [b][cg]Partial requests[/c][/b]
 
 Once a full request has been entered, it is handy to just change one or more parameters of
@@ -164,16 +164,23 @@ Second example in a different format displaying more information: you want to pu
 [n][i]indicates that currently the CHSB is quoted at 0.00000865 BTC on HitBTC (which
 corresponds to a value of 0.30587441 USD on Kraken), but that to buy it at 0.3 USD,
 the limit buy order must set the price to 0,00000865 / 0,30537441 * 0.3 = [cr]0.0000085[/c] BTC ![/i]
+[p]
+[n][b][cg]Value option[/cg][/b]
 
-[n][cg]Value option[/cg]: [b][cy]-v[/b][/c][i]amount[/i]CURRENCY or
+The value option enables the user to define a value either in crypto, in unit
+or in fiat if the fiat option is currently in effect. The request will
+not only return the rate of the crypto/unit pair, but also the value of
+the specified value quantity at the crypto/unit pair rate.
+
+[b][cy]-v[/b][/c][i]amount[/i]CURRENCY or
 [b][cy]-vs[/b][/c][i]amount[/i]CURRENCY or [b][cy]-v0[/b][/c] to
 cancel it
 
 The [b][cy]-v[/b][/c] option is used in conjunction with a
-specified [i]amount[/i] and CURRENCY (crypto or unit
-symbol) to obtain its converted unit or crypto
+specified [i]amount[/i] and CURRENCY (crypto, unit or fiat
+symbol) to obtain its converted unit, crypto or fiat
 value at the rate of the last request if entered separately,
-or at the rate of the current request if added to it.
+or at the rate of the current full request if added to it.
 
 Example: if the last request was
 
@@ -205,7 +212,9 @@ which means that 0.1 BTC is equivalent to
 [n]Note that here the RT price went up 20 USD since
 the last [b][cy]-v[/b][/c] request !
 
-[cg]Valuation option format[/cg]: [b][cy]-v[/b][/c]999.9999zzz
+[b][cg]Value option format[/cg][/b]
+
+[b][cy]-v[/b][/c]999.9999zzz
 or [b][cy]-vs[/b][/c]999.9999zzz, [b][cy]s[/b][/c]
 is a [b][cy]save[/b][/c] additional modifier which causes
  the [b][cy]-v[/b][/c] option to be saved in
@@ -266,12 +275,26 @@ ETH is no longer the [cy]-c[/c] crypto, but is the
 [cy]-u[/c] unit (counterparty). Examples implying fiat
 and value options are provided in the next fiat option section.
 [p]
-[cg]Fiat option[/cg]: [b][cy]-f[/b][/c]CURRENCY or
+[b][cg]Fiat option[/cg][/b]
+
+The fiat option enables the user to specify a fiat symbol so that request
+returns two rates: the crypto/unit rate and the crypto/fiat rate. In ooder
+to convert the coypto/unit pair rate to the crypto/fiat rate, the unit/fiat
+pair rate must be obtained. Specifying only the fiat symbol will cause that 
+the unit/fiat pair rate will be an average rate between exchanges. The average
+rate is determined by the rate provider. In order to obtain a more precise
+rate, the unit/fiat pair exchange can be added to the fiat option. For
+example if the unit is BTC and the specified fiat is USD, it makes sense to
+specify the BTC/USD pair to be obtained from Kraken.
+
+[b][cg]Fiat option format[/cg][/b]
+
+[b][cy]-f[/b][/c]CURRENCY or
 [b][cy]-fs[/b][/c]CURRENCY
 [n]or [b][cy]-f[/b][/c]CURRENCY.[i]exchange[/i] or
 [b][cy]-fs[/b][/c]CURRENCY.[i]exchange[/i] or
-[b][cy]-f0[/b][/c] to cancel to cancel
-a currently active [b][cy]-fs[/b][/c] option.
+[b][cy]-f0[/b][/c] to cancel a currently active
+[b][cy]-fs[/b][/c] option.
 
 The [b][cy]-f[/b][/c] option is used to specify a CURRENCY in which the
 unit price of the crypto will be converted.
@@ -354,6 +377,6 @@ We see that now the previsously specified saved value
 option [cy]-fs0.1eth[/c] is applicable again. But now,
 ETH is no longer the [cy]-c[/c] crypto, but is the
 [cy]-u[/c] unit (counterparty).
-
-[cg]Fiat option in conjunction with valuation option[/cg]:
+[p]
+[b][cg]Fiat option in conjunction with value option[/cg][/b]
 
