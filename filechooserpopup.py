@@ -3,7 +3,7 @@ from os.path import sep
 
 from kivy.properties import ObjectProperty
 from kivy.properties import BooleanProperty
-from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
@@ -39,7 +39,7 @@ class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
 		self.selected = is_selected
 		
 		if is_selected:
-			rootGUI = rv.parent.parent
+			rootGUI = rv.parent.parent.parent.parent.parent
 			selectedPath = rv.data[index]['pathOnly']
 			
 			selectedPath = selectedPath + sep  # adding '\\' is required, otherwise,
@@ -61,7 +61,7 @@ class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavi
 	touch_deselect_last = BooleanProperty(True)
 
 
-class FileChooserPopup(BoxLayout):
+class FileChooserPopup(Popup):
 	LOAD_FILE_POPUP_TITLE = 'Select history file to load'
 	SAVE_FILE_POPUP_TITLE = 'Save history to file'
 	"""
@@ -72,12 +72,30 @@ class FileChooserPopup(BoxLayout):
 	cancel = ObjectProperty(None)
 	
 	def __init__(self, rootGUI, **kwargs):
+		# defining FileChooserPopup size parameters
+		
+		if os.name != 'posix':
+			popupSizeProportion_x = 0.8
+			popupSizeProportion_y = 0.8
+			popupPos_top = 0.92
+		else:
+			popupSizeProportion_x = 0.8
+			popupSizeProportion_y = 0.62
+
+			if self.onSmartPhone():
+				popupPos_top = 0.98
+			else:
+				popupPos_top = 0.92
+
+		kwargs['size_hint'] = (popupSizeProportion_x, popupSizeProportion_y)
+		kwargs['pos_hint'] = {'top': popupPos_top}
+
 		super(FileChooserPopup, self).__init__(**kwargs)
 		
 		self.sdCardDir = None
 		self.rootGUI = rootGUI
 		
-		# fillig the drive list (on Windows) or memory list (on Android)
+		# filling the drive list (on Windows) or memory list (on Android)
 		self.fillDriveOrMemoryList()
 
 		# sizing FileChooserPopup widgets. Method defined in sub classes
@@ -96,19 +114,11 @@ class FileChooserPopup(BoxLayout):
 		chooser	fields size.
 		"""
 		if os.name != 'posix':
-			self.popupSizeProportion_x = 0.8
-			self.popupSizeProportion_y = 0.8
-			self.popupPos_top = 0.92
 			self.gridLayoutPathField.size_hint_y = 0.12
 		else:
-			self.popupSizeProportion_x = 0.8
-			self.popupSizeProportion_y = 0.62
-
 			if self.onSmartPhone():
-				self.popupPos_top = 0.98
 				self.gridLayoutPathField.size_hint_y = 0.08
 			else:
-				self.popupPos_top = 0.92
 				self.gridLayoutPathField.size_hint_y = 0.05
 	
 	def fillDriveOrMemoryList(self):

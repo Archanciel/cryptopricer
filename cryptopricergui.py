@@ -834,27 +834,24 @@ class CryptoPricerGUI(BoxLayout):
 		self.popup.dismiss()
 
 	def openFileLoadPopup(self):
-		loadFileChooser = LoadFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
-		popupTitle = self.buildFileChooserPopupTitle(FILE_LOADED)
-		
-		self.popup = Popup(title=popupTitle, content=loadFileChooser,
-						   pos_hint={'top': loadFileChooser.popupPos_top},
-						   size_hint=(loadFileChooser.popupSizeProportion_x, loadFileChooser.popupSizeProportion_y))
-		self.popup.open()
 		self.dropDownMenu.dismiss()
+		popupTitle = self.buildFileChooserPopupTitle(FILE_LOADED)
+		self.popup = LoadFileChooserPopup(title=popupTitle,
+										  rootGUI=self,
+										  load=self.load,
+										  cancel=self.dismissPopup)
+		self.popup.open()
 	
 	def openFileSavePopup(self):
-		saveFileChooser = SaveFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
-		loadAtStartFilePathName = self.configMgr.loadAtStartPathFilename
-		saveFileChooser.setCurrentLoadAtStartFile(loadAtStartFilePathName)
-		
-		popupTitle = self.buildFileChooserPopupTitle(FILE_SAVED)
-
-		self.popup = Popup(title=popupTitle, content=saveFileChooser,
-						   pos_hint={'top': saveFileChooser.popupPos_top},
-						   size_hint=(saveFileChooser.popupSizeProportion_x, saveFileChooser.popupSizeProportion_y))
-		self.popup.open()
 		self.dropDownMenu.dismiss()
+		popupTitle = self.buildFileChooserPopupTitle(FILE_SAVED)
+		self.popup = SaveFileChooserPopup(title=popupTitle,
+										  rootGUI=self,
+										  load=self.load,
+										  cancel=self.dismissPopup)
+		loadAtStartFilePathName = self.configMgr.loadAtStartPathFilename
+		self.popup.setCurrentLoadAtStartFile(loadAtStartFilePathName)
+		self.popup.open()
 	
 	def buildFileChooserPopupTitle(self, fileAction):
 		if fileAction == FILE_LOADED:
