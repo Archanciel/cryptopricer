@@ -61,7 +61,7 @@ class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavi
 	touch_deselect_last = BooleanProperty(True)
 
 
-class FileChooserPopup(BoxLayout):
+class FileChooserBoxLayout(BoxLayout):
 	LOAD_FILE_POPUP_TITLE = 'Select history file to load'
 	SAVE_FILE_POPUP_TITLE = 'Save history to file'
 	"""
@@ -72,7 +72,7 @@ class FileChooserPopup(BoxLayout):
 	cancel = ObjectProperty(None)
 	
 	def __init__(self, rootGUI, **kwargs):
-		super(FileChooserPopup, self).__init__(**kwargs)
+		super(FileChooserBoxLayout, self).__init__(**kwargs)
 		
 		self.sdCardDir = None
 		self.rootGUI = rootGUI
@@ -80,7 +80,7 @@ class FileChooserPopup(BoxLayout):
 		# fillig the drive list (on Windows) or memory list (on Android)
 		self.fillDriveOrMemoryList()
 
-		# sizing FileChooserPopup widgets. Method defined in sub classes
+		# sizing FileChooserBoxLayout widgets. Method defined in sub classes
 		self.sizeFileChooser()
 		
 		# specify pre-selected node by its index in the data
@@ -141,20 +141,20 @@ class FileChooserPopup(BoxLayout):
 			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'pathOnly': self.sdCardDir})
 
 
-class LoadFileChooserPopup(FileChooserPopup):
+class LoadFileChooserBoxLayout(FileChooserBoxLayout):
 	"""
 	
 	"""
 	def __init__(self, rootGUI, **kwargs):
-		super(LoadFileChooserPopup, self).__init__(rootGUI, **kwargs)
+		super(LoadFileChooserBoxLayout, self).__init__(rootGUI, **kwargs)
 
 
-class SaveFileChooserPopup(FileChooserPopup):
+class SaveFileChooserBoxLayout(FileChooserBoxLayout):
 	"""
 	
 	"""
 	def __init__(self, rootGUI, **kwargs):
-		super(SaveFileChooserPopup, self).__init__(rootGUI, **kwargs)
+		super(SaveFileChooserBoxLayout, self).__init__(rootGUI, **kwargs)
 
 		self.loadAtStartFilePathName = ''
 
@@ -217,10 +217,10 @@ class SaveFileChooserPopup(FileChooserPopup):
 			return
 		
 		if isLoadAtStartChkboxActive:
-			self.rootGUI.popup.title = '{} {}'.format(FileChooserPopup.SAVE_FILE_POPUP_TITLE,
-													  currentSaveFileName) + LOAD_AT_START_MSG
+			self.rootGUI.popup.title = '{} {}'.format(FileChooserBoxLayout.SAVE_FILE_POPUP_TITLE,
+			                                          currentSaveFileName) + LOAD_AT_START_MSG
 		else:
-			self.rootGUI.popup.title = '{} {}'.format(FileChooserPopup.SAVE_FILE_POPUP_TITLE, currentSaveFileName)
+			self.rootGUI.popup.title = '{} {}'.format(FileChooserBoxLayout.SAVE_FILE_POPUP_TITLE, currentSaveFileName)
 	
 	def toggleLoadAtStart(self, active):
 		"""

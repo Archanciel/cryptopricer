@@ -26,7 +26,7 @@ from kivy.uix.widget import Widget
 from kivy.utils import platform
 
 from configurationmanager import ConfigurationManager
-from filechooserpopup import LoadFileChooserPopup, SaveFileChooserPopup
+from filechooserboxlayout import LoadFileChooserBoxLayout, SaveFileChooserBoxLayout
 from pricerequester import PriceRequester
 from controller import Controller
 from guioutputformater import GuiOutputFormater
@@ -834,7 +834,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.popup.dismiss()
 
 	def openFileLoadPopup(self):
-		loadFileChooser = LoadFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
+		loadFileChooser = LoadFileChooserBoxLayout(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		popupTitle = self.buildFileChooserPopupTitle(FILE_LOADED)
 		
 		self.popup = Popup(title=popupTitle, content=loadFileChooser,
@@ -844,7 +844,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.dropDownMenu.dismiss()
 	
 	def openFileSavePopup(self):
-		saveFileChooser = SaveFileChooserPopup(rootGUI=self, load=self.load, cancel=self.dismissPopup)
+		saveFileChooser = SaveFileChooserBoxLayout(rootGUI=self, load=self.load, cancel=self.dismissPopup)
 		loadAtStartFilePathName = self.configMgr.loadAtStartPathFilename
 		saveFileChooser.setCurrentLoadAtStartFile(loadAtStartFilePathName)
 		
@@ -858,9 +858,9 @@ class CryptoPricerGUI(BoxLayout):
 	
 	def buildFileChooserPopupTitle(self, fileAction):
 		if fileAction == FILE_LOADED:
-			popupTitleAction = LoadFileChooserPopup.LOAD_FILE_POPUP_TITLE
+			popupTitleAction = LoadFileChooserBoxLayout.LOAD_FILE_POPUP_TITLE
 		else:
-			popupTitleAction = SaveFileChooserPopup.SAVE_FILE_POPUP_TITLE
+			popupTitleAction = SaveFileChooserBoxLayout.SAVE_FILE_POPUP_TITLE
 		
 		loadAtStartFilePathName = self.configMgr.loadAtStartPathFilename
 		
