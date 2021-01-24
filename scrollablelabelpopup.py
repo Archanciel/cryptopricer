@@ -28,12 +28,17 @@ class ScrollableLabelPopup(Popup):
 
 		super(ScrollableLabelPopup, self).__init__(**kwargs)
 
-	def setContentPageList(self, formattedTextPageList):
-		self.formattedTextPageList = formattedTextPageList
+		self.setContentPageList()
+		
+	def setContentPageList(self):
+		self.formattedTextPageList = self.getContPageList()
 		self.currentPage = 0
 		self.setContentTextToCurrentPage()
 		self.prevPageButton.disabled = True
 
+	def getContPageList(self):
+		return []
+	
 	def setContentTextToCurrentPage(self):
 		self.contentBox.content.text = self.formattedTextPageList[self.currentPage]
 	
