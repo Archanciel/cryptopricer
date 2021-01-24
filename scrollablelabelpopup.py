@@ -2,45 +2,40 @@ from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 from kivy.utils import platform
 
-from guiutil import GuiUtil
 
 class ScrollableLabelPopup(Popup):
 	contentBox = ObjectProperty()
 	scrollView = ObjectProperty
-
+	
 	def __init__(self, title, **kwargs):
-		popupSize = None
-		width = 50
 		
 		# defining ScrollableLabelPopup size parameters
+		popupSize = None
+		self.textWidth = 50
+
 		if platform == 'android':
 			popupSize = (980, 1200)
-			width = 45
+			self.textWidth = 45
 		elif platform == 'win':
 			popupSize = (400, 450)
-			width = 54
-		
+			self.textWidth = 54
+
 		# adding FileChooserPopup size parameters to the kwargs dic for the
 		# super class
 		kwargs['size_hint'] = (None, None)
 		kwargs['size'] = popupSize
 		kwargs['title'] = title
-		
-		super().__init__(**kwargs)
-		
-		with open('help.txt') as helpFile:
-			formatedHelpTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(helpFile, width)
 
-		self.setContentPageList(formatedHelpTextPageList)
+		super(ScrollableLabelPopup, self).__init__(**kwargs)
 
-	def setContentPageList(self, formatedTextPageList):
-		self.formatedTextPageList = formatedTextPageList
+	def setContentPageList(self, formattedTextPageList):
+		self.formattedTextPageList = formattedTextPageList
 		self.currentPage = 0
 		self.setContentTextToCurrentPage()
 		self.prevPageButton.disabled = True
 
 	def setContentTextToCurrentPage(self):
-		self.contentBox.content.text = self.formatedTextPageList[self.currentPage]
+		self.contentBox.content.text = self.formattedTextPageList[self.currentPage]
 	
 	def previousPage(self):
 		self.currentPage -= 1
@@ -57,7 +52,7 @@ class ScrollableLabelPopup(Popup):
 	def nextPage(self):
 		self.currentPage += 1
 		
-		helpPageNumber = len(self.formatedTextPageList)
+		helpPageNumber = len(self.formattedTextPageList)
 		
 		if self.currentPage == helpPageNumber - 1:
 			self.nextPageButton.disabled = True
@@ -67,3 +62,4 @@ class ScrollableLabelPopup(Popup):
 		self.prevPageButton.disabled = False
 		self.setContentTextToCurrentPage()
 		self.scrollView.scroll_y = 1 # force scrolling to top
+

@@ -31,7 +31,7 @@ from pricerequester import PriceRequester
 from controller import Controller
 from guioutputformater import GuiOutputFormater
 from guiutil import GuiUtil
-from scrollablelabelpopup import ScrollableLabelPopup
+from helppopup import HelpPopup
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
 
@@ -766,17 +766,7 @@ class CryptoPricerGUI(BoxLayout):
 	def displayHelp(self):
 		self.dropDownMenu.dismiss()
 
-		popupSize = None
-		width = None
-
-		if platform == 'android':
-			popupSize = (980, 1200)
-			width = 45
-		elif platform == 'win':
-			popupSize = (400, 450)
-			width = 54
-
-		popup = ScrollableLabelPopup(title=CRYPTOPRICER_VERSION, size_hint=(None, None), size=popupSize)
+		popup = HelpPopup(title=CRYPTOPRICER_VERSION)
 		popup.open()
 
 	def updateStatusBar(self, messageStr):
