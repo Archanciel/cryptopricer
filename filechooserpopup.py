@@ -72,8 +72,8 @@ class FileChooserPopup(Popup):
 	cancel = ObjectProperty(None)
 	
 	def __init__(self, rootGUI, **kwargs):
-		# defining FileChooserPopup size parameters
 		
+		# defining FileChooserPopup size parameters
 		if os.name != 'posix':
 			popupSizeProportion_x = 0.8
 			popupSizeProportion_y = 0.8
@@ -87,6 +87,8 @@ class FileChooserPopup(Popup):
 			else:
 				popupPos_top = 0.92
 
+		# adding FileChooserPopup size parameters to the kwargs dic for the
+		# super class
 		kwargs['size_hint'] = (popupSizeProportion_x, popupSizeProportion_y)
 		kwargs['pos_hint'] = {'top': popupPos_top}
 
