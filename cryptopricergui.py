@@ -31,8 +31,10 @@ from pricerequester import PriceRequester
 from controller import Controller
 from guioutputformater import GuiOutputFormater
 from guiutil import GuiUtil
+from scrollablelabelpopup import ScrollableLabelPopup
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
+
 RV_LIST_ITEM_SPACING_ANDROID = 2
 RV_LIST_ITEM_SPACING_WINDOWS = 0.5
 STATUS_BAR_ERROR_SUFFIX = ' --> ERROR ...'
@@ -276,46 +278,6 @@ class CustomDropDown(DropDown):
 		self.statusToRequestInputButton.disabled = True
 		self.owner.refocusOnRequestInput()
 		self.dismiss()
-
-
-class ScrollablePopup(Popup):
-	contentBox = ObjectProperty()
-	scrollView = ObjectProperty
-
-	def setContentPageList(self, formatedTextPageList):
-		self.formatedTextPageList = formatedTextPageList
-		self.currentPage = 0
-		self.setContentTextToCurrentPage()
-		self.prevPageButton.disabled = True
-
-	def setContentTextToCurrentPage(self):
-		self.contentBox.content.text = self.formatedTextPageList[self.currentPage]
-	
-	def previousPage(self):
-		self.currentPage -= 1
-
-		if self.currentPage == 0:
-			self.prevPageButton.disabled = True
-		else:
-			self.prevPageButton.disabled = False
-
-		self.nextPageButton.disabled = False
-		self.setContentTextToCurrentPage()
-		self.scrollView.scroll_y = 0 # force scrolling to bottom
-
-	def nextPage(self):
-		self.currentPage += 1
-		
-		helpPageNumber = len(self.formatedTextPageList)
-		
-		if self.currentPage == helpPageNumber - 1:
-			self.nextPageButton.disabled = True
-		else:
-			self.nextPageButton.disabled = False
-
-		self.prevPageButton.disabled = False
-		self.setContentTextToCurrentPage()
-		self.scrollView.scroll_y = 1 # force scrolling to top
 
 
 class CryptoPricerGUI(BoxLayout):
@@ -814,12 +776,7 @@ class CryptoPricerGUI(BoxLayout):
 			popupSize = (400, 450)
 			width = 54
 
-		popup = ScrollablePopup(title=CRYPTOPRICER_VERSION, size_hint=(None, None), size=popupSize)
-
-		with open('help.txt') as helpFile:
-			formatedHelpTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(helpFile, width)
-
-		popup.setContentPageList(formatedHelpTextPageList)
+		popup = ScrollableLabelPopup(title=CRYPTOPRICER_VERSION, size_hint=(None, None), size=popupSize)
 		popup.open()
 
 	def updateStatusBar(self, messageStr):
