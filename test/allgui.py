@@ -21,7 +21,7 @@ from testprocessor import TestProcessor
 from testcommandprice import TestCommandPrice
 from testresultdata import TestResultData
 from testcurrencypairtester import TestCurrencyPairTester
-from testguiutil import TestGuiUtil
+from testhelputil import TestHelpUtil
 from testguioutputformater import TestGuiOutputFormater
 
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestCommandPrice),
                        loader.loadTestsFromTestCase(TestResultData),
                        loader.loadTestsFromTestCase(TestCurrencyPairTester),
-                       loader.loadTestsFromTestCase(TestGuiUtil),
+                       loader.loadTestsFromTestCase(TestHelpUtil),
                        loader.loadTestsFromTestCase(TestGuiOutputFormater)
     ))
     runner = TextTestRunner(verbosity = 2)

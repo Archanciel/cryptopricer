@@ -1,4 +1,4 @@
-from guiutil import GuiUtil
+from helputil import HelpUtil
 from scrollablelabelpopup import ScrollableLabelPopup
 
 
@@ -7,6 +7,6 @@ class HelpPopup(ScrollableLabelPopup):
 		super().__init__(title, **kwargs)
 
 		with open('help.txt') as helpFile:
-			formattedHelpTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(helpFile, self.textWidth)
+			formattedHelpTextPageList = HelpUtil.sizeParagraphsForKivyLabelFromFile(helpFile, self.textWidth)
 
 		self.setContentPageList(formattedHelpTextPageList)

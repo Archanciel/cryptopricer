@@ -6,9 +6,9 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from guiutil import GuiUtil
+from helputil import HelpUtil
 
-class TestGuiUtil(unittest.TestCase):
+class TestHelpUtil(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -16,7 +16,7 @@ class TestGuiUtil(unittest.TestCase):
         note = 'a long class description. Which occupies several lines.'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], 'a long class description.')
@@ -27,7 +27,7 @@ class TestGuiUtil(unittest.TestCase):
         note = ''
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 0)
 
@@ -36,7 +36,7 @@ class TestGuiUtil(unittest.TestCase):
         note = '12345678911234567892123456789'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 1)
         self.assertEqual(multilineNote[0], '12345678911234567892123456789')
@@ -46,7 +46,7 @@ class TestGuiUtil(unittest.TestCase):
         note = '123456789112345678921234567893'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 1)
         self.assertEqual(multilineNote[0], '123456789112345678921234567893')
@@ -56,7 +56,7 @@ class TestGuiUtil(unittest.TestCase):
         note = '1234567891123456789212345678931'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 1)
         self.assertEqual(multilineNote[0], '1234567891123456789212345678931')
@@ -66,7 +66,7 @@ class TestGuiUtil(unittest.TestCase):
         note = '12345678911234 567892123456789'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 1)
         self.assertEqual(multilineNote[0], '12345678911234 567892123456789')
@@ -76,7 +76,7 @@ class TestGuiUtil(unittest.TestCase):
         note = '123456789112345 678921234567893'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '123456789112345')
@@ -87,7 +87,7 @@ class TestGuiUtil(unittest.TestCase):
         note = '123456789112345 6789212345678931'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '123456789112345')
@@ -98,7 +98,7 @@ class TestGuiUtil(unittest.TestCase):
         note = '123456789112345678921234567893 2'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '123456789112345678921234567893')
@@ -109,7 +109,7 @@ class TestGuiUtil(unittest.TestCase):
         note = '1234567891123456789212345678931 3'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '1234567891123456789212345678931')
@@ -120,7 +120,7 @@ class TestGuiUtil(unittest.TestCase):
         note = '123456789112345678921234567893 123456789112345678921234567893'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '123456789112345678921234567893')
@@ -131,26 +131,26 @@ class TestGuiUtil(unittest.TestCase):
         note = '1234567891123456789212345678931 1234567891123456789212345678931'
         maxNoteLineLen = 30
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], '1234567891123456789212345678931')
         self.assertEqual(multilineNote[1], '1234567891123456789212345678931')
 
     def test_splitLongLineToShorterLinesLargeNote(self):
-        note = 'ERROR - :seqdiag_loop_start tag located on line 53 of file containing class ClassLoopTagOnMethodNotInRecordFlow is placed on an instruction calling method doC4NotRecordedInFlow() which is not part of the execution flow recorded by GuiUtil.'
+        note = 'ERROR - :seqdiag_loop_start tag located on line 53 of file containing class ClassLoopTagOnMethodNotInRecordFlow is placed on an instruction calling method doC4NotRecordedInFlow() which is not part of the execution flow recorded by HelpUtil.'
         maxNoteLineLen = 150
 
-        multilineNote = GuiUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
+        multilineNote = HelpUtil._splitLongLineToShorterLines(note, maxNoteLineLen)
 
         self.assertEqual(len(multilineNote), 2)
         self.assertEqual(multilineNote[0], 'ERROR - :seqdiag_loop_start tag located on line 53 of file containing class ClassLoopTagOnMethodNotInRecordFlow is placed on an instruction calling')
-        self.assertEqual(multilineNote[1], 'method doC4NotRecordedInFlow() which is not part of the execution flow recorded by GuiUtil.')
+        self.assertEqual(multilineNote[1], 'method doC4NotRecordedInFlow() which is not part of the execution flow recorded by HelpUtil.')
 
     def test_getListOfOriginalSizeParagraphs(self):
         text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in: usd.\n\nThe price is an average of the btc quotation, or: price, on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
 
-        list = GuiUtil._getListOfOriginalSizeParagraphs(text)
+        list = HelpUtil._getListOfOriginalSizeParagraphs(text)
         self.assertEqual(len(list), 11)
         self.assertEqual(list[0],'CryptoPricer full request')
         self.assertEqual(list[1],'\n\n')
@@ -167,14 +167,14 @@ class TestGuiUtil(unittest.TestCase):
     def test_getListOfOriginalSizeParagraphsWithExclamationPoint(self):
         text = '[b][color=ff0000]IMPORTANT[/color][/b]: entering a full request wipes out all the previously entered partial request settings !'
 
-        list = GuiUtil._getListOfOriginalSizeParagraphs(text)
+        list = HelpUtil._getListOfOriginalSizeParagraphs(text)
         self.assertEqual(len(list), 1)
         self.assertEqual('[b][color=ff0000]IMPORTANT[/color][/b]: entering a full request wipes out all the previously entered partial request settings !', list[0])
 
     def test_getListOfParagraphsSizedForKivyLabel(self):
         text = 'CryptoPricer full request\n\n\nbtc usd 0 all\n\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\nThis section explains the preceeding section'
         width = 60
-        list = GuiUtil._getListOfParagraphsSizedForKivyLabel(text, width)
+        list = HelpUtil._getListOfParagraphsSizedForKivyLabel(text, width)
         self.assertEqual(len(list), 11)
         self.assertEqual(list[0],'CryptoPricer full request')
         self.assertEqual(list[1],'\n\n')
@@ -192,7 +192,7 @@ class TestGuiUtil(unittest.TestCase):
         text = '[t]a first right shifted paragraph\n\n\n[t]btc usd 0 all\n\n\nReturns the current price of 1 btc in usd.\n\n[t]The price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\n\n[t]This section explains the preceeding section'
 
         width = 30
-        list = GuiUtil._getListOfParagraphsSizedForKivyLabel(text, width)
+        list = HelpUtil._getListOfParagraphsSizedForKivyLabel(text, width)
         self.assertEqual(17, len(list))
         self.assertEqual(list[0],'[t]a first right shifted')
         self.assertEqual(list[1],'[t]paragraph')
@@ -216,7 +216,7 @@ class TestGuiUtil(unittest.TestCase):
         text = '[t]a first right shifted paragraph'
 
         width = 30
-        list = GuiUtil._splitTabbedLineToShorterTabbedLines(text, width)
+        list = HelpUtil._splitTabbedLineToShorterTabbedLines(text, width)
         self.assertEqual(2, len(list))
         self.assertEqual(list[0],'[t]a first right shifted')
         self.assertEqual(list[1],'[t]paragraph')
@@ -225,7 +225,7 @@ class TestGuiUtil(unittest.TestCase):
         text = '[t][b][color=ffff00ff]<options>[/color][/b] options are specified using [b][color=ffff00ff]-[/color][/b], like [b][color=ffff00ff]-v[/color][/b] or [b][color=ffff00ff]-f[/color][/b]. More details below'
 
         width = 54
-        list = GuiUtil._splitTabbedLineToShorterTabbedLines(text, width)
+        list = HelpUtil._splitTabbedLineToShorterTabbedLines(text, width)
         self.assertEqual(2, len(list))
         self.assertEqual('[t][b][color=ffff00ff]<options>[/color][/b] options are specified using [b][color=ffff00ff]-[/color][/b], like [b][color=ffff00ff]-v[/color][/b]', list[0])
         self.assertEqual('[t]or [b][color=ffff00ff]-f[/color][/b]. More details below', list[1])
@@ -234,14 +234,14 @@ class TestGuiUtil(unittest.TestCase):
         text = '[t]a first right shifted'
 
         width = 30
-        list = GuiUtil._splitTabbedLineToShorterTabbedLines(text, width)
+        list = HelpUtil._splitTabbedLineToShorterTabbedLines(text, width)
         self.assertEqual(1, len(list))
         self.assertEqual(list[0],'[t]a first right shifted')
 
     def test_sizeParagraphsForKivyLabel(self):
         text = 'CryptoPricer full request\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
+        resizedText = HelpUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 CryptoPricer full request
 
@@ -260,7 +260,7 @@ This section explains the preceeding section''',resizedText)
     def test_sizeParagraphsForKivyLabelWithMarkup(self):
         text = '[b]CryptoPricer full request[/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\nNext section\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
+        resizedText = HelpUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b]CryptoPricer full request[/b]
 
@@ -279,7 +279,7 @@ This section explains the preceeding section''',resizedText)
     def test_sizeParagraphsForKivyLabelWithMarkupColor(self):
         text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\n[b][color=ff0000]Next section[/color][/b]\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
+        resizedText = HelpUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -303,7 +303,7 @@ This section explains the preceeding section''',resizedText)
             text = markupFile.read()
 
         width = 54
-        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
+        resizedText = HelpUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -327,7 +327,7 @@ This section explains the preceeding section''', resizedText)
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
+        resizedText = HelpUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -360,7 +360,7 @@ This section explains the preceeding section''', resizedText)
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
+        resizedText = HelpUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 [b][color=ff0000]CryptoPricer full and long title request[/color][/b]
 
@@ -393,7 +393,7 @@ This section explains the preceeding section''', resizedText)
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil._decodeMarkups(text)
+        resizedText = HelpUtil._decodeMarkups(text)
         self.assertEqual('''[b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
 
 CryptoPricer supports two kinds of requests: full requests and partial requests.
@@ -435,8 +435,8 @@ C = Close price
             text = file.read()
 
         width = 54
-        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
-        #        resizedText = GuiUtil.decodeMarkup(text)
+        resizedText = HelpUtil._sizeParagraphsForKivyLabel(text, width)
+        #        resizedText = HelpUtil.decodeMarkup(text)
         self.assertEqual('''
 [b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
 
@@ -478,7 +478,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
         with open('shiftedPopupMarkupTest.txt', 'r') as file:
             lineList = file.read().splitlines()
 
-        encodedTabbedText = GuiUtil._encodeShiftedLinesWithTabCode(lineList)
+        encodedTabbedText = HelpUtil._encodeShiftedLinesWithTabCode(lineList)
 
         self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -507,7 +507,7 @@ This section explains the preceeding section''', encodedTabbedText)
         with open('shiftedLineBreakPopupMarkupTest.txt', 'r') as file:
             lineList = file.read().splitlines()
 
-        encodedTabbedText = GuiUtil._encodeShiftedLinesWithTabCode(lineList)
+        encodedTabbedText = HelpUtil._encodeShiftedLinesWithTabCode(lineList)
 
         self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
 
@@ -531,7 +531,7 @@ This section explains the preceeding section''', encodedTabbedText)
     def test_decodeMarkups(self):
         text = '[b][color=ff0000]CryptoPricer full request[/color][/b]\n\nbtc usd 0 all\n\nReturns the current price of 1 btc in usd.\n\nThe price is an average of the btc quotation on all the exchanges. It is computed by the crypto prices provider.\n\n\n\n[b][color=ff0000]Next section[/color][/b]\n\nThis section explains the preceeding section'
         width = 54
-        resizedText = GuiUtil._decodeMarkups(text)
+        resizedText = HelpUtil._decodeMarkups(text)
         self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
 
 btc usd 0 all
@@ -554,7 +554,7 @@ This section explains the preceeding section''',resizedText)
             text = markupFile.read()
 
         width = 54
-        resizedText = GuiUtil._decodeMarkups(text)
+        resizedText = HelpUtil._decodeMarkups(text)
         self.assertEqual('''[b][color=ff0000]CryptoPricer full request[/color][/b]
 
 btc usd 0 all
@@ -580,7 +580,7 @@ This section explains the preceeding section''',resizedText)
     [b][cy]21/12 8:34[/c][/b] --> current year assumed'''
 
         width = 54
-        resizedText = GuiUtil._sizeParagraphsForKivyLabel(text, width)
+        resizedText = HelpUtil._sizeParagraphsForKivyLabel(text, width)
         self.assertEqual('''
 <date time> possible values:
 
@@ -595,18 +595,18 @@ This section explains the preceeding section''',resizedText)
 
     def test_calculateMarkupsLength(self):
         text = '[b][cy]0[/cy][/b] for RT'
-        self.assertEqual(GuiUtil._calculateMarkupsLength(text), 16)
+        self.assertEqual(HelpUtil._calculateMarkupsLength(text), 16)
         text = '[b][cy]21/12 or 21/12/19 or 21/12/2019[/c][/b]. If no year is specified'
-        self.assertEqual(GuiUtil._calculateMarkupsLength(text), 15)
+        self.assertEqual(HelpUtil._calculateMarkupsLength(text), 15)
         text = '[n][b][color=ffff00ff]21/12 or 21/12/19 or 21/12/2019[/color][/b]. If no year is '
-        self.assertEqual(GuiUtil._calculateMarkupsLength(text), 34)
+        self.assertEqual(HelpUtil._calculateMarkupsLength(text), 34)
 
     def test_removeEOLFromFile(self):
         noEOLText = ''
         FILE_PATH = 'partial_help_breaked_lines.txt'
 
         with open(FILE_PATH) as breakedLineFile:
-            noEOLText = GuiUtil._removeEOLFromFile(breakedLineFile)
+            noEOLText = HelpUtil._removeEOLFromFile(breakedLineFile)
 
         self.assertEqual('''[b][cr]Requesting RT and historical cryptocurrency prices[/b][/c]
 
@@ -659,7 +659,7 @@ Examples: assume we are on 16/12/17 at 22:10
         FILE_PATH = 'shifted_breaked_lines.txt'
 
         with open(FILE_PATH) as breakedLineFile:
-            noEOLText = GuiUtil._removeEOLFromFile(breakedLineFile)
+            noEOLText = HelpUtil._removeEOLFromFile(breakedLineFile)
 
         self.assertEqual('''    [n]R = RT     [n]M = Minute price (precision at the minute)
 [p]
@@ -675,7 +675,7 @@ Examples: assume we are on 16/12/17 at 22:10
         FILE_PATH = 'shifted_breaked_lines_except_first_line.txt'
 
         with open(FILE_PATH) as breakedLineFile:
-            noEOLText = GuiUtil._removeEOLFromFile(breakedLineFile)
+            noEOLText = HelpUtil._removeEOLFromFile(breakedLineFile)
 
         self.assertEqual('''    R = RT     [n]M = Minute price (precision at the minute)
 [p]
@@ -692,7 +692,7 @@ Examples: assume we are on 16/12/17 at 22:10
         width = 54
 
         with open(FILE_PATH) as file:
-            resizedTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
+            resizedTextPageList = HelpUtil.sizeParagraphsForKivyLabelFromFile(file, width)
 
         self.assertEqual('''
 [b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
@@ -763,7 +763,7 @@ ETH/BTC on Bitfinex: 21/01/17C 0.01185
         width = 54
 
         with open(FILE_PATH) as file:
-            resizedTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
+            resizedTextPageList = HelpUtil.sizeParagraphsForKivyLabelFromFile(file, width)
 
         self.assertEqual('''
 <date time> possible values:
@@ -796,7 +796,7 @@ ETH/BTC on Bitfinex: 21/01/17C 0.01185
         width = 54
 
         with open(FILE_PATH) as file:
-            resizedTextPageList = GuiUtil.sizeParagraphsForKivyLabelFromFile(file, width)
+            resizedTextPageList = HelpUtil.sizeParagraphsForKivyLabelFromFile(file, width)
 
         self.assertEqual('''
 [b][color=ff0000]Requesting RT and historical cryptocurrency prices[/b][/color]
@@ -837,13 +837,13 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
         codedString = ' [n]text to put on nxt line'
 
         self.assertEqual('''
-text to put on nxt line''', GuiUtil._decodeForcedLineBreak(codedString))
+text to put on nxt line''', HelpUtil._decodeForcedLineBreak(codedString))
 
     def test_decodeForcedBreakLineAfterEOL(self):
         codedString = '\n[n]text to put on nxt line'
 
         self.assertEqual('''
-text to put on nxt line''', GuiUtil._decodeForcedLineBreak(codedString))
+text to put on nxt line''', HelpUtil._decodeForcedLineBreak(codedString))
 
     def test_splitTextIntoListOfPages(self):
         codedStringWithPageBreak = '''
@@ -881,7 +881,7 @@ CryptoPricer supports two kinds of requests: full requests and partial requests.
 
     C = Close price'''
 
-        pageList = GuiUtil._splitTextIntoListOfPages(codedStringWithPageBreak)
+        pageList = HelpUtil._splitTextIntoListOfPages(codedStringWithPageBreak)
 
         self.assertEqual(3, len(pageList))
 
