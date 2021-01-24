@@ -9,6 +9,7 @@ from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.behaviors import FocusBehavior
+from kivy.utils import platform
 
 from guiutil import GuiUtil
 
@@ -73,19 +74,23 @@ class FileChooserPopup(Popup):
 	
 	def __init__(self, rootGUI, **kwargs):
 		
+		popupSizeProportion_x = 1
+		popupSizeProportion_y = 1
+		popupPos_top = 1
+		
 		# defining FileChooserPopup size parameters
-		if os.name != 'posix':
-			popupSizeProportion_x = 0.8
-			popupSizeProportion_y = 0.8
-			popupPos_top = 0.92
-		else:
+		if platform == 'android':
 			popupSizeProportion_x = 0.8
 			popupSizeProportion_y = 0.62
-
+			
 			if self.onSmartPhone():
 				popupPos_top = 0.98
 			else:
 				popupPos_top = 0.92
+		elif platform == 'win':
+			popupSizeProportion_x = 0.8
+			popupSizeProportion_y = 0.8
+			popupPos_top = 0.92
 
 		# adding FileChooserPopup size parameters to the kwargs dic for the
 		# super class
@@ -115,13 +120,13 @@ class FileChooserPopup(Popup):
 		openFileLoadPopup() or openFileSavePopup() methods as well as the file
 		chooser	fields size.
 		"""
-		if os.name != 'posix':
-			self.gridLayoutPathField.size_hint_y = 0.12
-		else:
+		if platform == 'android':
 			if self.onSmartPhone():
 				self.gridLayoutPathField.size_hint_y = 0.08
 			else:
 				self.gridLayoutPathField.size_hint_y = 0.05
+		elif platform == 'win':
+			self.gridLayoutPathField.size_hint_y = 0.12
 	
 	def fillDriveOrMemoryList(self):
 		"""
@@ -130,19 +135,9 @@ class FileChooserPopup(Popup):
 		"""
 		dataLocationFromSetting = self.rootGUI.configMgr.dataPath
 		
-		if os.name != 'posix':
-			import string
-			available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
-			
-			self.pathList.data.append(
-				{'text': 'Data file location setting', 'selectable': True, 'pathOnly': dataLocationFromSetting})
-			
-			for drive in available_drives:
-				self.pathList.data.append({'text': drive, 'selectable': True, 'pathOnly': drive})
-		
-		else:
+		if platform == 'android':
 			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
-									   'pathOnly': dataLocationFromSetting})
+			                           'pathOnly': dataLocationFromSetting})
 			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'pathOnly': '/storage/emulated/0'})
 			
 			if self.onSmartPhone():
@@ -151,6 +146,15 @@ class FileChooserPopup(Popup):
 				self.sdCardDir = GuiUtil.SD_CARD_DIR_TABLET
 			
 			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'pathOnly': self.sdCardDir})
+		elif platform == 'win':
+			import string
+			available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
+			
+			self.pathList.data.append(
+				{'text': 'Data file location setting', 'selectable': True, 'pathOnly': dataLocationFromSetting})
+			
+			for drive in available_drives:
+				self.pathList.data.append({'text': drive, 'selectable': True, 'pathOnly': drive})
 
 
 class LoadFileChooserPopup(FileChooserPopup):
@@ -177,13 +181,13 @@ class SaveFileChooserPopup(FileChooserPopup):
 		"""
 		super().sizeFileChooser()
 
-		if os.name != 'posix':
-			self.loadAtStartChkBox.size_hint_x = 0.06
-		else:
+		if platform == 'android':
 			if self.onSmartPhone():
 				self.loadAtStartChkBox.size_hint_x = 0.12
 			else:
 				self.loadAtStartChkBox.size_hint_x = 0.06
+		elif platform == 'win':
+			self.loadAtStartChkBox.size_hint_x = 0.06
 	
 	def save(self, pathOnly, pathFileName, isLoadAtStart):
 		"""
