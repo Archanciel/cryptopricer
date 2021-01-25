@@ -1,7 +1,8 @@
 from kivy.properties import ObjectProperty
 from kivy.utils import platform
 
-from abstractpopup import AbstractPopup
+from gui.abstractpopup import AbstractPopup
+
 
 class ScrollableLabelPopup(AbstractPopup):
 	contentBox = ObjectProperty()
@@ -14,7 +15,7 @@ class ScrollableLabelPopup(AbstractPopup):
 
 		if platform == 'android':
 			if self.onSmartPhone():
-				self.textWidth = 45
+				self.textWidth = 39
 			else:
 				# on tablet
 				self.textWidth = 60

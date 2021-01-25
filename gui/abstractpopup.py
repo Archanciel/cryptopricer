@@ -1,7 +1,8 @@
 from kivy import platform
 from kivy.uix.popup import Popup
 
-from guiutil import GuiUtil
+from gui.guiutil import GuiUtil
+
 
 class AbstractPopup(Popup):
 	"""
@@ -38,4 +39,3 @@ class AbstractPopup(Popup):
 		
 	def onSmartPhone(self):
 		return GuiUtil.onSmartPhone()
-		
