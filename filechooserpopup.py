@@ -3,7 +3,6 @@ from os.path import sep
 
 from kivy.properties import ObjectProperty
 from kivy.properties import BooleanProperty
-from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
@@ -11,6 +10,7 @@ from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.behaviors import FocusBehavior
 from kivy.utils import platform
 
+from abstractpopup import AbstractPopup
 from guiutil import GuiUtil
 
 LOAD_AT_START_MSG = ' (load at start activated)'
@@ -62,7 +62,7 @@ class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavi
 	touch_deselect_last = BooleanProperty(True)
 
 
-class FileChooserPopup(Popup):
+class FileChooserPopup(AbstractPopup):
 	LOAD_FILE_POPUP_TITLE = 'Select history file to load'
 	SAVE_FILE_POPUP_TITLE = 'Save history to file'
 	"""
@@ -73,30 +73,6 @@ class FileChooserPopup(Popup):
 	cancel = ObjectProperty(None)
 	
 	def __init__(self, rootGUI, **kwargs):
-		
-		popupSizeProportion_x = 1
-		popupSizeProportion_y = 1
-		popupPos_top = 1
-		
-		# defining FileChooserPopup size parameters
-		if platform == 'android':
-			popupSizeProportion_x = 0.8
-			popupSizeProportion_y = 0.62
-			
-			if self.onSmartPhone():
-				popupPos_top = 0.98
-			else:
-				popupPos_top = 0.92
-		elif platform == 'win':
-			popupSizeProportion_x = 0.8
-			popupSizeProportion_y = 0.8
-			popupPos_top = 0.92
-
-		# adding FileChooserPopup size parameters to the kwargs dic for the
-		# super class
-		kwargs['size_hint'] = (popupSizeProportion_x, popupSizeProportion_y)
-		kwargs['pos_hint'] = {'top': popupPos_top}
-
 		super(FileChooserPopup, self).__init__(**kwargs)
 		
 		self.sdCardDir = None
@@ -110,9 +86,6 @@ class FileChooserPopup(Popup):
 		
 		# specify pre-selected node by its index in the data
 		self.diskRecycleBoxLayout.selected_nodes = [0]
-
-	def onSmartPhone(self):
-		return GuiUtil.onSmartPhone()
 	
 	def sizeFileChooser(self):
 		"""
