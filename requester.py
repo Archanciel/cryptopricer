@@ -81,8 +81,7 @@ class Requester:
 						0:0, rejected.
 	'''
 
-#	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (-\w\w?[\w\d/:\.]+))?(?: (-\w\w?[\w\d/:\.]+))?"
-	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: ([\w\d/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w\d/:\.]+))?(?: (-[a-zA-Z][a-zA-Z]?[\w\d/:\.]+))?"
+	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]+))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]+))?"
 
 	'''
 	Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 or -ebittrex or -v0.00432btc
@@ -124,8 +123,7 @@ class Requester:
 						
 	Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken -v0.0044543eth
 	'''
-#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-\w)([\w\d/:\.]+))(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?(?: (-\w)([\w\d/:\.]+))?"
-	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w\d/:\.]+))(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?(?: (-[a-zA-Z])([\w\d/:\.]+))?"
+	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]+))(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?"
 
 	'''
 	The next pattern splits the parameter data appended to the -v partial command.

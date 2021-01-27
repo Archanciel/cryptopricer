@@ -6235,11 +6235,11 @@ class TestRequester(unittest.TestCase):
 		unittest.main()
 
 if __name__ == '__main__':
-#	unittest.main()
-	t = TestRequester()
-	t.setUp()
-	# t.test_parseAndFillPartialCommandPriceInvalidOptionFiatNoFiatWithAmount()
+	unittest.main()
+	# t = TestRequester()
+	# t.setUp()
+	# t.testRequestCommandPricePartialDate()
 	# t.testRequestCommandPriceFullEndingWithInvalidOptionFiatWithAmount()
 	# t.test_parseAndFillPartialCommandPriceInvalidOptionFiatSaveSpecNoFiatWithAmount()
-	t.testRequestCommandPriceFullEndingWithInvalidOptionFiatSaveWithAmount()
-	t.testRequestCommandPriceFullEndingWithOptionFiatErase()
+	# t.testRequestCommandPriceFullEndingWithInvalidOptionFiatSaveWithAmount()
+	# t.testRequestCommandPriceFullEndingWithOptionFiatErase()
