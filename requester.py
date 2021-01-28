@@ -319,7 +319,7 @@ class Requester:
 
 		# changed r"\d+/\d+(?:/\d+)*|^0$" into r"\d+/\d+(?:/\d+)*|^\d+$" was required so
 		# that a full request like btc usd 1 12:45 bitfinex does generate an ERROR - date not valid
-		# in CommandPrice. With the old versionk of th pattern, CommandPrice.DAY_MONTH_YEAR was none,
+		# in CommandPrice. With the old version of the pattern, CommandPrice.DAY_MONTH_YEAR was none,
 		# which was considered like a valid full request with only the time provided, a feature which
 		# was not supported before !
 		#
@@ -426,19 +426,19 @@ class Requester:
 		:seqdiag_return CommandPrice or CommandError
 		:return: self.commandPrice or self.commandError or None, which will cause an error to be raised
 		'''
+		# First, try to parse a full request inputStr
 		groupList = self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-		requestType = None
-
 		if groupList == ():
-			# full command pattern not matched --> try match partial command pattern
+			# Second, as full request pattern was not matched, try to parse a partial request inputStr
 			groupList = self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 			if groupList != ():
-				# partial request entered. Here, parms are associated to parrm tag (i.e -c or -d).
-				# Means they have been entered in any order and are all optional ensuring
-				# command price temporary data like unsupported command data from previous
-				# request are purged. Necessary here when handling partial command(s) since, unlike
-				# when a full command is processed, the command price is not reinitialized !
+				# Partial request entered. Here, parm values are associated to parm tags
+				# (i.e -c or -d). This means they have been entered in any order and are all
+				# optional ensuring command price temporary data like unsupported command data
+				# from the previous request are purged. This is necessary here when handling partial
+				# command(s) since, unlike when a full command is processed, the command price is not
+				# reinitialized !
 				requestType = self.REQUEST_TYPE_PARTIAL
 				self.commandPrice.resetUnsupportedOptionData()
 

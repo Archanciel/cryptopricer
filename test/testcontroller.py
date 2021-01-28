@@ -1285,7 +1285,7 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[3])
-            self.assertEqual('Warning - unsupported option -h22:21 in request -h22:21\n', contentList[4])
+            self.assertEqual('Warning - unsupported option -h22:21 in request -h22:21 - option ignored\n', contentList[4])
 
 
     def testControllerScenarioMissingUnitBadErrorMsg(self):

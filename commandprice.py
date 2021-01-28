@@ -263,7 +263,7 @@ class CommandPrice(AbstractCommand):
 
 		if unsupportedOption:
 			result.setWarning(ResultData.WARNING_TYPE_UNSUPPORTED_OPTION,
-							  "Warning - unsupported option {}{} in request {}".format(unsupportedOption, self.parsedParmData[self.UNSUPPORTED_OPTION_DATA], self.requestInputString))
+							  "Warning - unsupported option {}{} in request {} - option ignored".format(unsupportedOption, self.parsedParmData[self.UNSUPPORTED_OPTION_DATA], self.requestInputString))
 
 		return result
 
