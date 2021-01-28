@@ -660,6 +660,7 @@ class CryptoPricerGUI(BoxLayout):
 			self.disableStateOfRequestListSingleItemButtons()
 			self.toggleHistoButton.disabled = True
 			self.showRequestList = False
+			self.requestInput.text = ''
 		
 		currentSelItemIdx = self.requestListRVSelBoxLayout.selected_nodes[0]
 		
