@@ -435,10 +435,12 @@ class Requester:
 			if groupList != ():
 				# Partial request entered. Here, parm values are associated to parm tags
 				# (i.e -c or -d). This means they have been entered in any order and are all
-				# optional ensuring command price temporary data like unsupported command data
-				# from the previous request are purged. This is necessary here when handling partial
+				# optional. Ensuring command price temporary data like unsupported command data
+				# from the previous request are purged is necessary here when handling a partial
 				# command(s) since, unlike when a full command is processed, the command price is not
-				# reinitialized !
+				# reinitialized ! Otherwise, a warning signaling that an unsupported option is in
+				# effect would be displayed in case such unsupported option was part of the preceeding
+				# full or partial request !
 				requestType = self.REQUEST_TYPE_PARTIAL
 				self.commandPrice.resetUnsupportedOptionData()
 

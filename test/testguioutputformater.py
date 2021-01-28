@@ -143,7 +143,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, None)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, None)
 		resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
-							  "WARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD). -v option ignored !")
+							  "WARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD) -z option ignored")
 
 		stdout = sys.stdout
 		capturedStdout = StringIO()
@@ -151,7 +151,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 		self.printer.printDataToConsole(resultData)
 		sys.stdout = stdout
-		self.assertEqual('BTC/USD on BitTrex: 12/09/17 00:00C 4122\nWARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD). -v option ignored !\n', capturedStdout.getvalue())
+		self.assertEqual('BTC/USD on BitTrex: 12/09/17 00:00C 4122\nWARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD) -z option ignored\n', capturedStdout.getvalue())
 
 
 	def testGetCryptoPriceHistoricalRecent(self):

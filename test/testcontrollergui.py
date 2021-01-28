@@ -835,8 +835,6 @@ class TestControllerGui(unittest.TestCase):
 														  nowYearStr,
 														  resultNoEndPrice,
 														  expectedPrintResultNoDateTimeNoEndPrice)
-#		self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
-#								nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(printResult))  #removing \n from contentList entry !
 		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions) #empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
@@ -863,7 +861,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions) #empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
-		# then replay same request with no error
+		# then enter partial request with same unsupported option
 		inputStr = '-ueth -zooo'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -1175,7 +1173,7 @@ class TestControllerGui(unittest.TestCase):
 
 
 	def testGetPrintableResultForHistoMinuteWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning(self):
-		#first command: RT price request
+		#first command: RT price request with invalid option
 		inputStr = 'btc eth 0 binance -eall'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -1209,7 +1207,7 @@ class TestControllerGui(unittest.TestCase):
 		requestDayStr = threeDaysBeforeDayStr
 		requestMonthStr = threeDaysBeforeMonthStr
 
-		#second command: histo minute price request
+		#second command: histo minute price request with invalid option
 		inputStr = 'btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr)
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -1220,8 +1218,8 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
 
-	def testGetPrintableResultForHistoDayWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning(self):
-		#first command: RT price request
+	def testGetPrintableResultForHistoDayWithInvalidOptionCausingErrorAndWarning(self):
+		#first full request: RT price request with invalid option
 		inputStr = 'btc eth 0 binance -eall'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -1255,7 +1253,7 @@ class TestControllerGui(unittest.TestCase):
 		requestDayStr = tenDaysBeforeDayStr
 		requestMonthStr = tenDaysBeforeMonthStr
 
-		#second command: histo day price request
+		#second full request: histo day price request with invalid option
 		inputStr = 'btc eth {}/{} binance -eall'.format(requestDayStr, requestMonthStr)
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -1264,8 +1262,67 @@ class TestControllerGui(unittest.TestCase):
 			'BTC/ETH on Binance: {}/{}/{} 00:00C\nWarning - unsupported option -eall in request btc eth {}/{} binance -eall - option ignored'.format(requestDayStr, requestMonthStr, tenDaysBeforeYearStr, requestDayStr, requestMonthStr), UtilityForTest.removeOneEndPriceFromResult(printResult))
 		self.assertEqual('btc eth {}/{}/{} 00:00 binance'.format(requestDayStr, requestMonthStr, tenDaysBeforeYearStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
-
-
+	
+	def testGetPrintableResultForHistoDayWithInvalidOptionThenPartialRequestOk(self):
+		"""
+		This test ensures that a partial request with no unsupported option submitted
+		after a full request with anunsupported option obtains a result ith no warning.
+		This validates the fact that, in Requester, CommandPrice.resetUnsupportedOptionData()
+		is called when handling a partial request.
+		:return:
+		"""
+		# first command: RT price request with invalid option
+		inputStr = 'btc eth 0 binance -eall'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on Binance: R\nWarning - unsupported option -eall in request btc eth 0 binance -eall - option ignored'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		
+		self.assertEqual('btc eth 0 binance', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		tenDaysBeforeArrowDate = now.shift(days=-10)
+		
+		if tenDaysBeforeArrowDate.year < now.year:
+			print(
+				'{} skipped due to current date {} which causes the test case to generate a warning \"request date can not be in the future ...\"'.format(
+					'testGetPrintableResultForHistoDayWithMarketNotExistForCoinPairAndInvalidOptionCausingErrorAndWarning()',
+					now))
+			return
+		
+		tenDaysBeforeYearStr, tenDaysBeforeMonthStr, tenDaysBeforeDayStr, tenDaysBeforeHourStr, tenDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			tenDaysBeforeArrowDate)
+		
+		requestDayStr = tenDaysBeforeDayStr
+		requestMonthStr = tenDaysBeforeMonthStr
+		
+		# second command: partial histo day price request without invalid option
+		inputStr = '-d{}/{}'.format(requestDayStr, requestMonthStr)
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual(
+			'BTC/ETH on Binance: {}/{}/{} 00:00C'.format(
+				requestDayStr, requestMonthStr, tenDaysBeforeYearStr),
+			UtilityForTest.removeOneEndPriceFromResult(printResult))
+		self.assertEqual('btc eth {}/{}/{} {}:{} binance'.format(requestDayStr, requestMonthStr, tenDaysBeforeYearStr, nowHourStr, nowMinuteStr),
+						 fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+	
 	def testGetPrintableResultForTimeOnlyWithoutDateFullRequest(self):
 		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
@@ -2766,7 +2823,7 @@ class TestControllerGui(unittest.TestCase):
 
 		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
-		#first command: RT price request
+		#first command: RT price request with invalid option
 		inputStr = 'btc usd 0 all -vs100.2usd -ebitfinex'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -4129,8 +4186,7 @@ class TestControllerGui(unittest.TestCase):
 
 
 if __name__ == '__main__':
-	unittest.main()
-	# tst = TestControllerGui()
-	# tst.setUp()
-	# tst.testGetPrintableResultForDayOnlyRequest_1daysBefore()
-	# tst.testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsCrypto()
+#	unittest.main()
+	tst = TestControllerGui()
+	tst.setUp()
+	tst.testGetPrintableResultForHistoDayWithInvalidOptionThenPartialRequestOk()
