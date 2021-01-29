@@ -81,7 +81,11 @@ class Requester:
 						0:0, rejected.
 	'''
 
-	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]+))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]+))?"
+#	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]+))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]+))?"
+
+	# pattern modified to enable handling erroneous option specification with no option
+	# data like in full request eth btc 0 binance -v or -vs or -f or -fs
+	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]*))?"
 
 	'''
 	Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 or -ebittrex or -v0.00432btc
@@ -179,8 +183,9 @@ class Requester:
 
 	def getCommand(self, inputStr):
 		'''
-		Parses the paased input string and return a Command concrete instance
+		Parses the passed input string and return a Command concrete instance
 		filled with the command specific data. May return a CommandError.
+		
 		:param inputStr: input string to parse
 		:seqdiag_return AbstractCommand
 		:seqdiag_return_note May return a CommandError in case of parsing problem.
@@ -327,18 +332,33 @@ class Requester:
 		# more permissive at the level of the Requester in order for CommandPrice to be able
 		# to correctly identify the invalid date/time full request component in the form of
 		# D HH:MM or DD HH:MM
+		# patternCommandDic = {r"\d+/\d+(?:/\d+)*|^\d+$" : CommandPrice.DAY_MONTH_YEAR,
+		# 					 r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
+		# 					 r"[A-Za-z]+": CommandPrice.EXCHANGE,
+		# 					 r"(?:-[vV])([sS]?)([\w\.]+)": CommandPrice.OPTION_VALUE_DATA,
+		# 					 r"(?:-[vV])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
+		# 					 r"(-[^vVfFpP]{1})([sS]?)([\w\.]+)": CommandPrice.UNSUPPORTED_OPTION_DATA,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+		# 					 r"(-[^vVfFpP]{1})([sS]?)([\w\.]+)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+		# 					 r"(-[^vVfFpP]{1})([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,
+		# 					 r"(?:-[fF])([sS]?)([\w\.]+)": CommandPrice.OPTION_FIAT_DATA,
+		# 					 r"(?:-[fF])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
+		# 					 r"(?:-[pP])([sS]?)([\w\.]+)": CommandPrice.OPTION_PRICE_DATA,
+		# 					 r"(?:-[pP])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE}
+		
+		# pattern modified to enable handling erroneous option specification with no option
+		# data like in full request eth btc 0 binance -v or -vs or -f or -fs
 		patternCommandDic = {r"\d+/\d+(?:/\d+)*|^\d+$" : CommandPrice.DAY_MONTH_YEAR,
 							 r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
 							 r"[A-Za-z]+": CommandPrice.EXCHANGE,
-							 r"(?:-[vV])([sS]?)([\w\.]+)": CommandPrice.OPTION_VALUE_DATA,
-							 r"(?:-[vV])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
-							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]+)": CommandPrice.UNSUPPORTED_OPTION_DATA,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]+)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,
-							 r"(?:-[fF])([sS]?)([\w\.]+)": CommandPrice.OPTION_FIAT_DATA,
-							 r"(?:-[fF])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
-							 r"(?:-[pP])([sS]?)([\w\.]+)": CommandPrice.OPTION_PRICE_DATA,
-							 r"(?:-[pP])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE}
+							 r"(?:-[vV])([sS]?)([\w\.]*)": CommandPrice.OPTION_VALUE_DATA,
+							 r"(?:-[vV])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
+							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]*)": CommandPrice.UNSUPPORTED_OPTION_DATA,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]*)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,
+							 r"(?:-[fF])([sS]?)([\w\.]*)": CommandPrice.OPTION_FIAT_DATA,
+							 r"(?:-[fF])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
+							 r"(?:-[pP])([sS]?)([\w\.]*)": CommandPrice.OPTION_PRICE_DATA,
+							 r"(?:-[pP])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE}
 
 		optionalParsedParmDataDic = {}
 
@@ -420,8 +440,23 @@ class Requester:
 
 	def _parseAndFillCommandPrice(self, inputStr):
 		'''
-		This method try parsing a full or a partial request.
+		This method parses either a full or a partial request.
+		
+		Here are 2 examples of a full request, one without any option and the second
+		with 2 options:
+		
+		eth btc 0 binance
+		eth btc 10/2/21 10:35 bittrex -v2eth -fusd.kraken
+		
+		The method first try to parse a full request. If no list of request elements was
+		returned by the	parsing, it then try to parse a partial request.
 
+		Here are 2 examples of a partial request, one with 1 option and the second
+		with 2 options:
+		
+		-ebitfinex
+		-d11/2 -fchf.kraken
+		
 		:param inputStr:
 		:seqdiag_return CommandPrice or CommandError
 		:return: self.commandPrice or self.commandError or None, which will cause an error to be raised
@@ -598,7 +633,10 @@ class Requester:
 		for optionType in CommandPrice.OPTION_TYPE_LIST:
 			commandPriceOptionDataConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_DATA')
 			optionData = self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue]
-			if optionData:
+			if optionData is not None or optionData == '':
+				# optionData is None if the full request has no option for this option type
+				# optionData == '' if the full request has an option with no data.
+				# For example eth btc 0 binance -v or eth btc 0 binance -vs
 				command = self._fillOptionValueInfo(optionType, optionData, requestType)
 				if isinstance(command, CommandError):
 					# in case an error was detected, we do not continue handling the options
