@@ -22,6 +22,8 @@ Full requests do specify all the request parameter values.
     [b][cy]<options>[/c][/b] options are specified using [b][cy]-[/c][/b],
     like [b][cy]-v[/c][/b] or [b][cy]-f[/c][/b]. More details below
 
+[b][cg]TIP[/c][/b]: typing return replays the last request.
+
 <date time> possible values:
 
     [b][cy]0[/cy][/b] for RT
