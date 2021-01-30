@@ -197,6 +197,10 @@ class Requester:
 		if inputStr == '' and self.commandPrice.isValid():
 			#here, user entered RETURN to replay the last commannd
 			self._alignCommandPriceDateTimeDataWithPriceType()
+			
+			# ensuring that no unsupported option is in effect which would cause
+			# a warning to disturb the replay of the previous request execution.
+			self.commandPrice.resetUnsupportedOptionData()
 			returnedCommand = self.commandPrice
 		else:
 			upperInputStr = inputStr.upper()
@@ -477,6 +481,9 @@ class Requester:
 				# effect would be displayed in case such unsupported option was part of the preceeding
 				# full or partial request !
 				requestType = self.REQUEST_TYPE_PARTIAL
+				
+				# ensuring that no unsupported option is in effect which would cause
+				# a warning to disturb the partial request execution.
 				self.commandPrice.resetUnsupportedOptionData()
 
 				keys = self.inputParmParmDataDicKeyDic.keys()

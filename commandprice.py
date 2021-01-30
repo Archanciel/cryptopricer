@@ -98,8 +98,7 @@ class CommandPrice(AbstractCommand):
 
 	def resetUnsupportedOptionData(self):
 		'''
-		This method cleans up any data which are not to be kept between user requests
-		:return:
+		This method cleans up any data which are not to be kept between user requests.
 		'''
 		self.parsedParmData[self.UNSUPPORTED_OPTION] = None
 		self.parsedParmData[self.UNSUPPORTED_OPTION_MODIFIER] = None

@@ -121,9 +121,25 @@ class UtilityForTest:
 													 nowMinuteStr,
 													 nowMonthStr,
 													 nowYearStr,
-													 resultNoEndPrice,
+													 requestResultNoEndPrice,
 													 expectedPrintResultNoDateTimeNoEndPrice):
-		actualDateTimeStr = UtilityForTest.extractDateTimeStr(resultNoEndPrice)
+		"""
+		This method verifies that the passed real time request result requestResultNoEndPrice
+		date/time value correspond to now +/- 60 seconds. The purpose is to avoid a test
+		failure due to the fact that the crypto price provider was requested at, say,
+		11:54:59 (now value) and returns a result with time 11:55.
+		
+		:param unitTest:
+		:param nowDayStr:
+		:param nowHourStr:
+		:param nowMinuteStr:
+		:param nowMonthStr:
+		:param nowYearStr:
+		:param requestResultNoEndPrice:
+		:param expectedPrintResultNoDateTimeNoEndPrice:
+		:return:
+		"""
+		actualDateTimeStr = UtilityForTest.extractDateTimeStr(requestResultNoEndPrice)
 		expectedDateTimeStr = '{}/{}/{} {}:{}'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
 													  nowMinuteStr)
 		actualDateTimeStamp = DateTimeUtil.dateTimeStringToTimeStamp(actualDateTimeStr, 'Europe/Zurich',
@@ -132,7 +148,7 @@ class UtilityForTest:
 																	   'DD/MM/YY HH:mm')
 		unitTest.assertAlmostEqual(actualDateTimeStamp, expectedDateTimeStamp, delta=60)
 		unitTest.assertEqual(expectedPrintResultNoDateTimeNoEndPrice,
-						 resultNoEndPrice.replace(actualDateTimeStr, ''))
+							 requestResultNoEndPrice.replace(actualDateTimeStr, ''))
 
 
 if __name__ == '__main__':
