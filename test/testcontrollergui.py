@@ -4270,9 +4270,202 @@ class TestControllerGui(unittest.TestCase):
 															   nowMinuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
+	def testGetPrintableResultForPartialRequestsWithNoPreviousFullRequest(self):
+		"""
+		Test the error msg generated when a valid or invalid partial request is
+		entered before any full request was submitted.
+		"""
+		#partial request with no previous full request
+		inputStr = '-v100eth'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - no full request executed before partial request -v100eth. Partial request ignored', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
+
+		#invalid partial request with no previous full request
+		inputStr = '-vs'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - no full request executed before partial request -vs. Partial request ignored', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
+
+		#invalid partial request with no previous full request
+		inputStr = '-zooo'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - no full request executed before partial request -zooo. Partial request ignored', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
+
+		#invalid partial request with no previous full request
+		inputStr = '-z'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - no full request executed before partial request -z. Partial request ignored', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
+
+		#invalid partial request with no previous full request
+		inputStr = '-v'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - no full request executed before partial request -v. Partial request ignored', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
+
+		#command: '' to replay lst command
+		inputStr = ''
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  requestResultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveOptionsForHistoryList)
+
+	def testGetPrintableResultForInputScenarioWithOptionValue_(self):
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+
+		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+		#first command: RT price request
+		inputStr = 'eth usd 0 bitfinex'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  requestResultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+
+		#second command: value option
+		inputStr = '-v10eth'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  requestResultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+
+		#third command: value save option
+		inputStr = '-vs100usd'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  requestResultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+
+		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveOptionsForHistoryList)
+
+		#fourth command: '' to replay lst command
+		inputStr = ''
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  requestResultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveOptionsForHistoryList)
+
+		#fifth command: change crypto
+		inputStr = '-cneo'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD on Bitfinex: R'
+
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  requestResultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('neo usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual('neo usd 0 bitfinex -vs100usd', fullCommandStrWithSaveOptionsForHistoryList)
+
+		#sixth command: remove value option
+		inputStr = '-v0'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD on Bitfinex: R'
+
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  requestResultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('neo usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+
 
 if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
-	tst.testGetPrintableResultForPartialRequestValidOptionAfterUnsupportedPartialRequestOptionAfterValidRealTimeRequest()
+	tst.testGetPrintableResultForPartialRequestWithNoPreviousFullRequest()

@@ -15,6 +15,7 @@ class CommandError(AbstractCommand):
     COMMAND_ERROR_TYPE_FULL_REQUEST = 'FULL_REQUEST_ERROR'
     COMMAND_ERROR_TYPE_FULL_REQUEST_OPTION = 'FULL_REQUEST_OPTION_ERROR'
     COMMAND_ERROR_TYPE_PARTIAL_REQUEST = 'PARTIAL_REQUEST_ERROR'
+    COMMAND_ERROR_TYPE_PARTIAL_REQUEST_WITH_NO_PREVIOUS_FULL_REQUEST = 'PARTIAL_REQUEST_WITH_NO_PREVIOUS_FULL_REQUEST_ERROR'
     COMMAND_ERROR_TYPE_INVALID_COMMAND = 'INVALID_COMMAND_ERROR'
 
     COMMAND_ERROR_MSG_KEY = 'COMMAND_ERROR_MSG'
@@ -45,7 +46,10 @@ class CommandError(AbstractCommand):
             errorTypeLabelStr = 'invalid partial request'
         elif errorType == self.COMMAND_ERROR_TYPE_INVALID_COMMAND:
             errorTypeLabelStr = 'invalid request'
-
+        elif errorType == self.COMMAND_ERROR_TYPE_PARTIAL_REQUEST_WITH_NO_PREVIOUS_FULL_REQUEST:
+            errorTypeLabelStr = 'no full request executed before partial request'
+            errorMsgTail = '. Partial request ignored'
+            
         if errorDetails != '':
             errorDetails = ': ' + errorDetails
             

@@ -221,7 +221,7 @@ class Requester:
 							self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_INVALID_COMMAND
 						self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.USER_COMMAND_MISSING_MSG
 					else:
-						# invakid partial command parm
+						# invalid partial command parm
 						self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
 						self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = ''
 
@@ -521,11 +521,16 @@ class Requester:
 						#and HOUR_MINUTE are set to None once date/time values have been acquired !
 						if self._isMinimalDateTimeInfoFromPreviousRequestAvailable():
 							dayMonthYear, hourMinute = self._rebuildPreviousRequestDateTimeValues()
-						else:
+						elif self._isPreviousFullRequestActive():
 							return None # will cause an error. This occurs in a special situation when the previous request
 										# was in error, which explains why the date/time info from previous request is
 										# incoherent. Such a case is tested by TestController.
 										# testControllerHistoDayPriceIncompleteCommandScenario
+						else:
+							# here, a partial request was entered before submitting any full request
+							self.commandError.parsedParmData[
+								self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST_WITH_NO_PREVIOUS_FULL_REQUEST
+							return self.commandError
 				else:
 					hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
 					dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
@@ -654,6 +659,19 @@ class Requester:
 		else:
 			# here, no option -v, -f or -p specified !
 			return self.commandPrice
+
+	def _isPreviousFullRequestActive(self):
+		"""
+		Checks if a full request was entered before the currently handled partial request.
+		Returns True if yes, False otherwise.
+		
+		:return: True or False
+		"""
+		return self.commandPrice.parsedParmData[CommandPrice.CRYPTO] and \
+			   self.commandPrice.parsedParmData[CommandPrice.UNIT] and \
+			   self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] and \
+			   self.commandPrice.parsedParmData[CommandPrice.EXCHANGE]
+			
 
 	def _rebuildPreviousRequestDateTimeValues(self):
 		hour = self.commandPrice.parsedParmData[CommandPrice.HOUR]
