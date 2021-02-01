@@ -1292,7 +1292,7 @@ class TestController(unittest.TestCase):
         now = DateTimeUtil.localNow('Europe/Zurich')
 
         stdin = sys.stdin
-        sys.stdin = StringIO('btc\n-uusd\n-d0\n-ebittrex\nq\ny')
+        sys.stdin = StringIO('btc eth 0 all\nbtc\n-uusd\n-d0\n-ebittrex\nq\ny')
 
         if os.name == 'posix':
             FILE_PATH = '/sdcard/cryptoout.txt'
@@ -1317,12 +1317,12 @@ class TestController(unittest.TestCase):
         with open(FILE_PATH, 'r') as inFile:
             contentList = inFile.readlines()
             self.assertEqual(
-                'ERROR - unit missing or invalid', contentList[1][:-1])
+                'ERROR - unit missing or invalid', contentList[3][:-1])
             self.assertEqual(
-                'ERROR - invalid partial request -uusd', contentList[3][:-1]) #improve error msg
+                'ERROR - no full request executed before partial request -uusd. Partial request ignored', contentList[5][:-1]) #improve error msg
             self.assertEqual(
-                'ERROR - exchange could not be parsed due to an error in your request (-d0)', contentList[5][:-1])
-            resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[7][:-1])
+                'ERROR - exchange could not be parsed due to an error in your request (-d0)', contentList[7][:-1])
+            resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[9][:-1])
             expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on BitTrex: R'
 
             UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,

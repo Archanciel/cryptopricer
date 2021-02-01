@@ -220,10 +220,15 @@ class Requester:
 						self.commandError.parsedParmData[
 							self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_INVALID_COMMAND
 						self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.USER_COMMAND_MISSING_MSG
-					else:
+
+					elif self._isPreviousFullRequestActive():
 						# invalid partial command parm
 						self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
 						self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = ''
+					else:
+						# here, a partial request was entered before submitting any full request
+						self.commandError.parsedParmData[
+							self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST_WITH_NO_PREVIOUS_FULL_REQUEST
 
 					returnedCommand = self.commandError
 			else:
@@ -534,7 +539,6 @@ class Requester:
 				else:
 					hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
 					dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
-					
 			else: #neither full nor parrial pattern matched
 				return None # will cause an error.
 		else:

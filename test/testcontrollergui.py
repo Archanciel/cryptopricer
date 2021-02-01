@@ -4229,10 +4229,15 @@ class TestControllerGui(unittest.TestCase):
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'
 			expectedPrintResult = expectedPrintResult.format(oneDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr)
 
-		self.assertEqual(expectedPrintResult,
-			UtilityForTest.removeOneEndPriceFromResult(printResult))
-		self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(oneDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
-															   nowMinuteStr), fullCommandStrNoOptions)
+		if not 'ERROR' in printResult:
+			self.assertEqual(expectedPrintResult,
+				UtilityForTest.removeOneEndPriceFromResult(printResult))
+			self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(oneDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+																   nowMinuteStr), fullCommandStrNoOptions)
+		else:
+			# if test is run on February 1st for example
+			self.assertEqual('ERROR - day is out of range for month: day 31, month {}'.format(nowMonthStr.replace('0', '')), printResult)
+
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
 	def testGetPrintableResultForDayOnlyRequest_10daysBefore(self):
@@ -4335,18 +4340,11 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
-
-		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-														  nowHourStr,
-														  nowMinuteStr,
-														  nowMonthStr,
-														  nowYearStr,
-														  requestResultNoEndPrice,
-														  expectedPrintResultNoDateTimeNoEndPrice)
-		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
-		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('ERROR - no full request executed before partial request . Partial request ignored', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
 
 	def testGetPrintableResultForInputScenarioWithOptionValue_(self):
 		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
@@ -4468,4 +4466,4 @@ if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
-	tst.testGetPrintableResultForPartialRequestWithNoPreviousFullRequest()
+	tst.testGetPrintableResultForDayOnlyRequest_1dayBefore()

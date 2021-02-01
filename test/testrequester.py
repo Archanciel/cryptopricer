@@ -91,6 +91,13 @@ class TestRequester(unittest.TestCase):
 
 
 	def testGetCommandInvalidC(self):
+		# valid full request so that next invalid partial request does not cause
+		# a "ERROR - no full request executed before partial request -c. Partial
+		# request ignored" error msg
+		inputStr = "eth btc 0 all"
+		self.requester.getCommand(inputStr)
+		
+		# invalid partial request
 		inputStr = "-c"
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
@@ -99,6 +106,13 @@ class TestRequester(unittest.TestCase):
 
 
 	def testGetCommandInvalidF(self):
+		# valid full request so that next invalid partial request does not cause
+		# a "ERROR - no full request executed before partial request -c. Partial
+		# request ignored" error msg
+		inputStr = "eth btc 0 all"
+		self.requester.getCommand(inputStr)
+		
+		# invalid partial request
 		inputStr = "-u"
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
@@ -107,6 +121,13 @@ class TestRequester(unittest.TestCase):
 
 
 	def testGetCommandInvalidD(self):
+		# valid full request so that next invalid partial request does not cause
+		# a "ERROR - no full request executed before partial request -c. Partial
+		# request ignored" error msg
+		inputStr = "eth btc 0 all"
+		self.requester.getCommand(inputStr)
+		
+		# invalid partial request
 		inputStr = "-d"
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
@@ -115,6 +136,13 @@ class TestRequester(unittest.TestCase):
 
 
 	def testGetCommandInvalidT(self):
+		# valid full request so that next invalid partial request does not cause
+		# a "ERROR - no full request executed before partial request -c. Partial
+		# request ignored" error msg
+		inputStr = "eth btc 0 all"
+		self.requester.getCommand(inputStr)
+		
+		# invalid partial request
 		inputStr = "-t"
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
@@ -123,6 +151,13 @@ class TestRequester(unittest.TestCase):
 
 
 	def testGetCommandInvalidE(self):
+		# valid full request so that next invalid partial request does not cause
+		# a "ERROR - no full request executed before partial request -c. Partial
+		# request ignored" error msg
+		inputStr = "eth btc 0 all"
+		self.requester.getCommand(inputStr)
+		
+		# invalid partial request
 		inputStr = "-e"
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
