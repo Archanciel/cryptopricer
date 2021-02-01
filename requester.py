@@ -127,8 +127,11 @@ class Requester:
 						
 	Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken -v0.0044543eth
 	'''
-	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]+))(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?"
-
+#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]+))(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?"
+#	PATTERN_PARTIAL_PRICE_REQUEST_ERROR = r"({}([\d\w,\./]+))(?: .+|)"
+	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
+	PATTERN_PARTIAL_PRICE_REQUEST_ERROR = r"({}([\d\w,\./]*))(?: .+|)"
+	
 	'''
 	The next pattern splits the parameter data appended to the -v partial command.
 	
@@ -503,7 +506,7 @@ class Requester:
 						else:
 							# unknown partial command symbol
 							self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION] = command
-							if value[0].upper() == 'S':
+							if value != '' and value[0].upper() == 'S':
 								self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION_DATA] = value[1:]
 								self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION_MODIFIER] = value[0]
 							else:
@@ -909,7 +912,8 @@ class Requester:
 		:param inputStr:
 		:return:
 		'''
-		regexpStr = r"({}([\d\w,\./]+))(?: .+|)".format(parmSymbol)
+		#regexpStr = r"({}([\d\w,\./]+))(?: .+|)".format(parmSymbol)
+		regexpStr = PATTERN_PARTIAL_PRICE_REQUEST_ERROR.format(parmSymbol)
 		match = re.search(regexpStr, inputStr)
 
 		if match:

@@ -4466,4 +4466,5 @@ if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
-	tst.testGetPrintableResultForDayOnlyRequest_1dayBefore()
+#	tst.testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsCrypto()
+	tst.testGetPrintableResultForPartialRequestsWithNoPreviousFullRequest()
