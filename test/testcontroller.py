@@ -150,8 +150,8 @@ class TestController(unittest.TestCase):
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
 			self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62\n', contentList[1])
-			self.assertEqual('ERROR - invalid partial request -t\n', contentList[3])
-			self.assertEqual('ERROR - invalid partial request -d\n', contentList[5])
+			self.assertEqual('ERROR - invalid partial request -t: in -t,  must respect HH:mm format.\n', contentList[3])
+			self.assertEqual('ERROR - invalid value:  violates format for day (DD/MM).\n', contentList[5])
 			self.assertEqual('ERROR - invalid partial request -e\n', contentList[7])
 			self.assertEqual('ERROR - invalid partial request -c\n', contentList[9])
 			self.assertEqual('ERROR - invalid partial request -u\n', contentList[11])
@@ -1251,7 +1251,7 @@ class TestController(unittest.TestCase):
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
 			self.assertEqual('ERROR - unit missing or invalid\n', contentList[1])
-			self.assertEqual('ERROR - invalid partial request -uusd 2:56\n', contentList[3])
+			self.assertEqual('ERROR - invalid partial request -uusd 2:56.\n', contentList[3])
 
 			if nowMonthStr == oneDaysAfterMonthStr:
 			# this test can only be performed on a day which is not the last day of the mnnth.
@@ -1321,7 +1321,7 @@ class TestController(unittest.TestCase):
 			self.assertEqual(
 				'ERROR - unit missing or invalid', contentList[3][:-1])
 			self.assertEqual(
-				'ERROR - no full request executed before partial request -uusd. Partial request ignored', contentList[5][:-1]) #improve error msg
+				'ERROR - no full request executed before partial request -uusd. Partial request ignored.', contentList[5][:-1]) #improve error msg
 			self.assertEqual(
 				'ERROR - exchange could not be parsed due to an error in your request (-d0)', contentList[7][:-1])
 			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[9][:-1])
@@ -1510,7 +1510,7 @@ class TestController(unittest.TestCase):
 			#     'BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr,
 			#                                                      nowMinuteStr),
 			#     UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1]))  # removing \n from contentList entry !
-			self.assertEqual('ERROR - invalid partial request -t03.45: in -t03.45, 03.45 must respect HH:mm format', contentList[3][:-1])
+			self.assertEqual('ERROR - invalid partial request -t03.45: in -t03.45, 03.45 must respect HH:mm format.', contentList[3][:-1])
 
 
 if __name__ == '__main__':

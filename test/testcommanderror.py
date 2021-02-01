@@ -19,7 +19,7 @@ class TestCommandError(unittest.TestCase):
 
 
         resultData = commandError.execute()
-        self.assertEqual("ERROR - invalid partial request -c: crypto symbol missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual("ERROR - invalid partial request -c: crypto symbol missing.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 if __name__ == '__main__':

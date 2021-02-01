@@ -87,7 +87,7 @@ class TestRequester(unittest.TestCase):
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - invalid request [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid request [btc 05/07 0.0015899] [usd-chf] -nosave: user command missing.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 	def testGetCommandInvalidC(self):
@@ -220,7 +220,7 @@ class TestRequester(unittest.TestCase):
 		resultData = self.commandError.execute()
 
 		#formatting of request input string has been moved to end of Requester.getCommand !
-		self.assertEqual("ERROR - invalid request : unit list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid request : unit list missing.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 	def test_parseOOCommandParmsUnitListMissingWithOtherCommand(self):
@@ -230,7 +230,7 @@ class TestRequester(unittest.TestCase):
 		resultData = self.commandError.execute()
 
 		#formatting of request input string has been moved to end of Requester.getCommand !
-		self.assertEqual("ERROR - invalid request : unit list missing", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid request : unit list missing.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 	def test_parseOOCommandParms(self):
@@ -1475,7 +1475,7 @@ class TestRequester(unittest.TestCase):
 		resultData = self.commandError.execute()
 
 		#formatting of request input string has been moved to end of Requester.getCommand !
-		self.assertEqual("ERROR - invalid partial request : in -t5, 5 must respect HH:mm format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request : in -t5, 5 must respect HH:mm format.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 	def test_parseAndFillPartialCommandPriceNoInitYearNoMinuteInvalidTime(self):
 		commandPrice = self.requester.commandPrice
@@ -1501,7 +1501,7 @@ class TestRequester(unittest.TestCase):
 		resultData = self.commandError.execute()
 
 		#formatting of request input string has been moved to end of Requester.getCommand !
-		self.assertEqual("ERROR - invalid partial request : in -t6.45, 6.45 must respect HH:mm format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request : in -t6.45, 6.45 must respect HH:mm format.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 	def test_parseAndFillPartialCommandPriceWithInitYear(self):
 		commandPrice = self.requester.commandPrice
@@ -2131,7 +2131,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - invalid partial request -uusd -t0: in -t0, 0 must respect HH:mm format", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request -uusd -t0: in -t0, 0 must respect HH:mm format.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
 
@@ -2342,7 +2342,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd -vs0.01btc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd -vs0.01btc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -2356,7 +2356,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd -vs0.01btc 10/9/17 12:45 Kraken -zunsupported violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd -vs0.01btc 10/9/17 12:45 Kraken -zunsupported violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -2370,7 +2370,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd 10/9/17 -vs0.01btc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd 10/9/17 -vs0.01btc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -2384,7 +2384,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd 10/9/17 12:45 -vs0.01btc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd 10/9/17 12:45 -vs0.01btc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -2601,7 +2601,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - full request btc usd -v0.01btc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - full request btc usd -v0.01btc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
 
@@ -2613,7 +2613,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - full request btc usd 10/9/17 -v0.01btc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - full request btc usd 10/9/17 -v0.01btc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
 
@@ -2625,7 +2625,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - full request btc usd 10/9/17 12:45 -v0.01btc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - full request btc usd 10/9/17 12:45 -v0.01btc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
 
@@ -2762,7 +2762,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd -fsbtc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd -fsbtc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -2776,7 +2776,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd -fsbtc 10/9/17 12:45 Kraken -zunsupported violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd -fsbtc 10/9/17 12:45 Kraken -zunsupported violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -2790,7 +2790,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd 10/9/17 -fsbtc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd 10/9/17 -fsbtc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -2804,7 +2804,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd 10/9/17 12:45 -fsbtc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd 10/9/17 12:45 -fsbtc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -3038,7 +3038,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - full request btc usd -fbtc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - full request btc usd -fbtc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
 
@@ -3050,7 +3050,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - full request btc usd 10/9/17 -fbtc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - full request btc usd 10/9/17 -fbtc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
 
@@ -3062,7 +3062,7 @@ class TestRequester(unittest.TestCase):
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - full request btc usd 10/9/17 12:45 -fbtc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - full request btc usd 10/9/17 12:45 -fbtc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
 
@@ -3260,7 +3260,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd -ps0.02btc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd -ps0.02btc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -3274,7 +3274,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd -ps0.02btc 10/9/17 12:45 Kraken -zunsupported violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd -ps0.02btc 10/9/17 12:45 Kraken -zunsupported violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -3288,7 +3288,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd 10/9/17 -ps0.02btc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd 10/9/17 -ps0.02btc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -3302,7 +3302,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd 10/9/17 12:45 -ps0.02btc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd 10/9/17 12:45 -ps0.02btc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -3577,7 +3577,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd -p0.01btc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd -p0.01btc 10/9/17 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -3591,7 +3591,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd 10/9/17 -p0.01btc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd 10/9/17 -p0.01btc 12:45 Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin
@@ -3605,7 +3605,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(commandPrice, self.commandError)
 		resultData = self.commandError.execute()
 		self.assertEqual(
-			"ERROR - full request btc usd 10/9/17 12:45 -p0.01btc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>",
+			"ERROR - full request btc usd 10/9/17 12:45 -p0.01btc Kraken violates format <crypto> <unit> <date|time> <exchange> <options>.",
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 		sys.stdin = stdin

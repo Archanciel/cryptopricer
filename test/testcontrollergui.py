@@ -901,7 +901,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'ERROR - invalid partial request -t12.56: in -t12.56, 12.56 must respect HH:mm format', printResult)
+			'ERROR - invalid partial request -t12.56: in -t12.56, 12.56 must respect HH:mm format.', printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
@@ -960,7 +960,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'ERROR - invalid partial request -t12.56: in -t12.56, 12.56 must respect HH:mm format', printResult)
+			'ERROR - invalid partial request -t12.56: in -t12.56, 12.56 must respect HH:mm format.', printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
@@ -1008,7 +1008,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'ERROR - invalid partial request -d{}:{} -t00.01: in -t00.01, 00.01 must respect HH:mm format'.format(requestDayStr, requestMonthStr), printResult)
+			'ERROR - invalid partial request -d{}:{} -t00.01: in -t00.01, 00.01 must respect HH:mm format.'.format(requestDayStr, requestMonthStr), printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
@@ -2077,7 +2077,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'ERROR - full request btc usd 0 -vs10btc bitfinex violates format <crypto> <unit> <date|time> <exchange> <options>',
+			'ERROR - full request btc usd 0 -vs10btc bitfinex violates format <crypto> <unit> <date|time> <exchange> <options>.',
 			printResult)
 		self.assertEqual('', fullCommandStrNoOptions)  # empty string since request caused an error !
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
@@ -4285,7 +4285,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('ERROR - no full request executed before partial request -v100eth. Partial request ignored', printResult)
+		self.assertEqual('ERROR - no full request executed before partial request -v100eth. Partial request ignored.', printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertIsNone(fullCommandStrWithNoSaveOptions)
 		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
@@ -4296,7 +4296,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('ERROR - no full request executed before partial request -vs. Partial request ignored', printResult)
+		self.assertEqual('ERROR - no full request executed before partial request -vs. Partial request ignored.', printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertIsNone(fullCommandStrWithNoSaveOptions)
 		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
@@ -4307,7 +4307,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('ERROR - no full request executed before partial request -zooo. Partial request ignored', printResult)
+		self.assertEqual('ERROR - no full request executed before partial request -zooo. Partial request ignored.', printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertIsNone(fullCommandStrWithNoSaveOptions)
 		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
@@ -4318,7 +4318,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('ERROR - no full request executed before partial request -z. Partial request ignored', printResult)
+		self.assertEqual('ERROR - no full request executed before partial request -z. Partial request ignored.', printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertIsNone(fullCommandStrWithNoSaveOptions)
 		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
@@ -4329,7 +4329,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('ERROR - no full request executed before partial request -v. Partial request ignored', printResult)
+		self.assertEqual('ERROR - no full request executed before partial request -v. Partial request ignored.', printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertIsNone(fullCommandStrWithNoSaveOptions)
 		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
@@ -4340,7 +4340,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('ERROR - no full request executed before partial request . Partial request ignored', printResult)
+		self.assertEqual('ERROR - no full request executed before partial request . Partial request ignored.', printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertIsNone(fullCommandStrWithNoSaveOptions)
 		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)

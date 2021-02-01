@@ -913,7 +913,7 @@ class Requester:
 		:return:
 		'''
 		#regexpStr = r"({}([\d\w,\./]+))(?: .+|)".format(parmSymbol)
-		regexpStr = PATTERN_PARTIAL_PRICE_REQUEST_ERROR.format(parmSymbol)
+		regexpStr = self.PATTERN_PARTIAL_PRICE_REQUEST_ERROR.format(parmSymbol)
 		match = re.search(regexpStr, inputStr)
 
 		if match:
