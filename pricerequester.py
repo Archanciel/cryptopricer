@@ -85,12 +85,12 @@ class PriceRequester:
             else:
                 webURL = urllib.request.urlopen(url, context=self.ctx)
         except HTTPError as e:
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Check your internet connection. Details: ' + str(e.reason))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Check your internet connection. Details: ' + str(e.reason) + '.')
         except URLError as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - No internet. Please connect and retry !')
         except:
             the_type, the_value, the_traceback = sys.exc_info()
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(the_type))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(the_type) + '.')
         else:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
@@ -136,12 +136,12 @@ class PriceRequester:
             else:
                 webURL = urllib.request.urlopen(url, context=self.ctx)
         except HTTPError as e:
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason) + '.')
         except URLError as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - No internet. Please connect and retry !')
         except: 
             the_type, the_value, the_traceback = sys.exc_info()
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(the_type))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(the_type) + '.')
         else:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
@@ -185,12 +185,12 @@ class PriceRequester:
             else:
                 webURL = urllib.request.urlopen(url, context=self.ctx)
         except HTTPError as e:
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason) + '.')
         except URLError as e:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - No internet. Please connect and retry !')
         except: 
             the_type, the_value, the_traceback = sys.exc_info()
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(the_type))
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'ERROR - could not complete request ' + url + '. Reason: ' + str(the_type) + '.')
         else:
             page = webURL.read()
             soup = BeautifulSoup(page, 'html.parser')
@@ -217,10 +217,10 @@ class PriceRequester:
                 errorMessage = errorMessage.rstrip(' .')
                 errorMessage = errorMessage.replace('fsym', 'Symbol')
 
-            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'PROVIDER ERROR - ' + errorMessage)
+            resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, 'PROVIDER ERROR - ' + errorMessage + '.')
         else:
             resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-                                'PROVIDER ERROR - ' + 'Request ' + url + ' did not return any data')
+                                'PROVIDER ERROR - ' + 'Request ' + url + ' did not return any data.')
 
         return resultData
 

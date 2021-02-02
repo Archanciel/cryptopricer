@@ -2,7 +2,7 @@ from datetimeutil import DateTimeUtil
 from resultdata import ResultData
 
 # This error message is consistant with the provider error 'HitBTC market does not exist for this coin pair (BTC-USD)' !
-MARKET_NOT_SUPPORTED_ERROR = "ERROR - {} market does not exist or is not yet supported by the application"
+MARKET_NOT_SUPPORTED_ERROR = "ERROR - {} market does not exist or is not yet supported by the application."
 
 class Processor:
 	'''
@@ -93,9 +93,9 @@ class Processor:
 
 		# validating exchange and fiat exchange
 
-		if exchange == None:
+		if exchange == None or exchange == '':
 			resultData = ResultData()
-			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your request ({})".format(requestInputString))
+			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your request ({}).".format(requestInputString))
 			return resultData
 		else:
 			try:

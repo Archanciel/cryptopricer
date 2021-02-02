@@ -184,7 +184,7 @@ class TestCommandPrice(unittest.TestCase):
 
         resultData = self.commandPrice.execute()
 
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - Unknown market does not exist or is not yet supported by the application")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - Unknown market does not exist or is not yet supported by the application.")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
@@ -290,7 +290,7 @@ class TestCommandPrice(unittest.TestCase):
 
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - Unknown market does not exist or is not yet supported by the application")
+                         "ERROR - Unknown market does not exist or is not yet supported by the application.")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
@@ -615,7 +615,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - invalid value: O7 violates format for year (DD/MM/YY)")
+                         "ERROR - invalid value: O7 violates format for year (DD/MM/YY).")
 
 
     def testExecuteRealTimePriceInvalidDayFormat(self):
@@ -631,7 +631,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - invalid value: invalid value 10:00 violates format for day (DD/MM)")
+                         "ERROR - invalid value: invalid value 10:00 violates format for day (DD/MM).")
 
 
     def testExecuteRealTimePriceInvalidDayFormat(self):
@@ -647,7 +647,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - invalid value: o1 violates format for month (DD/MM)")
+                         "ERROR - invalid value: o1 violates format for month (DD/MM).")
 
 
     def testExecuteRealTimePriceInvalidHourFormat(self):
@@ -663,7 +663,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - invalid value: 1o violates format for hour (HH:mm)")
+                         "ERROR - invalid value: 1o violates format for hour (HH:mm).")
 
 
     def testExecuteRealTimePriceInvalidMinuteFormat(self):
@@ -679,7 +679,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - invalid value: o5 violates format for minute (HH:mm)")
+                         "ERROR - invalid value: o5 violates format for minute (HH:mm).")
 
 
     def testExecuteRealTimePriceInvalidUnit(self):

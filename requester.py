@@ -576,7 +576,7 @@ class Requester:
 				self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
 				self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG.format(invalidPartialCommand, invalidValue, timeFormat)
 
-				# remove invalid time specification form parsedParData to avoid polluting next partial
+				# remove invalid time specification from parsedParData to avoid polluting next partial
 				# request !
 				self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] = None
 
@@ -600,6 +600,23 @@ class Requester:
 				dayMonthYearList = dayMonthYear.split('/')
 				if len(dayMonthYearList) == 1: #only day specified, the case for -d12 for example (12th of current month)
 					day = dayMonthYearList[0]
+					if day == '':
+						# the case if -d was entered without any value
+						invalidPartialCommand, invalidValue = self._wholeParmAndInvalidValue('-d', inputStr)
+						dtFormatDic = DateTimeUtil.getDateAndTimeFormatDictionary(self.configMgr.dateTimeFormat)
+						dateFormat = dtFormatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY]
+						self.commandError.parsedParmData[
+							self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
+						self.commandError.parsedParmData[
+							self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_PRICE_COMMAND_DATE_FORMAT_INVALID_MSG.format(
+							invalidPartialCommand, invalidValue, dateFormat)
+						
+						# remove invalid date specification from parsedParData to avoid polluting next partial
+						# request !
+						self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+						
+						return self.commandError
+					
 					if CommandPrice.DAY in self.commandPrice.parsedParmData:
 						month = self.commandPrice.parsedParmData[CommandPrice.MONTH]
 						year = self.commandPrice.parsedParmData[CommandPrice.YEAR]

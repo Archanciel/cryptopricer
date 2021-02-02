@@ -151,8 +151,8 @@ class TestController(unittest.TestCase):
 			contentList = inFile.readlines()
 			self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62\n', contentList[1])
 			self.assertEqual('ERROR - invalid partial request -t: in -t,  must respect HH:mm format.\n', contentList[3])
-			self.assertEqual('ERROR - invalid value:  violates format for day (DD/MM).\n', contentList[5])
-			self.assertEqual('ERROR - invalid partial request -e\n', contentList[7])
+			self.assertEqual('ERROR - invalid partial request -d: in -d,  must respect DD/MM format.\n', contentList[5])
+			self.assertEqual('ERROR - exchange could not be parsed due to an error in your request (-e).\n', contentList[7])
 			self.assertEqual('ERROR - invalid partial request -c\n', contentList[9])
 			self.assertEqual('ERROR - invalid partial request -u\n', contentList[11])
 
@@ -181,7 +181,7 @@ class TestController(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual('ERROR - exchange could not be parsed due to an error in your request (btc usd 23/9/2017 2.56 bittrex)\n', contentList[1])
+			self.assertEqual('ERROR - exchange could not be parsed due to an error in your request (btc usd 23/9/2017 2.56 bittrex).\n', contentList[1])
 
 
 	def testControllerDateContainZeroYear(self):
@@ -1287,7 +1287,7 @@ class TestController(unittest.TestCase):
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
 			self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[3])
-			self.assertEqual('Warning - unsupported option -h22:21 in request -h22:21 - option ignored\n', contentList[4])
+			self.assertEqual('Warning - unsupported option -h22:21 in request -h22:21 - option ignored.\n', contentList[4])
 
 
 	def testControllerScenarioMissingUnitBadErrorMsg(self):
@@ -1323,7 +1323,7 @@ class TestController(unittest.TestCase):
 			self.assertEqual(
 				'ERROR - no full request executed before partial request -uusd. Partial request ignored.', contentList[5][:-1]) #improve error msg
 			self.assertEqual(
-				'ERROR - exchange could not be parsed due to an error in your request (-d0)', contentList[7][:-1])
+				'ERROR - exchange could not be parsed due to an error in your request (-d0).', contentList[7][:-1])
 			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[9][:-1])
 			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on BitTrex: R'
 

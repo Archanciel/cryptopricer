@@ -168,7 +168,7 @@ class CommandPrice(AbstractCommand):
 		else:
 			minute = 0
 
-		# storing the parsed parm gata dictionary before it
+		# storing the parsed parm data dictionary before it
 		# may be modified in case the user requested a RT
 		# price. The initial dictionary wiLl be added to the
 		# returned resultData so the client can have access
@@ -262,7 +262,7 @@ class CommandPrice(AbstractCommand):
 
 		if unsupportedOption:
 			result.setWarning(ResultData.WARNING_TYPE_UNSUPPORTED_OPTION,
-							  "Warning - unsupported option {}{} in request {} - option ignored".format(unsupportedOption, self.parsedParmData[self.UNSUPPORTED_OPTION_DATA], self.requestInputString))
+							  "Warning - unsupported option {}{} in request {} - option ignored.".format(unsupportedOption, self.parsedParmData[self.UNSUPPORTED_OPTION_DATA], self.requestInputString))
 
 		return result
 
@@ -403,6 +403,7 @@ class CommandPrice(AbstractCommand):
 			except ValueError as e:
 				resultData = ResultData()
 				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid value: {} violates format for {} ({}).".format(value, name, format))
+#				self.parsedParmData[CommandPrice.DAY] = 30
 				return resultData
 
 			try:

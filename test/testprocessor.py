@@ -363,7 +363,7 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - unknown market does not exist or is not yet supported by the application")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - unknown market does not exist or is not yet supported by the application.")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
@@ -475,7 +475,7 @@ class TestProcessor(unittest.TestCase):
                                                year,
                                                hour,
                                                minute)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - unknown market does not exist or is not yet supported by the application")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "ERROR - unknown market does not exist or is not yet supported by the application.")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), None)
@@ -516,7 +516,7 @@ class TestProcessor(unittest.TestCase):
                                                hour,
                                                minute)
 
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - BTC38 market does not exist for this coin pair (BTC-USD).")
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), exchange)
