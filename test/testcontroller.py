@@ -122,7 +122,6 @@ class TestController(unittest.TestCase):
 			self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62\n', contentList[3])
 			self.assertEqual('BTC/USD on AVG: 25/09/17 00:00C 3932.83\n', contentList[5])
 
-
 	def testControllerHistoDayPriceThenEmptyPartialParms(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO('btc usd 30/9/2017 all\n-t\n-d\n-e\n-c\n-u\nq\ny')
@@ -150,12 +149,41 @@ class TestController(unittest.TestCase):
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
 			self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62\n', contentList[1])
-			self.assertEqual('ERROR - invalid partial request -t: in -t,  must respect HH:mm format.\n', contentList[3])
-			self.assertEqual('ERROR - invalid partial request -d: in -d,  must respect DD/MM format.\n', contentList[5])
-			self.assertEqual('ERROR - exchange could not be parsed due to an error in your request (-e).\n', contentList[7])
-			self.assertEqual('ERROR - invalid partial request -c\n', contentList[9])
-			self.assertEqual('ERROR - invalid partial request -u\n', contentList[11])
+			self.assertEqual('ERROR - invalid partial request -t: -t with no value is not valid. Partial request ignored.\n', contentList[3])
+			self.assertEqual('ERROR - invalid partial request -d: -d with no value is not valid. Partial request ignored.\n', contentList[5])
+			self.assertEqual('ERROR - invalid partial request -e: -e with no value is not valid. Partial request ignored.\n', contentList[7])
+			self.assertEqual('ERROR - invalid partial request -c: -c with no value is not valid. Partial request ignored.\n', contentList[9])
+			self.assertEqual('ERROR - invalid partial request -u: -u with no value is not valid. Partial request ignored.\n', contentList[11])
 
+	def testControllerPartialRequestNoSaveBeforeFullRequestThenEmptyPartialRequest(self):
+		stdin = sys.stdin
+		sys.stdin = StringIO('-v12btc\n-v\n-v10btc')
+
+		if os.name == 'posix':
+			FILE_PATH = '/sdcard/cryptoout.txt'
+		else:
+			FILE_PATH = 'c:\\temp\\cryptoout.txt'
+
+		stdout = sys.stdout
+
+		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+		try:
+			with open(FILE_PATH, 'w') as outFile:
+				sys.stdout = outFile
+				self.controller.run() #will eat up what has been filled in stdin using StringIO above
+		except BaseException as e:
+			import logging
+			logging.info(e)
+			pass
+
+		sys.stdin = stdin
+		sys.stdout = stdout
+
+		with open(FILE_PATH, 'r') as inFile:
+			contentList = inFile.readlines()
+			self.assertEqual('ERROR - no full request executed before partial request -v12btc. Partial request ignored.\n', contentList[1])
+			self.assertEqual('ERROR - invalid partial request -v: -v with no value is not valid. Partial request ignored.\n', contentList[3])
+			self.assertEqual('ERROR - no full request executed before partial request -v10btc. Partial request ignored.\n', contentList[5])
 
 	def testControllerHistoDayPriceInvalidTimeFormat(self):
 		stdin = sys.stdin
@@ -1517,4 +1545,4 @@ if __name__ == '__main__':
 	#unittest.main()
 	t = TestController()
 	t.setUp()
-	t.testControllerHistoDayPriceThenEmptyPartialParms()
+	t.testControllerPartialRequestNoSaveBeforeFullRequestThenEmptyPartialRequest()

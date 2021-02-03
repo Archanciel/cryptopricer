@@ -93,7 +93,7 @@ class Processor:
 
 		# validating exchange and fiat exchange
 
-		if exchange == None or exchange == '':
+		if exchange == None:
 			resultData = ResultData()
 			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your request ({}).".format(requestInputString))
 			return resultData

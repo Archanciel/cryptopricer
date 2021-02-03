@@ -102,7 +102,7 @@ class TestRequester(unittest.TestCase):
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - invalid partial request -c", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request -c: -c with no value is not valid. Partial request ignored.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 	def testGetCommandInvalidF(self):
@@ -117,7 +117,7 @@ class TestRequester(unittest.TestCase):
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - invalid partial request -u", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request -u: -u with no value is not valid. Partial request ignored.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 	def testGetCommandInvalidD(self):
@@ -132,7 +132,7 @@ class TestRequester(unittest.TestCase):
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - invalid partial request -d", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request -d: -d with no value is not valid. Partial request ignored.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 	def testGetCommandInvalidT(self):
@@ -147,7 +147,7 @@ class TestRequester(unittest.TestCase):
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - invalid partial request -t", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request -t: -t with no value is not valid. Partial request ignored.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 	def testGetCommandInvalidE(self):
@@ -162,7 +162,7 @@ class TestRequester(unittest.TestCase):
 		cryptoData = self.requester.getCommand(inputStr)
 		self.assertEqual(cryptoData, self.commandError)
 		resultData = self.commandError.execute()
-		self.assertEqual("ERROR - invalid partial request -e", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request -e: -e with no value is not valid. Partial request ignored.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 
 	def test_parseDatePriceTwoPairs(self):
@@ -4462,7 +4462,7 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
 
-	def test_parseAndFillPartialCommandPriceIneffectiveOptionValueSaveSpec(self):
+	def test_parseAndFillPartialCommandPriceEmptyOptionValueSaveSpec(self):
 		commandPrice = self.requester.commandPrice
 
 		parsedParmData = commandPrice.parsedParmData
@@ -4488,7 +4488,63 @@ class TestRequester(unittest.TestCase):
 		resultData = self.commandError.execute()
 
 		#formatting of request input string has been moved to end of Requester.getCommand !
-		self.assertEqual("ERROR - invalid partial request : -vs option violates the -v option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request : -vs with no value is not valid. Partial request ignored.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+	def test_parseAndFillPartialCommandPriceIneffectiveOptionValueSpec(self):
+		commandPrice = self.requester.commandPrice
+
+		parsedParmData = commandPrice.parsedParmData
+
+		# prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+		parsedParmData[CommandPrice.CRYPTO] = 'btc'
+		parsedParmData[CommandPrice.UNIT] = 'usd'
+		parsedParmData[CommandPrice.DAY] = '10'
+		parsedParmData[CommandPrice.MONTH] = '9'
+		parsedParmData[CommandPrice.YEAR] = '16'
+		parsedParmData[CommandPrice.HOUR] = '12'
+		parsedParmData[CommandPrice.MINUTE] = '45'
+		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+		parsedParmData[CommandPrice.HOUR_MINUTE] = None
+		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+		parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+		parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+		parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = False
+
+		inputStr = "-ceth -v35 -ugbp -d11/8/15 -t22:46 -eKraken"
+		commandError = self.requester._parseAndFillCommandPrice(inputStr)
+		self.assertEqual(commandError, self.commandError)
+		resultData = self.commandError.execute()
+
+		#formatting of request input string has been moved to end of Requester.getCommand !
+		self.assertEqual("ERROR - invalid partial request : -v35 option violates the -v option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+	def test_parseAndFillPartialCommandPriceIneffectiveOptionValueSaveSpec(self):
+		commandPrice = self.requester.commandPrice
+
+		parsedParmData = commandPrice.parsedParmData
+
+		# prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+		parsedParmData[CommandPrice.CRYPTO] = 'btc'
+		parsedParmData[CommandPrice.UNIT] = 'usd'
+		parsedParmData[CommandPrice.DAY] = '10'
+		parsedParmData[CommandPrice.MONTH] = '9'
+		parsedParmData[CommandPrice.YEAR] = '16'
+		parsedParmData[CommandPrice.HOUR] = '12'
+		parsedParmData[CommandPrice.MINUTE] = '45'
+		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+		parsedParmData[CommandPrice.HOUR_MINUTE] = None
+		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+		parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT] = '500'
+		parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL] = 'gbp'
+		parsedParmData[CommandPrice.OPTION_VALUE_SAVE] = False
+
+		inputStr = "-ceth -vs35 -ugbp -d11/8/15 -t22:46 -eKraken"
+		commandError = self.requester._parseAndFillCommandPrice(inputStr)
+		self.assertEqual(commandError, self.commandError)
+		resultData = self.commandError.execute()
+
+		#formatting of request input string has been moved to end of Requester.getCommand !
+		self.assertEqual("ERROR - invalid partial request : -vs35 option violates the -vs option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 # fiat
 
@@ -4851,34 +4907,10 @@ class TestRequester(unittest.TestCase):
 
 		inputStr = "-ceth -f -ugbp -d11/8/15 -t22:46 -eKraken"
 		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-		self.assertEqual(commandPrice, self.commandPrice)
+		self.assertEqual(commandPrice, self.commandError)
 		parsedParmData = commandPrice.parsedParmData
-		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
-		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
-		self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
-		self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
-		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
-		self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
-		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
-		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
-		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
-		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
-		self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
-		self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
-		self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
-		self.assertEqual('btc', parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
+		self.assertEqual('-f with no value is not valid. Partial request ignored', parsedParmData[CommandError.COMMAND_ERROR_MSG_KEY])
+		self.assertEqual(CommandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST, parsedParmData[CommandError.COMMAND_ERROR_TYPE_KEY])
 
 	def test_parseAndFillPartialCommandPriceNoInitYearThenOptionFiatSave(self):
 		commandPrice = self.requester.commandPrice
@@ -5307,7 +5339,7 @@ class TestRequester(unittest.TestCase):
 		resultData = self.commandError.execute()
 
 		#formatting of request input string has been moved to end of Requester.getCommand !
-		self.assertEqual("ERROR - invalid partial request : -fs option violates the -f option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request : -fs with no value is not valid. Partial request ignored.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 # price
 	
@@ -5576,34 +5608,11 @@ class TestRequester(unittest.TestCase):
 
 		inputStr = "-ceth -p -ugbp -d11/8/15 -t22:46 -eKraken"
 		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-		self.assertEqual(commandPrice, self.commandPrice)
+		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+		self.assertEqual(commandPrice, self.commandError)
 		parsedParmData = commandPrice.parsedParmData
-		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
-		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
-		self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
-		self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
-		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
-		self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
-		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '45')
-		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'CCEX')
-		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
-		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
-		self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
-		self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
-		self.assertIsNone(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
-		self.assertEqual('500', parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
-		self.assertEqual('gbp', parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
+		self.assertEqual('-p with no value is not valid. Partial request ignored', parsedParmData[CommandError.COMMAND_ERROR_MSG_KEY])
+		self.assertEqual(CommandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST, parsedParmData[CommandError.COMMAND_ERROR_TYPE_KEY])
 
 	def test_parseAndFillPartialCommandPriceNoInitYearThenOptionPriceSave(self):
 		commandPrice = self.requester.commandPrice
@@ -6211,7 +6220,7 @@ class TestRequester(unittest.TestCase):
 		resultData = self.commandError.execute()
 
 		#formatting of request input string has been moved to end of Requester.getCommand !
-		self.assertEqual("ERROR - invalid partial request : -ps option violates the -p option format. See help for more information.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("ERROR - invalid partial request : -ps with no value is not valid. Partial request ignored.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 	def testRequestCommandPricePartialDateTime(self):
 		# first, enter full command price

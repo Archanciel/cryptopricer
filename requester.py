@@ -224,14 +224,10 @@ class Requester:
 							self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_INVALID_COMMAND
 						self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.USER_COMMAND_MISSING_MSG
 
-					elif self._isPreviousFullRequestActive():
+					else:
 						# invalid partial command parm
 						self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
 						self.commandError.parsedParmData[self.commandError.COMMAND_ERROR_MSG_KEY] = ''
-					else:
-						# here, a partial request was entered before submitting any full request
-						self.commandError.parsedParmData[
-							self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST_WITH_NO_PREVIOUS_FULL_REQUEST
 
 					returnedCommand = self.commandError
 			else:
@@ -502,7 +498,21 @@ class Requester:
 					if value != None:
 						commandUpper = command.upper()
 						if commandUpper in keys:
-							self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = value
+							if value == '' or value.upper() == 'S':
+								invalidPartialCommand, invalidValue = self._wholeParmAndInvalidValue(command, inputStr)
+								self.commandError.parsedParmData[
+									self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
+								self.commandError.parsedParmData[
+									self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_REQUEST_EMPTY_VALUE_MSG.format(
+									invalidPartialCommand, invalidPartialCommand)
+								
+								# remove invalid '' value from parsedParData to avoid polluting next partial
+								# request !
+								self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = None
+
+								return self.commandError
+							else:
+								self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = value
 						else:
 							# unknown partial command symbol
 							self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION] = command
@@ -538,6 +548,11 @@ class Requester:
 							# here, a partial request was entered before submitting any full request
 							self.commandError.parsedParmData[
 								self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST_WITH_NO_PREVIOUS_FULL_REQUEST
+							
+							# ensuring no previous error msg info are in effect which would pollute this error msg
+							self.commandError.parsedParmData[
+								self.commandError.COMMAND_ERROR_MSG_KEY] = ''
+							
 							return self.commandError
 				else:
 					hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
@@ -568,7 +583,7 @@ class Requester:
 		if hourMinute != None:
 			hourMinuteList = hourMinute.split(':')
 			if len(hourMinuteList) == 1:
-				#supplied time is invalid: does not respect expected format of 0:10 or 12:01 etc
+				# supplied time is invalid: does not respect expected format of 0:10 or 12:01 etc
 				# invalid time partial command format
 				invalidPartialCommand, invalidValue = self._wholeParmAndInvalidValue('-t', inputStr)
 				dtFormatDic = DateTimeUtil.getDateAndTimeFormatDictionary(self.configMgr.dateTimeFormat)
@@ -600,23 +615,6 @@ class Requester:
 				dayMonthYearList = dayMonthYear.split('/')
 				if len(dayMonthYearList) == 1: #only day specified, the case for -d12 for example (12th of current month)
 					day = dayMonthYearList[0]
-					if day == '':
-						# the case if -d was entered without any value
-						invalidPartialCommand, invalidValue = self._wholeParmAndInvalidValue('-d', inputStr)
-						dtFormatDic = DateTimeUtil.getDateAndTimeFormatDictionary(self.configMgr.dateTimeFormat)
-						dateFormat = dtFormatDic[DateTimeUtil.SHORT_DATE_FORMAT_KEY]
-						self.commandError.parsedParmData[
-							self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
-						self.commandError.parsedParmData[
-							self.commandError.COMMAND_ERROR_MSG_KEY] = self.commandError.PARTIAL_PRICE_COMMAND_DATE_FORMAT_INVALID_MSG.format(
-							invalidPartialCommand, invalidValue, dateFormat)
-						
-						# remove invalid date specification from parsedParData to avoid polluting next partial
-						# request !
-						self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-						
-						return self.commandError
-					
 					if CommandPrice.DAY in self.commandPrice.parsedParmData:
 						month = self.commandPrice.parsedParmData[CommandPrice.MONTH]
 						year = self.commandPrice.parsedParmData[CommandPrice.YEAR]

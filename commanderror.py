@@ -8,6 +8,7 @@ class CommandError(AbstractCommand):
     COMMAND_NOT_SUPPORTED_MSG = '{} not supported'
     PARTIAL_PRICE_COMMAND_DATE_FORMAT_INVALID_MSG = 'in {}, {} must respect {} format'
     PARTIAL_PRICE_COMMAND_TIME_FORMAT_INVALID_MSG = 'in {}, {} must respect {} format'
+    PARTIAL_REQUEST_EMPTY_VALUE_MSG = '{} with no value is not valid. Partial request ignored'
     OPTION_FORMAT_INVALID_MSG = '{}{} option violates the {} option format. See help for more information'
     FULL_COMMAND_PRICE_FORMAT_INVALID_MSG = 'full command price format invalid'
 
