@@ -39,61 +39,6 @@ class TestControllerGui(unittest.TestCase):
 		self.controller = Controller(GuiOutputFormater(configMgr), configMgr, PriceRequesterTestStub())
 
 
-	@unittest.skip
-	def testControllerAskRTWithValueSave(self):
-		stdin = sys.stdin
-		sys.stdin = StringIO('btc usd 0 all -vc0.01btc\nq\ny')
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
-		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
-		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
-
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			
-			requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
-			
-			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-																		nowHourStr,
-																		nowMinuteStr,
-																		nowMonthStr,
-																		nowYearStr,
-																		requestResultNoEndPrice,
-																		expectedPrintResultNoDateTimeNoEndPrice)
-#			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-			
-			requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
-			
-			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-																		nowHourStr,
-																		nowMinuteStr,
-																		nowMonthStr,
-																		nowYearStr,
-																		requestResultNoEndPrice,
-																		expectedPrintResultNoDateTimeNoEndPrice)
-			
-#			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
-
-
 	def testControllerBugSpecifyDateBegOfYear(self):
 		timezoneStr = LOCAL_TIME_ZONE
 		now = DateTimeUtil.localNow(timezoneStr)
