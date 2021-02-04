@@ -14,6 +14,7 @@ sys.path.insert(0,currentdir) # this instruction is necessary for successful imp
 from controller import Controller
 from datetimeutil import DateTimeUtil
 from consoleoutputformater import ConsoleOutputFormater
+from guioutputformater import GuiOutputFormater
 from configurationmanager import ConfigurationManager
 from pricerequesterteststub import PriceRequesterTestStub
 from utilityfortest import UtilityForTest
@@ -38,220 +39,194 @@ class TestController(unittest.TestCase):
 
 		#print('---- Instanciating Controller with ConsoleOutputFormater ----')
 		self.controller = Controller(ConsoleOutputFormater(), configMgr, PriceRequesterTestStub())
-
-
-	def testControllerHistoDayPrice(self):
-		stdin = sys.stdin
-		sys.stdin = StringIO('btc usd 23/9/2017 2:56 bittrex\nq\ny')
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773\n', contentList[1])
-
+		configMgr = ConfigurationManager(self.filePath)
+		self.controllerGui = Controller(GuiOutputFormater(configMgr), configMgr, PriceRequesterTestStub())
 
 	def testControllerHistoDayPriceThenPartialDateDayOnly(self):
-		stdin = sys.stdin
-		sys.stdin = StringIO('btc usd 23/9/2017 2:56 bittrex\n-d25\nq\ny')
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual('BTC/USD on BitTrex: 25/09/17 00:00C 3931.12\n', contentList[3])
-
+		# first command: histo price request with time specified
+		inputStr = 'btc usd 23/9/2017 2:00 bittrex'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual('BTC/USD on BitTrex: 23/09/17 00:00C 3773', printResult)
+		self.assertEqual('btc usd 23/09/17 02:00 bittrex', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# second command: partial request -d day only
+		inputStr = '-d25'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual('BTC/USD on BitTrex: 25/09/17 00:00C 3931.12', printResult)
+		self.assertEqual('btc usd 25/09/17 02:00 bittrex', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testControllerHistoDayPriceThenPartialDateDayOnly_2(self):
-		stdin = sys.stdin
-		sys.stdin = StringIO('btc usd 30/9/2017 all\nbtc usd 30/9/2017 2:00 all\n-d25\nq\ny')
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62\n', contentList[1])
-			self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62\n', contentList[3])
-			self.assertEqual('BTC/USD on AVG: 25/09/17 00:00C 3932.83\n', contentList[5])
+		# first command: histo price request date only, no time
+		inputStr = 'btc usd 30/9/2017 all'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62', printResult)
+		self.assertEqual('btc usd 30/09/17 00:00 all', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# second command: histo price request with time specified
+		inputStr = 'btc usd 30/9/2017 2:00 all'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62', printResult)
+		self.assertEqual('btc usd 30/09/17 02:00 all', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# third command: partial request -d day only
+		inputStr = '-d25'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual('BTC/USD on AVG: 25/09/17 00:00C 3932.83', printResult)
+		self.assertEqual('btc usd 25/09/17 02:00 all', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testControllerHistoDayPriceThenEmptyPartialParms(self):
-		stdin = sys.stdin
-		sys.stdin = StringIO('btc usd 30/9/2017 all\n-t\n-d\n-e\n-c\n-u\nq\ny')
+		#first command: histo price request
+		inputStr = 'btc usd 30/9/2017 all'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62', printResult)
+		self.assertEqual('btc usd 30/09/17 00:00 all', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
+		#second command: invalid partial request command with no data
+		inputStr = '-t'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
 
-		stdout = sys.stdout
+		self.assertEqual('ERROR - invalid partial request -t: -t with no value is not valid. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
 
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except BaseException as e:
-			import logging
-			logging.info(e)
-			pass
+		#third command: invalid partial request command with no data
+		inputStr = '-d'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
 
-		sys.stdin = stdin
-		sys.stdout = stdout
+		self.assertEqual('ERROR - invalid partial request -d: -d with no value is not valid. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
 
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual('BTC/USD on AVG: 30/09/17 00:00C 4360.62\n', contentList[1])
-			self.assertEqual('ERROR - invalid partial request -t: -t with no value is not valid. Partial request ignored.\n', contentList[3])
-			self.assertEqual('ERROR - invalid partial request -d: -d with no value is not valid. Partial request ignored.\n', contentList[5])
-			self.assertEqual('ERROR - invalid partial request -e: -e with no value is not valid. Partial request ignored.\n', contentList[7])
-			self.assertEqual('ERROR - invalid partial request -c: -c with no value is not valid. Partial request ignored.\n', contentList[9])
-			self.assertEqual('ERROR - invalid partial request -u: -u with no value is not valid. Partial request ignored.\n', contentList[11])
+		#fourth command: invalid partial request command with no data
+		inputStr = '-e'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - invalid partial request -e: -e with no value is not valid. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
+
+		#fifth command: invalid partial request command with no data
+		inputStr = '-c'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - invalid partial request -c: -c with no value is not valid. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
+
+		#sixth command: invalid partial request command with no data
+		inputStr = '-u'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - invalid partial request -u: -u with no value is not valid. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
 
 	def testControllerPartialRequestNoSaveBeforeFullRequestThenEmptyPartialRequest(self):
-		stdin = sys.stdin
-		sys.stdin = StringIO('-v12btc\n-v\n-v10btc')
+		#first command: valid partial request option no save modifier before any full request
+		inputStr = '-v12btc'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
 
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
+		self.assertEqual('ERROR - no full request executed before partial request -v12btc. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
 
-		stdout = sys.stdout
+		#second command: invalid partial request option with no data and no save modifier before any full request
+		inputStr = '-v'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
 
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except BaseException as e:
-			import logging
-			logging.info(e)
-			pass
+		self.assertEqual('ERROR - invalid partial request -v: -v with no value is not valid. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
 
-		sys.stdin = stdin
-		sys.stdout = stdout
+		#third command: valid partial request option no save modifier before any full request
+		inputStr = '-v10btc'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
 
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual('ERROR - no full request executed before partial request -v12btc. Partial request ignored.\n', contentList[1])
-			self.assertEqual('ERROR - invalid partial request -v: -v with no value is not valid. Partial request ignored.\n', contentList[3])
-			self.assertEqual('ERROR - no full request executed before partial request -v10btc. Partial request ignored.\n', contentList[5])
+		self.assertEqual('ERROR - no full request executed before partial request -v10btc. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertIsNone(fullCommandStrWithNoSaveOptions)
+		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertIsNone(fullCommandStrForStatusBar)
 
 	def testControllerHistoDayPriceInvalidTimeFormat(self):
-		stdin = sys.stdin
-		sys.stdin = StringIO('btc usd 23/9/2017 2.56 bittrex\nq\ny')
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual('ERROR - exchange could not be parsed due to an error in your request (btc usd 23/9/2017 2.56 bittrex).\n', contentList[1])
-
+		# first command: histo price request with invalid time specified
+		inputStr = 'btc usd 23/9/2017 2.56 bittrex'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual('ERROR - exchange could not be parsed due to an error in your request (btc usd 23/9/2017 2.56 bittrex).', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testControllerDateContainZeroYear(self):
 		# error msg not optimal in this case !!
-		stdin = sys.stdin
-		sys.stdin = StringIO('btc usd 1/10/0 2:58 bittrex\nq\ny')
 
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		now = DateTimeUtil.localNow('Europe/Zurich')
-
-		nowMonth = now.month
-
-		if nowMonth < 10:
-			nowMonthStr = '0' + str(nowMonth)
-		else:
-			nowMonthStr = str(nowMonth)
-
-		nowYear = now.year
-
-		nowYearStr = str(nowYear)
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual("ERROR - date not valid", contentList[1][:-1]) #removing \n from contentList entry !
-
+		# first command: histo price request with invalid date specified
+		inputStr = 'btc usd 1/10/0 2:58 bittrex'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual(
+			'ERROR - date not valid.',
+			printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testControllerRegressionOnDDMMDate(self):
 		# error msg not optimal in this case !!
@@ -271,150 +246,108 @@ class TestController(unittest.TestCase):
 			# but will be 01/01 and test will fail !
 			return
 
-		stdin = sys.stdin
-		sys.stdin = StringIO('neo btc {}/{} bitfinex\nq\ny'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr))
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		now = DateTimeUtil.localNow('Europe/Zurich')
-
-		nowMonth = now.month
-
-		if nowMonth < 10:
-			nowMonthStr = '0' + str(nowMonth)
-		else:
-			nowMonthStr = str(nowMonth)
-
-		nowYear = now.year
-
-		nowYearStr = str(nowYear)
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual('NEO/BTC on Bitfinex: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1]))
-			self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2000), contentList[2][:-1])
-
+		inputStr = 'neo btc {}/{} bitfinex'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr)
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual(
+			'NEO/BTC on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001, oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2000), UtilityForTest.removeOneEndPriceFromResult(printResult))
+		self.assertEqual('neo btc 05/02/21 00:00 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testControllerBugSpecifyTimeAfterAskedRT0001(self):
-		stdin = sys.stdin
-
 		# The scenario below is not usable because if you run it between 0:01
 		# and 3:44, the test will fail since the specified time (3:45) will be
 		# after the current time, which causes the request to be performed for
-		# the year before (request can not be for a< date/time in the future !)
+		# the year before (request can not be for a date/time in the future !)
 		#
 		# sys.stdin = StringIO('btc usd 0 all\n-t3:45\n-d0\nq\ny')
-
-		sys.stdin = StringIO('btc usd 0 all\n-t00:01\nq\ny')
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		sys.stdin = stdin
-		sys.stdout = stdout
+		
+		# first command: RT price request
+		inputStr = 'btc usd 0 all'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
 
 		now = DateTimeUtil.localNow('Europe/Zurich')
-		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
+																	nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
+		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
-			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
-																		nowDayStr,
-																		nowHourStr,
-																		nowMinuteStr,
-																		nowMonthStr,
-																		nowYearStr,
-																		resultNoEndPrice,
-																		expectedPrintResultNoDateTimeNoEndPrice)
+		# second command: partial -t request with 00 fo hh
+		inputStr = '-t00:01'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
 
-#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
-
+		self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr),
+						 UtilityForTest.removeOneEndPriceFromResult(printResult))
+		self.assertEqual('btc usd {}/{}/{} 00:01 all'.format(nowDayStr, nowMonthStr, nowYearStr), fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testControllerBugSpecifyTimeAfterAskedRT001(self):
-		stdin = sys.stdin
-
 		# The scenario below is not usable because if you run it between 0:01
 		# and 6:59, the test will fail since the specified time (7:00) will be
 		# after the current time, which causes the request to be performed for
 		# the year before (request can not be for a< date/time in the future !)
 		#
 		# sys.stdin = StringIO('btc usd 0 all\n-t7:00\n-d0\nq\ny')
-
-		sys.stdin = StringIO('btc usd 0 all\n-t0:01\nq\ny')
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
+		
+		# first command: RT price request
+		inputStr = 'btc usd 0 all'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
 		now = DateTimeUtil.localNow('Europe/Zurich')
-		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
-
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
-
-			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
-																		nowDayStr,
-																		nowHourStr,
-																		nowMinuteStr,
-																		nowMonthStr,
-																		nowYearStr,
-																		resultNoEndPrice,
-																		expectedPrintResultNoDateTimeNoEndPrice)
-#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
-
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
+																	nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		
+		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# second command: partial -t request with 0 fo hh
+		inputStr = '-t0:01'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr),
+						 UtilityForTest.removeOneEndPriceFromResult(printResult))
+		self.assertEqual('btc usd {}/{}/{} 00:01 all'.format(nowDayStr, nowMonthStr, nowYearStr),
+						 fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testControllerBugSpecifyTimeAfterAskedRT700ThenReaskRT(self):
-		stdin = sys.stdin
-
 		# The scenario below is not usable because if you run it between 0:01
 		# and 6:59, the test will fail since the specified time (7:00) will be
 		# after the current time, which causes the request to be performed for
@@ -422,64 +355,67 @@ class TestController(unittest.TestCase):
 		#
 		# sys.stdin = StringIO('btc usd 0 all\n-t7:00\n-d0\nq\ny')
 
-		sys.stdin = StringIO('btc usd 0 all\n-t0:01\n-d0\nq\ny')
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
+		# first command: RT price request
+		inputStr = 'btc usd 0 all'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
 		now = DateTimeUtil.localNow('Europe/Zurich')
-		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
-
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
-
-			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
-																		nowDayStr,
-																		nowHourStr,
-																		nowMinuteStr,
-																		nowMonthStr,
-																		nowYearStr,
-																		resultNoEndPrice,
-																		expectedPrintResultNoDateTimeNoEndPrice)
-
-#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
-
-			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
-
-			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
-																		nowDayStr,
-																		nowHourStr,
-																		nowMinuteStr,
-																		nowMonthStr,
-																		nowYearStr,
-																		resultNoEndPrice,
-																		expectedPrintResultNoDateTimeNoEndPrice)
-
-#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
-
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
+																	nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		
+		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# second command: partial -t request with 0 fo hh
+		inputStr = '-t0:01'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:01M'.format(nowDayStr, nowMonthStr, nowYearStr),
+						 UtilityForTest.removeOneEndPriceFromResult(printResult))
+		self.assertEqual('btc usd {}/{}/{} 00:01 all'.format(nowDayStr, nowMonthStr, nowYearStr),
+						 fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# third command: partial -d0 request to go back to RT
+		inputStr = '-d0'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
+																	nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('btc usd 0 all'.format(nowDayStr, nowMonthStr, nowYearStr),
+						 fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testControllerBugSpecifyDateAfterAskedRT2910(self):
-		stdin = sys.stdin
-
 		now = DateTimeUtil.localNow('Europe/Zurich')
 		oneDayAfterNow = now.shift(days=+1)
 		oneDayAfterNowYearStr, oneDayAfterNowMonthStr, oneDayAfterNowDayStr, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneDayAfterNow)
@@ -494,106 +430,114 @@ class TestController(unittest.TestCase):
 			# test is run on december 31st and so, the dd/mm request date will not be in the future,
 			# but will be 01/01 and test will fail !
 			return
-
-		sys.stdin = StringIO('btc usd 0 all\n-d{}/{}\nq\ny'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr))
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
+		
+		# first command: RT price request
+		inputStr = 'btc usd 0 all'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
 		now = DateTimeUtil.localNow('Europe/Zurich')
-		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
+																	nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		
+		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# second command: partial -d request with day/month
+		inputStr = '-d{}/{}'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr)
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
 
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
+		self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr,
+																	   now.year - 2001, oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
+						 UtilityForTest.removeOneEndPriceFromResult(printResult))
 
-			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
-																		nowDayStr,
-																		nowHourStr,
-																		nowMinuteStr,
-																		nowMonthStr,
-																		nowYearStr,
-																		resultNoEndPrice,
-																		expectedPrintResultNoDateTimeNoEndPrice)
-#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
-			self.assertEqual('Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[4][:-1])
-
+		self.assertEqual('btc usd {}/{}/{} {}:{} all'.format(oneDayAfterNowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
+						 fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testControllerBugSpecifyDate10DaysBeforeAfterAskedRTThenAskRTAgain(self):
-		stdin = sys.stdin
 		tenDaysBeforeNow = DateTimeUtil.localNow('Europe/Zurich').shift(days=-10)
 		tenDaysBeforeNowYearStr, tenDaysBeforeNowMonthStr, tenDaysBeforeNowDayStr, tenDaysBeforeNowHourStr, tenDaysBeforeNowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(tenDaysBeforeNow)
-
-		sys.stdin = StringIO('btc usd 0 all\n-d{}/{}/{}\n-d0\nq\ny'.format(tenDaysBeforeNowDayStr, tenDaysBeforeNowMonthStr, tenDaysBeforeNow.year))
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptoout.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptoout.txt'
-
-		stdout = sys.stdout
-
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				self.controller.run() #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
-
-		sys.stdin = stdin
-		sys.stdout = stdout
-
+		
+		# first command: RT price request
+		inputStr = 'btc usd 0 all'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
 		now = DateTimeUtil.localNow('Europe/Zurich')
-		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
-
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
-
-			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
-																		nowDayStr,
-																		nowHourStr,
-																		nowMinuteStr,
-																		nowMonthStr,
-																		nowYearStr,
-																		resultNoEndPrice,
-																		expectedPrintResultNoDateTimeNoEndPrice)
-
-#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[1][:-1])) #removing \n from contentList entry !
-			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C'.format(tenDaysBeforeNowDayStr, tenDaysBeforeNowMonthStr, tenDaysBeforeNowYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1])) #removing \n from contentList entry !
-			resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])
-			expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
-
-			UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
-																		nowDayStr,
-																		nowHourStr,
-																		nowMinuteStr,
-																		nowMonthStr,
-																		nowYearStr,
-																		resultNoEndPrice,
-																		expectedPrintResultNoDateTimeNoEndPrice)
-
-#            self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} {}:{}R'.format(nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1])) #removing \n from contentList entry !
-
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
+																	nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		
+		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# second command: partial -d request with day/month
+		inputStr = '-d{}/{}'.format(tenDaysBeforeNowDayStr, tenDaysBeforeNowMonthStr)
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual(
+			'BTC/USD on AVG: ' + '{}/{}/{} 00:00C'.format(
+				tenDaysBeforeNowDayStr, tenDaysBeforeNowMonthStr, tenDaysBeforeNowYearStr),
+			UtilityForTest.removeOneEndPriceFromResult(printResult))
+		
+		self.assertEqual('btc usd {}/{}/{} {}:{} all'.format(tenDaysBeforeNowDayStr, tenDaysBeforeNowMonthStr, tenDaysBeforeNowYearStr, nowHourStr,
+															 nowMinuteStr),
+						 fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# third command: partial -d0 request to go back to RT
+		inputStr = '-d0'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
+			inputStr)
+		
+		resultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on AVG: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
+																	nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	resultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('btc usd 0 all'.format(nowDayStr, nowMonthStr, nowYearStr),
+						 fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testControllerBugSpecifyFutureDateAfterAskedRTThenAskRTAgain(self):
 		stdin = sys.stdin
@@ -1545,4 +1489,4 @@ if __name__ == '__main__':
 	#unittest.main()
 	t = TestController()
 	t.setUp()
-	t.testControllerPartialRequestNoSaveBeforeFullRequestThenEmptyPartialRequest()
+	t.testControllerBugSpecifyDate10DaysBeforeAfterAskedRTThenAskRTAgain()

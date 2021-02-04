@@ -193,7 +193,7 @@ class CommandPrice(AbstractCommand):
 				# has no 31st or if he enters 30 or 29 and we are on February
 				result = ResultData()
 				result.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-									 "ERROR - {}: day {}, month {}".format(str(e), day, month))
+									 "ERROR - {}: day {}, month {}.".format(str(e), day, month))
 				return result
 
 			if DateTimeUtil.isAfter(localRequestDateTime, localNow):
@@ -281,7 +281,7 @@ class CommandPrice(AbstractCommand):
 
 		if unit == None or any(char.isdigit() for char in unit):
 			resultData = ResultData()
-			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - unit missing or invalid")
+			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - unit missing or invalid.")
 
 		return resultData
 
@@ -365,19 +365,19 @@ class CommandPrice(AbstractCommand):
 					return True
 				else:
 					resultData = ResultData()
-					resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - date not valid")
+					resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - date not valid.")
 					return resultData
 			elif len(monthStr) > 2:
 				resultData = ResultData()
 				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-									 "ERROR - {} not conform to accepted month format (MM or M)".format(monthStr))
+									 "ERROR - {} not conform to accepted month format (MM or M).".format(monthStr))
 				return resultData
 			elif yearStr != None:
 				yearStrLen = len(yearStr)
 				if yearStrLen != 2 and yearStrLen != 4:
 					resultData = ResultData()
 					resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-										 "ERROR - {} not conform to accepted year format (YYYY, YY or '')".format(
+										 "ERROR - {} not conform to accepted year format (YYYY, YY or '').".format(
 											 yearStr))
 
 					# avoiding that invalid year will pollute next price requests
@@ -412,7 +412,7 @@ class CommandPrice(AbstractCommand):
 																self.configManager.localTimeZone)
 			except ValueError as e:
 				resultData = ResultData()
-				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - " + str(e))
+				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - " + str(e) + '.')
 
 		return resultData
 
