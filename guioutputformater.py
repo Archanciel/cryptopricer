@@ -43,14 +43,14 @@ class GuiOutputFormater(AbstractOutputFormater):
 		command with the save mode option is returned as well (fullCommandStrWithSaveOptionsForHistoryList).
 		In the GUI, the full command with save mode option will	replace the corresponding full command string
 		no options (fullCommandStrNoOptions) in the command history list. If the added command option is not
-		in save mode (no option or -v for example), then None is returned for fullCommandStrWithSaveOptionsForHistoryList
-		and	the corresponding full command string no options (fullCommandStrNoOptions) will NOT have
-		to be replaced in the command history list.
+		in save mode (no option or -v... or -f... for example), then None is returned for
+		fullCommandStrWithSaveOptionsForHistoryList	and	the corresponding full command string no options
+		(fullCommandStrNoOptions) will NOT have	to be replaced in the command history list.
 		
 		Finally, what is the usefulness of the fullCommandStrWithNoSaveOptions returned string ? It
 		serves to differentiate a partial request with option(s) without save mode from a full request
 		with with option(s) without save mode. In case of partial request, the status bar content is
-		different from the case of a full requesr.
+		different from in the case of a full request.
 		
 		:param copyResultToClipboard:
 		:param resultData: result of the last full or partial request

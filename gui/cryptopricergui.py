@@ -558,8 +558,7 @@ class CryptoPricerGUI(BoxLayout):
 					# the case when an option without save mode was added as a partial request !
 					self.updateStatusBar(requestStr + ' --> ' + fullCommandStrForStatusBar)
 				else:
-					# here, a full request with no option (so no option with or without save mode
-					# was executed
+					# here, a full request with option without save mode was executed
 					self.updateStatusBar(fullCommandStrForStatusBar)
 
 

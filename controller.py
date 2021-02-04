@@ -58,10 +58,13 @@ class Controller:
 
 	def getPrintableResultForInput(self, inputStr):
 		'''
-		Return the printable request result, the full request command without any command option and
-		the full request command with any specified save mode option (option which is to be saved in the
-		command history list. A detailed explanation of the usefulness of the returned values is available
-		in the GuiOutputFormater.getFullCommandString(( method documentation.
+		Return the printable request result, the full request command without any command option,
+		the full request command with any specified NON save mode option (information used by
+		the GUI to define the status bar content, which differs according to the type of the
+		request, full or partial and finally the full request command with any specified save
+		mode option (option which is to be saved in the	command history list. A detailed
+		explanation of the usefulness of the returned values is availablein the
+		GuiOutputFormater.getFullCommandString(( method documentation.
 
 		:param inputStr:
 		:seqdiag_return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
