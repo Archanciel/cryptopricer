@@ -251,8 +251,8 @@ class TestController(unittest.TestCase):
 			inputStr)
 		
 		self.assertEqual(
-			'NEO/BTC on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001, oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2000), UtilityForTest.removeOneEndPriceFromResult(printResult))
-		self.assertEqual('neo btc 05/02/21 00:00 bitfinex', fullCommandStrNoOptions)
+			'NEO/BTC on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year.'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001, oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2000), UtilityForTest.removeOneEndPriceFromResult(printResult))
+		self.assertEqual('neo btc {}/{}/{} 00:00 bitfinex'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2000), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrForStatusBar)
@@ -461,7 +461,7 @@ class TestController(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controllerGui.getPrintableResultForInput(
 			inputStr)
 
-		self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr,
+		self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year.'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr,
 																	   now.year - 2001, oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
 						 UtilityForTest.removeOneEndPriceFromResult(printResult))
 
@@ -588,7 +588,7 @@ class TestController(unittest.TestCase):
 			inputStr)
 		
 		self.assertEqual(
-			'BTC/USD on AVG: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(
+			'BTC/USD on AVG: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year.'.format(
 				oneDayAfterNowDayStr, oneDayAfterNowMonthStr, now.year - 2001, oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
 			UtilityForTest.removeOneEndPriceFromResult(printResult))
 		
@@ -829,9 +829,9 @@ class TestController(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual("ERROR - 201 not conform to accepted year format (YYYY, YY or '')\n", contentList[1])
+			self.assertEqual("ERROR - 201 not conform to accepted year format (YYYY, YY or '').\n", contentList[1])
 			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneYearBeforeYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
-			self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneDayAfterNowYearStr), contentList[4][:-1])
+			self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year.'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneDayAfterNowYearStr), contentList[4][:-1])
 
 
 	def testControllerInvalidMonthThenValidDDMMInFuture(self):
@@ -876,9 +876,9 @@ class TestController(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual("ERROR - 999 not conform to accepted month format (MM or M)\n", contentList[1])
+			self.assertEqual("ERROR - 999 not conform to accepted month format (MM or M).\n", contentList[1])
 			self.assertEqual('BTC/USD on AVG: ' + '{}/{}/{} 00:00C'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneYearBeforeYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[3][:-1]))
-			self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneDayAfterNowYearStr), contentList[4][:-1])
+			self.assertEqual('Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year.'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, oneDayAfterNowYearStr), contentList[4][:-1])
 
 
 	def testControllerInvalidMonthValue(self):
@@ -905,7 +905,7 @@ class TestController(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual("ERROR - month must be in 1..12\n", contentList[1])
+			self.assertEqual("ERROR - month must be in 1..12.\n", contentList[1])
 
 
 	def testControllerInvalidDayValue(self):
@@ -932,7 +932,7 @@ class TestController(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual("ERROR - day is out of range for month\n", contentList[1])
+			self.assertEqual("ERROR - day is out of range for month.\n", contentList[1])
 
 
 	def testControllerInvalidHourValue(self):
@@ -959,7 +959,7 @@ class TestController(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual("ERROR - hour must be in 0..23\n", contentList[1])
+			self.assertEqual("ERROR - hour must be in 0..23.\n", contentList[1])
 
 
 	def testControllerInvalidMinuteValue(self):
@@ -986,7 +986,7 @@ class TestController(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual("ERROR - minute must be in 0..59\n", contentList[1])
+			self.assertEqual("ERROR - minute must be in 0..59.\n", contentList[1])
 
 
 	def testControllerInvalidCommandOnlyCryptoProvided(self):
@@ -1013,7 +1013,7 @@ class TestController(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual("ERROR - unit missing or invalid\n", contentList[1])
+			self.assertEqual("ERROR - unit missing or invalid.\n", contentList[1])
 
 
 	def testControllerInvalidCommandMissingUnitProvided(self):
@@ -1040,7 +1040,7 @@ class TestController(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual("ERROR - unit missing or invalid\n", contentList[1])
+			self.assertEqual("ERROR - unit missing or invalid.\n", contentList[1])
 
 
 	def testControllerHistoDayPriceDiffOptParmsOrder(self):
@@ -1221,7 +1221,7 @@ class TestController(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual('ERROR - unit missing or invalid\n', contentList[1])
+			self.assertEqual('ERROR - unit missing or invalid.\n', contentList[1])
 			self.assertEqual('ERROR - invalid partial request -uusd 2:56.\n', contentList[3])
 
 			if nowMonthStr == oneDaysAfterMonthStr:
@@ -1230,7 +1230,7 @@ class TestController(unittest.TestCase):
 			# specified, but with the day number set to tomorrow - in the future can not be
 			# run.
 				self.assertEqual('BTC/USD on BitTrex: ' + '{}/{}/{} 00:00C'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, oneYearBeforeYearStr), UtilityForTest.removeOneEndPriceFromResult(contentList[5][:-1]))
-				self.assertEqual('Warning - request date {}/{}/{} 02:56 can not be in the future and was shifted back to last year'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[6][:-1])
+				self.assertEqual('Warning - request date {}/{}/{} 02:56 can not be in the future and was shifted back to last year.'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, nowYearStr, nowHourStr, nowMinuteStr), contentList[6][:-1])
 
 
 	def testControllerHistoDayPriceWrongCommand(self):
@@ -1290,7 +1290,7 @@ class TestController(unittest.TestCase):
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
 			self.assertEqual(
-				'ERROR - unit missing or invalid', contentList[3][:-1])
+				'ERROR - unit missing or invalid.', contentList[3][:-1])
 			self.assertEqual(
 				'ERROR - no full request executed before partial request -uusd. Partial request ignored.', contentList[5][:-1]) #improve error msg
 			self.assertEqual(

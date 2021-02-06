@@ -255,7 +255,7 @@ class CommandPrice(AbstractCommand):
 
 		if wasDateInFutureSetToLastYear:
 			result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,
-							  "Warning - request date {} can not be in the future and was shifted back to last year".format(
+							  "Warning - request date {} can not be in the future and was shifted back to last year.".format(
 								  localRequestDateTime.format(self.configManager.dateTimeFormat)))
 
 		unsupportedOption = self.parsedParmData[self.UNSUPPORTED_OPTION]
