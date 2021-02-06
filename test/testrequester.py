@@ -271,7 +271,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestOOCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave")
-		cryptoCommand = self.requester.request()
+		cryptoCommand = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(cryptoCommand, CommandCrypto)
 		parsedParmData = cryptoCommand.parsedParmData
@@ -285,7 +285,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestOOCommandNoFlag(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf]")
-		cryptoCommand = self.requester.request()
+		cryptoCommand = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(cryptoCommand, CommandCrypto)
 		parsedParmData = cryptoCommand.parsedParmData
@@ -299,7 +299,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestOOCommandEmptyUnit(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] [] -nosave")
-		cryptoCommand = self.requester.request()
+		cryptoCommand = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(cryptoCommand, CommandCrypto)
 		parsedParmData = cryptoCommand.parsedParmData
@@ -313,7 +313,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestOOCommandNoUnit(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("oo btc [5/7 0.0015899 6/7 0.00153] -nosave")
-		command = self.requester.request()
+		command = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(command, CommandError)
 
@@ -323,7 +323,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestUserCommandNoCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc [5/7 0.0015899 6/7 0.00153] -nosave")
-		command = self.requester.request()
+		command = self.requester.getCommandFromCommandLine()
 
 		#now that you changed command price full pattern to render all parms except the first one optional,
 		#this input is interpreted as a CommandPrice
@@ -1642,7 +1642,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFull(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -1679,7 +1679,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullDateZero(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 0 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -1717,7 +1717,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullDateBeforeTimeZero(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/2017 0 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -1755,7 +1755,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullTimeZeroBeforeDate(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 0 10/9/2017 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -1793,7 +1793,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullDateZeroTimeZero(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 0 0 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -1830,7 +1830,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullDateZeroNoTime(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 0 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -1868,7 +1868,7 @@ class TestRequester(unittest.TestCase):
 		#first, enter full command price
 		stdin = sys.stdin
 		sys.stdin = StringIO("eth gbp 1/8/16 13:46 CCEX")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -1886,7 +1886,7 @@ class TestRequester(unittest.TestCase):
 
 		#then, enter partial command price
 		sys.stdin = StringIO("-cbtc -eKraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -1924,7 +1924,7 @@ class TestRequester(unittest.TestCase):
 		# first, enter full command price
 		stdin = sys.stdin
 		sys.stdin = StringIO("eth gbp 1/8/16 13:46 CCEX")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -1942,7 +1942,7 @@ class TestRequester(unittest.TestCase):
 
 		# then, enter partial command price
 		sys.stdin = StringIO("-d10/9")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -1980,7 +1980,7 @@ class TestRequester(unittest.TestCase):
 		# first, enter full command price
 		stdin = sys.stdin
 		sys.stdin = StringIO("eth gbp 1/8/16 13:46 CCEX")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2014,7 +2014,7 @@ class TestRequester(unittest.TestCase):
 
 		# then, enter partial command price
 		sys.stdin = StringIO("-d0")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2052,7 +2052,7 @@ class TestRequester(unittest.TestCase):
 		# first, enter full command price
 		stdin = sys.stdin
 		sys.stdin = StringIO("eth gbp 1/8/16 13:46 CCEX")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2070,7 +2070,7 @@ class TestRequester(unittest.TestCase):
 
 		# then, enter partial command price
 		sys.stdin = StringIO("-uusd -t0:15")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2108,7 +2108,7 @@ class TestRequester(unittest.TestCase):
 		# first, enter full command price
 		stdin = sys.stdin
 		sys.stdin = StringIO("eth gbp 1/8/16 13:46 CCEX")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2126,7 +2126,7 @@ class TestRequester(unittest.TestCase):
 
 		# then, enter partial command price. -t0 means we want current price
 		sys.stdin = StringIO("-uusd -t0")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2336,7 +2336,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionValueSaveCommandInInvalidPosThree(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd -vs0.01btc 10/9/17 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2350,7 +2350,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionValueSaveCommandInInvalidPosThreeAndUnsupportedOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd -vs0.01btc 10/9/17 12:45 Kraken -zunsupported")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2364,7 +2364,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionValueSaveCommandInInvalidPosFour(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 -vs0.01btc 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2378,7 +2378,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionValueSaveCommandInInvalidPosFive(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 -vs0.01btc Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2392,7 +2392,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithUnsupportedOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc eth 10/9/17 12:45 Kraken -zunsupported")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2420,7 +2420,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithUnsupportedOptionWithSaveModifier(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc eth 10/9/17 12:45 Kraken -zsunsupported")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2448,7 +2448,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithValueOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -v0.01btc")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2485,7 +2485,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithOptionValueSaveCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01btc")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2522,7 +2522,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithOptionValueSaveCommandAndUnsupportedOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01btc -zunsupported")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2559,7 +2559,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithPriceUnsupportedOptionAndValueSaveCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -zunsupported -vs0.01btc")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2596,7 +2596,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithValueOptionInInvalidPosThree(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd -v0.01btc 10/9/17 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2608,7 +2608,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithValueOptionInInvalidPosFour(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 -v0.01btc 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2620,7 +2620,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithValueOptionInInvalidPosFive(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 -v0.01btc Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2632,7 +2632,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionValueSaveCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vsooo")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -2646,7 +2646,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionValueCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vooo")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -2660,7 +2660,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionValueSaveSpec(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -2674,7 +2674,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionValueSaveNoFiatWithAmount(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -vs0.01")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -2688,7 +2688,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionValueNoFiatWithAmount(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -v0.01")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -2702,7 +2702,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithOptionValueEraseCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -v0")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2740,7 +2740,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionValueNoAmountNoFiat(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -v")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2756,7 +2756,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionFiatSaveCommandInInvalidPosThree(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd -fsbtc 10/9/17 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2770,7 +2770,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionFiatSaveCommandInInvalidPosThreeAndUnsupportedOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd -fsbtc 10/9/17 12:45 Kraken -zunsupported")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2784,7 +2784,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionFiatSaveCommandInInvalidPosFour(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 -fsbtc 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2798,7 +2798,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionFiatSaveCommandInInvalidPosFive(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 -fsbtc Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -2812,7 +2812,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithFiatOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -fbtc")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2850,7 +2850,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithFiatOptionExchange(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -fbtc.bittrex")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2887,7 +2887,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithFiatOptionSaveExchange(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -fsbtc.bittrex")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2924,7 +2924,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithOptionFiatSaveCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -fsbtc")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2959,7 +2959,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithOptionFiatSaveCommandAndUnsupportedOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -fsbtc -zunsupported")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -2996,7 +2996,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithPriceUnsupportedOptionAndFiatSaveCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -zunsupported -fsbtc")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3033,7 +3033,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithFiatOptionInInvalidPosThree(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd -fbtc 10/9/17 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3045,7 +3045,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithFiatOptionInInvalidPosFour(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 -fbtc 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3057,7 +3057,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithFiatOptionInInvalidPosFive(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 -fbtc Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3069,7 +3069,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionFiatSaveSpec(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -fs")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -3083,7 +3083,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionFiatNoFiat(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -f")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3097,7 +3097,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithFiatOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc eth 10/9/17 12:45 Kraken -fusd")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3134,7 +3134,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithFiatOptionSave(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc eth 10/9/17 12:45 Kraken -fsusd")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3171,7 +3171,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithOptionFiatErase(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc eth 10/9/17 12:45 Kraken -f0")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3208,7 +3208,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionFiatWithAmount(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -f0.01")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -3222,7 +3222,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionFiatSaveWithAmount(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -fs0.01")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -3238,7 +3238,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionValueNoAmountInvalidOptionFiat(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -v -f")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3254,7 +3254,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionPriceSaveCommandInInvalidPosThree(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd -ps0.02btc 10/9/17 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3268,7 +3268,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionPriceSaveCommandInInvalidPosThreeAndUnsupportedOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd -ps0.02btc 10/9/17 12:45 Kraken -zunsupported")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3282,7 +3282,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionPriceSaveCommandInInvalidPosFour(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 -ps0.02btc 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3296,7 +3296,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithOptionPriceSaveCommandInInvalidPosFive(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 -ps0.02btc Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3310,7 +3310,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithPriceOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -p0.01btc")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3347,7 +3347,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithPriceOptionExchange(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -p0.01btc.binance")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3383,7 +3383,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithPriceOptionSaveExchange(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.01btc.binance")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 		
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3421,7 +3421,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithOptionPriceSaveCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.02btc")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3459,7 +3459,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithOptionPriceSaveExchangeCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.02btc.binance")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3497,7 +3497,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithOptionPriceSaveCommandAndUnsupportedOption(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.02btc -zunsupported")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3534,7 +3534,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithPriceUnsupportedOptionAndPriceSaveCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -zunsupported -ps0.02btc")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3571,7 +3571,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithPriceOptionInInvalidPosThree(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd -p0.01btc 10/9/17 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3585,7 +3585,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithPriceOptionInInvalidPosFour(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 -p0.01btc 12:45 Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3599,7 +3599,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullWithPriceOptionInInvalidPosFive(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 -p0.01btc Kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -3613,7 +3613,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionPriceSaveCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -psooo")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -3627,7 +3627,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionPriceCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -pooo")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -3641,7 +3641,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionPriceSaveSpec(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -3655,7 +3655,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionPriceSaveNoFiatWithAmount(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.01")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -3669,7 +3669,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionPriceNoFiatWithAmount(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -p0.01")
-		commandError = self.requester.request()
+		commandError = self.requester.getCommandFromCommandLine()
 
 		self.assertEqual(self.commandError, commandError)
 		resultData = self.commandError.execute()
@@ -3683,7 +3683,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithOptionPriceEraseCommand(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -p0")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -3720,7 +3720,7 @@ class TestRequester(unittest.TestCase):
 	def testRequestCommandPriceFullEndingWithInvalidOptionPriceNoAmountNoFiat(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -p")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandError)
 		self.assertEqual(commandPrice, self.commandError)
@@ -6226,7 +6226,7 @@ class TestRequester(unittest.TestCase):
 		# first, enter full command price
 		stdin = sys.stdin
 		sys.stdin = StringIO("eth usd 1/8/16 13:46 kraken")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)
@@ -6244,7 +6244,7 @@ class TestRequester(unittest.TestCase):
 
 		# then, enter partial command price
 		sys.stdin = StringIO("-d10/9/20 12:22")
-		commandPrice = self.requester.request()
+		commandPrice = self.requester.getCommandFromCommandLine()
 
 		self.assertIsInstance(commandPrice, CommandPrice)
 		self.assertEqual(commandPrice, self.commandPrice)

@@ -19,7 +19,7 @@ def main():
 	configMgr = ConfigurationManager(configPath)
 	controller = Controller(ConsoleOutputFormater(configMgr), configMgr, PriceRequester())
 
-	controller.run()
+	controller.commandLineLoop()
 	
 if __name__ == '__main__':
 	main()

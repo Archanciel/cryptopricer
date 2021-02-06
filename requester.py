@@ -168,7 +168,10 @@ class Requester:
 										   '-P': CommandPrice.OPTION_PRICE_DATA}
 
 
-	def request(self):
+	def getCommandFromCommandLine(self):
+		"""
+		Used essentially by the command line version of CryptoPricer.
+		"""
 		inputStr = input(Requester.ENTER_COMMAND_PROMPT)
 		upperInputStr = inputStr.upper()
 
@@ -185,7 +188,9 @@ class Requester:
 
 
 	def getCommand(self, inputStr):
-		'''
+		"""
+		Used by the gui version of CryptoPricer.
+		
 		Parses the passed input string and return a Command concrete instance
 		filled with the command specific data. May return a CommandError.
 		
@@ -193,7 +198,7 @@ class Requester:
 		:seqdiag_return AbstractCommand
 		:seqdiag_return_note May return a CommandError in case of parsing problem.
 		:return: Command concrete instance
-		'''
+		"""
 
 		returnedCommand = None
 

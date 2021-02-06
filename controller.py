@@ -41,14 +41,12 @@ class Controller:
 		self.printer = printer
 		
 
-	def run(self):
-		'''
+	def commandLineLoop(self):
+		"""
 		Used essentially by the command line version of CryptoPricer.
-
-		:return: nothing
-		'''
+		"""
 		while True:
-			command = self.requester.request()
+			command = self.requester.getCommandFromCommandLine()
 			result = command.execute()
 
 			if result != '':
@@ -128,7 +126,7 @@ if __name__ == '__main__':
 	# sys.stdout = open(FILE_PATH, 'w')
 
 	c = Controller(ConsoleOutputFormater())
-	c.run()
+	c.commandLineLoop()
 
 	sys.stdin = stdin
 	#sys.stdout = stdout
