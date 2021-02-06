@@ -523,7 +523,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		self.assertEqual(
-			'ERROR - minute must be in 0..59', printResult)
+			'ERROR - minute must be in 0..59.', printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
@@ -1548,7 +1548,7 @@ class TestControllerGui(unittest.TestCase):
 		except ValueError:
 			# only if the request is for a month which does not have a 31st is the test performed !
 			self.assertEqual(
-				'ERROR - day is out of range for month: day 31, month {}'.format(now.month), printResult)
+				'ERROR - day is out of range for month: day 31, month {}.'.format(now.month), printResult)
 			self.assertEqual('', fullCommandStrNoOptions)
 			self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
@@ -1602,7 +1602,7 @@ class TestControllerGui(unittest.TestCase):
 			# specified, but with the day number set to tomorrow - in the future can not be
 			# run.
 			self.assertEqual(
-				'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, oneYearBeforeYearStr, oneDaysAfterDayStr, oneDaysAfterMonthStr, oneDaysAfterYearStr, nowHourStr, nowMinuteStr),
+				'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year.'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, oneYearBeforeYearStr, oneDaysAfterDayStr, oneDaysAfterMonthStr, oneDaysAfterYearStr, nowHourStr, nowMinuteStr),
 				UtilityForTest.removeOneEndPriceFromResult(printResult))
 			self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(oneDaysAfterDayStr, nowMonthStr, nowYearStr, nowHourStr,
 																   nowMinuteStr), fullCommandStrNoOptions)
@@ -1688,7 +1688,7 @@ class TestControllerGui(unittest.TestCase):
 			# specified, but with the day number set to tomorrow - in the future can not be
 			# run.
 			self.assertEqual(
-				'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, oneYearBeforeYearStr, oneDaysAfterDayStr, oneDaysAfterMonthStr, oneDaysAfterYearStr, nowHourStr, nowMinuteStr),
+				'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year.'.format(oneDaysAfterDayStr, oneDaysAfterMonthStr, oneYearBeforeYearStr, oneDaysAfterDayStr, oneDaysAfterMonthStr, oneDaysAfterYearStr, nowHourStr, nowMinuteStr),
 				UtilityForTest.removeOneEndPriceFromResult(printResult))
 			self.assertEqual('btc usd {}/{}/{} {}:{} bitfinex'.format(oneDaysAfterDayStr, nowMonthStr, nowYearStr, nowHourStr,
 																   nowMinuteStr), fullCommandStrNoOptions)
@@ -4168,7 +4168,7 @@ class TestControllerGui(unittest.TestCase):
 			nowLastYear = DateTimeUtil.localNow(LOCAL_TIME_ZONE).shift(years=-1)
 			nowLastYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
 				nowLastYear)
-			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year.'
 			expectedPrintResult = expectedPrintResult.format(oneDaysBeforeDayStr, nowMonthStr, nowLastYearStr, oneDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr)
 		else:
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} {}:{}M'
@@ -4181,7 +4181,7 @@ class TestControllerGui(unittest.TestCase):
 																   nowMinuteStr), fullCommandStrNoOptions)
 		else:
 			# if test is run on February 1st for example
-			self.assertEqual('ERROR - day is out of range for month: day 31, month {}'.format(nowMonthStr.replace('0', '')), printResult)
+			self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
 
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
@@ -4208,7 +4208,7 @@ class TestControllerGui(unittest.TestCase):
 			nowLastYear = DateTimeUtil.localNow(LOCAL_TIME_ZONE).shift(years=-1)
 			nowLastYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
 				nowLastYear)
-			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year'
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year.'
 			expectedPrintResult = expectedPrintResult.format(tenDaysBeforeDayStr, nowMonthStr, nowLastYearStr, tenDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr)
 		else:
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'

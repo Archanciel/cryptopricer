@@ -324,7 +324,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - date not valid")
+                         "ERROR - date not valid.")
 
 
     def testExecuteHistoDayPriceInvalidYearIsZero(self):
@@ -340,7 +340,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - date not valid")
+                         "ERROR - date not valid.")
 
     def testExecuteHistoDayPriceOnlyDaySpecified(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -369,7 +369,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - 017 not conform to accepted year format (YYYY, YY or '')")
+                         "ERROR - 017 not conform to accepted year format (YYYY, YY or '').")
 
 
     def testExecuteRealTimePriceInvalidYearFiveDigit(self):
@@ -385,7 +385,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - 20017 not conform to accepted year format (YYYY, YY or '')")
+                         "ERROR - 20017 not conform to accepted year format (YYYY, YY or '').")
 
 
     def testExecuteRealTimePriceInvalidMonthThreeDigit(self):
@@ -401,7 +401,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - 112 not conform to accepted month format (MM or M)")
+                         "ERROR - 112 not conform to accepted month format (MM or M).")
 
 
     def testExecuteRealTimePriceInvalidDayThreeDigit(self):
@@ -417,7 +417,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - day is out of range for month")
+                         "ERROR - day is out of range for month.")
 
 
     def testExecuteRealTimePriceInvalidDayValue(self):
@@ -433,7 +433,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - day is out of range for month")
+                         "ERROR - day is out of range for month.")
 
 
     def testExecuteRealTimePriceInvalidMonthValue(self):
@@ -449,7 +449,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - month must be in 1..12")
+                         "ERROR - month must be in 1..12.")
 
 
     def testExecuteRealTimePriceInvalidHourValue(self):
@@ -465,7 +465,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - hour must be in 0..23")
+                         "ERROR - hour must be in 0..23.")
 
 
     def testExecuteRealTimePriceInvalidMinuteValue(self):
@@ -481,7 +481,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - minute must be in 0..59")
+                         "ERROR - minute must be in 0..59.")
 
 
     def testExecuteHistoricalPriceDateOneYearFromNow(self):
@@ -501,7 +501,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_FUTURE_DATE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year".format(nowDayStr, nowMonthStr, (now.year + 1 - 2000), nowHourStr, nowMinuteStr))
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year.".format(nowDayStr, nowMonthStr, (now.year + 1 - 2000), nowHourStr, nowMinuteStr))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
@@ -537,7 +537,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_FUTURE_DATE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year".format(nowDayStr, nowMonthStr, (now.year + 2 - 2000)))
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} 00:00 can not be in the future and was shifted back to last year.".format(nowDayStr, nowMonthStr, (now.year + 2 - 2000)))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
@@ -583,7 +583,7 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_FUTURE_DATE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year".format(nowDayStr, nowMonthStr, (now.year - 2000), nowHourStr, nowMinutePlusOneStr))
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE), "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year.".format(nowDayStr, nowMonthStr, (now.year - 2000), nowHourStr, nowMinutePlusOneStr))
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), 'USD')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
@@ -695,7 +695,7 @@ class TestCommandPrice(unittest.TestCase):
         resultData = self.commandPrice.execute()
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
-                         "ERROR - unit missing or invalid")
+                         "ERROR - unit missing or invalid.")
 
     def testExecuteHistoricalPriceOptionValue(self):
         # btc usd 12/9/17 10:05 bittrex -v0.001btc
