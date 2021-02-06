@@ -21,11 +21,11 @@ participant PriceRequester
 		web site
 	end note
 participant GuiOutputFormater
-GUI -> Controller: getPrintableResultForInput(inputStr)
+GUI -> Controller: getPrintableResultForInput(partialRequestStr)
 	activate Controller
-	Controller -> Requester: getCommand(inputStr)
+	Controller -> Requester: getCommand(partialRequestStr)
 		activate Requester
-		Requester -> Requester: _parseAndFillCommandPrice(inputStr)
+		Requester -> Requester: _parseAndFillCommandPrice(partialRequestStr)
 			activate Requester
 			Requester -> Requester: _buildFullCommandPriceOptionalParmsDic(optionalParmList)
 				activate Requester

@@ -132,6 +132,9 @@ class Requester:
 	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
 	PATTERN_PARTIAL_PRICE_REQUEST_ERROR = r"({}([\d\w,\./]*))(?: .+|)"
 	
+#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
+#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\. ]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
+#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*)( \d+:\d+)*)(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
 	'''
 	The next pattern splits the parameter data appended to the -v partial command.
 	
@@ -140,8 +143,8 @@ class Requester:
 	'''
 	OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
 	OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
-	#OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
-	OPTION_PRICE_PARM_DATA_PATTERN =  r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
+#   OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
+	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
 
 	REQUEST_TYPE_PARTIAL = 'PARTIAL'
 	REQUEST_TYPE_FULL = 'FULL'
@@ -474,11 +477,11 @@ class Requester:
 		:seqdiag_return CommandPrice or CommandError
 		:return: self.commandPrice or self.commandError or None, which will cause an error to be raised
 		'''
-		# First, try to parse a full request inputStr
+		# First, try to parse a full request partialRequestStr
 		groupList = self._parseGroups(self.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
 		if groupList == ():
-			# Second, as full request pattern was not matched, try to parse a partial request inputStr
+			# Second, as full request pattern was not matched, try to parse a partial request partialRequestStr
 			groupList = self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, inputStr)
 			if groupList != ():
 				# Partial request entered. Here, parm values are associated to parm tags
@@ -501,6 +504,7 @@ class Requester:
 				for command in it:
 					value = next(it)
 					if value != None:
+						value = value
 						commandUpper = command.upper()
 						if commandUpper in keys:
 							if value == '' or value.upper() == 'S':
@@ -530,18 +534,18 @@ class Requester:
 
 
 				if self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == '0':
-					#-d0 which means RT entered. In this case, the previous
-					#date/time info are no longer relevant !
+					# -d0 which means RT entered. In this case, the previous
+					# date/time info are no longer relevant and must be erased!
 					self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] = CommandPrice.PRICE_TYPE_RT
 					hourMinute, dayMonthYear = self._wipeOutDateTimeInfoFromCommandPrice()
 				elif self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR] == None and self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] == None:
-					#here, partial command(s) which aren't date/time related were entered: the previous request price type must be considered !
+					# here, partial command(s) which aren't date/time related were entered: the previous request price type must be considered !
 					if self.commandPrice.parsedParmData[CommandPrice.PRICE_TYPE] == CommandPrice.PRICE_TYPE_RT:
 						hourMinute, dayMonthYear = self._wipeOutDateTimeInfoFromCommandPrice()
 					else:
-						#here, since previous request was not RT, hourMinute and dayRonthYear must be rebuilt
-						#from the date/time values of the previous request. Don't forget that OAY_MONTH_YEAR
-						#and HOUR_MINUTE are set to None once date/time values have been acquired !
+						# here, since previous request was not RT, hourMinute and dayMonthYear must be rebuilt
+						# from the date/time values of the previous request. Don't forget that OAY_MONTH_YEAR
+						# and HOUR_MINUTE are set to None once date/time values have been acquired !
 						if self._isMinimalDateTimeInfoFromPreviousRequestAvailable():
 							dayMonthYear, hourMinute = self._rebuildPreviousRequestDateTimeValues()
 						elif self._isPreviousFullRequestActive():
@@ -560,8 +564,20 @@ class Requester:
 							
 							return self.commandError
 				else:
-					hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
-					dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
+					# here, either commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
+					# or commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE] or both are
+					# not None. Since the -d partial request value can be -d21/2/20 13:05,
+					# which could not be parsed by the
+					# self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, partialRequestStr)
+					# above, we have to try to extract a DMY and HM date/time value from the
+					# partialRequestStr in case the -d partial request did contain a time element
+					dayMonthYear, hourMinute = self.tryExtractDateTimeValueFromPartialRequest(inputStr)
+					if dayMonthYear is None and hourMinute is None:
+						# here, partial request -d contained no time value and so was parsed
+						# by self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, partialRequestStr)
+						# above
+						dayMonthYear = self.commandPrice.parsedParmData[CommandPrice.DAY_MONTH_YEAR]
+						hourMinute = self.commandPrice.parsedParmData[CommandPrice.HOUR_MINUTE]
 			else: #neither full nor parrial pattern matched
 				return None # will cause an error.
 		else:
@@ -686,7 +702,30 @@ class Requester:
 		else:
 			# here, no option -v, -f or -p specified !
 			return self.commandPrice
-
+	
+	def tryExtractDateTimeValueFromPartialRequest(self, partialRequestStr):
+		"""
+		Handles a -d partial request containing time component which could not
+		be parsed sooner.
+		
+		:param partialRequestStr: partial request string
+		
+		:return: None, None if no time value or date and time components otherwise
+		"""
+		dateTimePattern = r"^-d(\d+/\d+/\d+ \d+:\d+)|^-d(\d+/\d+ \d+:\d+)|^-d(\d+ \d+:\d+)|^-d(\d+/\d+/\d+)|^-d(\d+/\d+)|^-d(\d+)"
+		dateTimeInputStr = ''
+		for grps in re.finditer(dateTimePattern, partialRequestStr):
+			for elem in grps.groups():
+				if elem is not None:
+					dateTimeInputStr = elem
+		if ':' in dateTimeInputStr:
+			dateTimeValueLst = dateTimeInputStr.split(' ')
+			dayMonthYear = dateTimeValueLst[0]
+			hourMinute = dateTimeValueLst[1]
+			return dayMonthYear, hourMinute
+		else:
+			return None, None
+	
 	def _isPreviousFullRequestActive(self):
 		"""
 		Checks if a full request was entered before the currently handled partial request.
@@ -926,7 +965,7 @@ class Requester:
 	def _wholeParmAndInvalidValue(self, parmSymbol, inputStr):
 		'''
 		Help improve error msg in case of invalid partial command parm value. For example,
-		if inputStr == -ceth -ebittrex -t6.45 -d21/12 and parmSymbol == -t, returns
+		if partialRequestStr == -ceth -ebittrex -t6.45 -d21/12 and parmSymbol == -t, returns
 		-t6.45 and 6.45 so that error msg for this invalid command can be meaningfull
 		:param parmSymbol:
 		:param inputStr:
@@ -1082,7 +1121,7 @@ if __name__ == '__main__':
 	
 	r.commandPrice = CommandPrice()
 	inputStr = "btc usd Kraken 10/9/17 12:45"
-#    groupL = r._parseGroups(r.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
+#    groupL = r._parseGroups(r.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, partialRequestStr)
 
 #    print(groupL)
 #    print(r._validateFullCommandPriceParsedGroupsOrder(groupL))

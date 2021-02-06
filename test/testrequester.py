@@ -6222,7 +6222,87 @@ class TestRequester(unittest.TestCase):
 		#formatting of request input string has been moved to end of Requester.getCommand !
 		self.assertEqual("ERROR - invalid partial request : -ps with no value is not valid. Partial request ignored.", resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
-	def testRequestCommandPricePartialDateTime(self):
+	def testRequestCommandPricePartialDateTimeDMYYYY(self):
+		# first, enter full command price
+		stdin = sys.stdin
+		sys.stdin = StringIO("eth usd 1/8/16 13:46 kraken")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '1')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '13')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		# then, enter partial command price
+		sys.stdin = StringIO("-d10/9/2020 12:22")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '2020')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '22')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		sys.stdin = stdin
+
+	def testRequestCommandPricePartialDateTime0D0MYYYY(self):
+		# first, enter full command price
+		stdin = sys.stdin
+		sys.stdin = StringIO("eth usd 1/8/16 13:46 kraken")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '1')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '13')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		# then, enter partial command price
+		sys.stdin = StringIO("-d01/09/2020 12:22")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '01')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '09')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '2020')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '22')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		sys.stdin = stdin
+
+	def testRequestCommandPricePartialDateTimeDMYY(self):
 		# first, enter full command price
 		stdin = sys.stdin
 		sys.stdin = StringIO("eth usd 1/8/16 13:46 kraken")
@@ -6262,11 +6342,89 @@ class TestRequester(unittest.TestCase):
 
 		sys.stdin = stdin
 
-	def runTests(self):
-		unittest.main()
+	def testRequestCommandPricePartialDateTimeDM(self):
+		# first, enter full command price
+		stdin = sys.stdin
+		sys.stdin = StringIO("eth usd 1/8/16 13:46 kraken")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '1')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '13')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		# then, enter partial command price
+		sys.stdin = StringIO("-d10/9 12:22")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '9')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '22')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		sys.stdin = stdin
+
+	def testRequestCommandPricePartialDateTimeD(self):
+		# first, enter full command price
+		stdin = sys.stdin
+		sys.stdin = StringIO("eth usd 1/8/16 13:46 kraken")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '1')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '13')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		# then, enter partial command price
+		sys.stdin = StringIO("-d10 12:22")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '22')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		sys.stdin = stdin
 
 if __name__ == '__main__':
 #	unittest.main()
 	t = TestRequester()
 	t.setUp()
+	#t.testRequestCommandPricePartialCryptoExchange()
 	t.testRequestCommandPricePartialDateTime()
