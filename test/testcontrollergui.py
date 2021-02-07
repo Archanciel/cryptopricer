@@ -1309,6 +1309,61 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('btc eth 0 binance', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 	
+	def testGetPrintableResultForUnsupportedPartialRequestOptionSaveAfterValidRealTimeRequest(self):
+		"""
+		This test ensures that a partial request with an unsupported option submitted
+		after a valid RT full request gets a result with a warning.
+		:return:
+		"""
+		# first command: valid RT price request
+		inputStr = 'btc eth 0 binance'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		
+		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on Binance: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
+																	nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	requestResultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		
+		self.assertEqual('btc eth 0 binance', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		
+		# second command: partial request with unsupported option
+		inputStr = '-zs'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		
+		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on Binance: R\nWarning - unsupported option -z in request -zs - option ignored.'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
+																	nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	requestResultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		
+		self.assertEqual('btc eth 0 binance', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
 	def testGetPrintableResultForReturnPressedAfterUnsupportedPartialRequestOptionAfterValidRealTimeRequest(self):
 		"""
 		This test execute three requests:
@@ -2010,12 +2065,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('eth btc {}/{}/{} {}:{} binance -vs12eth'.format(requestDayStr, requestMonthStr, fiveDaysBeforeYearStr, hourStr, minuteStr), fullCommandStrWithSaveOptionsForHistoryList)
 
 
-	def testGetPrintableResultForInputScenarioWithInvalidOptionValue(self):
-		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
-
-		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
-			now)
-
+	def testGetPrintableResultForInputScenarioWithOptionValueAtWrongPosition(self):
 		# first command: RT price request
 		inputStr = 'btc usd 0 -vs10btc bitfinex'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
@@ -4432,9 +4482,96 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual(None, fullCommandStrForStatusBar)
 
+	def testGetPrintableResultForInputScenarioWithInvalidOptionValue(self):
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+
+		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+		# first command: full request no option
+		inputStr = 'eth usd 0 bitfinex'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  requestResultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
+		# second command: partial request invalid -v option
+		inputStr = '-v'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - invalid partial request -v: -v with no value is not valid. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
+		# third command: partial request invalid -vs option
+		inputStr = '-vs'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - invalid partial request -vs: -vs with no value is not valid. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
+	def testGetPrintableResultForInputScenarioWithInvalidOptionFiat(self):
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+
+		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
+
+		# first command: full request no option
+		inputStr = 'eth usd 0 bitfinex'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+														  nowHourStr,
+														  nowMinuteStr,
+														  nowMonthStr,
+														  nowYearStr,
+														  requestResultNoEndPrice,
+														  expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
+		# second command: partial request invalid -v option
+		inputStr = '-f'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - invalid partial request -f: -f with no value is not valid. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
+		# third command: partial request invalid -vs option
+		inputStr = '-fs'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		self.assertEqual('ERROR - invalid partial request -fs: -fs with no value is not valid. Partial request ignored.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
-	tst.testGetPrintableResultForInputScenarioPartialRequestDateTime()
+	tst.testGetPrintableResultForUnsupportedPartialRequestOptionSaveAfterValidRealTimeRequest()
