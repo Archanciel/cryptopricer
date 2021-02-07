@@ -3552,7 +3552,7 @@ class TestControllerGui(unittest.TestCase):
 		ethUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
 
 		#ensure fiat value of eth is correct
-		self.assertAlmostEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate, delta=0.4)
+		self.assertAlmostEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate, delta=0.5)
 
 	def testOptionFiatValueComputationIsCorrectPartialRequestHistoDayPrice(self):
 		'''
@@ -4291,18 +4291,18 @@ class TestControllerGui(unittest.TestCase):
 		self.assertIsNone(fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertIsNone(fullCommandStrForStatusBar)
 
-	def testGetPrintableResultForInputScenarioWithOptionValue_(self):
+	def testGetPrintableResultForInputScenarioPartialRequestDateTime(self):
 		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
 
 		nowYearStr, nowMonthStr, nowDayStr,nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(now)
 
 		#first command: RT price request
-		inputStr = 'eth usd 0 bitfinex'
+		inputStr = 'btc usd 0 bitfinex'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
 		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD on Bitfinex: R'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -4312,104 +4312,129 @@ class TestControllerGui(unittest.TestCase):
 														  requestResultNoEndPrice,
 														  expectedPrintResultNoDateTimeNoEndPrice)
 
-		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		self.assertEqual('btc usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
-		#second command: value option
-		inputStr = '-v10eth'
+		twoDaysBeforeArrowDate = now.shift(days=-2)
+
+		twoDaysBeforeYearStr, twoDaysBeforeMonthStr, twoDaysBeforeDayStr, twoDaysBeforeHourStr, twoDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(twoDaysBeforeArrowDate)
+
+		#second command: partial date -d and time -t request
+		inputStr = '-d{}/{}/{} -t12:45'.format(twoDaysBeforeDayStr, twoDaysBeforeMonthStr, twoDaysBeforeYearStr)
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+		expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 12:45M'
+		expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr)
 
-		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-														  nowHourStr,
-														  nowMinuteStr,
-														  nowMonthStr,
-														  nowYearStr,
-														  requestResultNoEndPrice,
-														  expectedPrintResultNoDateTimeNoEndPrice)
-		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
+		if not 'ERROR' in printResult:
+			self.assertEqual(expectedPrintResult,
+				UtilityForTest.removeOneEndPriceFromResult(printResult))
+			self.assertEqual('btc usd {}/{}/{} 12:45 bitfinex'.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+																   nowMinuteStr), fullCommandStrNoOptions)
+		else:
+			# if test is run on March 1st for example
+			self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
+
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
-		#third command: value save option
-		inputStr = '-vs100usd'
+		#third command: partial date -d with time request
+		inputStr = '-d{} 11:34'.format(twoDaysBeforeDayStr)
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 
-		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
+		if 'Warning - request date' in printResult:
+			# we are on the first day of current month. So, the day number of 2 days
+			# before now  will generate a request date in the future. Ex: 2 days before
+			# April 1st is March 30st, so 30/04/current year, a date in the future !
+			nowLastYear = DateTimeUtil.localNow(LOCAL_TIME_ZONE).shift(years=-1)
+			nowLastYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+				nowLastYear)
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 11:34 can not be in the future and was shifted back to last year.'
+			expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, nowMonthStr, nowLastYearStr, twoDaysBeforeDayStr, nowMonthStr, nowYearStr)
+		else:
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 11:34M'
+			expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr)
 
-		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-														  nowHourStr,
-														  nowMinuteStr,
-														  nowMonthStr,
-														  nowYearStr,
-														  requestResultNoEndPrice,
-														  expectedPrintResultNoDateTimeNoEndPrice)
+		if not 'ERROR' in printResult:
+			self.assertEqual(expectedPrintResult,
+				UtilityForTest.removeOneEndPriceFromResult(printResult))
+			self.assertEqual('btc usd {}/{}/{} 11:34 bitfinex'.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+																   nowMinuteStr), fullCommandStrNoOptions)
+		else:
+			# if test is run on February 1st for example
+			self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
 
-		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
-		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveOptionsForHistoryList)
-
-		#fourth command: '' to replay lst command
-		inputStr = ''
-		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
-			inputStr)
-
-		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/USD on Bitfinex: R'
-
-		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-														  nowHourStr,
-														  nowMinuteStr,
-														  nowMonthStr,
-														  nowYearStr,
-														  requestResultNoEndPrice,
-														  expectedPrintResultNoDateTimeNoEndPrice)
-		self.assertEqual('eth usd 0 bitfinex', fullCommandStrNoOptions)
-		self.assertEqual('eth usd 0 bitfinex -vs100usd', fullCommandStrWithSaveOptionsForHistoryList)
-
-		#fifth command: change crypto
-		inputStr = '-cneo'
-		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
-			inputStr)
-
-		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD on Bitfinex: R'
-
-		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-														  nowHourStr,
-														  nowMinuteStr,
-														  nowMonthStr,
-														  nowYearStr,
-														  requestResultNoEndPrice,
-														  expectedPrintResultNoDateTimeNoEndPrice)
-		self.assertEqual('neo usd 0 bitfinex', fullCommandStrNoOptions)
-		self.assertEqual('neo usd 0 bitfinex -vs100usd', fullCommandStrWithSaveOptionsForHistoryList)
-
-		#sixth command: remove value option
-		inputStr = '-v0'
-		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
-			inputStr)
-
-		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'NEO/USD on Bitfinex: R'
-
-		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-														  nowHourStr,
-														  nowMinuteStr,
-														  nowMonthStr,
-														  nowYearStr,
-														  requestResultNoEndPrice,
-														  expectedPrintResultNoDateTimeNoEndPrice)
-		self.assertEqual('neo usd 0 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
+		#fourth command: partial date -d with time request
+		oneDayBeforeArrowDate = now.shift(days=-1)
+		oneDayBeforeYearStr, oneDayBeforeMonthStr, oneDayBeforeDayStr, oneDayBeforeHourStr, oneDayBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(oneDayBeforeArrowDate)
+
+		inputStr = '-d{} 16:34'.format(oneDayBeforeDayStr)
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		if 'Warning - request date' in printResult:
+			# we are on the first day of current month. So, the day number of 2 days
+			# before now  will generate a request date in the future. Ex: 2 days before
+			# April 1st is March 30st, so 30/04/current year, a date in the future !
+			nowLastYear = DateTimeUtil.localNow(LOCAL_TIME_ZONE).shift(years=-1)
+			nowLastYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+				nowLastYear)
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 16:34 can not be in the future and was shifted back to last year.'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowLastYearStr, oneDayBeforeDayStr, nowMonthStr, nowYearStr)
+		else:
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 16:34M'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr)
+
+		if not 'ERROR' in printResult:
+			self.assertEqual(expectedPrintResult,
+				UtilityForTest.removeOneEndPriceFromResult(printResult))
+			self.assertEqual('btc usd {}/{}/{} 16:34 bitfinex'.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+																   nowMinuteStr), fullCommandStrNoOptions)
+		else:
+			# if test is run on February 1st for example
+			self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
+
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
+		#fifth command: partial same day date -d with time different request
+		inputStr = '-d{} 18:34'.format(oneDayBeforeDayStr)
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+
+		if 'Warning - request date' in printResult:
+			# we are on the first day of current month. So, the day number of 2 days
+			# before now  will generate a request date in the future. Ex: 2 days before
+			# April 1st is March 30st, so 30/04/current year, a date in the future !
+			nowLastYear = DateTimeUtil.localNow(LOCAL_TIME_ZONE).shift(years=-1)
+			nowLastYearStr, _, _, _, _ = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+				nowLastYear)
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 18:34 can not be in the future and was shifted back to last year.'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowLastYearStr, oneDayBeforeDayStr, nowMonthStr, nowYearStr)
+		else:
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 18:34M'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr)
+
+		if not 'ERROR' in printResult:
+			self.assertEqual(expectedPrintResult,
+				UtilityForTest.removeOneEndPriceFromResult(printResult))
+			self.assertEqual('btc usd {}/{}/{} 18:34 bitfinex'.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+																   nowMinuteStr), fullCommandStrNoOptions)
+		else:
+			# if test is run on February 1st for example
+			self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
+
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 
 if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
-#	tst.testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsCrypto()
-	tst.testGetPrintableResultForPartialRequestsWithNoPreviousFullRequest()
+	tst.testGetPrintableResultForInputScenarioPartialRequestDateTime()
