@@ -365,23 +365,24 @@ class CryptoPricerGUI(BoxLayout):
 		:return:
 		'''
 		if not (os.path.isdir(dataPath)):
-			popupSize = None
-
-			if platform == 'android':
-				popupSize = (980, 450)
-			elif platform == 'win':
-				popupSize = (300, 150)
-
-			popup = Popup(title='CryptoPricer WARNING', content=Label(
-				text=message),
-						  auto_dismiss=True, size_hint=(None, None),
-						  size=popupSize)
-			popup.open()
-
+			self.displayPopupWarning(message)
+			
 			return False
 		else:
 			return True
-
+	
+	def displayPopupWarning(self, message):
+		popupSize = None
+		if platform == 'android':
+			popupSize = (980, 450)
+		elif platform == 'win':
+			popupSize = (330, 150)
+		popup = Popup(title='CryptoPricer WARNING', content=Label(
+			text=message),
+		              auto_dismiss=True, size_hint=(None, None),
+		              size=popupSize)
+		popup.open()
+	
 	def ensureDataPathFileNameExist(self, dataPathFileName, message):
 		'''
 		Display a warning in a popup if the passed data path file name
@@ -390,19 +391,8 @@ class CryptoPricerGUI(BoxLayout):
 		:return:
 		'''
 		if not (os.path.isfile(dataPathFileName)):
-			popupSize = None
-
-			if platform == 'android':
-				popupSize = (980, 450)
-			elif platform == 'win':
-				popupSize = (300, 150)
-
-			popup = Popup(title='CryptoPricer WARNING', content=Label(
-				text=message),
-						  auto_dismiss=True, size_hint=(None, None),
-						  size=popupSize)
-			popup.open()
-
+			self.displayPopupWarning(message)
+			
 			return False
 		else:
 			return True
@@ -847,8 +837,8 @@ class CryptoPricerGUI(BoxLayout):
 
 	def loadHistoryFromPathFilename(self, pathFileName):
 		self.currentLoadedFathFileName = pathFileName
-		dataFileNotFoundMessage = 'Data file\n' + pathFileName + 'not found. No history loaded.'
-
+		dataFileNotFoundMessage = self.buildFileNotFoundMessage(pathFileName)
+		
 		if not self.ensureDataPathFileNameExist(pathFileName, dataFileNotFoundMessage):
 			return
 
@@ -877,7 +867,14 @@ class CryptoPricerGUI(BoxLayout):
 		if not savingPathFileName:
 			# no file selected. Save dialog remains open ...
 			return
+		
+		asciiOnlyPathFileName = savingPathFileName.encode("ascii", "ignore").decode()
 
+		if asciiOnlyPathFileName != savingPathFileName:
+			message = self.buildNonAsciiFilePathNameMessage(savingPathFileName)
+			self.displayPopupWarning(message)
+			return
+		
 		self.currentLoadedFathFileName = savingPathFileName
 		pathElemLst = savingPathFileName.split(sep)
 		pathContainedInFilePathName = sep.join(pathElemLst[:-1])
@@ -904,7 +901,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.configMgr.storeConfig()
 		self.displayFileActionOnStatusBar(savingPathFileName, FILE_SAVED, isLoadAtStart)
 		self.refocusOnRequestInput()
-
+	
 	# --- end file chooser code ---
 
 	def buildDataPathDefinedInSettingsNotExistMessage(self, path):
@@ -913,11 +910,14 @@ class CryptoPricerGUI(BoxLayout):
 	def buildDataPathContainedInFilePathNameNotExistMessage(self, path):
 		return 'Path ' + path + '\ndoes not exist !\nEither create the directory or\nmodify the path.'
 
-	def isLoadAtStart(self, filePathName):
-		return self.configMgr.loadAtStartPathFilename == filePathName
-
 	def buildFileNotFoundMessage(self, filePathFilename):
 		return 'Data file\n' + filePathFilename + '\nnot found. No history loaded.'
+	
+	def buildNonAsciiFilePathNameMessage(self, savingPathFileName):
+		return 'Save path file name {}\ncontains non ascii characters. File not saved !'.format(savingPathFileName)
+	
+	def isLoadAtStart(self, filePathName):
+		return self.configMgr.loadAtStartPathFilename == filePathName
 
 	def statusBarTextChanged(self):
 		width_calc = self.statusBarScrollView.width
@@ -1140,9 +1140,8 @@ class CryptoPricerGUIApp(App):
 		if self.cryptoPricerGUI.ensureDataPathExist(self.cryptoPricerGUI.dataPath, dataPathNotExistMessage):
 			# loading the load at start history file if defined
 			historyFilePathFilename = self.cryptoPricerGUI.configMgr.loadAtStartPathFilename
-			dataFileNotFoundMessage = self.cryptoPricerGUI.buildFileNotFoundMessage(historyFilePathFilename)
 
-			if historyFilePathFilename != '' and self.cryptoPricerGUI.ensureDataPathFileNameExist(historyFilePathFilename, dataFileNotFoundMessage):
+			if historyFilePathFilename != '':
 				self.cryptoPricerGUI.loadHistoryFromPathFilename(historyFilePathFilename)
 				self.cryptoPricerGUI.displayFileActionOnStatusBar(historyFilePathFilename, FILE_LOADED)
 

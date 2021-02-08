@@ -251,6 +251,11 @@ class ConfigurationManager:
 
 
     def storeConfig(self):
+        """
+        Writes the config file on the disk.
+        
+        :return: True if config file save was successful, False otherwise.
+        """
         if not self._updated:
             return
 
@@ -265,9 +270,16 @@ class ConfigurationManager:
         self.config[self.CONFIG_SECTION_LAYOUT][self.CONFIG_KEY_APP_SIZE_HALF_PROPORTION] = self.appSizeHalfProportion
         self.config[self.CONFIG_SECTION_GENERAL][self.CONFIG_KEY_REFERENCE_CURRENCY] = self.referenceCurrency
 
-        self.config.write()
+        try:
+            self.config.write()
+        except UnicodeEncodeError as e:
+            import logging
+            logging.info(str(e) + ". Reason: invalid file name {}".format(self.loadAtStartPathFilename))
+            return False
         
         self._updated = False
+        
+        return True
 
 
 if __name__ == '__main__':
