@@ -373,12 +373,18 @@ class CryptoPricerGUI(BoxLayout):
 	
 	def displayPopupWarning(self, message):
 		popupSize = None
+		
 		if platform == 'android':
 			popupSize = (980, 450)
 		elif platform == 'win':
 			popupSize = (330, 150)
-		popup = Popup(title='CryptoPricer WARNING', content=Label(
-			text=message),
+		
+		# this code ensures that the popup content text does not exceeds
+		# the popup borders
+		sizingLabel = Label(text=message)
+		sizingLabel.bind(size=lambda s, w: s.setter('text_size')(s, w))
+		
+		popup = Popup(title='CryptoPricer WARNING', content=sizingLabel,
 		              auto_dismiss=True, size_hint=(None, None),
 		              size=popupSize)
 		popup.open()
