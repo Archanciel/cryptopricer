@@ -103,11 +103,13 @@ Comment:
 
 ## Installation
 ### Required libraries
-* kivy (version 1.11)
+* kivy (version 2.0)
 * arrow
 * configobj
 * bs4 (beautifulsoup4)__
 * pillow
+  
+### Required libraries for kivy 1.11
 * kivy.deps.sdl2 (warning: SDL2 not SD12 !)
 * kivy.deps.glew
 
@@ -115,5 +117,5 @@ Comment:
 ### Typical usage sequence diagram
 Here, a simple request returning an historical day price is performed. 
 
-The request is 'btc usd 12/05 all'
+The request is 'btc usd 12/05 binance'
 ![](screenshots/sqCryptoPricerShortSig.png)
