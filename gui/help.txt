@@ -100,7 +100,7 @@ The partial request parameters are specified using the following parms:
 
     [b][cy]-d[/c][/b]<date>
     <date> can be 0 for RT, dd (current month) or
-    dd/mm (current year) or dd/mm/yy or dd/mm/yyyy or
+    dd/mm (current year) or dd/mm/yy or dd/mm/yyyy aswell as
     dd hh:mm (current month) or dd/mm hh:mm (current year) 
     or dd/mm/yy hh:mm or dd/mm/yyyy hh:mm
 
@@ -126,6 +126,12 @@ from the rate provider ![/i]
 
 [cy]-d12/05[/c] -->
 [n]ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
+
+[cy]-d12/2/21 17:45[/c] -->
+[n]ETH/BTC on Kraken: 10/02/21 17:45M 0.03873
+[n][i]Here, the time entered is used only if the date currently in effect
+is less than 7 days before now, which means that a minute price can be obtained
+from the rate provider ![/i]
 
 [cy]-t22:55[/c] -->
 [n]ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
