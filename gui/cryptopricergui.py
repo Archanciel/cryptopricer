@@ -332,6 +332,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.movedRequestNewIndex = -1
 		self.movingRequest = False
 		self.currentLoadedFathFileName = ''
+		self.outputLineBold = True
 	
 	def rvListSizeSettingsChanged(self):
 		if os.name == 'posix':
@@ -625,10 +626,19 @@ class CryptoPricerGUI(BoxLayout):
 			self.dropDownMenu.saveButton.disabled = False
 			
 	def outputResult(self, resultStr):
+		self.outputLineBold = not self.outputLineBold
+
+		if self.outputLineBold:
+			markupBoldStart = '[b]'
+			markupBoldEnd = '[/b]'
+		else:
+			markupBoldStart = ''
+			markupBoldEnd = ''
+		
 		if len(self.resultOutput.text) == 0:
 			self.resultOutput.text = resultStr
 		else:
-			self.resultOutput.text = self.resultOutput.text + '\n' + resultStr
+			self.resultOutput.text = self.resultOutput.text + '\n' + markupBoldStart + resultStr + markupBoldEnd
 			# self.outputResultScrollView.scroll_to(100000)
 			# self.resultOutput.cursor = (10000,0)
 
@@ -741,6 +751,7 @@ class CryptoPricerGUI(BoxLayout):
 	def replayAllRequestsOnNewThread(self):
 		# output blank line
 		self.outputResult('')
+		self.outputLineBold = True
 
 		for listEntry in self.requestListRV.data:
 			outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = \
