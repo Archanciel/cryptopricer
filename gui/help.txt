@@ -294,7 +294,7 @@ in effect differs from both crypto (BTC) and unit (USD) of last request.
 -v parameter ignored
 
 Next entering
-
+[n][b]STAYED HERE[/b]
 [cy]-ueth[/c]
 
 returns
