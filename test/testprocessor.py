@@ -147,7 +147,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol ETH currently in effect differs from both crypto (BTC) and unit (USD) of last request. -v option ignored")
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol ETH currently in effect differs from both crypto (BTC) and unit (USD) of last request. -v option ignored.")
 
 
     def testGetCryptoPriceHistoricalOptionValueUnitToCrypto(self):
@@ -246,7 +246,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol EUR currently in effect differs from both crypto (BTC) and unit (USD) of last request. -v option ignored")
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol EUR currently in effect differs from both crypto (BTC) and unit (USD) of last request. -v option ignored.")
 
     def testGetCryptoPriceHistoricalOptionValueSaveFromBadUnitToCrypto(self):
         crypto = 'BTC'
@@ -292,7 +292,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol EUR currently in effect differs from both crypto (BTC) and unit (USD) of last request. -vs option ignored")
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol EUR currently in effect differs from both crypto (BTC) and unit (USD) of last request. -vs option ignored.")
 
 
     def testGetCryptoPriceHistoricalRecent(self):    
@@ -1010,7 +1010,7 @@ class TestProcessor(unittest.TestCase):
 
     def testGetCryptoPriceHistoricalOptionValueNotCryptoNotUnitNotFiatFiatOptionFiatCHF(self):
         # full request: eth usd 12/09/18 all -v10btc -fchf
-        # exp result: WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of last request. -v option ignored'
+        # exp result: WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of last request. -v option ignored.'
         crypto = 'ETH'
         unit = 'USD'
         exchange = 'all'
@@ -1036,7 +1036,7 @@ class TestProcessor(unittest.TestCase):
                                                requestInputString='',
                                                optionFiatSymbol=optionFiatSymbol)
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), 'WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of last request. -v option ignored')
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), 'WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of last request. -v option ignored.')
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -1062,7 +1062,7 @@ class TestProcessor(unittest.TestCase):
 
     def testGetCryptoPriceHistoricalOptionValueNotCryptoNotUnitNotFiatFiatOptionFiatCHFSave(self):
         # full request: eth usd 12/09/18 all -v10btc -fchf
-        # exp result: WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of last request. -v option ignored'
+        # exp result: WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of last request. -v option ignored.'
         crypto = 'ETH'
         unit = 'USD'
         exchange = 'all'
@@ -1089,7 +1089,7 @@ class TestProcessor(unittest.TestCase):
                                                optionFiatSymbol=optionFiatSymbol,
                                                optionValueSaveFlag='S' )
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), 'WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of last request. -vs option ignored')
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), 'WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of last request. -vs option ignored.')
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
