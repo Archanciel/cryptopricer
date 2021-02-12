@@ -3,7 +3,6 @@ from kivy.utils import platform
 
 from gui.abstractpopup import AbstractPopup
 
-
 class ScrollableLabelPopup(AbstractPopup):
 	contentBox = ObjectProperty()
 	scrollView = ObjectProperty
@@ -23,6 +22,7 @@ class ScrollableLabelPopup(AbstractPopup):
 		elif platform == 'win':
 			self.textWidth = 54
 
+		kwargs['title'] = title
 		super(ScrollableLabelPopup, self).__init__(**kwargs)
 
 		self.setContentPageList()
