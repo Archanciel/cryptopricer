@@ -12,7 +12,9 @@ from pricerequesterteststub import PriceRequesterTestStub
 from crypcompexchanges import CrypCompExchanges
 from processor import Processor
 from commandprice import  CommandPrice
+from utilityfortest import UtilityForTest
 
+LOCAL_TIME_ZONE = 'Europe/Zurich'
 
 class TestCommandPrice(unittest.TestCase):
     def setUp(self):
@@ -346,7 +348,17 @@ class TestCommandPrice(unittest.TestCase):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
         self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
         self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
-        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
+
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            now)
+
+        tenDaysBeforeArrowDate = now.shift(days=-10)
+
+        tenDaysBeforeYearStr, tenDaysBeforeMonthStr, tenDaysBeforeDayStr, tenDaysBeforeHourStr, tenDaysBeforeMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            tenDaysBeforeArrowDate)
+
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = tenDaysBeforeDayStr
 
         resultData = self.commandPrice.execute()
 

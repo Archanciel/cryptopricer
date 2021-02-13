@@ -210,7 +210,8 @@ class PriceRequester:
     def _handleProviderError(self, dic, resultData, url, crypto, unit, exchange, isRealTime):
         if 'Message' in dic.keys():
             errorMessage = dic['Message']
-
+            errorMessage = errorMessage.replace('-', '/') # useful for msg containing a coin pair
+            
             if not isRealTime:
                 errorMessage = self._uniformiseErrorMessage(errorMessage, crypto, unit, exchange)
             else:
@@ -241,7 +242,8 @@ class PriceRequester:
         :return: transformed errorMessage
         '''
 
-        return errorMessage.replace('e param is not valid the', exchange) + ' ({}-{})'.format(crypto, unit)
+        return errorMessage.replace('e param is not valid the', exchange) + ' ({}/{})'.format(crypto, unit)
+
 
 
 if __name__ == '__main__':

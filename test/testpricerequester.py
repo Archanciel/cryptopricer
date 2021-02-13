@@ -190,7 +190,7 @@ class TestPriceRequester(unittest.TestCase):
 																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
 																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
-		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD).")
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC/USD).")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
 		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
 		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -212,7 +212,7 @@ class TestPriceRequester(unittest.TestCase):
 																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
 																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
-		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD).")
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC/USD).")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
 		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
 		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -234,7 +234,7 @@ class TestPriceRequester(unittest.TestCase):
 																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
 																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
-		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD).")
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC/USD).")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
 		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
 		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -262,7 +262,7 @@ class TestPriceRequester(unittest.TestCase):
 																		  timeStampUtcNow,
 																		  exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
-		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD).")
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC/USD).")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
 		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
 		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -286,7 +286,7 @@ class TestPriceRequester(unittest.TestCase):
 																		  timeStampUtcNoHHMM,
 																		  exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
-		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC-USD).")
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC/USD).")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
 		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
 		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -299,7 +299,7 @@ class TestPriceRequester(unittest.TestCase):
 
 		resultData = self.priceRequester.getCurrentPrice(crypto, unit, exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
-		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC-USD).")
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC/USD).")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
 		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
 		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -312,7 +312,7 @@ class TestPriceRequester(unittest.TestCase):
 
 		resultData = self.priceRequester.getCurrentPrice(crypto, unit, exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
-		self.assertEqual("PROVIDER ERROR - all market does not exist for this coin pair (BBB-USD).", resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+		self.assertEqual("PROVIDER ERROR - all market does not exist for this coin pair (BBB/USD).", resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
 		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
 		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -325,7 +325,7 @@ class TestPriceRequester(unittest.TestCase):
 
 		resultData = self.priceRequester.getCurrentPrice(crypto, unit, exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
-		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - all market does not exist for this coin pair (BTA-CHF).")
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - all market does not exist for this coin pair (BTA/CHF).")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
 		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
 		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -338,7 +338,7 @@ class TestPriceRequester(unittest.TestCase):
 
 		resultData = self.priceRequester.getCurrentPrice(crypto, unit, exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_RT)
-		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - all market does not exist for this coin pair (BTC-USL).")
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - all market does not exist for this coin pair (BTC/USL).")
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
 		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
 		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))

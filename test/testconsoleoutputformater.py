@@ -210,7 +210,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
 
         resultData = ResultData()
 
-        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - BTC38 market does not exist for this coin pair (BTC-USD)")
+        resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, "ERROR - BTC38 market does not exist for this coin pair (BTC/USD)")
         resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
         resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
         resultData.setValue(resultData.RESULT_KEY_EXCHANGE, exchange)
@@ -225,7 +225,7 @@ class TestConsoleOutputFormater(unittest.TestCase):
 
         self.printer.printDataToConsole(resultData)
         sys.stdout = stdout
-        self.assertEqual("ERROR - BTC38 market does not exist for this coin pair (BTC-USD)\n", capturedStdout.getvalue())
+        self.assertEqual("ERROR - BTC38 market does not exist for this coin pair (BTC/USD)\n", capturedStdout.getvalue())
 
 
     def testFormatFloatToStrRoundedFloat(self):

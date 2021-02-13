@@ -2336,7 +2336,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'PROVIDER ERROR - Bitfinex market does not exist for this coin pair (XMR-ETH).', printResult)
+			'PROVIDER ERROR - Bitfinex market does not exist for this coin pair (XMR/ETH).', printResult)
 		self.assertEqual('', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
