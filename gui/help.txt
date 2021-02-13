@@ -165,7 +165,6 @@ to purchase your ETH at a rate of 650 USD.
 
 [cy]eth btc 0 binance -p650usd.kraken[/c] -->
 [n]ETH/BTC on Binance: 16/12/17 22:10R 0.03556 [cr]0.03357976[/c]
-[n]
 [n][i]Currently the BTC/USD rate on Kraken is 19356.9. So, the ETH at this rate
 is valued at 0.03556 x 19 356.9 = 688.331364. So, your limit buy order must be placed
 at 0.03556 / 688.331364 x 650 = [cr]0.03357976[/c].[/i]
@@ -174,7 +173,6 @@ Second example in a different format displaying more information: you want to pu
 
 [cy]chsb btc 0 hitbtc -p0.3USD -fusd.kraken[/c] -->
 [n]1 CHSB/[cr]0.0000085[/c] BTC/0.3 USD.Kraken on HitBTC 20/01/21 20:45R 0.00000865 0.30587441
-[n]
 [n][i]This indicates that currently the CHSB is quoted at 0.00000865 BTC on HitBTC (which
 corresponds to a value of 0.30587441 USD on Kraken), but that to buy it at 0.3 USD,
 the limit buy order must set the price to 0,00000865 / 0,30537441 * 0.3 = [cr]0.0000085[/c] BTC ![/i]
@@ -210,8 +208,7 @@ First example: if the last request was
     returns
 
     0.003661088 BTC/700 USD on BitTrex: 16/12/17 22:10R 19120
-
-    [i]which means that 700 USD is equivalent to
+    [n][i]which means that 700 USD is equivalent to
     [n]0.003661088 BTC at the BTC/USD rate of 19120[/i].
 
     Next, entering
@@ -221,9 +218,8 @@ First example: if the last request was
     returns
 
     0.01 BTC/1914 USD on BitTrex: 16/12/17 22:10R 19140
-
-    [i]which means that 0.1 BTC is equivalent to
-    [n]1914 USD at the BTC/USD rate of 19140[/i].
+    [n][i]which means that 0.1 BTC is equivalent to 1914 USD
+    [n]at the BTC/USD rate of 19140[/i].
 
     Note that here the RT price went up 20 USD since the last [b][cy]-v[/b][/c] partial request !
 
@@ -239,8 +235,7 @@ Second example: if the last request was
     returns
 
     0.064910098 BTC/700 USD on BitTrex: 01/12/17 00:00C 10784
-
-    [i]which means that 700 USD is equivalent to
+    [n][i]which means that 700 USD is equivalent to
     [n]0.064910098 BTC at the BTC/USD rate of 10784[/i].
 
     Next, entering
@@ -250,9 +245,8 @@ Second example: if the last request was
     returns
 
     0.01 BTC/1078.4 USD on BitTrex: 01/12/17 00:00C 10784
-
-    [i]which means that 0.1 BTC is equivalent to
-    [n]1914 USD at the BTC/USD rate of 10784[/i].
+    [n][i]which means that 0.1 BTC is equivalent to 1914 USD
+    [n]at the BTC/USD rate of 10784[/i].
 
     Note that here the close price between the two [b][cy]-v[/b][/c] partial requests is identical !
 [p]
@@ -290,22 +284,26 @@ Example:
 [cy]-cbtc[/c] -->
 [n]BTC/USD on Bitfinex:  21/11/17 00:00C 8096.9
 WARNING - currency value option symbol ETH currently
-in effect differs from both crypto (BTC) and unit (USD) of last request.
+in effect differs from both crypto (BTC) and unit (USD) of request.
 -v parameter ignored
+[n][i]The warning is due to the fact that we changed the crypto to BTC,
+change that makes the cy]-v0.1eth[/c] value option unapplicable[/i].
 
 Next entering
-[n][b]STAYED HERE ![/b]
+
 [cy]-ueth[/c]
 
 returns
 
 [n]0.00445236BTC/0.1ETH on Bitfinex:  21/11/17 00:00C 0.4445
-
-We see that now the previsously specified value
+[n][i]We see that now the previsously specified value
 option [cy]-v0.1eth[/c] is applicable again. But now,
 ETH is no longer the [cy]-c[/c] [i]crypto[/i], but is the
-[cy]-u[/c] [i]unit[/i] (counterparty). Examples implying fiat
-and value options are provided in the next fiat option section.
+[cy]-u[/c] [i]unit[/i] (counterparty), which modifies the
+value calculation[/i]. 
+
+Examples implying both fiat and value options together are provided after the
+next fiat option section.
 [p]
 [b][cg]Fiat option[/cg][/b]
 
