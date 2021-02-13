@@ -3010,7 +3010,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'XMR/BTC on Bitfinex: R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (XMR) and unit (BTC) of last request. -vs option ignored.'
+		expectedPrintResultNoDateTimeNoEndPrice = 'XMR/BTC on Bitfinex: R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (XMR) and unit (BTC) of request. -vs option ignored.'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -3027,7 +3027,7 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
-		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC on Bitfinex: R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (ETH) and unit (BTC) of last request. -vs option ignored.'
+		expectedPrintResultNoDateTimeNoEndPrice = 'ETH/BTC on Bitfinex: R\nWARNING - currency value option symbol USD currently in effect differs from both crypto (ETH) and unit (BTC) of request. -vs option ignored.'
 
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
 														  nowHourStr,
@@ -3484,7 +3484,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -vs option ignored.', printResult)
+			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of request. -vs option ignored.', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
@@ -3494,7 +3494,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -v option ignored.', printResult)
+			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of request. -v option ignored.', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
@@ -3503,7 +3503,7 @@ class TestControllerGui(unittest.TestCase):
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
-			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of last request. -v option ignored.', printResult)
+			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of request. -v option ignored.', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -v1000eth -fchf', fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
