@@ -118,4 +118,4 @@ Comment:
 Here, a simple request returning an historical day price is performed. 
 
 The request is 'btc usd 12/05 binance'
-![](screenshots/sqCryptoPricerShortSig.png)
+![](screenshots/sqCryptoPricerShortSig.svg)
