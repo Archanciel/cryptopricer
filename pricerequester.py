@@ -15,9 +15,9 @@ MINUTE_PRICE_DAY_NUMBER_LIMIT = 7   # if the request date is older than current 
 IDX_DATA_ENTRY_TO = 1
 
 class PriceRequester:
-    '''
-    :seqdiag_note Obtains the RT or historical rates from the Cryptocompare web site
-    '''
+    """
+    :seqdiag_note Obtains the RT or historical - determines if minute or close - rates from the Cryptocompare web site.
+    """
     def __init__(self):
         try:
             #since ssl prevents requesting the data from CryptoCompare

@@ -5,9 +5,11 @@ from resultdata import ResultData
 MARKET_NOT_SUPPORTED_ERROR = "ERROR - {} market does not exist or is not yet supported by the application."
 
 class Processor:
-	'''
+	"""
 	This class is used as Receiver by the Command component in the Command pattern.
-	'''
+	
+	:seqdiag_note Receiver in the GOF Command pattern. Validates and obtains real exchange symbol for crypto and fiat. Determines if RT or historical price must be asked to the PriceRequester. After getting the price, computes the fiat (-f) and value (-v) option values and add them to the returned ResultData. Concerning the fiat option, if the fiat/unit pair is not supported by the fiat exchange, try to obtain a unit/fiat pair price.
+	"""
 	def __init__(self,
 				 configManager,
 				 priceRequester,
@@ -35,9 +37,11 @@ class Processor:
 					   optionPriceSymbol=None,
 					   optionPriceAmount=None,
 					   optionPriceSaveFlag=None):
-		'''
-		Ask the PriceRequester either a RT price or a historical price. Then, in case a price value parm (-v)
-		was specified, does the conversion and add its result to the returned ResultData
+		"""
+		Ask the PriceRequester either a RT price or a historical price. Then,
+		in case a fiat (-f) or/and a value option (-v) was specified, computes
+		them and add the results to the returned ResultData.
+		
 		:param optionFiatSymbol:
 		:param optionFiatSaveFlag:
 		:param optionPriceSymbol:
@@ -89,7 +93,7 @@ class Processor:
 
 		:seqdiag_return ResultData
 		:return: a ResultData filled with result values
-		'''
+		"""
 
 		# validating exchange and fiat exchange
 

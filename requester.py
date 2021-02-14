@@ -14,7 +14,8 @@ class Requester:
 	oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave
 
 	and return a command filled with the command parsed parm data
-	:seqdiag_note Parses the user commands
+	
+	:seqdiag_note Parses the user commands.
 	'''
 
 	ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'

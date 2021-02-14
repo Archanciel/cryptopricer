@@ -1,6 +1,11 @@
 from abstractcommand import AbstractCommand
 
 class CommandCrypto(AbstractCommand):
+    """
+    Currently not used by CryptoPricer. Will be develop to handle
+    user commands of type
+    oo btc [5/7 0.0015899 6/7 0.00153] [usd-chf] -nosave !
+    """
     CRYPTO_LIST = "CRYPTO"
     UNIT_LIST = "UNIT"
     FLAG = "FLAG"

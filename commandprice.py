@@ -3,11 +3,13 @@ from datetimeutil import DateTimeUtil
 from resultdata import ResultData
 
 class CommandPrice(AbstractCommand):
-	'''
+	"""
 	This command handles RT and historical full and partial price requests. In respect of the
 	Command pattern, it calls the getCryptoPrice method on its receiver, a Processor instance
 	linked to the Command by the Controller.
-	'''
+	
+	:seqdiag_note Command in the GOF Command pattern. Validates part of the request elements and computes the int request date/time components. Extract the option parms values from the parsed parm data in order to pass them to the receiver, i.e. the Processor.
+	"""
 	CRYPTO = "CRYPTO"
 	UNIT = "UNIT"
 	EXCHANGE = "EXCHANGE"
@@ -275,6 +277,10 @@ class CommandPrice(AbstractCommand):
 
 
 	def _validateMandatoryData(self):
+		"""
+		Return True if the defined unit symbol exists and is valid, a ResultData
+		containing an error msd otherwise.
+		"""
 		resultData = True
 
 		unit = self.parsedParmData[self.UNIT]

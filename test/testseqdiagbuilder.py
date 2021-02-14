@@ -1479,19 +1479,31 @@ participant Parent
 actor GUI
 participant Controller
 	/note over of Controller
-		Entry point of the business layer
+		Entry point of the business layer.
 	end note
 participant Requester
 	/note over of Requester
-		Parses the user commands
+		Parses the user commands.
 	end note
 participant CommandPrice
+	/note over of CommandPrice
+		Command in the GOF Command pattern. Validates part of the request elements and computes the int request date/time components. Extract the option parms
+		values from the parsed parm data in order to pass them to the receiver, i.e. the Processor.
+	end note
 participant Processor
+	/note over of Processor
+		Receiver in the GOF Command pattern. Validates and obtains real exchange symbol for crypto and fiat. Determines if RT or historical price must be
+		asked to the PriceRequester. After getting the price, computes the fiat (-f) and value (-v) option values and add them to the returned ResultData.
+		Concerning the fiat option, if the fiat/unit pair is not supported by the fiat exchange, try to obtain a unit/fiat pair price.
+	end note
 participant PriceRequester
 	/note over of PriceRequester
-		Obtains the RT or historical rates from the Cryptocompare web site
+		Obtains the RT or historical - determines if minute or close - rates from the Cryptocompare web site.
 	end note
 participant GuiOutputFormater
+	/note over of GuiOutputFormater
+		Formats the result data printed to the output zone of the application aswell as to the status bar.
+	end note
 GUI -> Controller: getPrintableResultForInput(inputStr)
 	activate Controller
 	Controller -> Requester: getCommand(inputStr)
@@ -1598,21 +1610,56 @@ actor GUI
 participant Controller
 	/note over of Controller
 		Entry point of the business
-		layer
+		layer.
 	end note
 participant Requester
 	/note over of Requester
-		Parses the user commands
+		Parses the user commands.
 	end note
 participant CommandPrice
+	/note over of CommandPrice
+		Command in the GOF Command
+		pattern. Validates part of the
+		request elements and computes
+		the int request date/time
+		components. Extract the option
+		parms values from the parsed
+		parm data in order to pass
+		them to the receiver, i.e. the
+		Processor.
+	end note
 participant Processor
+	/note over of Processor
+		Receiver in the GOF Command
+		pattern. Validates and obtains
+		real exchange symbol for
+		crypto and fiat. Determines if
+		RT or historical price must be
+		asked to the PriceRequester.
+		After getting the price,
+		computes the fiat (-f) and
+		value (-v) option values and
+		add them to the returned
+		ResultData. Concerning the
+		fiat option, if the fiat/unit
+		pair is not supported by the
+		fiat exchange, try to obtain a
+		unit/fiat pair price.
+	end note
 participant PriceRequester
 	/note over of PriceRequester
-		Obtains the RT or historical
-		rates from the Cryptocompare
-		web site
+		Obtains the RT or historical -
+		determines if minute or close
+		- rates from the Cryptocompare
+		web site.
 	end note
 participant GuiOutputFormater
+	/note over of GuiOutputFormater
+		Formats the result data
+		printed to the output zone of
+		the application aswell as to
+		the status bar.
+	end note
 GUI -> Controller: getPrintableResultForInput(inputStr)
 	activate Controller
 	Controller -> Requester: getCommand(inputStr)
