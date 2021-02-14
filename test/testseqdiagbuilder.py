@@ -1420,7 +1420,7 @@ participant Parent
         from utilityfortest import UtilityForTest
         from pricerequester import PriceRequester
         from configurationmanager import ConfigurationManager
-        from guioutputformater import GuiOutputFormater
+        from gui.guioutputformatter import GuiOutputFormatter
         from controller import Controller
 
         SeqDiagBuilder.activate(parentdir, 'Controller', 'getPrintableResultForInput')  # activate sequence diagram building
@@ -1431,7 +1431,7 @@ participant Parent
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         configMgr = ConfigurationManager(FILE_PATH)
-        self.controller = Controller(GuiOutputFormater(configMgr), configMgr, PriceRequester())
+        self.controller = Controller(GuiOutputFormatter(configMgr), configMgr, PriceRequester())
 
         timezoneStr = 'Europe/Zurich'
         now = DateTimeUtil.localNow(timezoneStr)
@@ -1500,8 +1500,8 @@ participant PriceRequester
 	/note over of PriceRequester
 		Obtains the RT or historical - determines if minute or close - rates from the Cryptocompare web site.
 	end note
-participant GuiOutputFormater
-	/note over of GuiOutputFormater
+participant GuiOutputFormatter
+	/note over of GuiOutputFormatter
 		Formats the result data printed to the output zone of the application aswell as to the status bar.
 	end note
 GUI -> Controller: getPrintableResultForInput(inputStr)
@@ -1544,14 +1544,14 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 			deactivate Processor
 		Controller <-- CommandPrice: return ResultData or False
 		deactivate CommandPrice
-	Controller -> GuiOutputFormater: getFullCommandString(resultData)
-		activate GuiOutputFormater
-		GuiOutputFormater -> GuiOutputFormater: _buildFullDateAndTimeStrings(commandDic, timezoneStr)
-			activate GuiOutputFormater
-			GuiOutputFormater <-- GuiOutputFormater: return requestDateDMY, requestDateHM
-			deactivate GuiOutputFormater
-		Controller <-- GuiOutputFormater: return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, ...
-		deactivate GuiOutputFormater
+	Controller -> GuiOutputFormatter: getFullCommandString(resultData)
+		activate GuiOutputFormatter
+		GuiOutputFormatter -> GuiOutputFormatter: _buildFullDateAndTimeStrings(commandDic, timezoneStr)
+			activate GuiOutputFormatter
+			GuiOutputFormatter <-- GuiOutputFormatter: return requestDateDMY, requestDateHM
+			deactivate GuiOutputFormatter
+		Controller <-- GuiOutputFormatter: return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, ...
+		deactivate GuiOutputFormatter
 	GUI <-- Controller: return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, ...
 	deactivate Controller
 @enduml''', commands)
@@ -1569,7 +1569,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
         from utilityfortest import UtilityForTest
         from pricerequester import PriceRequester
         from configurationmanager import ConfigurationManager
-        from guioutputformater import GuiOutputFormater
+        from gui.guioutputformatter import GuiOutputFormatter
         from controller import Controller
 
         SeqDiagBuilder.activate(parentdir, 'Controller', 'getPrintableResultForInput')  # activate sequence diagram building
@@ -1580,7 +1580,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         configMgr = ConfigurationManager(FILE_PATH)
-        self.controller = Controller(GuiOutputFormater(configMgr), configMgr, PriceRequester())
+        self.controller = Controller(GuiOutputFormatter(configMgr), configMgr, PriceRequester())
 
         timezoneStr = 'Europe/Zurich'
         now = DateTimeUtil.localNow(timezoneStr)
@@ -1653,8 +1653,8 @@ participant PriceRequester
 		- rates from the Cryptocompare
 		web site.
 	end note
-participant GuiOutputFormater
-	/note over of GuiOutputFormater
+participant GuiOutputFormatter
+	/note over of GuiOutputFormatter
 		Formats the result data
 		printed to the output zone of
 		the application aswell as to
@@ -1703,14 +1703,14 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 			deactivate Processor
 		Controller <-- CommandPrice: return ResultData or False
 		deactivate CommandPrice
-	Controller -> GuiOutputFormater: getFullCommandString(resultData)
-		activate GuiOutputFormater
-		GuiOutputFormater -> GuiOutputFormater: _buildFullDateAndTimeStrings(commandDic, ...)
-			activate GuiOutputFormater
-			GuiOutputFormater <-- GuiOutputFormater: return requestDateDMY, ...
-			deactivate GuiOutputFormater
-		Controller <-- GuiOutputFormater: return printResult, ...
-		deactivate GuiOutputFormater
+	Controller -> GuiOutputFormatter: getFullCommandString(resultData)
+		activate GuiOutputFormatter
+		GuiOutputFormatter -> GuiOutputFormatter: _buildFullDateAndTimeStrings(commandDic, ...)
+			activate GuiOutputFormatter
+			GuiOutputFormatter <-- GuiOutputFormatter: return requestDateDMY, ...
+			deactivate GuiOutputFormatter
+		Controller <-- GuiOutputFormatter: return printResult, ...
+		deactivate GuiOutputFormatter
 	GUI <-- Controller: return printResult, ...
 	deactivate Controller
 @enduml''' \

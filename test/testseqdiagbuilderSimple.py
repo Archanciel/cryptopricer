@@ -234,7 +234,7 @@ class TestSeqDiagBuilderSimple(unittest.TestCase):
     @unittest.skip
     def testWithBackSlash(self):
         from configurationmanager import ConfigurationManager
-        from guioutputformater import GuiOutputFormater
+        from gui.guioutputformatter import GuiOutputFormatter
         from controller import Controller
         import os
 
@@ -246,7 +246,7 @@ class TestSeqDiagBuilderSimple(unittest.TestCase):
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         configMgr = ConfigurationManager(FILE_PATH)
-        controller = Controller(GuiOutputFormater(configMgr), configMgr)
+        controller = Controller(GuiOutputFormatter(configMgr), configMgr)
 
         inputStr = 'mcap btc 0 all'
         _, _, _, _ = controller.getPrintableResultForInput(inputStr)
@@ -257,7 +257,7 @@ class TestSeqDiagBuilderSimple(unittest.TestCase):
     @unittest.skip
     def testWithSlash(self):
         from configurationmanager import ConfigurationManager
-        from guioutputformater import GuiOutputFormater
+        from gui.guioutputformatter import GuiOutputFormatter
         from controller import Controller
         import os
 
@@ -269,7 +269,7 @@ class TestSeqDiagBuilderSimple(unittest.TestCase):
             FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
         configMgr = ConfigurationManager(FILE_PATH)
-        controller = Controller(GuiOutputFormater(configMgr), configMgr)
+        controller = Controller(GuiOutputFormatter(configMgr), configMgr)
 
         inputStr = 'mcap btc 0 all'
         _, _, _, _ = controller.getPrintableResultForInput(inputStr)

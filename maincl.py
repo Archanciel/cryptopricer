@@ -9,7 +9,7 @@ def main():
 	'''
 	Maincl means main command line !
 	Command line main which instanciate a Controller which uses a ConsoleOutputFormater
-	instead of a GuiOutputFormater, what maingui does !
+	instead of a GuiOutputFormatter, what maingui does !
 	'''
 	if os.name == 'posix':
 		configPath = '/sdcard/cryptopricer.ini'

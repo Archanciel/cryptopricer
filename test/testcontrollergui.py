@@ -1,6 +1,5 @@
 import unittest
 import os,sys,inspect
-from io import StringIO
 
 LOCAL_TIME_ZONE = 'Europe/Zurich'
 
@@ -13,7 +12,7 @@ sys.path.insert(0,currentdir) # this instruction is necessary for successful imp
 import re
 from controller import Controller
 from datetimeutil import DateTimeUtil
-from guioutputformater import GuiOutputFormater
+from gui.guioutputformatter import GuiOutputFormatter
 from configurationmanager import ConfigurationManager
 from pricerequesterteststub import PriceRequesterTestStub
 from utilityfortest import UtilityForTest
@@ -36,7 +35,7 @@ class TestControllerGui(unittest.TestCase):
 			FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
 		configMgr = ConfigurationManager(FILE_PATH)
-		self.controller = Controller(GuiOutputFormater(configMgr), configMgr, PriceRequesterTestStub())
+		self.controller = Controller(GuiOutputFormatter(configMgr), configMgr, PriceRequesterTestStub())
 
 
 	def testControllerBugSpecifyDateBegOfYear(self):
@@ -3602,7 +3601,7 @@ class TestControllerGui(unittest.TestCase):
 		ethUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
 
 		#ensure fiat value of eth is correct
-		self.assertAlmostEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate, delta=0.5)
+		self.assertAlmostEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormatter.PRICE_FLOAT_ROUNDING), ethUsdRate, delta=0.5)
 
 	def testOptionFiatValueComputationIsCorrectPartialRequestHistoDayPrice(self):
 		'''
@@ -3678,7 +3677,7 @@ class TestControllerGui(unittest.TestCase):
 		ethUsdRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
 
 		#ensure fiat value of eth is correct
-		self.assertAlmostEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethUsdRate, delta=0.5)
+		self.assertAlmostEqual(round(ethBtcRate * btcUsdRate, GuiOutputFormatter.PRICE_FLOAT_ROUNDING), ethUsdRate, delta=0.5)
 
 	def testOptionFiatValueComputationIsCorrectFullRequestHistoDayPriceNoSave(self):
 		'''
@@ -4136,7 +4135,7 @@ class TestControllerGui(unittest.TestCase):
 		ethEthFiatRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
 
 		#ensure fiat value of eth in eth is correct
-		self.assertAlmostEqual(round(ethBtcRate * ethEthFiatRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethBtcCurrentPrice, delta=0.4)
+		self.assertAlmostEqual(round(ethBtcRate * ethEthFiatRate, GuiOutputFormatter.PRICE_FLOAT_ROUNDING), ethBtcCurrentPrice, delta=0.4)
 
 		#'eth btc 0 kraken -vs3eth -fseth.kraken
 		#(0.03835 ETH/BTC * 26.0756193 BTC/ETH = 1 ETH/ETH)'
@@ -4179,7 +4178,7 @@ class TestControllerGui(unittest.TestCase):
 		ethBtcFiatRate = float(re.findall(r".* ([\d\.]+) ([\d\.]+)", printResult)[0][1])
 
 		#ensure fiat value of eth in btc is correct
-		self.assertAlmostEqual(round(ethBtcRate, GuiOutputFormater.PRICE_FLOAT_ROUNDING), ethBtcFiatRate, delta=0.4)
+		self.assertAlmostEqual(round(ethBtcRate, GuiOutputFormatter.PRICE_FLOAT_ROUNDING), ethBtcFiatRate, delta=0.4)
 		
 		# 'eth btc 0 kraken -vs3eth -fsbtc.kraken
 		# (0.03835 ETH/BTC * 1 BTC/BTC = 0.03835 ETH/BTC)'

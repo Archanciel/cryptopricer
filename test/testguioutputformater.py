@@ -8,7 +8,7 @@ sys.path.insert(0, parentdir)
 sys.path.insert(0,currentdir) # this instruction is necessary for successful importation of utilityfortest module when
 							  # the test is executed standalone
 
-from guioutputformater import GuiOutputFormater
+from gui.guioutputformatter import GuiOutputFormatter
 from resultdata import ResultData
 from datetimeutil import DateTimeUtil
 from configurationmanager import ConfigurationManager
@@ -22,7 +22,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 			FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
 		configMgr = ConfigurationManager(FILE_PATH)
-		self.printer = GuiOutputFormater(configMgr)
+		self.printer = GuiOutputFormatter(configMgr)
 
 
 	def testPrintCryptoPriceHistorical(self):
@@ -391,7 +391,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 			FILE_PATH = 'c:\\temp\\cryptopricer.ini'
 
 			configMgr = ConfigurationManager(FILE_PATH)
-			printer = GuiOutputFormater(configMgr, activateClipboard=True)
+			printer = GuiOutputFormatter(configMgr, activateClipboard=True)
 			y = 2000.085
 			printer.toClipboard(y)
 			clipValue = printer.fromClipboard()

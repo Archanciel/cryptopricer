@@ -14,7 +14,7 @@ sys.path.insert(0,currentdir) # this instruction is necessary for successful imp
 from controller import Controller
 from datetimeutil import DateTimeUtil
 from consoleoutputformater import ConsoleOutputFormater
-from guioutputformater import GuiOutputFormater
+from gui.guioutputformatter import GuiOutputFormatter
 from configurationmanager import ConfigurationManager
 from pricerequesterteststub import PriceRequesterTestStub
 from utilityfortest import UtilityForTest
@@ -40,7 +40,7 @@ class TestController(unittest.TestCase):
 		#print('---- Instanciating Controller with ConsoleOutputFormater ----')
 		self.controller = Controller(ConsoleOutputFormater(), configMgr, PriceRequesterTestStub())
 		configMgr = ConfigurationManager(self.filePath)
-		self.controllerGui = Controller(GuiOutputFormater(configMgr), configMgr, PriceRequesterTestStub())
+		self.controllerGui = Controller(GuiOutputFormatter(configMgr), configMgr, PriceRequesterTestStub())
 
 	def testControllerHistoDayPriceThenPartialDateDayOnly(self):
 		# first command: histo price request with time specified

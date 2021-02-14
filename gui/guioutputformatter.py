@@ -3,7 +3,7 @@ from abstractoutputformater import AbstractOutputFormater
 from datetimeutil import DateTimeUtil
 
 
-class GuiOutputFormater(AbstractOutputFormater):
+class GuiOutputFormatter(AbstractOutputFormater):
 	"""
 	:seqdiag_note Formats the result data printed to the output zone of the application aswell as to the status bar.
 	"""
@@ -26,7 +26,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 		print the result to the console and
 		paste it to the clipboard
 		'''
-		outputStr = super(GuiOutputFormater, self).getPrintableData(resultData)
+		outputStr = super(GuiOutputFormatter, self).getPrintableData(resultData)
 
 		print(outputStr)
 
@@ -250,7 +250,7 @@ class GuiOutputFormater(AbstractOutputFormater):
 
 
 if __name__ == '__main__':
-	pr = GuiOutputFormater()
+	pr = GuiOutputFormatter()
 	y = round(5.59, 1)
 	y = 0.999999999
 	y = 0.9084

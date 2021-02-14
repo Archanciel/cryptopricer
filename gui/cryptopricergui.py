@@ -35,7 +35,7 @@ from configurationmanager import ConfigurationManager
 from gui.filechooserpopup import LoadFileChooserPopup, SaveFileChooserPopup
 from pricerequester import PriceRequester
 from controller import Controller
-from guioutputformater import GuiOutputFormater
+from gui.guioutputformatter import GuiOutputFormatter
 from guiutil import GuiUtil
 from helppopup import HelpPopup
 
@@ -318,7 +318,7 @@ class CryptoPricerGUI(BoxLayout):
 			self.boxLayoutContainingStatusBar.height = "63dp"
 
 		self.configMgr = ConfigurationManager(configPath)
-		self.controller = Controller(GuiOutputFormater(self.configMgr), self.configMgr, PriceRequester())
+		self.controller = Controller(GuiOutputFormatter(self.configMgr), self.configMgr, PriceRequester())
 		self.dataPath = self.configMgr.dataPath
 
 		self.setRVListSizeParms(int(self.configMgr.histoListItemHeight),
