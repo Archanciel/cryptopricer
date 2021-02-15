@@ -15,7 +15,7 @@ Full requests do specify all the request parameter values.
 
     [b][cy]<unit>[/c][/b] = counterparty symbol, crypto or unit currency
 
-    [b][cy]<date time>[/c][/b] more details below
+    [b][cy]<date time>[/c][/b] more details bel 
 
     [b][cy]<exchange>[/c][/b] exchange name like binance or all for average price on all exchanges
 
@@ -54,33 +54,33 @@ the last price of the date at UTC 23.59 is returned as 'close' price and the dis
 
 Examples: assume we are on 16/12/17 at 22:10
 
-[cy]btc usd 0 bittrex[/c] -->
-[n]BTC/USD on BitTrex: 16/12/17 22:10R 19120
-[n][i]This basic request displays the BTC/USD real time price of 19120 on the BitTrex exchange. The request was entered at the displayed date time[/i]
+    [cy]btc usd 0 bittrex[/c] -->
+    BTC/USD on BitTrex: 16/12/17 22:10R 19120
+    [n][i]This basic request displays the BTC/USD real time price of 19120 on the BitTrex exchange. The request was entered at the displayed date time[/i]
 
-[cy]eth btc 16/12 13:45 bitfinex[/c] -->
-[n]ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
-[n][i]Same remark for the ETH/BTC minute price of 0.03893 on Bitfinex[/i]
+    [cy]eth btc 16/12 13:45 bitfinex[/c] -->
+    ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+    [n][i]Same remark for the ETH/BTC minute price of 0.03893 on Bitfinex[/i]
 
-[cy]eth btc 13:45 bitfinex[/c] -->
-[n]ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
-[n][i]Here, only the time was specified, so the current date was assumed[/i]
+    [cy]eth btc 13:45 bitfinex[/c] -->
+    ETH/BTC on Bitfinex: 16/12/17 13:45M 0.03893
+    [n][i]Here, only the time was specified, so the current date was assumed[/i]
 
-[cy]eth btc 15 8:45 bitfinex[/c] -->
-[n]ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
-[n][i]Here, only the day and time were given. The current month and year were assumed[/i]
+    [cy]eth btc 15 8:45 bitfinex[/c] -->
+    ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
+    [n][i]Here, only the day and time were given. The current month and year were assumed[/i]
 
-[cy]eth btc 15 bitfinex[/c] -->
-[n]ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
-[n][i]Here, only the day was provided. The current time, month and year were assumed[/i]
+    [cy]eth btc 15 bitfinex[/c] -->
+    ETH/BTC on Bitfinex: 15/12/17 8:45M 0.03782
+    [n][i]Here, only the day was provided. The current time, month and year were assumed[/i]
 
-[cy]eth btc 21/1 13:45 bitfinex[/c] -->
-[n]ETH/BTC on Bitfinex: 21/01/17C 0.01185
-[n][i]Here, the current year was assumed[/i]
+    [cy]eth btc 21/1 13:45 bitfinex[/c] -->
+    ETH/BTC on Bitfinex: 21/01/17C 0.01185
+    [n][i]Here, the current year was assumed[/i]
 
-[cy]btc usd 0 bittrex -v0.01btc[/c] -->
-[n]0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
-[n][i]Here, a value [cy]-v[/c] option was added at the end of the request asking the value of 
+    [cy]btc usd 0 bittrex -v0.01btc[/c] -->
+    0.01 BTC/191.2 USD on BitTrex: 16/12/17 22:10R 19120
+    [n][i]Here, a value [cy]-v[/c] option was added at the end of the request asking the value of 
 0.01 BTC in USD. The real time BTC price being 19120 USD, the value of the specified 
 0.01 BTC amount was 191.2 USD[/i]
 
@@ -113,30 +113,30 @@ The partial request parameters are specified using the following parms:
 Examples: the next partial requests follow the before last full request described above
 ([cy]eth btc 21/1 13:45 bitfinex[/c])
 
-[cy]-uusd[/c] -->
-[n]ETH/USD on Bitfinex: 21/01/17C 0.01185
+    [cy]-uusd[/c] -->
+    ETH/USD on Bitfinex: 21/01/17C 0.01185
 
-[cy]-d12 -ubtc -ekraken[/c] -->
-[n]ETH/BTC on Kraken: 12/01/17 00:00C 0.012
+    [cy]-d12 -ubtc -ekraken[/c] -->
+    ETH/BTC on Kraken: 12/01/17 00:00C 0.012
 
-[cy]-d12 17:45[/c] -->
-[n]ETH/BTC on Kraken: 12/01/17 00:00C 0.012
-[n][i]Here, the time entered would be used only if the date currently in effect
+    [cy]-d12 17:45[/c] -->
+    ETH/BTC on Kraken: 12/01/17 00:00C 0.012
+    [n][i]Here, the time entered would be used only if the date currently in effect
 was less than 7 days before now, which means that a minute price could be obtained
 from the rate provider ![/i]
 
-[cy]-d12/05[/c] -->
-[n]ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
+    [cy]-d12/05[/c] -->
+    ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
 
-[cy]-d12/2/21 17:45[/c] -->
-[n]ETH/BTC on Kraken: 10/02/21 17:45M 0.03873
-[n][i]Here, the time entered is used only if the date currently in effect
+    [cy]-d12/2/21 17:45[/c] -->
+    ETH/BTC on Kraken: 10/02/21 17:45M 0.03873
+    [n][i]Here, the time entered is used only if the date currently in effect
 is less than 7 days before now, which means that a minute price can be obtained
 from the rate provider ![/i]
 
-[cy]-t22:55[/c] -->
-[n]ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
-[n][i]Here, the time entered would be used only if the date currently in effect
+    [cy]-t22:55[/c] -->
+    ETH/BTC on Kraken: 12/05/17 00:00C 0.05005
+    [n][i]Here, the time entered would be used only if the date currently in effect
 was less than 7 days before now, which means that a minute price could be obtained
 from the rate provider ![/i]
 
@@ -158,22 +158,22 @@ In a further version, the price
 [b][cy]-p[/b][/c] option will be added. This option will enable you to specify a price value in fiat and obtain the 
 corresponding unit rate.
 
-This will be useful in this scenario:, you wish to purchase ETH on Binance at a rate of 650 USD. On Binance,
+This will be useful in this scenario: you wish to purchase ETH on Binance at a rate of 650 USD. On Binance,
 the ETH/USD pair is not available. You ask the current ETH rate in BTC on this exchange 
 and you want to know what limit buy order in BTC you have to place in order
 to purchase your ETH at a rate of 650 USD.
 
-[cy]eth btc 0 binance -p650usd.kraken[/c] -->
-[n]ETH/BTC on Binance: 16/12/17 22:10R 0.03556 [cr]0.03357976[/c]
-[n][i]Currently the BTC/USD rate on Kraken is 19356.9. So, the ETH at this rate
+    [cy]eth btc 0 binance -p650usd.kraken[/c] -->
+    ETH/BTC on Binance: 16/12/17 22:10R 0.03556 [cr]0.03357976[/c]
+    [n][i]Currently the BTC/USD rate on Kraken is 19356.9. So, the ETH at this rate
 is valued at 0.03556 x 19 356.9 = 688.331364. So, your limit buy order must be placed
 at 0.03556 / 688.331364 x 650 = [cr]0.03357976[/c].[/i]
 
 Second example in a different format displaying more information: you want to purchase CHSB tokens at price 0.3 USDC. The request
 
-[cy]chsb btc 0 hitbtc -p0.3USD -fusd.kraken[/c] -->
-[n]1 CHSB/[cr]0.0000085[/c] BTC/0.3 USD.Kraken on HitBTC 20/01/21 20:45R 0.00000865 0.30587441
-[n][i]This indicates that currently the CHSB is quoted at 0.00000865 BTC on HitBTC (which
+    [cy]chsb btc 0 hitbtc -p0.3USD -fusd.kraken[/c] -->
+    1 CHSB/[cr]0.0000085[/c] BTC/0.3 USD.Kraken on HitBTC 20/01/21 20:45R 0.00000865 0.30587441
+    [n][i]This indicates that currently the CHSB is quoted at 0.00000865 BTC on HitBTC (which
 corresponds to a value of 0.30587441 USD on Kraken), but that to buy it at 0.3 USD,
 the limit buy order must set the price to 0,00000865 / 0,30537441 * 0.3 = [cr]0.0000085[/c] BTC ![/i]
 [p]
@@ -199,7 +199,7 @@ or at the rate of the current full request if added to it.
 First example: if the last request was
 
     [cy]btc usd 0 bittrex[/c] -->
-    [n]BTC/USD on BitTrex: 16/12/17 22:10R 19120
+    BTC/USD on BitTrex: 16/12/17 22:10R 19120
 
     then entering
 
@@ -221,12 +221,12 @@ First example: if the last request was
     [n][i]which means that 0.1 BTC is equivalent to 1914 USD
     [n]at the BTC/USD rate of 19140[/i].
 
-    Note that here the RT price went up 20 USD since the last [b][cy]-v[/b][/c] partial request !
+Note that here the RT price went up 20 USD since the last [b][cy]-v[/b][/c] partial request !
 
 Second example: if the last request was
 
     [cy]btc usd 1/12/17 bittrex[/c] -->
-    [n]BTC/USD on BitTrex: 1/12/17 00:00C 10784
+    BTC/USD on BitTrex: 1/12/17 00:00C 10784
 
     then entering
 
@@ -248,13 +248,13 @@ Second example: if the last request was
     [n][i]which means that 0.1 BTC is equivalent to 1914 USD
     [n]at the BTC/USD rate of 10784[/i].
 
-    Note that here the close price between the two [b][cy]-v[/b][/c] partial requests is identical !
+Note that here the close price between the two [b][cy]-v[/b][/c] partial requests is identical !
 [p]
 [b][cg]Value option format[/cg][/b]
 
     [b][cy]-v[/b][/c]999.9999zzz or
 
-    [b][cy]-vs[/b][/c]999.9999zzz, [b][cy]s[/b][/c] is a [b][cy]save[/b][/c] additional modifier which causes the [b][cy]-v[/b][/c] option to be saved in the request history or.
+    [b][cy]-vs[/b][/c]999.9999zzz, [b][cy]s[/b][/c] is a [b][cy]save[/b][/c] additional modifier which causes the [b][cy]-v[/b][/c] option to be saved in the request history or
 
     [b][cy]-v0[/b][/c] is used to cancel a currently active [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] option.
 
@@ -267,7 +267,8 @@ they are canceled. There are two ways of deactivating a currently in effect
 
     1/ enter a full request, which wipes out all the
     previously entered partial request settings
-    [n]2/ enter [b][cy]-v0[/b][/c] which cancels the currently active [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] valuation option
+
+    2/ enter [b][cy]-v0[/b][/c] which cancels the currently active [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] valuation option
 
 So, until the [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] command is cancelled, it stays in effect
 and impacts any new partial request. This is the case
@@ -278,25 +279,25 @@ attached to the [b][cy]-v[/b][/c] or [b][cy]-vs[/b][/c] option.
 
 Example:
 
-[cy]-v0.1eth[/c] -->
-[n]0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
+    [cy]-v0.1eth[/c] -->
+    0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
 
-[cy]-cbtc[/c] -->
-[n]BTC/USD on Bitfinex:  21/11/17 00:00C 8096.9
-WARNING - currency value option symbol ETH currently
+    [cy]-cbtc[/c] -->
+    BTC/USD on Bitfinex:  21/11/17 00:00C 8096.9
+    [n]WARNING - currency value option symbol ETH currently 
 in effect differs from both crypto (BTC) and unit (USD) of request.
 -v parameter ignored
-[n][i]The warning is due to the fact that we changed the crypto to BTC,
-change that makes the cy]-v0.1eth[/c] value option unapplicable[/i].
+    [n][i]The warning is due to the fact that we changed the crypto to BTC, 
+change that makes the [cy]-v0.1eth[/c] value option unapplicable[/i].
 
 Next entering
 
-[cy]-ueth[/c]
+    [cy]-ueth[/c]
 
-returns
+    returns
 
-[n]0.00445236BTC/0.1ETH on Bitfinex:  21/11/17 00:00C 0.4445
-[n][i]We see that now the previsously specified value
+    [n]0.00445236BTC/0.1ETH on Bitfinex:  21/11/17 00:00C 0.4445
+    [n][i]We see that now the previsously specified value 
 option [cy]-v0.1eth[/c] is applicable again. But now,
 ETH is no longer the [cy]-c[/c] [i]crypto[/i], but is the
 [cy]-u[/c] [i]unit[/i] (counterparty), which modifies the
@@ -307,44 +308,48 @@ next fiat option section.
 [p]
 [b][cg]Fiat option[/cg][/b]
 
-The fiat option enables the user to specify a fiat symbol so that request
-returns two rates: the crypto/unit rate and the crypto/fiat rate. In ooder
-to convert the coypto/unit pair rate to the crypto/fiat rate, the unit/fiat
-pair rate must be obtained. Specifying only the fiat symbol will cause that 
-the unit/fiat pair rate will be an average rate between exchanges. The average
+The fiat option enables the user to specify a fiat symbol so that the request
+returns two rates: 1/ the crypto/unit rate and 2/ the crypto/fiat rate. In order
+to convert the crypto/unit pair rate to the crypto/fiat rate, the unit/fiat
+pair rate must be obtained from the rate provider.
+
+Specifying only the fiat symbol ([cy]-fusd[/c]) will cause that 
+the returned unit/fiat pair rate will be an average rate between exchanges. This average
 rate is determined by the rate provider. In order to obtain a more precise
 rate, the unit/fiat pair exchange can be added to the fiat option. For
 example if the unit is BTC and the specified fiat is USD, it makes sense to
-specify the BTC/USD pair to be obtained from Kraken.
+specify the BTC/USD pair to be obtained from Kraken using [cy]-fusd.kraken[/c].
 
 [b][cg]Fiat option format[/cg][/b]
 
-[b][cy]-f[/b][/c]CURRENCY or
-[b][cy]-fs[/b][/c]CURRENCY
-[n]or [b][cy]-f[/b][/c]CURRENCY.[i]exchange[/i] or
-[b][cy]-fs[/b][/c]CURRENCY.[i]exchange[/i] or
-[b][cy]-f0[/b][/c] to cancel a currently active
-[b][cy]-fs[/b][/c] option.
+    [b][cy]-f[/b][/c]CURRENCY or
+
+    [b][cy]-fs[/b][/c]CURRENCY or
+
+    [b][cy]-f[/b][/c]CURRENCY.[i]exchange[/i] or
+
+    [b][cy]-fs[/b][/c]CURRENCY.[i]exchange[/i] or
+
+    [b][cy]-f0[/b][/c] to cancel a currently active 
+[b][cy]-f[/b][/c]  or [b][cy]-fs[/b][/c] option.
 
 The [b][cy]-f[/b][/c] option is used to specify a CURRENCY in which the
 unit price of the crypto will be converted.
 
 Example: if the last request was
 
-[n][cy]eth btc 0 bittrex[/c] -->
-[n]ETH/BTC on BitTrex: 28/10/19 18:38R 0.01939
+    [cy]eth btc 0 bittrex[/c] -->
+    ETH/BTC on BitTrex: 28/10/19 18:38R 0.01939
 
-then entering
+    then entering
 
-[cy]-fusd[/c]
+    [cy]-fusd[/c]
 
-returns
+    returns
 
-ETH/BTC/USD.AVG on BitTrex: 28/10/19 18:38R 0.01939 182.0755902
-
-which means that the ETH price in BTC on BitTrex of 0.01939 converted in USD
-equals 182.0755902, this for the BTC/USD price of 9390.13 obtained
-on AVG (average BTC price).
+    ETH/BTC/USD.AVG on BitTrex: 28/10/19 18:38R 0.01939 182.0755902
+    [n][i]which means that the ETH price in BTC on BitTrex of 0.01939 converted in 
+USD equals 182.0755902, this for the average BTC/USD price of 9390.13[/i].
 
 To state it differently, the USD conversion calculation is
 
@@ -355,58 +360,77 @@ obtained (AVG is the default if no exchange is specified).
 
 Example: if the last request was
 
-[n][cy]eth btc 0 bittrex[/c] -->
-[n]ETH/BTC on BitTrex: 28/10/19 18:38R 0.01939
+    [cy]eth btc 0 bittrex[/c] -->
+    ETH/BTC on BitTrex: 28/10/19 18:38R 0.01939
 
-then entering
+    then entering
 
-[cy]-fusd.kraken[/c]
+    [cy]-fusd.kraken[/c]
 
-returns
+    returns
 
-ETH/BTC/USD.Kraken on BitTrex: 28/10/19 18:38R 0.01939 182.09149
+    ETH/BTC/USD.Kraken on BitTrex: 28/10/19 18:38R 0.01939 182.09149
+    [n][i]which means that the ETH price in BTC on BitTrex of 0.01939 converted in 
+USD equals 182.09149, this for the BTC/USD price of 9391 obtained
+from Kraken[/i].
 
-which means that the ETH price in BTC on BitTrex of 0.01939 converted in USD
-equals 182.09149, this for the BTC/USD price of 9391 obtained
-from Kraken.
+Using [b][cy]-fs[/b][/c] instead of [b][cy]-f[/b][/c] saves the fiat option in 
+the request history list.
 
-Using [b][cy]-fs[/b][/c] instead of [b][cy]-f[/b][/c] saves the fiat option, making it
-active for all subsequent PARTIAL requests. The [b][cy]-fs[/b][/c] option is also saved
-in the request history list.
-
-There are two ways of deactivating a currently in effect
-[b][cy]-fs[/b][/c] option:
+The [b][cy]-f[/b][/c] or [b][cy]-fs[/b][/c] option remain active until 
+they are canceled. There are two ways of deactivating a currently in effect
+[b][cy]-f[/b][/c] or [b][cy]-fs[/b][/c] option:
 
     1/ enter a full request, which wipes out all the
     previously entered partial request settings
-    [n]2/ enter [b][cy]-f0[/b][/c] which cancels the [b][cy]-fs[/b][/c] fiat option
 
-So, until the [b][cy]-fs[/b][/c] command is cancelled, it stays in effect
-and impacts any new partial request.STAYED HERE !
+    2/ enter [b][cy]-f0[/b][/c] which cancels the currently active [b][cy]-f[/b][/c] or [b][cy]-fs[/b][/c] fiat option
 
-Example:
-CORRECT  HELP !!!
-[cy]-feth[/c] -->
-[n]0.1 ETH/36 USD on Bitfinex: 21/11/17 00:00C 360
+So, until the [b][cy]-f[/b][/c] or [b][cy]-fs[/b][/c] command is cancelled, it stays in effect
+and impacts any new partial request.
 
-[cy]-cbtc[/c] -->
-[n]BTC/USD on Bitfinex:  21/11/17 00:00C 8096.9
-WARNING - currency value option symbol ETH currently
-in effect differs from both crypto (BTC) and unit (USD) of last request.
--fs parameter ignored
+Example: if the last request was
 
-Next entering
+    [cy]eth btc 21/11/17 bittrex -fusd.kraken[/c] -->
+    ETH/BTC/USD.Kraken on BitTrex: 21/11/17 00.00C 0.04446 360.708426
 
-[cy]-ueth[/c]
+    then entering
 
-returns
+    [cy]-fneo.kraken[/c] -->
+    PROVIDER ERROR - fiat option coin pair NEO/BTC or BTC/NEO not supported by 
+exchange Kraken on date 21/11/17 00:00
 
-[n]0.00445236BTC/0.1ETH on Bitfinex:  21/11/17 00:00C 0.4445
+    Next entering
 
-We see that now the previsously specified saved value
-option [cy]-fs0.1eth[/c] is applicable again. But now,
-ETH is no longer the [cy]-c[/c] crypto, but is the
-[cy]-u[/c] unit (counterparty).
+    [cy]-f0[/c]
+
+    returns
+
+    [n]ETH/BTC on BitTrex: 21/11/17 00.00C 0.04446
+    [n][i]which shows that the [cy]-fneo.kraken[/c] fiat option was unactivated[/i].
+[p]
+Other example: if the last request was
+
+    [cy]neo btc 21/11/17 bittrex -fusd.kraken[/c] -->
+    NEO/BTC/USD.Kraken on BitTrex: 21/11/17 00.00C 0.004245 34.4401095
+
+    then entering
+
+    [cy]-cbtc -uneo[/c]
+
+    returns
+
+    PROVIDER ERROR - fiat option coin pair USD/NEO or NEO/USD not supported by 
+exchange Kraken on date 21/11/17 00:00.
+
+    Next entering
+
+    [cy]-f0[/c]
+
+    returns
+
+    [n]BTC/NEO on BitTrex: 21/11/17 00.00C 235.57126031
+    [n][i]which shows that the [cy]-fusd.kraken[/c] fiat option was unactivated[/i].
 [p]
 [b][cg]Fiat option in conjunction with value option[/cg][/b]
 
