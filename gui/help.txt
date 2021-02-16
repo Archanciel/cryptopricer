@@ -180,8 +180,8 @@ the limit buy order must set the price to 0,00000865 / 0,30537441 * 0.3 = [cr]0.
 [n][b][cg]Value option[/cg][/b]
 
 The value option enables the user to define a value either in crypto, in unit
-or in fiat if the fiat option is currently in effect. The request will
-not only return the rate of the crypto/unit pair, but also the value of
+or in fiat if the fiat option is currently in effect. Due to the value option, the request 
+will not only return the rate of the crypto/unit pair, but also the [i]value[/i] of
 the specified value option quantity at the crypto/unit pair rate.
 
     [b][cy]-v[/b][/c][i]amount[/i]CURRENCY or
@@ -317,8 +317,9 @@ Specifying only the fiat symbol ([cy]-fusd[/c]) will cause that
 the returned unit/fiat pair rate will be an average rate between exchanges. This average
 rate is determined by the rate provider. In order to obtain a more precise
 rate, the unit/fiat pair exchange can be added to the fiat option. For
-example if the unit is BTC and the specified fiat is USD, it makes sense to
-specify the BTC/USD pair to be obtained from Kraken using [cy]-fusd.kraken[/c].
+example if the unit is BTC and the specified fiat is USD and you purchused your 
+BTC on Kraken, it makes sense to specify the BTC/USD pair to be obtained from 
+this exchange using [cy]-fusd.kraken[/c].
 
 [b][cg]Fiat option format[/cg][/b]
 
@@ -354,6 +355,9 @@ USD equals 182.0755902, this for the average BTC/USD price of 9390.13[/i].
 To state it differently, the USD conversion calculation is
 
 0.01939 * 9390.13 = 182.0755902
+
+[b][cr]IMPORTANT[/c][/b]: this calculation is displayed in the status bar, in this case
+[n]0.01939 ETH/BTC * 9390.13 BTC/USD = 182.0755902 ETH/USD
 
 It is possible to specify the exchange from which the fiat conversion rate will be
 obtained (AVG is the default if no exchange is specified).
@@ -433,4 +437,24 @@ exchange Kraken on date 21/11/17 00:00.
     [n][i]which shows that the [cy]-fusd.kraken[/c] fiat option was unactivated[/i].
 [p]
 [b][cg]Fiat option in conjunction with value option[/cg][/b]
+
+Combining both value option and fiat option adds to the value option result a value 
+converted in fiat rate aswell as the fiat rate itself.
+
+Example:
+
+    Value option only full request:
+
+    [cy]eth usd 5/2/21 bittrex -v2eth[/c] -->
+    2 ETH/3441.3 USD on BitTrex: 05/02/21 00:00C 1720.65
+
+    Value option plus fiat option full request:
+
+    [cy]eth usd 5/2/21 bittrex -v2eth -feur.kraken[/c] -->
+    2 ETH/3441.3 USD/2858.22 EUR.Kraken on BitTrex: 05/02/21 00:00C 1720.65 1429.11129568
+    [n][i]which means that 2 ETH converted in USD equal 3441.3 USD and converted in 
+EUR equal 1429.11129568 EUR[/i].
+
+    On status bar:
+    [n]1720.65 ETH/USD * 0.83056478 USD/EUR = 1429.11129568 ETH/EUR
 
