@@ -572,7 +572,7 @@ class Requester:
 					# self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, partialRequestStr)
 					# above, we have to try to extract a DMY and HM date/time value from the
 					# partialRequestStr in case the -d partial request did contain a time element
-					dayMonthYear, hourMinute = self.tryExtractDateTimeValueFromPartialRequest(inputStr)
+					dayMonthYear, hourMinute = self._tryExtractDateTimeValueFromPartialRequest(inputStr)
 					if dayMonthYear is None and hourMinute is None:
 						# here, partial request -d contained no time value and so was parsed
 						# by self._parseGroups(self.PATTERN_PARTIAL_PRICE_REQUEST_DATA, partialRequestStr)
@@ -586,7 +586,7 @@ class Requester:
 			# pattern: crypto unit in this mandatory order, then date time exchange, of which order
 			# can be different.
 			requestType = self.REQUEST_TYPE_FULL
-			self.commandPrice.initialiseParsedParmData()
+			self.commandPrice._initialiseParsedParmData()
 			self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
 			self.commandPrice.parsedParmData[CommandPrice.UNIT] = groupList[1] #mandatory unit parm, its order is fixed
 			orderFreeParmDic = self._buildFullCommandPriceOrderFreeParmsDic(groupList[2:])
@@ -704,7 +704,7 @@ class Requester:
 			# here, no option -v, -f or -p specified !
 			return self.commandPrice
 	
-	def tryExtractDateTimeValueFromPartialRequest(self, partialRequestStr):
+	def _tryExtractDateTimeValueFromPartialRequest(self, partialRequestStr):
 		"""
 		Handles a -d partial request containing time component which could not
 		be parsed sooner.
@@ -839,7 +839,7 @@ class Requester:
 						(optionErase == '0' and optionSaveFlag == None and optionSymbol == None and optionData != '0'):
 						# solving very difficult error message formatting for invalid -f option erase. -f0.01 in partial
 						# and full requests or -fs0.01 in partial and full requests. I spent days solving it !
-						return self.handleInvalidOptionFormat(optionData, optionType, requestType)
+						return self._handleInvalidOptionFormat(optionData, optionType, requestType)
 			elif optionType == 'PRICE':
 				if len(match.groups()) == 5:
 					optionSaveFlag = match.group(1)
@@ -849,7 +849,7 @@ class Requester:
 					optionErase = match.group(5)
 					self.commandPrice.parsedParmData[CommandPrice.OPTION_PRICE_EXCHANGE] = optionExchange
 					if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
-						return self.handleInvalidOptionFormat(optionData, optionType, requestType)
+						return self._handleInvalidOptionFormat(optionData, optionType, requestType)
 
 			if optionErase == None:
 				if optionSymbol.isdigit():
@@ -896,9 +896,9 @@ class Requester:
 			return command
 		else:
 			#here, invalid option format
-			return self.handleInvalidOptionFormat(optionData, optionType, requestType)
+			return self._handleInvalidOptionFormat(optionData, optionType, requestType)
 
-	def handleInvalidOptionFormat(self, optionData, optionType, requestType):
+	def _handleInvalidOptionFormat(self, optionData, optionType, requestType):
 		optionKeyword = self.commandPrice.getCommandPriceOptionKeyword(optionType)
 		if requestType == self.REQUEST_TYPE_PARTIAL:
 			self.commandError.parsedParmData[

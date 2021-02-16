@@ -11,7 +11,7 @@ class RateDictionary:
 	cachedRateAccessNumber = 0
 
 	def __init__(self):
-		atexit.register(self.saveDic)
+		atexit.register(self._saveDic)
 
 		if RateDictionary.dic == {}:
 			if os.path.isfile(RATE_DIC_FILE_PATH):
@@ -27,7 +27,7 @@ class RateDictionary:
 		rate = None
 
 		try:
-			rate = RateDictionary.dic[self.getDicKey(crypto, unit, timeStampUTCStr, exchange)]
+			rate = RateDictionary.dic[self._getDicKey(crypto, unit, timeStampUTCStr, exchange)]
 			RateDictionary.cachedRateAccessNumber += 1
 		except KeyError:
 			# rate not yet in rate dic file
@@ -36,10 +36,10 @@ class RateDictionary:
 		return rate
 
 	def saveRate(self, crypto, unit, timeStampUTCStr, exchange, rate):
-		RateDictionary.dic[self.getDicKey(crypto, unit, timeStampUTCStr, exchange)] = rate
+		RateDictionary.dic[self._getDicKey(crypto, unit, timeStampUTCStr, exchange)] = rate
 		RateDictionary.wasDicUpdated = True
 		
-	def saveDic(self):
+	def _saveDic(self):
 		if RateDictionary.wasDicUpdated:
 			with open(RATE_DIC_FILE_PATH, 'w') as f:
 				json.dump(RateDictionary.dic,
@@ -49,7 +49,7 @@ class RateDictionary:
 
 			RateDictionary.wasDicUpdated = False
 
-	def getDicKey(self, crypto, unit, timeStampUTCStr, exchange):
+	def _getDicKey(self, crypto, unit, timeStampUTCStr, exchange):
 		return crypto + unit + str(timeStampUTCStr) + exchange
 		
 if __name__ == "__main__":

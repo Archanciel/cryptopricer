@@ -57,7 +57,7 @@ class CommandPrice(AbstractCommand):
 		self.configManager = configManager
 
 
-	def initialiseParsedParmData(self):
+	def _initialiseParsedParmData(self):
 		'''
 		Prefill the parsedParmData dictionary with empty key/value pair.
 		If this is not done, the parsedParmData dictionary will only contain

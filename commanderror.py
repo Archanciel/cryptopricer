@@ -26,7 +26,7 @@ class CommandError(AbstractCommand):
         super().__init__(receiver, 'CommandError')
 
 
-    def initialiseParsedParmData(self):
+    def _initialiseParsedParmData(self):
         self.parsedParmData[self.COMMAND_ERROR_TYPE_KEY] = None
         self.parsedParmData[self.COMMAND_ERROR_MSG_KEY] = ''
 

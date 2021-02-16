@@ -39,7 +39,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 
 			cryptoUnitPart = self._formatCryptoUnitPart(resultData)
 			fiatComputedAmount = resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT)
-			cryptoExchange = self.convertCCCAGGExchangeName(resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+			cryptoExchange = self._convertCCCAGGExchangeName(resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
 			
 			if fiatComputedAmount != None:
 				formattedFiatComputedAmountStr = self._formatPriceFloatToStr(fiatComputedAmount, self.PRICE_FLOAT_FORMAT)
@@ -76,7 +76,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 												resultData.getValue(resultData.RESULT_KEY_UNIT),
 												resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 				else:
-					convertedFiatExchange = self.convertCCCAGGExchangeName(exchangeName=fiatOptionExchange)
+					convertedFiatExchange = self._convertCCCAGGExchangeName(exchangeName=fiatOptionExchange)
 					
 					return '{}/{}/{}.{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
 												resultData.getValue(resultData.RESULT_KEY_UNIT),
@@ -108,7 +108,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 														 formattedPriceFiatStr,
 														 resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 				else:
-					convertedFiatExchange = self.convertCCCAGGExchangeName(exchangeName=fiatOptionExchange)
+					convertedFiatExchange = self._convertCCCAGGExchangeName(exchangeName=fiatOptionExchange)
 	
 					return '{} {}/{} {}/{} {}.{}'.format(formattedPriceCryptoStr,
 														 resultData.getValue(resultData.RESULT_KEY_CRYPTO),
@@ -118,7 +118,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 														 resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL),
 														 convertedFiatExchange)
 	
-	def convertCCCAGGExchangeName(self, exchangeName):
+	def _convertCCCAGGExchangeName(self, exchangeName):
 		if exchangeName == 'CCCAGG':
 			exchangeName = 'AVG'
 			

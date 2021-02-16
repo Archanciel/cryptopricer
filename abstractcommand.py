@@ -17,7 +17,7 @@ class AbstractCommand(metaclass=ABCMeta):
         self.requestInputString = ''
         self.parsedParmData = {}
         self.name = name # used as key in a AbstractCommand dictionary
-        self.initialiseParsedParmData()
+        self._initialiseParsedParmData()
 
 
     def __str__(self):
@@ -25,7 +25,7 @@ class AbstractCommand(metaclass=ABCMeta):
         
         
     @abstractmethod
-    def initialiseParsedParmData(self):
+    def _initialiseParsedParmData(self):
         '''
         Prefill the parsedParmData dictionary with empty key/value pair.
         If this is not done, the parsedParmData dictionary will only contain
