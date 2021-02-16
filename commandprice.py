@@ -242,7 +242,6 @@ class CommandPrice(AbstractCommand):
 											  self.requestInputString,
 											  optionFiatSymbol=optionFiatSymbol,
 											  optionFiatExchange=optionFiatExchange,
-											  optionFiatSaveFlag=optionFiatSaveFlag,
 											  optionPriceSymbol=None,
 											  optionPriceAmount=None,
 											  optionPriceSaveFlag=None)

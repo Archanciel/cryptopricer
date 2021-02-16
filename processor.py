@@ -33,7 +33,6 @@ class Processor:
 					   requestInputString='',
 					   optionFiatSymbol=None,
 					   optionFiatExchange=None,
-					   optionFiatSaveFlag=None,
 					   optionPriceSymbol=None,
 					   optionPriceAmount=None,
 					   optionPriceSaveFlag=None):
@@ -42,19 +41,14 @@ class Processor:
 		in case a fiat (-f) or/and a value option (-v) was specified, computes
 		them and add the results to the returned ResultData.
 		
-		:param optionFiatSymbol:
-		:param optionFiatSaveFlag:
-		:param optionPriceSymbol:
-		:param optionPriceAmount:
-		:param optionPriceSaveFlag:
-		:param crypto: upper case crypto symbol
-		:param unit: upper case counter party symbol
-		:param exchange: exchange name
-		:param day: int day number
-		:param month: int month number
-		:param year: int year number
-		:param hour: int hour number
-		:param minute: int minute number
+		:param crypto:
+		:param unit:
+		:param exchange:
+		:param day:
+		:param month:
+		:param year:
+		:param hour:
+		:param minute:
 		:param optionValueSymbol: upper case currency value symbol. If == crypto, this means that optionValueAmount provided
 								 is in crypto and must be converted into unit (counter party) at the rate returned by
 								 the PriceRequester.
@@ -86,7 +80,9 @@ class Processor:
 		:param requestInputString): used for better error msg !
 		:param optionFiatSymbol:    stores the fiat symbol, i.e. the fiat into which the returned
 									unit amount is converted
-		:param optionFiatSaveFlag:  used to refine warning if fiat option not applicable. May be suppressed if not used
+									
+		NEXT THREE PARMS NOT USED YET !
+		
 		:param optionPriceSymbol:   upper case currency price symbol
 		:param optionPriceAmount:   float specified price option amount
 		:param optionPriceSaveFlag: used to refine warning if price option not applicable
@@ -94,7 +90,6 @@ class Processor:
 		:seqdiag_return ResultData
 		:return: a ResultData filled with result values
 		"""
-
 		# validating exchange and fiat exchange
 
 		if exchange == None:

@@ -766,8 +766,7 @@ class TestProcessor(unittest.TestCase):
                                                optionValueSymbol,
                                                optionValueAmount,
                                                requestInputString='',
-                                               optionFiatSymbol=optionFiatSymbol,
-                                               optionFiatSaveFlag=optionFiatSave)
+                                               optionFiatSymbol=optionFiatSymbol)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), crypto)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_UNIT), unit)
