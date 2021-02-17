@@ -14,7 +14,7 @@ class Controller:
 	Instanciate the app components and
 	control the rep loop.
 	
-	:seqdiag_note Entry point of the business layer.
+	:seqdiag_note Client in the GOF Command pattern. Entry point of the business layer. Instanciates the business layer classes.
 	"""
 	def __init__(self, printer, configMgr, priceRequester):
 		if os.name == 'posix':

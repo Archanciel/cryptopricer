@@ -8,7 +8,7 @@ class CommandPrice(AbstractCommand):
 	Command pattern, it calls the getCryptoPrice method on its receiver, a Processor instance
 	linked to the Command by the Controller.
 	
-	:seqdiag_note Command in the GOF Command pattern. Validates part of the request elements and computes the int request date/time components. Extract the option parms values from the parsed parm data in order to pass them to the receiver, i.e. the Processor.
+	:seqdiag_note Command in the GOF Command pattern. Stores all the request parms parsed by the Requester. Stores aswell the currently active request parms which will be used in case of partial request. Validates part of the request elements and computes the int request date/time components. Calls the receiver, i.e. the Processor, passing to it the required request parms.
 	"""
 	CRYPTO = "CRYPTO"
 	UNIT = "UNIT"
