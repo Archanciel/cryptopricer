@@ -4,7 +4,7 @@ from scrollablelabelpopup import ScrollableLabelPopup
 from kivy import platform
 
 class HelpPopup(ScrollableLabelPopup):
-	def getContPageList(self):
+	def _getContentPageList(self):
 		if platform == 'win':
 			helpFileName = 'gui\\help.txt'
 		else:

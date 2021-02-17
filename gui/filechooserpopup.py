@@ -82,12 +82,12 @@ class FileChooserPopup(AbstractPopup):
 		self.fillDriveOrMemoryList()
 
 		# sizing FileChooserPopup widgets. Method defined in sub classes
-		self.sizeFileChooser()
+		self._sizeFileChooser()
 		
 		# specify pre-selected node by its index in the data
 		self.diskRecycleBoxLayout.selected_nodes = [0]
 	
-	def sizeFileChooser(self):
+	def _sizeFileChooser(self):
 		"""
 		This method sets the popup size and position values used by the rootGUI
 		openFileLoadPopup() or openFileSavePopup() methods as well as the file
@@ -147,12 +147,12 @@ class SaveFileChooserPopup(FileChooserPopup):
 
 		self.loadAtStartFilePathName = ''
 
-	def sizeFileChooser(self):
+	def _sizeFileChooser(self):
 		"""
 		
 		:return:
 		"""
-		super().sizeFileChooser()
+		super()._sizeFileChooser()
 
 		if platform == 'android':
 			if self.onSmartPhone():
@@ -196,9 +196,9 @@ class SaveFileChooserPopup(FileChooserPopup):
 
 		# update save file chooser popup title
 		
-		self.updateSaveFileChooserPopupTitle(currentSaveFilePathName, self.loadAtStartChkBox.active)
+		self._updateSaveFileChooserPopupTitle(currentSaveFilePathName, self.loadAtStartChkBox.active)
 	
-	def updateSaveFileChooserPopupTitle(self, currentSaveFilePathName, isLoadAtStartChkboxActive):
+	def _updateSaveFileChooserPopupTitle(self, currentSaveFilePathName, isLoadAtStartChkboxActive):
 		currentSaveFileName = currentSaveFilePathName.split(sep)[-1]
 		
 		if currentSaveFileName == '':
@@ -217,4 +217,4 @@ class SaveFileChooserPopup(FileChooserPopup):
 
 		:param active:
 		"""
-		self.updateSaveFileChooserPopupTitle(self.currentPathField.text, active)
+		self._updateSaveFileChooserPopupTitle(self.currentPathField.text, active)

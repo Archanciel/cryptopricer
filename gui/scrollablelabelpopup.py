@@ -25,18 +25,18 @@ class ScrollableLabelPopup(AbstractPopup):
 		kwargs['title'] = title
 		super(ScrollableLabelPopup, self).__init__(**kwargs)
 
-		self.setContentPageList()
+		self._setContentPageList()
 		
-	def setContentPageList(self):
-		self.formattedTextPageList = self.getContPageList()
+	def _setContentPageList(self):
+		self.formattedTextPageList = self._getContentPageList()
 		self.currentPage = 0
-		self.setContentTextToCurrentPage()
+		self._setContentTextToCurrentPage()
 		self.prevPageButton.disabled = True
 
-	def getContPageList(self):
+	def _getContentPageList(self):
 		return []
 	
-	def setContentTextToCurrentPage(self):
+	def _setContentTextToCurrentPage(self):
 		self.contentBox.content.text = self.formattedTextPageList[self.currentPage]
 	
 	def previousPage(self):
@@ -48,7 +48,7 @@ class ScrollableLabelPopup(AbstractPopup):
 			self.prevPageButton.disabled = False
 
 		self.nextPageButton.disabled = False
-		self.setContentTextToCurrentPage()
+		self._setContentTextToCurrentPage()
 		self.scrollView.scroll_y = 0 # force scrolling to bottom
 
 	def nextPage(self):
@@ -62,5 +62,5 @@ class ScrollableLabelPopup(AbstractPopup):
 			self.nextPageButton.disabled = False
 
 		self.prevPageButton.disabled = False
-		self.setContentTextToCurrentPage()
+		self._setContentTextToCurrentPage()
 		self.scrollView.scroll_y = 1 # force scrolling to top
