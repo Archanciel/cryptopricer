@@ -1479,30 +1479,32 @@ participant Parent
 actor GUI
 participant Controller
 	/note over of Controller
-		Entry point of the business layer.
+		Client in the GOF Command pattern. Entry point of the business layer. Instanciates the business layer classes.
 	end note
 participant Requester
 	/note over of Requester
-		Parses the user commands.
+		Parses the user requests, storing the request parms into the the appropriate Command.
 	end note
 participant CommandPrice
 	/note over of CommandPrice
-		Command in the GOF Command pattern. Validates part of the request elements and computes the int request date/time components. Extract the option parms
-		values from the parsed parm data in order to pass them to the receiver, i.e. the Processor.
+		Command in the GOF Command pattern. Stores all the request parms parsed by the Requester. Stores aswell the currently active request parms which will
+		be used in case of partial request. Validates part of the request elements and computes the int request date/time components. Calls the receiver, i.e.
+		the Processor, passing to it the required request parms.
 	end note
 participant Processor
 	/note over of Processor
-		Receiver in the GOF Command pattern. Validates and obtains real exchange symbol for crypto and fiat. Determines if RT or historical price must be
-		asked to the PriceRequester. After getting the price, computes the fiat (-f) and value (-v) option values and add them to the returned ResultData.
-		Concerning the fiat option, if the fiat/unit pair is not supported by the fiat exchange, try to obtain a unit/fiat pair price.
+		Receiver in the GOF Command pattern. Validates and obtains real exchange name for crypto/unit and unit/fiat pairs. Determines if RT or historical
+		price must be asked to the PriceRequester. After getting the price, computes the fiat (-f) and value (-v) option values and add them to the returned
+		ResultData. In case a crypto/unit or a fiat/unit pair is not supported by the pair exchange, try to obtain a unit/crypto, respectively a unit/fiat
+		pair price.
 	end note
 participant PriceRequester
 	/note over of PriceRequester
-		Obtains the RT or historical - determines if minute or close - rates from the Cryptocompare web site.
+		Obtains the RT or historical rates from the cryptocompare.com web site. For historical rates, determines if a minute or close rate is to be obtained.
 	end note
 participant GuiOutputFormatter
 	/note over of GuiOutputFormatter
-		Formats the result data printed to the output zone of the application aswell as to the status bar.
+		Formats the result data printed to the output zone of the application and to the status bar.
 	end note
 GUI -> Controller: getPrintableResultForInput(inputStr)
 	activate Controller
@@ -1598,7 +1600,11 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 
         commands = SeqDiagBuilder.createSeqDiaqCommands(actorName='GUI', title='CryptoPricer sequence diagram', maxSigArgNum=None, maxSigCharLen=20, maxNoteCharLen=20)
 
-        with open("c:\\temp\\sqCryptoPricerShortSig.txt", "w") as f:
+        plantUmlOutputDir = "c:\\temp\\"
+        plantUmlOutputFileName = 'sqCryptoPricerShortSig.txt'
+        plantUmlOutputFilePathName = plantUmlOutputDir + plantUmlOutputFileName
+
+        with open(plantUmlOutputFilePathName, "w") as f:
             f.write(commands)
 
         try:
@@ -1609,56 +1615,68 @@ title CryptoPricer sequence diagram
 actor GUI
 participant Controller
 	/note over of Controller
-		Entry point of the business
-		layer.
+		Client in the GOF Command
+		pattern. Entry point of the
+		business layer. Instanciates
+		the business layer classes.
 	end note
 participant Requester
 	/note over of Requester
-		Parses the user commands.
+		Parses the user requests,
+		storing the request parms into
+		the the appropriate Command.
 	end note
 participant CommandPrice
 	/note over of CommandPrice
 		Command in the GOF Command
-		pattern. Validates part of the
-		request elements and computes
-		the int request date/time
-		components. Extract the option
-		parms values from the parsed
-		parm data in order to pass
-		them to the receiver, i.e. the
-		Processor.
+		pattern. Stores all the
+		request parms parsed by the
+		Requester. Stores aswell the
+		currently active request parms
+		which will be used in case of
+		partial request. Validates
+		part of the request elements
+		and computes the int request
+		date/time components. Calls
+		the receiver, i.e. the
+		Processor, passing to it the
+		required request parms.
 	end note
 participant Processor
 	/note over of Processor
 		Receiver in the GOF Command
 		pattern. Validates and obtains
-		real exchange symbol for
-		crypto and fiat. Determines if
-		RT or historical price must be
-		asked to the PriceRequester.
-		After getting the price,
-		computes the fiat (-f) and
-		value (-v) option values and
-		add them to the returned
-		ResultData. Concerning the
-		fiat option, if the fiat/unit
-		pair is not supported by the
-		fiat exchange, try to obtain a
+		real exchange name for
+		crypto/unit and unit/fiat
+		pairs. Determines if RT or
+		historical price must be asked
+		to the PriceRequester. After
+		getting the price, computes
+		the fiat (-f) and value (-v)
+		option values and add them to
+		the returned ResultData. In
+		case a crypto/unit or a
+		fiat/unit pair is not
+		supported by the pair
+		exchange, try to obtain a
+		unit/crypto, respectively a
 		unit/fiat pair price.
 	end note
 participant PriceRequester
 	/note over of PriceRequester
-		Obtains the RT or historical -
-		determines if minute or close
-		- rates from the Cryptocompare
-		web site.
+		Obtains the RT or historical
+		rates from the
+		cryptocompare.com web site.
+		For historical rates,
+		determines if a minute or
+		close rate is to be obtained.
 	end note
 participant GuiOutputFormatter
 	/note over of GuiOutputFormatter
 		Formats the result data
 		printed to the output zone of
-		the application aswell as to
-		the status bar.
+		the application and to the
+		status bar.
 	end note
 GUI -> Controller: getPrintableResultForInput(inputStr)
 	activate Controller
@@ -1720,6 +1738,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
             pass
 
         SeqDiagBuilder.deactivate()
+        print('In order to generate the sequence diagram image file, open a command window on {}\nand execute the command java -jar plantuml.jar -tsvg {}\n'.format(plantUmlOutputDir, plantUmlOutputFileName))
 
 
     def testCreateSeqDiagCommandsOnClassesWithEmbededSelfCalls(self):

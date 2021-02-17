@@ -15,7 +15,7 @@ class Requester:
 
 	and return a command filled with the command parsed parm data
 	
-	:seqdiag_note Parses the user commands.
+	:seqdiag_note Parses the user requests, storing the request parms into the the appropriate Command.
 	'''
 
 	ENTER_COMMAND_PROMPT = 'Enter command (h for help, q to quit)\n'

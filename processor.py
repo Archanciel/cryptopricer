@@ -8,7 +8,7 @@ class Processor:
 	"""
 	This class is used as Receiver by the Command component in the Command pattern.
 	
-	:seqdiag_note Receiver in the GOF Command pattern. Validates and obtains real exchange symbol for crypto and fiat. Determines if RT or historical price must be asked to the PriceRequester. After getting the price, computes the fiat (-f) and value (-v) option values and add them to the returned ResultData. Concerning the fiat option, if the fiat/unit pair is not supported by the fiat exchange, try to obtain a unit/fiat pair price.
+	:seqdiag_note Receiver in the GOF Command pattern. Validates and obtains real exchange name for crypto/unit and unit/fiat pairs. Determines if RT or historical price must be asked to the PriceRequester. After getting the price, computes the fiat (-f) and value (-v) option values and add them to the returned ResultData. In case a crypto/unit or a fiat/unit pair is not supported by the pair exchange, try to obtain a unit/crypto, respectively a unit/fiat pair price.
 	"""
 	def __init__(self,
 				 configManager,

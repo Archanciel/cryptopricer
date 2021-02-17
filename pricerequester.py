@@ -16,7 +16,7 @@ IDX_DATA_ENTRY_TO = 1
 
 class PriceRequester:
     """
-    :seqdiag_note Obtains the RT or historical - determines if minute or close - rates from the Cryptocompare web site.
+    :seqdiag_note Obtains the RT or historical rates from the cryptocompare.com web site. For historical rates, determines if a minute or close rate is to be obtained.
     """
     def __init__(self):
         try:

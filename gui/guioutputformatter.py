@@ -5,7 +5,7 @@ from datetimeutil import DateTimeUtil
 
 class GuiOutputFormatter(AbstractOutputFormater):
 	"""
-	:seqdiag_note Formats the result data printed to the output zone of the application aswell as to the status bar.
+	:seqdiag_note Formats the result data printed to the output zone of the application and to the status bar.
 	"""
 
 	def __init__(self, configurationMgr):
