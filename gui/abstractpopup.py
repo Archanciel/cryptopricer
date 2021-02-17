@@ -17,13 +17,14 @@ class AbstractPopup(Popup):
 		
 		# defining FileChooserPopup size parameters
 		if platform == 'android':
-			popupSizeProportion_x = 0.8
 			popupSizeProportion_y = 0.62
 			
 			if self.onSmartPhone():
+				popupSizeProportion_x = 0.95
 				popupPos_top = 0.98
 			else:
 				# on tablet
+				popupSizeProportion_x = 0.8
 				popupPos_top = 0.92
 		elif platform == 'win':
 			popupSizeProportion_x = 0.8

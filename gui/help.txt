@@ -101,7 +101,7 @@ The partial request parameters are specified using the following parms:
 
     [b][cy]-d[/c][/b]<date>
     <date> can be 0 for RT, dd (current month) or
-    dd/mm (current year) or dd/mm/yy or dd/mm/yyyy aswell as
+    dd/mm (current year) or dd/mm/yy or dd/mm/yyyy aswell as 
     dd hh:mm (current month) or dd/mm hh:mm (current year) 
     or dd/mm/yy hh:mm or dd/mm/yyyy hh:mm
 
@@ -165,7 +165,7 @@ to purchase your ETH at a rate of 650 USD.
 
     [cy]eth btc 0 binance -p650usd.kraken[/c] -->
     ETH/BTC on Binance: 16/12/17 22:10R 0.03556 [cr]0.03357976[/c]
-    [n][i]Currently the BTC/USD rate on Kraken is 19356.9. So, the ETH at this rate
+    [n][i]Currently the BTC/USD rate on Kraken is 19356.9. So, the ETH at this rate 
 is valued at 0.03556 x 19 356.9 = 688.331364. So, your limit buy order must be placed
 at 0.03556 / 688.331364 x 650 = [cr]0.03357976[/c].[/i]
 
@@ -358,6 +358,10 @@ To state it differently, the USD conversion calculation is
 
 [b][cr]IMPORTANT[/c][/b]: this calculation is displayed in the status bar, in this case
 [n]0.01939 ETH/BTC * 9390.13 BTC/USD = 182.0755902 ETH/USD
+
+Note that the 2 digits precision number of the crypto/unit rate depends on the value 
+format returned by the rate provider. On the contrary, the multiple digits precision of 
+the fiat rate results from the app calculation.
 
 It is possible to specify the exchange from which the fiat conversion rate will be
 obtained (AVG is the default if no exchange is specified).

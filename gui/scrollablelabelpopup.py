@@ -14,10 +14,10 @@ class ScrollableLabelPopup(AbstractPopup):
 
 		if platform == 'android':
 			if self.onSmartPhone():
-				self.textWidth = 39
+				self.textWidth = 45
 			else:
 				# on tablet
-				self.textWidth = 60
+				self.textWidth = 75
 
 		elif platform == 'win':
 			self.textWidth = 54
