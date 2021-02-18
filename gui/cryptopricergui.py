@@ -30,6 +30,7 @@ from kivy.uix.settings import SettingsWithTabbedPanel
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.widget import Widget
 from kivy.utils import platform
+from kivy.lang import Builder
 
 from configurationmanager import ConfigurationManager
 from gui.filechooserpopup import LoadFileChooserPopup, SaveFileChooserPopup
@@ -49,6 +50,7 @@ FILE_SAVED = 1
 CRYPTOPRICER_VERSION = 'CryptoPricer 2.1'
 fromAppBuilt = False
 
+Builder.load_file('filechooserpopup.kv')
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 								 RecycleBoxLayout):
