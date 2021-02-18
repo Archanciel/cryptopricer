@@ -86,8 +86,23 @@ class Requester:
 
 	# pattern modified to enable handling erroneous option specification with no option
 	# data like in full request eth btc 0 binance -v or -vs or -f or -fs
-	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]*))?"
-
+	#PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.]*))?"
+	
+	# modifying the full request pattern to handle the new -r option. This
+	# option can be -r, -rs, -r999.999, -rs999.999, -r-1, -rs-1, -r-1-2-3-n,
+	# -rs-1-2-3-n, -r-1:-n, -rs-1:-n
+	# Here are the pythex test strings used to validate the new pattern
+	'''
+	btc usd 12/2/21 13:55 hitbtc
+	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs52012.45
+	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs
+	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1
+	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1-2-3
+	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1:-3
+	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -rs-1:-3 -fschf.kraken
+	btc usd 12/2/21 13:55 hitbtc -rs-1:-3 -vs21.23btc -fschf.kraken
+	'''
+	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?"
 	'''
 	Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 or -ebittrex or -v0.00432btc
 	followed by several OPTIONAL groups sticking to the same format -<command letter> followed by 1 or 
