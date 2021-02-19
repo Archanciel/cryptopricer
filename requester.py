@@ -143,9 +143,10 @@ class Requester:
 						0:00, accepted.
 						0:0, accepted.
 						
-	Ex: -ceth -fgbp.kraken -r-2:-4 -d13/9 -t23:09 -eKraken -v0.0044543eth
+	Ex: -ceth -vs34usd -fschf -ebittrex -d1 -t12:45 -rs-1:-2 -ebittrex -ueur
 	'''
-	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
+#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
+	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.-]*))(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?"
 	PATTERN_PARTIAL_PRICE_REQUEST_ERROR = r"({}([\d\w,\./]*))(?: .+|)"
 
 	'''
