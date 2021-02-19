@@ -6470,8 +6470,88 @@ class TestRequester(unittest.TestCase):
 
 		sys.stdin = stdin
 
+	def testRequestCommandPricePartialValueOptionDateTimeD(self):
+		# first, enter full command price
+		stdin = sys.stdin
+		sys.stdin = StringIO("eth usd 1/8/16 13:46 kraken")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '1')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '13')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		# then, enter partial command price with value option before -d
+		sys.stdin = StringIO("-v10eth -d10 12:22")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '22')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		sys.stdin = stdin
+
+	def testRequestCommandPricePartialDateTimeDValueOption(self):
+		# first, enter full command price
+		stdin = sys.stdin
+		sys.stdin = StringIO("eth usd 1/8/16 13:46 kraken")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '1')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '13')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		# then, enter partial command price with value option after -d
+		sys.stdin = StringIO("-d10 12:22 -v10eth")
+		commandPrice = self.requester.getCommandFromCommandLine()
+
+		self.assertIsInstance(commandPrice, CommandPrice)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'usd')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '10')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '16')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '12')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '22')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+
+		sys.stdin = stdin
+
 if __name__ == '__main__':
 #	unittest.main()
 	t = TestRequester()
 	t.setUp()
-	#t.testRequestCommandPricePartialCryptoExchange()
+	t.testRequestCommandPricePartialValueOptionDateTimeD()

@@ -725,8 +725,9 @@ class Requester:
 		
 		:return: None, None if no time value or date and time components otherwise
 		"""
-		dateTimePattern = r"^-d(\d+/\d+/\d+ \d+:\d+)|^-d(\d+/\d+ \d+:\d+)|^-d(\d+ \d+:\d+)|^-d(\d+/\d+/\d+)|^-d(\d+/\d+)|^-d(\d+)"
+		dateTimePattern = r"-d(\d+/\d+/\d+ \d+:\d+)|-d(\d+/\d+ \d+:\d+)|-d(\d+ \d+:\d+)|-d(\d+/\d+/\d+)|-d(\d+/\d+)|^-d(\d+)"
 		dateTimeInputStr = ''
+
 		for grps in re.finditer(dateTimePattern, partialRequestStr):
 			for elem in grps.groups():
 				if elem is not None:
