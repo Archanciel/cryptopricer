@@ -101,18 +101,19 @@ class Requester:
 	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1:-3
 	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -rs-1:-3 -fschf.kraken
 	btc usd 12/2/21 13:55 hitbtc -rs-1:-3 -vs21.23btc -fschf.kraken
+
+	Those requests are unit tested by TestRequester.test_parseGroupsFullVariousResultOptions().
 	'''
 	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?"
-	'''
-	Partial price command parms pattern. Grabs one group of kind -cbtc or -t12:54 or -d15/09 or -ebittrex or -v0.00432btc
-	followed by several OPTIONAL groups sticking to the same format -<command letter> followed by 1 or 
-	more \w or \d or / . or : characters.
 
-	Unlike with pattern 'full', the groups can all occur in any order, reason for which all groups have the same
-	structure
-	
-	Additionally, 2 request commands can be added to the regular partial commands. For example -vs12btc.
-   
+	'''
+	Partial price command parms pattern. Grabs groups of kind -cbtc or -t12:54 or -d15/09 or -ebittrex
+	or option groups sticking to the same format -<command letter> followed by 1 or
+	more \w or \d or /. or : characters.
+
+	Unlike with pattern 'full', the groups - option or not - can all occur in any order, reason for which all groups have the same
+	pattern structure.
+ 
 	The rules below apply to -d and -t values !
 	
 	Date can be: 0, accepted.
@@ -129,28 +130,24 @@ class Requester:
 				 01/12/16, accepted.
 				 01/12/2015, accepted.
 				 01/12/0, accepted.
+				 1 12:45, accepted.
 	Hour minute can be: 0, rejected.
 						1, rejected.
 						10, rejected.
 						01, rejected.
-						01:1, rejected.
+						01:1, accepted.
 						01:01, accepted.
 						01:10, accepted.
 						1:10, accepted.
 						00:00, accepted.
 						0:00, accepted.
-						0:0, rejected.
+						0:0, accepted.
 						
-	Ex: -ceth -fgbp -d13/9 -t23:09 -eKraken -v0.0044543eth
+	Ex: -ceth -fgbp.kraken -r-2:-4 -d13/9 -t23:09 -eKraken -v0.0044543eth
 	'''
-#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]+))(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?(?: (-[a-zA-Z])([\w/:\.]+))?"
-#	PATTERN_PARTIAL_PRICE_REQUEST_ERROR = r"({}([\d\w,\./]+))(?: .+|)"
 	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
 	PATTERN_PARTIAL_PRICE_REQUEST_ERROR = r"({}([\d\w,\./]*))(?: .+|)"
-	
-#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
-#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\. ]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
-#	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*)( \d+:\d+)*)(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
+
 	'''
 	The next pattern splits the parameter data appended to the -v partial command.
 	
