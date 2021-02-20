@@ -368,19 +368,6 @@ class Requester:
 		# more permissive at the level of the Requester in order for CommandPrice to be able
 		# to correctly identify the invalid date/time full request component in the form of
 		# D HH:MM or DD HH:MM
-		# patternCommandDic = {r"\d+/\d+(?:/\d+)*|^\d+$" : CommandPrice.DAY_MONTH_YEAR,
-		# 					 r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
-		# 					 r"[A-Za-z]+": CommandPrice.EXCHANGE,
-		# 					 r"(?:-[vV])([sS]?)([\w\.]+)": CommandPrice.OPTION_VALUE_DATA,
-		# 					 r"(?:-[vV])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
-		# 					 r"(-[^vVfFpP]{1})([sS]?)([\w\.]+)": CommandPrice.UNSUPPORTED_OPTION_DATA,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-		# 					 r"(-[^vVfFpP]{1})([sS]?)([\w\.]+)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION,  # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-		# 					 r"(-[^vVfFpP]{1})([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,
-		# 					 r"(?:-[fF])([sS]?)([\w\.]+)": CommandPrice.OPTION_FIAT_DATA,
-		# 					 r"(?:-[fF])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
-		# 					 r"(?:-[pP])([sS]?)([\w\.]+)": CommandPrice.OPTION_PRICE_DATA,
-		# 					 r"(?:-[pP])([sS]?)([\w\.]+)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE}
-		
 		# pattern modified to enable handling erroneous option specification with no option
 		# data like in full request eth btc 0 binance -v or -vs or -f or -fs
 		patternCommandDic = {r"\d+/\d+(?:/\d+)*|^\d+$" : CommandPrice.DAY_MONTH_YEAR,
