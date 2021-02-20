@@ -104,7 +104,11 @@ class Requester:
 
 	Those requests are unit tested by TestRequester.test_parseGroupsFullVariousResultOptions().
 	'''
-	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?"
+
+	# The full price request pattern is configured to parse 5 required full request
+	# parameters aswell as a maximum of 4 options.
+	# Ex: btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs52012.45 -p23usd.kraken
+	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?"
 
 	'''
 	Partial price command parms pattern. Grabs groups of kind -cbtc or -t12:54 or -d15/09 or -ebittrex
@@ -142,11 +146,13 @@ class Requester:
 						00:00, accepted.
 						0:00, accepted.
 						0:0, accepted.
-						
-	Ex: -ceth -vs34usd -fschf -ebittrex -d1 -t12:45 -rs-1:-2 -ebittrex -ueur
 	'''
 #	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
-	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.-]*))(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?"
+
+	# The partial price request pattern is configured to parse a maximum of 9 parameters,
+	# 5 basic request parameters and a maximum of 4 options, those in any order.
+	# Ex: -ceth -ueur -d1 -t12:45 -ebittrex -vs34usd -fschf -rs-1:-2 -ebittrex -p23usd.kraken
+	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.-]*))(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?"
 	PATTERN_PARTIAL_PRICE_REQUEST_ERROR = r"({}([\d\w,\./]*))(?: .+|)"
 
 	'''
