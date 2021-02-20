@@ -447,20 +447,20 @@ class TestRequester(unittest.TestCase):
 		self.assertEqual(('btc', None, None, None, None, None, None, None, None), groupList)
 
 	def test_parseGroupsFullVariousResultOptions(self):
-		inputStr = 'btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs52012.45'
+		inputStr = 'btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs52012.45 -p23.35usd.kraken'
 		groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-		self.assertEqual(('btc', 'usd', '12/2/21', '13:55', 'hitbtc', '-vs21.23btc', '-fschf.kraken', '-rs52012.45', None), groupList)
+		self.assertEqual(('btc', 'usd', '12/2/21', '13:55', 'hitbtc', '-vs21.23btc', '-fschf.kraken', '-rs52012.45', '-p23.35usd.kraken'), groupList)
 
-		inputStr = 'btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs'
+		inputStr = 'btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs -ps23.35usd.kraken'
 		groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-		self.assertEqual(('btc', 'usd', '12/2/21', '13:55', 'hitbtc', '-vs21.23btc', '-fschf.kraken', '-rs', None), groupList)
+		self.assertEqual(('btc', 'usd', '12/2/21', '13:55', 'hitbtc', '-vs21.23btc', '-fschf.kraken', '-rs', '-ps23.35usd.kraken'), groupList)
 
-		inputStr = 'btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1'
+		inputStr = 'btc usd 12/2/21 13:55 hitbtc -vs21.23btc -ps23.35usd -fschf.kraken -rs-1'
 		groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
-		self.assertEqual(('btc', 'usd', '12/2/21', '13:55', 'hitbtc', '-vs21.23btc', '-fschf.kraken', '-rs-1', None), groupList)
+		self.assertEqual(('btc', 'usd', '12/2/21', '13:55', 'hitbtc', '-vs21.23btc', '-ps23.35usd' , '-fschf.kraken', '-rs-1'), groupList)
 
 		inputStr = 'btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r-1-2-3'
 		groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
