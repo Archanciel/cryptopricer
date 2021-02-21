@@ -324,15 +324,16 @@ class Requester:
 	def _buildFullCommandPriceOrderFreeParmsDic(self, orderFreeParmList):
 		'''
 		This method is called only on full requests. A full request starts with 2 mandatory parameters,
-		CRYPTO and UNIT provided in this mandatory order. The other full request parameters, date, time,
-		and exchange can be specified in any order. A full request can be ended by options whose order
-		is free.
+		CRYPTO and UNIT provided in this mandatory order. The other full request mandatory parameters,
+		date, time and exchange can be specified in any order. A full request can be ended by options
+		whose order	is free as well.
 
-		The purpose of this method is precisely to acquire those order free full request parameters.
+		The purpose of this method is precisely to acquire the order free full request parameters.
 
 		Since DAY_MONTH_YEAR, HOUR_MINUTE, EXCHANGE and additional OPTIONS can be provided in any order
-		after CRYPTO and UNIT, this method differentiate them and build an optional command price parm data
-		dictionary with the right key. This dictionary will be added to the CommandPrice parmData dictionary.
+		after CRYPTO and UNIT, this method differentiate them and build an order free command price parm
+		data dictionary with the right key. This dictionary will then be added to the CommandPrice parmData
+		dictionary.
 
 		:seqdiag_return optionalParsedParmDataDic
 
@@ -385,29 +386,34 @@ class Requester:
 							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]*)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
 							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,}
 
-		optionalParsedParmDataDic = {}
+		orderFreeParsedParmDataDic = {}
 
 		for pattern in patternCommandDic.keys():
-			for group in orderFreeParmList:
-				if group and re.search(pattern, group):
-					if patternCommandDic[pattern] not in optionalParsedParmDataDic:
+			for orderFreeParm in orderFreeParmList:
+				if orderFreeParm and re.search(pattern, orderFreeParm):
+					parsedParmDataDicKey = patternCommandDic[pattern]
+					if parsedParmDataDicKey not in orderFreeParsedParmDataDic:
 						# if for example DMY already found in optional full command parms,
 						# it will not be overwritten ! Ex: 12/09/17 0: both token match DMY
 						# pattern !
-						data, option, optionModifier = self._extractData(pattern, group)
+						data, option, optionModifier = self._extractData(pattern, orderFreeParm)
 						if data != None:
-							optionalParsedParmDataDic[patternCommandDic[pattern]] = data
-							patternCommandModifierKey = pattern + OPTION_MODIFIER
+							orderFreeParsedParmDataDic[parsedParmDataDicKey] = data
+							patternOptionModifierKey = pattern + OPTION_MODIFIER
 							if optionModifier != None and optionModifier != '':
-								optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = optionModifier
-							elif patternCommandModifierKey in optionalParsedParmDataDic.keys():
-								optionalParsedParmDataDic[patternCommandDic[patternCommandModifierKey]] = None
+								optionModifierParsedParmDataDicKey = patternCommandDic[patternOptionModifierKey]
+								orderFreeParsedParmDataDic[optionModifierParsedParmDataDicKey] = optionModifier
+							# elif patternOptionModifierKey in orderFreeParsedParmDataDic.keys():
+							# This situation never happens when handling full request ! In fact,
+							# orderFreeParsedParmDataDic is initialized to [] at the beginning of the method.
+							# 	optionModifierParsedParmDataDicKey = patternCommandDic[patternOptionModifierKey]
+							# 	orderFreeParsedParmDataDic[optionModifierParsedParmDataDicKey] = None
 							if option:
 								# here, handling an unsupported option. If handling a supported option, option
 								# is None. For valid options, the correct option symbol will be set later in the
 								# command price in _fillOptionValueInfo() like methods !
 								patternUnsupportedOptionKey = pattern + UNSUPPORTED_OPTION
-								optionalParsedParmDataDic[patternCommandDic[patternUnsupportedOptionKey]] = option
+								orderFreeParsedParmDataDic[patternCommandDic[patternUnsupportedOptionKey]] = option
 						else:
 							#full command syntax error !
 							return None
@@ -416,7 +422,7 @@ class Requester:
 		from seqdiagbuilder import SeqDiagBuilder
 		SeqDiagBuilder.recordFlow()
 
-		return optionalParsedParmDataDic
+		return orderFreeParsedParmDataDic
 
 	def _extractData(self, pattern, dataOrOptionStr):
 		'''
@@ -590,9 +596,9 @@ class Requester:
 			else: #neither full nor parrial pattern matched
 				return None # will cause an error.
 		else:
-			# full request entered. Here, parms were entered in an order reflected in the
-			# pattern: crypto unit in this mandatory order, then date time exchange, of which order
-			# can be different.
+			# full request entered. Here, request parms were entered in an order reflected in the
+			# pattern: crypto unit in this mandatory order, then date time exchange and options,
+			# which can be entered in any order.
 			requestType = self.REQUEST_TYPE_FULL
 			self.commandPrice._initialiseParsedParmData()
 			self.commandPrice.parsedParmData[CommandPrice.CRYPTO] = groupList[0] #mandatory crrypto parm, its order is fixed
