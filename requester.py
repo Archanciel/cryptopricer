@@ -94,20 +94,22 @@ class Requester:
 	# Here are the pythex test strings used to validate the new pattern
 	'''
 	btc usd 12/2/21 13:55 hitbtc
-	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs52012.45
-	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs
-	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1
+	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -ps52012.45 -r-2:-3
+	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs -ps52012.45
 	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1-2-3
-	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1:-3
+	btc usd 12/2/21 13:55 hitbtc -ps52012.45 -vs21.23btc -fschf.kraken -rs-1:-3
 	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -rs-1:-3 -fschf.kraken
-	btc usd 12/2/21 13:55 hitbtc -rs-1:-3 -vs21.23btc -fschf.kraken
+	btc usd 12/2/21 13:55 hitbtc -rs-1:-3 -vs21.23btc -ps52012.45 -fschf.kraken
+	btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1
 
 	Those requests are unit tested by TestRequester.test_parseGroupsFullVariousResultOptions().
 	'''
 
 	# The full price request pattern is configured to parse 5 required full request
-	# parameters aswell as a maximum of 4 options.
-	# Ex: btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs52012.45 -p23usd.kraken
+	# parameters (crypto, unit, date, time and exchange) aswell as a maximum of 4 options
+	# (value, fiat, price, and result). Adding a fifth limit option to the 4 options makes
+	# no sense, so a full price request pattern with 9 groups instead of 10 is ok !
+	# Ex: btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -ps52012 -r-1-2
 	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?"
 
 	'''
@@ -150,22 +152,67 @@ class Requester:
 #	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.]*))(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?(?: (-[a-zA-Z])([\w/:\.]*))?"
 
 	# The partial price request pattern is configured to parse a maximum of 9 parameters,
-	# 5 basic request parameters and a maximum of 4 options, those in any order.
-	# Ex: -ceth -ueur -d1 -t12:45 -ebittrex -vs34usd -fschf -rs-1:-2 -ebittrex -p23usd.kraken
+	# 5 basic request parameters (-c, -u, -d, -t and -e) and a maximum of 4 options,
+	# (-v, -f, -p and -r). Adding a fifth limit -l option to the 4 options makes
+	# no sense, so a partial price request pattern with 9 groups instead of 10 is ok !
+	#
+	# The partial request specifications can be in any order.
+	# Ex: -ceth -ueur -d1 -t12:45 -ebittrex -vs34usd -fschf -rs-1:-2 -ebittrex -p1450
 	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.-]*))(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?"
 	PATTERN_PARTIAL_PRICE_REQUEST_ERROR = r"({}([\d\w,\./]*))(?: .+|)"
 
 	'''
-	The next pattern splits the parameter data appended to the -v partial command.
+	The next pattern splits the parameter data appended to the -v partial command option.
 	
-	Ex: -v0.004325btc is splitted into 0.00432, btc, None
-		-v0 is splitted into None, None, 0 and will mean 'erase previous -v parm specification
+	Ex: -vs0.004325btc is splitted into 's', '0.00432', 'btc', None
+		-v0.004325btc is splitted into '', '0.00432', 'btc', None
+		-v0 is splitted into None, None, None, '0' and will mean 'erase previous -v parm specification
 	'''
 	OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
+
+	'''
+	The next pattern splits the parameter data appended to the -f partial command option.
+
+	Ex: -fsusd.kraken is splitted into 's', 'usd', 'kraken', None
+		-fusd.kraken is splitted into '', 'usd', 'kraken', None
+		-fusd is splitted into '', 'usd', None, None
+		-f0 is splitted into None, None, None, '0' and will mean 'erase previous -f parm
+		specification
+	'''
 	OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
+	
+	'''
+	The next pattern splits the parameter data appended to the -p partial command option.
+
+	Ex: -ps0.004325 is splitted into 's', '0.00432'
+		-p0.004325 is splitted into '', '0.00432'
+		-p0 is splitted into '', '0' and will mean 'erase previous -p parm specification
+	'''
+	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+))"
+
+	'''
+	The next pattern splits the parameter data appended to the -r partial command option.
+	
+	Ex: -rs is splitted into None, None, 's'
+		-rs-1 is splitted into 's', '-1', None
+		-r-1-2-3 is splitted into '', '-1-2-3', None
+		-rs-1:-3 is splitted into 's', '-1:-3', None
+		-r-1:-3 is splitted into '', '-1:-3', None
+		-r0 is splitted into '', '0', None and will mean 'erase previous -r parm specification
+	'''
 #	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(0)"
-	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(0)|"
-	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
+	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(s)"
+	
+	'''
+	The next pattern splits the parameter data appended to the -l partial command option.
+
+	Ex: -ls16500usd.kraken is splitted into 's', '16500', 'usd', 'kraken', None
+		-l16500usd.kraken is splitted into '', '16500', 'usd', 'kraken', None
+		-l16500usd is splitted into '', '16500', 'usd', None, None
+		-l0 is splitted into None, None, None, None, '0' and will mean 'erase previous -l parm
+		specification
+	'''
+	OPTION_LIMIT_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?|(0)"
 
 	REQUEST_TYPE_PARTIAL = 'PARTIAL'
 	REQUEST_TYPE_FULL = 'FULL'
@@ -379,10 +426,10 @@ class Requester:
 							 r"(?:-[vV])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
 							 r"(?:-[fF])([sS]?)([\w\.]*)": CommandPrice.OPTION_FIAT_DATA,
 							 r"(?:-[fF])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
+							 r"(?:-[pP])([sS]?)([\d\.]*)": CommandPrice.OPTION_PRICE_DATA,
+							 r"(?:-[pP])([sS]?)([\d\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE,
 							 r"(?:-[rR])([sS]?)([\w\.:-]*)": CommandPrice.OPTION_RESULT_DATA,
 							 r"(?:-[rR])([sS]?)([\w\.:-]*)" + OPTION_MODIFIER: CommandPrice.OPTION_RESULT_SAVE,
-							 r"(?:-[pP])([sS]?)([\w\.]*)": CommandPrice.OPTION_PRICE_DATA,
-							 r"(?:-[pP])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE,
 							 r"(-[^vVfFpPrR]{1})([sS]?)([\w\.]*)": CommandPrice.UNSUPPORTED_OPTION_DATA, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
 							 r"(-[^vVfFpPrR]{1})([sS]?)([\w\.]*)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
 							 r"(-[^vVfFpPrR]{1})([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,}
@@ -404,7 +451,6 @@ class Requester:
 						# pattern !
 						data, option, optionModifier = self._extractData(pattern, orderFreeParm)
 						if data != None:
-							orderFreeParmList.remove(orderFreeParm)
 							orderFreeParsedParmDataDic[parsedParmDataDicKey] = data
 							patternOptionModifierKey = pattern + OPTION_MODIFIER
 							if optionModifier != None and optionModifier != '':
@@ -415,6 +461,7 @@ class Requester:
 							# orderFreeParsedParmDataDic is initialized to [] at the beginning of the method.
 							# 	optionModifierParsedParmDataDicKey = patternCommandDic[patternOptionModifierKey]
 							# 	orderFreeParsedParmDataDic[optionModifierParsedParmDataDicKey] = None
+							orderFreeParmList.remove(orderFreeParm)
 							if option:
 								# here, handling an unsupported option. If handling a supported option, option
 								# is None. For valid options, the correct option symbol will be set later in the
@@ -864,22 +911,23 @@ class Requester:
 						# solving very difficult error message formatting for invalid -f option erase. -f0.01 in partial
 						# and full requests or -fs0.01 in partial and full requests. I spent days solving it !
 						return self._handleInvalidOptionFormat(optionData, optionType, requestType)
+			elif optionType == 'PRICE':
+				if len(match.groups()) == 2:
+					optionSaveFlag = match.group(1)
+					optionAmount = match.group(2)
+					if optionAmount == '0':
+						optionErase = '0'
+					else:
+						optionErase = None
+						self.commandPrice.parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT] = optionAmount
+					if optionErase == None and (optionAmount == None or not self._isNumber(optionAmount)):
+						return self._handleInvalidOptionFormat(optionData, optionType, requestType)
 			elif optionType == 'RESULT':
 				if len(match.groups()) == 3:
 					optionSaveFlag = match.group(1)
 					optionSymbol = None
 					optionAmount = match.group(2)
 					optionErase = match.group(3)
-			elif optionType == 'PRICE':
-				if len(match.groups()) == 5:
-					optionSaveFlag = match.group(1)
-					optionAmount = match.group(2)
-					optionSymbol = match.group(3)
-					optionExchange = match.group(4)
-					optionErase = match.group(5)
-					self.commandPrice.parsedParmData[CommandPrice.OPTION_PRICE_EXCHANGE] = optionExchange
-					if optionErase == None and (optionSymbol == None or len(optionSymbol) < CURRENCY_SYMBOL_MIN_LENGTH):
-						return self._handleInvalidOptionFormat(optionData, optionType, requestType)
 
 			if optionErase == None:
 				if optionSymbol and optionSymbol.isdigit():
@@ -928,6 +976,13 @@ class Requester:
 			#here, invalid option format
 			return self._handleInvalidOptionFormat(optionData, optionType, requestType)
 
+	def _isNumber(self, s):
+		try:
+			float(s)
+			return True
+		except ValueError:
+			return False
+		
 	def _handleInvalidOptionFormat(self, optionData, optionType, requestType):
 		optionKeyword = self.commandPrice.getCommandPriceOptionKeyword(optionType)
 		if requestType == self.REQUEST_TYPE_PARTIAL:

@@ -26,7 +26,7 @@ class CommandPrice(AbstractCommand):
 	PRICE_TYPE_HISTO = 'HISTO'
 	PRICE_TYPE_RT = 'REAL_TIME'
 
-	OPTION_TYPE_LIST = ['VALUE', 'FIAT', 'RESULT', 'PRICE']
+	OPTION_TYPE_LIST = ['VALUE', 'FIAT', 'PRICE', 'RESULT', 'LIMIT']
 
 	OPTION_VALUE_DATA = 'OPTION_VALUE_DATA'     # temporary store the data specified with -v. Ex: 0.0044254btc
 	OPTION_VALUE_AMOUNT = 'OPTION_VALUE_AMOUNT' # store the crypto, unit or fiat amount specified with -v. Ex: 100 in -v100usd
@@ -41,19 +41,26 @@ class CommandPrice(AbstractCommand):
 	OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'     # store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
 	OPTION_FIAT_MANDATORY_COMPONENTS = [OPTION_FIAT_SYMBOL]
 
-	OPTION_RESULT_DATA = 'OPTION_RESULT_DATA'     # temporary store the data specified with -r. Ex: 40.25, -1-2, -1:-3
-	OPTION_RESULT_AMOUNT = 'OPTION_RESULT_AMOUNT' # store the amount specified with -r
-	OPTION_RESULT_SYMBOL = 'OPTION_RESULT_SYMBOL' # not used for result option, but must exist due to generic code needs
-	OPTION_RESULT_EXCHANGE = 'OPTION_RESULT_EXCHANGE' # not used for result option, but must exist due to generic code needs
-	OPTION_RESULT_SAVE = 'OPTION_RESULT_SAVE'     # store s or S or None to indicate if the result option is to be stored in history (-rs) or not (-r) --> None
-	OPTION_RESULT_MANDATORY_COMPONENTS = []       # -r or -rs is a valid option result specification
-
 	OPTION_PRICE_DATA = 'OPTION_PRICE_DATA'         # temporary store the data specified with -p. Ex: 230usd (see help for more info !)
 	OPTION_PRICE_AMOUNT = 'OPTION_PRICE_AMOUNT'     # store the price target specified with -p. Ex: 230
 	OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL'     # store the price symbol specified with -p. Ex: usd
 	OPTION_PRICE_EXCHANGE = 'OPTION_PRICE_EXCHANGE' # store the exchange specified with -p. Ex: kraken if pusd.kraken
 	OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'         # store s or S or None to indicate if the value option is to be stored in history (-ps) or not (-p) --> None
-	OPTION_PRICE_MANDATORY_COMPONENTS = [OPTION_PRICE_AMOUNT, OPTION_PRICE_SYMBOL]
+	OPTION_PRICE_MANDATORY_COMPONENTS = []
+
+	OPTION_RESULT_DATA = 'OPTION_RESULT_DATA'     # temporary store the data specified with -r. Ex: 40.25, -1-2, -1:-3
+	OPTION_RESULT_AMOUNT = 'OPTION_RESULT_AMOUNT' # not used for result option, but must exist due to generic code needs
+	OPTION_RESULT_SYMBOL = 'OPTION_RESULT_SYMBOL' # not used for result option, but must exist due to generic code needs
+	OPTION_RESULT_EXCHANGE = 'OPTION_RESULT_EXCHANGE' # not used for result option, but must exist due to generic code needs
+	OPTION_RESULT_SAVE = 'OPTION_RESULT_SAVE'     # store s or S or None to indicate if the result option is to be stored in history (-rs) or not (-r) --> None
+	OPTION_RESULT_MANDATORY_COMPONENTS = []       # -r or -rs is a valid option result specification
+
+	OPTION_LIMIT_DATA = 'OPTION_LIMIT_DATA'     # temporary store the data specified with -l. Ex: 650usd.kraken
+	OPTION_LIMIT_AMOUNT = 'OPTION_LIMIT_AMOUNT' # store the crypto, unit or fiat amount specified with -l. Ex: 100 in -l100usd.kraken
+	OPTION_LIMIT_SYMBOL = 'OPTION_LIMIT_SYMBOL' # store the fiat symbol specified with -l. Ex: usd if -l100usd
+	OPTION_LIMIT_EXCHANGE = 'OPTION_LIMIT_EXCHANGE' # store the exchange specified with -l. Ex: kraken if lusd.kraken
+	OPTION_LIMIT_SAVE = 'OPTION_LIMIT_SAVE'     # store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
+	OPTION_LIMIT_MANDATORY_COMPONENTS = [OPTION_LIMIT_SYMBOL]
 
 	UNSUPPORTED_OPTION = "UNSUPPORTED_OPTION"                   # store an unsupported option specification
 	UNSUPPORTED_OPTION_MODIFIER = "UNSUPPORTED_OPTION_MODIFIER" # store an unsupported option modifier specification
@@ -97,16 +104,21 @@ class CommandPrice(AbstractCommand):
 		self.parsedParmData[self.OPTION_FIAT_SYMBOL] = None
 		self.parsedParmData[self.OPTION_FIAT_EXCHANGE] = None
 		self.parsedParmData[self.OPTION_FIAT_SAVE] = None
-		self.parsedParmData[self.OPTION_RESULT_DATA] = None
-		self.parsedParmData[self.OPTION_RESULT_AMOUNT] = None
-		self.parsedParmData[self.OPTION_RESULT_SYMBOL] = None
-		self.parsedParmData[self.OPTION_RESULT_EXCHANGE] = None
-		self.parsedParmData[self.OPTION_RESULT_SAVE] = None
 		self.parsedParmData[self.OPTION_PRICE_DATA] = None
 		self.parsedParmData[self.OPTION_PRICE_AMOUNT] = None
 		self.parsedParmData[self.OPTION_PRICE_SYMBOL] = None
 		self.parsedParmData[self.OPTION_PRICE_EXCHANGE] = None
 		self.parsedParmData[self.OPTION_PRICE_SAVE] = None
+		self.parsedParmData[self.OPTION_RESULT_DATA] = None
+		self.parsedParmData[self.OPTION_RESULT_AMOUNT] = None
+		self.parsedParmData[self.OPTION_RESULT_SYMBOL] = None
+		self.parsedParmData[self.OPTION_RESULT_EXCHANGE] = None
+		self.parsedParmData[self.OPTION_RESULT_SAVE] = None
+		self.parsedParmData[self.OPTION_LIMIT_DATA] = None
+		self.parsedParmData[self.OPTION_LIMIT_AMOUNT] = None
+		self.parsedParmData[self.OPTION_LIMIT_SYMBOL] = None
+		self.parsedParmData[self.OPTION_LIMIT_EXCHANGE] = None
+		self.parsedParmData[self.OPTION_LIMIT_SAVE] = None
 		self.resetUnsupportedOptionData()
 
 
