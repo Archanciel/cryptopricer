@@ -154,8 +154,8 @@ either by entering a full request or by happending [b][cy]0[/b][/c] to the optio
 Currently, CryptoPricer supports two options: the
 value [b][cy]-v[/b][/c] option and the fiat [b][cy]-f[/b][/c] option.
 
-In a further version, the price
-[b][cy]-p[/b][/c] option will be added. This option will enable you to specify a price value in fiat and obtain the 
+In a further version, the limit
+[b][cy]-l[/b][/c] option will be added. This option will enable you to specify a limit price value in fiat and obtain the 
 corresponding unit rate.
 
 This will be useful in this scenario: you wish to purchase ETH on Binance at a rate of 650 USD. On Binance,
@@ -163,19 +163,22 @@ the ETH/USD pair is not available. You ask the current ETH rate in BTC on this e
 and you want to know what limit buy order in BTC you have to place in order
 to purchase your ETH at a rate of 650 USD.
 
-    [cy]eth btc 0 binance -p650usd.kraken[/c] -->
+    [cy]eth btc 0 binance -l650usd.kraken[/c] -->
     ETH/BTC on Binance: 16/12/17 22:10R 0.03556 [cr]0.03357976[/c]
     [n][i]Currently the BTC/USD rate on Kraken is 19356.9. So, the ETH at this rate 
 is valued at 0.03556 x 19 356.9 = 688.331364. So, your limit buy order must be placed
 at 0.03556 / 688.331364 x 650 = [cr]0.03357976[/c].[/i]
 
-Second example in a different format displaying more information: you want to purchase CHSB tokens at price 0.3 USDC. The request
+Second example: the first request uses the [cy]-f[/c] fiat option to display the current CHSB rate in USD.
 
-    [cy]chsb btc 0 hitbtc -p0.3USD -fusd.kraken[/c] -->
-    1 CHSB/[cr]0.0000085[/c] BTC/0.3 USD.Kraken on HitBTC 20/01/21 20:45R 0.00000865 0.30587441
-    [n][i]This indicates that currently the CHSB is quoted at 0.00000865 BTC on HitBTC (which
-corresponds to a value of 0.30587441 USD on Kraken), but that to buy it at 0.3 USD,
-the limit buy order must set the price to 0,00000865 / 0,30537441 * 0.3 = [cr]0.0000085[/c] BTC ![/i]
+    [cy]chsb btc 0 hitbtc -fusd.kraken[/c] -->
+    CHSB/BTC/USD.Kraken on HitBTC 16/01/21 22:10R 0.000083 0.29892118
+    [n]
+    [n][cy]chsb btc 0 hitbtc -l0.25usd.kraken[/c] -->
+    CHSB/BTC/USD.Kraken on HitBTC 16/01/21 22:10R 0.0000083 [cr]0.00006942[/c]
+    [n][i]This indicates that currently the CHSB is quoted at 0.0000083 BTC on HitBTC (which 
+corresponds to a value of 0.29892118 USD on Kraken, as shown by the first request), but that to buy it at 0.25 USD,
+the limit buy order must set the price to 0.0000083 / 0.29892118 * 0.25 = [cr]0.00006942[/c] BTC ![/i]
 [p]
 [n][b][cg]Value option[/cg][/b]
 
