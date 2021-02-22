@@ -26,7 +26,7 @@ class CommandPrice(AbstractCommand):
 	PRICE_TYPE_HISTO = 'HISTO'
 	PRICE_TYPE_RT = 'REAL_TIME'
 
-	OPTION_TYPE_LIST = ['VALUE', 'FIAT', 'PRICE']
+	OPTION_TYPE_LIST = ['VALUE', 'FIAT', 'RESULT', 'PRICE']
 
 	OPTION_VALUE_DATA = 'OPTION_VALUE_DATA'     # temporary store the data specified with -v. Ex: 0.0044254btc
 	OPTION_VALUE_AMOUNT = 'OPTION_VALUE_AMOUNT' # store the crypto, unit or fiat amount specified with -v. Ex: 100 in -v100usd

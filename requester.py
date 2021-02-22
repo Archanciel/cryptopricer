@@ -163,7 +163,8 @@ class Requester:
 	'''
 	OPTION_VALUE_PARM_DATA_PATTERN = r"([sS]?)([\d\.]+)(\w+)|(0)"
 	OPTION_FIAT_PARM_DATA_PATTERN = r"(?:([sS]?)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
-#   OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]*)([a-zA-Z]+)(?:(?:\.)(\w+))?)|(0)"
+#	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(0)"
+	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(0)|"
 	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+)(\w+)(?:(?:\.)(\w+))?)|(0)"
 
 	REQUEST_TYPE_PARTIAL = 'PARTIAL'
@@ -378,17 +379,22 @@ class Requester:
 							 r"(?:-[vV])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
 							 r"(?:-[fF])([sS]?)([\w\.]*)": CommandPrice.OPTION_FIAT_DATA,
 							 r"(?:-[fF])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
-							 r"(?:-[rR])([sS]?)([\w\.-:]*)": CommandPrice.OPTION_RESULT_DATA,
-							 r"(?:-[rR])([sS]?)([\w\.-:]*)" + OPTION_MODIFIER: CommandPrice.OPTION_RESULT_SAVE,
+							 r"(?:-[rR])([sS]?)([\w\.:-]*)": CommandPrice.OPTION_RESULT_DATA,
+							 r"(?:-[rR])([sS]?)([\w\.:-]*)" + OPTION_MODIFIER: CommandPrice.OPTION_RESULT_SAVE,
 							 r"(?:-[pP])([sS]?)([\w\.]*)": CommandPrice.OPTION_PRICE_DATA,
 							 r"(?:-[pP])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE,
-							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]*)": CommandPrice.UNSUPPORTED_OPTION_DATA, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]*)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-							 r"(-[^vVfFpP]{1})([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,}
-
+							 r"(-[^vVfFpPrR]{1})([sS]?)([\w\.]*)": CommandPrice.UNSUPPORTED_OPTION_DATA, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+							 r"(-[^vVfFpPrR]{1})([sS]?)([\w\.]*)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+							 r"(-[^vVfFpPrR]{1})([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,}
+		
+		orderFreeParmList = list(orderFreeParmList)
 		orderFreeParsedParmDataDic = {}
+		
+		# it does not make sense to parse the order free full request parms with a pattern combined with
+		# OPTION_MODIFIER string !
+		patternCommandDicKeysWithoutModifier = [x for x in patternCommandDic.keys() if OPTION_MODIFIER not in x]
 
-		for pattern in patternCommandDic.keys():
+		for pattern in patternCommandDicKeysWithoutModifier:
 			for orderFreeParm in orderFreeParmList:
 				if orderFreeParm and re.search(pattern, orderFreeParm):
 					parsedParmDataDicKey = patternCommandDic[pattern]
@@ -398,6 +404,7 @@ class Requester:
 						# pattern !
 						data, option, optionModifier = self._extractData(pattern, orderFreeParm)
 						if data != None:
+							orderFreeParmList.remove(orderFreeParm)
 							orderFreeParsedParmDataDic[parsedParmDataDicKey] = data
 							patternOptionModifierKey = pattern + OPTION_MODIFIER
 							if optionModifier != None and optionModifier != '':
@@ -429,7 +436,9 @@ class Requester:
 		Applies the passed pattern to the passed dataOrOptionStr. If the passed dataOrOptionStr
 		is an option of type -v0.1btc or -vs0.1btc, the passed pattern will extract the data part of the
 		dataOrOptionStr, i.e. 0.01btc in this case and the option modifier part of the dataOrOptionStr,
-		i.e. s in this case.
+		i.e. s in this case. The option itself is not extracted here since the pattern ignores the
+		option symbol (like (?:-[vV]) in (?:-[vV])([sS]?)([\\w\\.]* for value option pattern. The option
+		symbol will be set later in the command price in _fillOptionValueInfo() like methods !
 
 		Else if the dataOrOptionStr does contain data only, without an option symbol, the passed
 		pattern does not extract any group and the data is returned as is.
@@ -855,6 +864,12 @@ class Requester:
 						# solving very difficult error message formatting for invalid -f option erase. -f0.01 in partial
 						# and full requests or -fs0.01 in partial and full requests. I spent days solving it !
 						return self._handleInvalidOptionFormat(optionData, optionType, requestType)
+			elif optionType == 'RESULT':
+				if len(match.groups()) == 3:
+					optionSaveFlag = match.group(1)
+					optionSymbol = None
+					optionAmount = match.group(2)
+					optionErase = match.group(3)
 			elif optionType == 'PRICE':
 				if len(match.groups()) == 5:
 					optionSaveFlag = match.group(1)
@@ -867,7 +882,7 @@ class Requester:
 						return self._handleInvalidOptionFormat(optionData, optionType, requestType)
 
 			if optionErase == None:
-				if optionSymbol.isdigit():
+				if optionSymbol and optionSymbol.isdigit():
 					# case when no currency symbol entered, like -v0.01 or -vs0.01 instead of -v0.01btc/-vs0.01btc
 					optionAmount += optionSymbol
 					optionSymbol = ''
