@@ -191,24 +191,31 @@ class Requester:
 
 	Ex: -ps0.004325 is splitted into 's', '0.00432'
 		-p0.004325 is splitted into '', '0.00432'
+		-ps0.004325usd is splitted into '', '0.00432usd'    this invalid -ps option will generate an error msg
+		-p0.004325usd is splitted into '', '0.00432usd'     this invalid -p option will generate an error msg
 		-p0 is splitted into '', '0' and will mean 'erase previous -p parm specification
 	'''
-	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+))"
+#	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+))"
+	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\w\.]+))" # \w instead of \d enables the generation
+															 # of an error msg if a fiat symbol is appended
+															 # to the price amount !
 
 	'''
 	The next pattern splits the parameter data appended to the -r partial command option.
 	
-	Ex: -rs is splitted into None, None, 's'
-		-r  is splitted into ????
-		-rs-1 is splitted into 's', '-1', None
+	Ex: -rs is splitted into '', '', None   save option modifier is set to 's' in self._extractData()
+		-r  is splitted into '', '', None   save option modifier is set to 's' in self._extractData()
+		-rs-1 is splitted into '', '-1', None  save option modifier is set to 's' in self._extractData()
+		-rs-1-2-3 is splitted into '', '-1-2-3', None  save option modifier is set to 's' in self._extractData()
 		-r-1-2-3 is splitted into '', '-1-2-3', None
-		-rs-1:-3 is splitted into 's', '-1:-3', None
+		-rs-1:-3 is splitted into '', '-1:-3', None  save option modifier is set to 's' in self._extractData()
 		-r-1:-3 is splitted into '', '-1:-3', None
 		-r0 is splitted into '', '0', None and will mean 'erase previous -r parm specification
 	'''
 #	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(0)"
-	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(s)"
-	
+#	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(s)"
+	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]*)|(s)"
+
 	'''
 	The next pattern splits the parameter data appended to the -l partial command option.
 
@@ -432,8 +439,10 @@ class Requester:
 							 r"(?:-[vV])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
 							 r"(?:-[fF])([sS]?)([\w\.]*)": CommandPrice.OPTION_FIAT_DATA,
 							 r"(?:-[fF])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
-							 r"(?:-[pP])([sS]?)([\d\.]*)": CommandPrice.OPTION_PRICE_DATA,
-							 r"(?:-[pP])([sS]?)([\d\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE,
+							 r"(?:-[pP])([sS]?)([\w\.]*)": CommandPrice.OPTION_PRICE_DATA, # \w instead of \d enables the generation
+															                               # of an error msg if a fiat symbol is appended
+																						   # to the price amount !
+							 r"(?:-[pP])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE,
 							 r"(?:-[rR])([sS]?)([\w\.:-]*)": CommandPrice.OPTION_RESULT_DATA,
 							 r"(?:-[rR])([sS]?)([\w\.:-]*)" + OPTION_MODIFIER: CommandPrice.OPTION_RESULT_SAVE,
 							 r"(-[^vVfFpPrR]{1})([sS]?)([\w\.]*)": CommandPrice.UNSUPPORTED_OPTION_DATA, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
@@ -871,7 +880,7 @@ class Requester:
 		It fills the parsed parm data option value amount and option value symbol fields and
 		erases the combined option value data field.
 
-		:param optionData: the data following thce -v partial command specification
+		:param optionData: the data following the -v partial command specification
 		:param requestType: indicate if we are handling a full or a partial request
 		:return: self.commandPrice or self.commandError in case the -v option is invalid
 		'''
@@ -931,9 +940,13 @@ class Requester:
 			elif optionType == 'RESULT':
 				if len(match.groups()) == 3:
 					optionSaveFlag = match.group(1)
-					optionSymbol = None
+					optionSymbol = None # not used for option result
 					optionAmount = match.group(2)
-					optionErase = match.group(3)
+					if optionAmount == '0':
+						optionErase = '0'
+					else:
+						optionErase = None
+						self.commandPrice.parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT] = optionAmount
 
 			if optionErase == None:
 				if optionSymbol and optionSymbol.isdigit():
