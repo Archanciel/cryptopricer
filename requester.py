@@ -106,19 +106,23 @@ class Requester:
 	'''
 
 	# The full price request pattern is configured to parse 5 required full request
-	# parameters (crypto, unit, date, time and exchange) aswell as a maximum of 4 options
-	# (value, fiat, price, and result). Adding a fifth limit option to the 4 options makes
-	# no sense, so a full price request pattern with 9 groups instead of 10 is ok !
-	# Ex: btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -ps52012 -r-1-2
+	# parameters (crypto, unit, date, time and exchange) as well as a maximum of 4 options
+	# (-v value, -f fiat, -p price, and -r result). Adding a fifth -l limit option to the
+	# 4 options makes no sense, so a full price request pattern with 9 (5 + 4) groups instead
+	# of 10 is ok !
+	#
+	# Ex of biggest full request:
+	#
+	# btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -ps52012 -r-1-2
 	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?"
 
 	'''
 	Partial price command parms pattern. Grabs groups of kind -cbtc or -t12:54 or -d15/09 or -ebittrex
 	or option groups sticking to the same format -<command letter> followed by 1 or
-	more \w or \d or /. or : characters.
+	more \w or \d or /. or - or : characters.
 
-	Unlike with pattern 'full', the groups - option or not - can all occur in any order, reason for which all groups have the same
-	pattern structure.
+	Unlike with pattern 'full', the groups - option or not - can all occur in any order, reason for which
+	all groups have the same pattern structure.
  
 	The rules below apply to -d and -t values !
 	
@@ -154,10 +158,11 @@ class Requester:
 	# The partial price request pattern is configured to parse a maximum of 9 parameters,
 	# 5 basic request parameters (-c, -u, -d, -t and -e) and a maximum of 4 options,
 	# (-v, -f, -p and -r). Adding a fifth limit -l option to the 4 options makes
-	# no sense, so a partial price request pattern with 9 groups instead of 10 is ok !
+	# no sense, so a partial price request pattern with 9 (5 + 4) groups instead of 10 is ok !
 	#
 	# The partial request specifications can be in any order.
-	# Ex: -ceth -ueur -d1 -t12:45 -ebittrex -vs34usd -fschf -rs-1:-2 -ebittrex -p1450
+	#
+	# Ex: -ceth -ueur -d1 -t12:45 -ebittrex -vs34usd -fschf.kraken -rs-1:-2 -ebittrex -p1450
 	PATTERN_PARTIAL_PRICE_REQUEST_DATA = r"(?:(-[a-zA-Z])([\w/:\.-]*))(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?(?: (-[a-zA-Z])([\w/:\.-]*))?"
 	PATTERN_PARTIAL_PRICE_REQUEST_ERROR = r"({}([\d\w,\./]*))(?: .+|)"
 
@@ -194,6 +199,7 @@ class Requester:
 	The next pattern splits the parameter data appended to the -r partial command option.
 	
 	Ex: -rs is splitted into None, None, 's'
+		-r  is splitted into ????
 		-rs-1 is splitted into 's', '-1', None
 		-r-1-2-3 is splitted into '', '-1-2-3', None
 		-rs-1:-3 is splitted into 's', '-1:-3', None
@@ -759,7 +765,7 @@ class Requester:
 		for optionType in CommandPrice.OPTION_TYPE_LIST:
 			commandPriceOptionDataConstantValue = self.commandPrice.getCommandPriceOptionComponentConstantValue(optionType, optionComponent='_DATA')
 			optionData = self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue]
-			if optionData is not None or optionData == '':
+			if optionData is not None:
 				# optionData is None if the full request has no option for this option type
 				# optionData == '' if the full request has an option with no data.
 				# For example eth btc 0 binance -v or eth btc 0 binance -vs

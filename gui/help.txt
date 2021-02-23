@@ -167,7 +167,8 @@ to purchase your ETH at a rate of 650 USD.
     ETH/BTC on Binance: 16/12/17 22:10R 0.03556 [cr]0.03357976[/c]
     [n][i]Currently the BTC/USD rate on Kraken is 19356.9. So, the ETH at this rate 
 is valued at 0.03556 x 19 356.9 = 688.331364. So, your limit buy order must be placed
-at 0.03556 / 688.331364 x 650 = [cr]0.03357976[/c].[/i]
+at 0.03556 / 688.331364 x 650 = [cr]0.03357976[/c], this, provided you do purchase 
+the BTC used to buy the ETH on Kraken.[/i]
 
 Second example: the first request uses the [cy]-f[/c] fiat option to display the current CHSB rate in USD.
 
@@ -178,7 +179,8 @@ Second example: the first request uses the [cy]-f[/c] fiat option to display the
     CHSB/BTC/USD.Kraken on HitBTC 16/01/21 22:10R 0.0000083 [cr]0.00006942[/c]
     [n][i]This indicates that currently the CHSB is quoted at 0.0000083 BTC on HitBTC (which 
 corresponds to a value of 0.29892118 USD on Kraken, as shown by the first request), but that to buy it at 0.25 USD,
-the limit buy order must set the price to 0.0000083 / 0.29892118 * 0.25 = [cr]0.00006942[/c] BTC ![/i]
+the limit buy order must set the price to 0.0000083 / 0.29892118 * 0.25 = [cr]0.00006942[/c] BTC, this, 
+provided you do purchase the BTC used to buy the ETH on Kraken. ![/i]
 [p]
 [n][b][cg]Value option[/cg][/b]
 

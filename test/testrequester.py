@@ -456,6 +456,7 @@ btc usd 12/2/21 13:55 hitbtc -ps52012.45 -vs21.23btc -fschf.kraken -rs-1:-3
 btc usd 12/2/21 13:55 hitbtc -vs21.23btc -rs-1:-3 -fschf.kraken
 btc usd 12/2/21 13:55 hitbtc -rs-1:-3 -vs21.23btc -ps52012.45 -fschf.kraken
 btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1
+btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 		
 		:return:
 		'''
@@ -498,6 +499,11 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1
 		groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
 
 		self.assertEqual(('btc', 'usd', '12/2/21', '13:55', 'hitbtc', '-vs21.23btc', '-fschf.kraken', '-rs-1', None), groupList)
+
+		inputStr = 'btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r'
+		groupList = self.requester._parseGroups(Requester.PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA, inputStr)
+
+		self.assertEqual(('btc', 'usd', '12/2/21', '13:55', 'hitbtc', '-vs21.23btc', '-fschf.kraken', '-r', None), groupList)
 
 	def test_buildFullCommandPriceOptionalParmsDic(self):
 		'''
@@ -858,8 +864,8 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
 
-	def test_parseAndFillFullCommandPriceWithRSDataOption(self):
-		inputStr = "btc usd 10/9/2017 12:45 Kraken -rs23.55"
+	def test_parseAndFillFullCommandPriceWithRNoDataOption(self):
+		inputStr = "btc usd 10/9/2017 12:45 Kraken -r"
 		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
 		self.assertEqual(commandPrice, self.commandPrice)
 		parsedParmData = commandPrice.parsedParmData
@@ -886,13 +892,33 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -rs-1
 		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_DATA])
-		self.assertEqual('23.55', parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_SYMBOL])
-		self.assertEqual('s', parsedParmData[CommandPrice.OPTION_RESULT_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_SAVE])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
+
+	def test_parseAndFillFullCommandPriceWithInvalidRSDataOption(self):
+		inputStr = "btc usd 10/9/2017 12:45 Kraken -rs23.55"
+		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+		self.assertEqual(commandPrice, self.commandError)
+		resultData = self.commandError.execute()
+
+		self.assertEqual(
+			'ERROR - full request btc usd 18/9/17 12:45 Kraken -rs23.55: -rs23.55 option violates the -rs option format. See help for more information.',
+			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+
+	def test_parseAndFillFullCommandPriceWithInvalidRDataOption(self):
+		inputStr = "btc usd 10/9/2017 12:45 Kraken -r23.55"
+		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+		self.assertEqual(commandPrice, self.commandError)
+		resultData = self.commandError.execute()
+
+		self.assertEqual(
+			'ERROR - full request btc usd 18/9/17 12:45 Kraken -r23.55: -r23.55 option violates the -r option format. See help for more information.',
+			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 
 	def test_parseAndFillFullCommandPriceWithRSMinusOneOption(self):
 		inputStr = "btc usd 10/9/2017 12:45 Kraken -rs-1"
