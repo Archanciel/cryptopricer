@@ -908,14 +908,16 @@ class Requester:
 			# 	optionSymbol = match.group(3)
 			# 	optionErase = match.group(4)
 			
+			groupNumber = len(match.groups())
+			
 			if optionType == 'VALUE':
-				if len(match.groups()) == 4:
+				if groupNumber == 4:
 					optionSaveFlag = match.group(1)
 					optionAmount = match.group(2)
 					optionSymbol = match.group(3)
 					optionErase = match.group(4)
 			elif optionType == 'FIAT':
-				if len(match.groups()) == 4:
+				if groupNumber == 4:
 					optionSaveFlag = match.group(1)
 					optionSymbol = match.group(2)
 					optionExchange = match.group(3)
@@ -927,7 +929,7 @@ class Requester:
 						# and full requests or -fs0.01 in partial and full requests. I spent days solving it !
 						return self._handleInvalidOptionFormat(optionData, optionType, requestType)
 			elif optionType == 'PRICE':
-				if len(match.groups()) == 2:
+				if groupNumber == 2:
 					optionSaveFlag = match.group(1)
 					optionAmount = match.group(2)
 					if optionAmount == '0':
@@ -938,7 +940,7 @@ class Requester:
 					if optionErase == None and (optionAmount == None or not self._isNumber(optionAmount)):
 						return self._handleInvalidOptionFormat(optionData, optionType, requestType)
 			elif optionType == 'RESULT':
-				if len(match.groups()) == 3:
+				if groupNumber == 3:
 					optionSaveFlag = match.group(1)
 					optionSymbol = None # not used for option result
 					optionAmount = match.group(2)
@@ -946,7 +948,11 @@ class Requester:
 						optionErase = '0'
 					else:
 						optionErase = None
-						self.commandPrice.parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT] = optionAmount
+						if '-' not in optionAmount and self._isNumber(optionAmount):
+							# the case for -r20.45 for example
+							return self._handleInvalidOptionFormat(optionData, optionType, requestType)
+						else:
+							self.commandPrice.parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT] = optionAmount
 
 			if optionErase == None:
 				if optionSymbol and optionSymbol.isdigit():

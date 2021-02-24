@@ -2,6 +2,7 @@ from abstractcommand import AbstractCommand
 from datetimeutil import DateTimeUtil
 from resultdata import ResultData
 
+
 class CommandPrice(AbstractCommand):
 	"""
 	This command handles RT and historical full and partial price requests. In respect of the
@@ -27,7 +28,8 @@ class CommandPrice(AbstractCommand):
 	PRICE_TYPE_RT = 'REAL_TIME'
 
 	OPTION_TYPE_LIST = ['VALUE', 'FIAT', 'PRICE', 'RESULT', 'LIMIT']
-
+	OPTION_KEYWORD_DIC = {'VALUE': '-v', 'FIAT': '-f', 'PRICE': '-p', 'RESULT': '-r', 'LIMIT': '-l'}
+	
 	OPTION_VALUE_DATA = 'OPTION_VALUE_DATA'     # temporary store the data specified with -v. Ex: 0.0044254btc
 	OPTION_VALUE_AMOUNT = 'OPTION_VALUE_AMOUNT' # store the crypto, unit or fiat amount specified with -v. Ex: 100 in -v100usd
 	OPTION_VALUE_SYMBOL = 'OPTION_VALUE_SYMBOL' # store the crypto, unit or fiat symbol specified with -v. Ex: usd
@@ -432,7 +434,6 @@ class CommandPrice(AbstractCommand):
 			except ValueError as e:
 				resultData = ResultData()
 				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid value: {} violates format for {} ({}).".format(value, name, format))
-#				self.parsedParmData[CommandPrice.DAY] = 30
 				return resultData
 
 			try:
@@ -458,12 +459,11 @@ class CommandPrice(AbstractCommand):
 		This method is used as helper when building an invalid full request error msg. Unlike when building such
 		an error msg when handling an invalid  partial request, in a full request context, the faulty option
 		keyword is not available and so must be rebuilt. The method accepts as input an option type constant name
-		part like 'VALUE', 'FIAT' or 'PRICE'.
+		part like 'VALUE', 'FIAT', 'PRICE', 'RESULT' or 'LIMIT'.
 
-		:param optionType: currently, 'VALUE', 'FIAT' or 'PRICE'
-		:return: -v or -vs or -f or -fs or -p or -ps
+		:param optionType: currently, 'VALUE', 'FIAT', 'PRICE', 'RESULT' or 'LIMIT'
+		:return: -v or -vs or -f or -fs or -p or -ps or -r or -rs or -l or -is
 		'''
-		optionKeywordDic = {'VALUE':'-v', 'FIAT':'-f', 'PRICE':'-p'}
 		commandPriceOptionSaveConstantName = 'OPTION_' + optionType + '_SAVE'
 		commandPriceOptionSaveValue = self.parsedParmData[commandPriceOptionSaveConstantName]
 
@@ -472,7 +472,7 @@ class CommandPrice(AbstractCommand):
 		else:
 			commandPriceOptionSaveValue = ''
 
-		return optionKeywordDic[optionType] + commandPriceOptionSaveValue
+		return self.OPTION_KEYWORD_DIC[optionType] + commandPriceOptionSaveValue
 
 	def getCommandPriceOptionComponentConstantValue(self, optionType, optionComponent):
 		'''
