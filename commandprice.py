@@ -34,21 +34,21 @@ class CommandPrice(AbstractCommand):
 	OPTION_VALUE_AMOUNT = 'OPTION_VALUE_AMOUNT' # store the crypto, unit or fiat amount specified with -v. Ex: 100 in -v100usd
 	OPTION_VALUE_SYMBOL = 'OPTION_VALUE_SYMBOL' # store the crypto, unit or fiat symbol specified with -v. Ex: usd
 	OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'     # store s or S or None to indicate if the value option is to be stored in history (-vs) or not (-v) --> None
-	OPTION_VALUE_MANDATORY_COMPONENTS = [OPTION_VALUE_AMOUNT, OPTION_VALUE_SYMBOL]
+	OPTION_VALUE_MANDATORY_COMPONENTS = [OPTION_VALUE_AMOUNT, OPTION_VALUE_SYMBOL] # used by the generic Requester._validateOptionMandatoryComponents() method
 
 	OPTION_FIAT_DATA = 'OPTION_FIAT_DATA'     # temporary store the data specified with -f. Ex: usd
 	OPTION_FIAT_AMOUNT = 'OPTION_FIAT_AMOUNT' # not used for fiat option, but must exist due to generic code needs
 	OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL' # store the fiat symbol specified with -f. Ex: usd if -fusd
 	OPTION_FIAT_EXCHANGE = 'OPTION_FIAT_EXCHANGE' # store the exchange specified with -f. Ex: bittrex if feth.bittrex
 	OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'     # store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
-	OPTION_FIAT_MANDATORY_COMPONENTS = [OPTION_FIAT_SYMBOL]
+	OPTION_FIAT_MANDATORY_COMPONENTS = [OPTION_FIAT_SYMBOL] # used by the generic Requester._validateOptionMandatoryComponents() method
 
 	OPTION_PRICE_DATA = 'OPTION_PRICE_DATA'         # temporary store the data specified with -p. Ex: 230usd (see help for more info !)
 	OPTION_PRICE_AMOUNT = 'OPTION_PRICE_AMOUNT'     # store the price target specified with -p. Ex: 230
 	OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL'     # store the price symbol specified with -p. Ex: usd
 	OPTION_PRICE_EXCHANGE = 'OPTION_PRICE_EXCHANGE' # store the exchange specified with -p. Ex: kraken if pusd.kraken
 	OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'         # store s or S or None to indicate if the value option is to be stored in history (-ps) or not (-p) --> None
-	OPTION_PRICE_MANDATORY_COMPONENTS = [OPTION_PRICE_AMOUNT]
+	OPTION_PRICE_MANDATORY_COMPONENTS = [OPTION_PRICE_AMOUNT] # used by the generic Requester._validateOptionMandatoryComponents() method
 
 	OPTION_RESULT_DATA = 'OPTION_RESULT_DATA'     # temporary store the data specified with -r. Ex: 40.25, -1-2, -1:-3
 	OPTION_RESULT_AMOUNT = 'OPTION_RESULT_AMOUNT' # not used for result option, but must exist due to generic code needs
@@ -62,7 +62,7 @@ class CommandPrice(AbstractCommand):
 	OPTION_LIMIT_SYMBOL = 'OPTION_LIMIT_SYMBOL' # store the fiat symbol specified with -l. Ex: usd if -l100usd
 	OPTION_LIMIT_EXCHANGE = 'OPTION_LIMIT_EXCHANGE' # store the exchange specified with -l. Ex: kraken if lusd.kraken
 	OPTION_LIMIT_SAVE = 'OPTION_LIMIT_SAVE'     # store s or S or None to indicate if the fiat option is to be stored in history (-fs) or not (-f) --> None
-	OPTION_LIMIT_MANDATORY_COMPONENTS = [OPTION_LIMIT_AMOUNT, OPTION_LIMIT_SYMBOL]
+	OPTION_LIMIT_MANDATORY_COMPONENTS = [OPTION_LIMIT_AMOUNT, OPTION_LIMIT_SYMBOL] # used by the generic Requester._validateOptionMandatoryComponents() method
 
 	UNSUPPORTED_OPTION = "UNSUPPORTED_OPTION"                   # store an unsupported option specification
 	UNSUPPORTED_OPTION_MODIFIER = "UNSUPPORTED_OPTION_MODIFIER" # store an unsupported option modifier specification
