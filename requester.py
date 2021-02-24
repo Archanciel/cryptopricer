@@ -199,6 +199,9 @@ class Requester:
 	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\w\.]*))" # \w instead of \d enables the generation
 															 # of an error msg if a fiat symbol is appended
 															 # to the price amount !
+															 # uaing * insteadof + makes the generic
+															 # Requester._validateOptionMandatoryComponents()
+															 # method usefull
 
 	'''
 	The next pattern splits the parameter data appended to the -r partial command option.
@@ -440,7 +443,7 @@ class Requester:
 							 r"(?:-[fF])([sS]?)([\w\.]*)": CommandPrice.OPTION_FIAT_DATA,
 							 r"(?:-[fF])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
 							 r"(?:-[pP])([sS]?)([\w\.]*)": CommandPrice.OPTION_PRICE_DATA, # \w instead of \d enables the generation
-															                               # of an error msg if a fiat symbol is appended
+																						   # of an error msg if a fiat symbol is appended
 																						   # to the price amount !
 							 r"(?:-[pP])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE,
 							 r"(?:-[rR])([sS]?)([\w\.:-]*)": CommandPrice.OPTION_RESULT_DATA,
