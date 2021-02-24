@@ -196,7 +196,7 @@ class Requester:
 		-p0 is splitted into '', '0' and will mean 'erase previous -p parm specification
 	'''
 #	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+))"
-	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\w\.]+))" # \w instead of \d enables the generation
+	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\w\.]*))" # \w instead of \d enables the generation
 															 # of an error msg if a fiat symbol is appended
 															 # to the price amount !
 
@@ -936,9 +936,10 @@ class Requester:
 						optionErase = '0'
 					else:
 						optionErase = None
-						self.commandPrice.parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT] = optionAmount
-					if optionErase == None and (optionAmount == None or not self._isNumber(optionAmount)):
-						return self._handleInvalidOptionFormat(optionData, optionType, requestType)
+						if self._isNumber(optionAmount):
+							self.commandPrice.parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT] = optionAmount
+						else:
+							optionAmount = None
 			elif optionType == 'RESULT':
 				if groupNumber == 3:
 					optionSaveFlag = match.group(1)
@@ -1029,7 +1030,7 @@ class Requester:
 		returnedCommand = self.commandPrice
 		optionData = self.commandPrice.parsedParmData[commandPriceOptionDataConstantValue]
 
-		if optionData and optionData != '0':    # in case option cancel like -v0, -f0 or -p0, checking
+		if optionData is not None and optionData != '0':    # in case option cancel like -v0, -f0 or -p0, checking
 												# mandatory components has no sense
 			for optionMandatoryComponentKey in commandPriceOptionMandatoryComponentsList:
 				optionMandatoryComponentValue = self.commandPrice.parsedParmData[optionMandatoryComponentKey]

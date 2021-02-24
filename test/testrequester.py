@@ -4186,6 +4186,34 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 		sys.stdin = stdin
 
+	def testRequestCommandPriceFullEndingWithInvalidOptionPriceNoSaveNoAmount(self):
+		stdin = sys.stdin
+		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -p")
+		commandError = self.requester.getCommandFromCommandLine()
+
+		self.assertEqual(self.commandError, commandError)
+		resultData = self.commandError.execute()
+
+		# formatting of request input string has been moved to end of Requester.getCommand !
+		self.assertEqual(
+			'ERROR - full request btc usd 10/9/17 12:45 Kraken -p: -p option violates the -p option format. See help for more information.',
+			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		sys.stdin = stdin
+
+	def testRequestCommandPriceFullEndingWithInvalidOptionPriceSaveNoAmount(self):
+		stdin = sys.stdin
+		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps")
+		commandError = self.requester.getCommandFromCommandLine()
+
+		self.assertEqual(self.commandError, commandError)
+		resultData = self.commandError.execute()
+
+		# formatting of request input string has been moved to end of Requester.getCommand !
+		self.assertEqual(
+			'ERROR - full request btc usd 10/9/17 12:45 Kraken -ps: -ps option violates the -ps option format. See help for more information.',
+			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
+		sys.stdin = stdin
+
 	def testRequestCommandPriceFullEndingWithInvalidOptionPriceSaveAmountWithFiat(self):
 		stdin = sys.stdin
 		sys.stdin = StringIO("btc usd 10/9/17 12:45 Kraken -ps0.01usd")
@@ -6129,7 +6157,6 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 
 		inputStr = "-ceth -p -ugbp -d11/8/15 -t22:46 -eKraken"
 		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
 		self.assertEqual(commandPrice, self.commandError)
 		parsedParmData = commandPrice.parsedParmData
 		self.assertEqual('-p with no value is not valid. Partial request ignored', parsedParmData[CommandError.COMMAND_ERROR_MSG_KEY])
@@ -6472,8 +6499,6 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
 		parsedParmData[CommandPrice.HOUR_MINUTE] = None
 		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-		parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT] = '500'
-		parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL] = 'gbp'
 
 		inputStr = "-ceth -pooo -ugbp -d11/8/15 -t22:46 -eKraken"
 		commandError = self.requester._parseAndFillCommandPrice(inputStr)
@@ -6499,9 +6524,6 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
 		parsedParmData[CommandPrice.HOUR_MINUTE] = None
 		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-		parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT] = '500'
-		parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL] = 'gbp'
-		parsedParmData[CommandPrice.OPTION_PRICE_SAVE] = True
 
 		inputStr = "-ceth -psooo -ugbp -d11/8/15 -t22:46 -eKraken"
 		commandError = self.requester._parseAndFillCommandPrice(inputStr)
@@ -6975,5 +6997,5 @@ if __name__ == '__main__':
 #	unittest.main()
 	t = TestRequester()
 	t.setUp()
-	t.test_parseAndFillFullCommandPriceWithInvalidRSDataOption()
-	#t.testRequestCommandPriceFullEndingWithOptionFiatErase()
+	#t.test_parseAndFillPartialCommandPriceIneffectiveOptionPriceSpec()
+	t.test_parseAndFillPartialCommandPriceInvalidOptionPriceSaveSpec()
