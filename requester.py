@@ -252,7 +252,9 @@ class Requester:
 										   '-E': CommandPrice.EXCHANGE,
 										   '-V': CommandPrice.OPTION_VALUE_DATA,
 										   '-F': CommandPrice.OPTION_FIAT_DATA,
-										   '-P': CommandPrice.OPTION_PRICE_DATA}
+										   '-P': CommandPrice.OPTION_PRICE_DATA,
+										   '-R': CommandPrice.OPTION_RESULT_DATA,
+										   '-L': CommandPrice.OPTION_LIMIT_DATA}
 
 
 	def getCommandFromCommandLine(self):
@@ -443,14 +445,16 @@ class Requester:
 							 r"(?:-[fF])([sS]?)([\w\.]*)": CommandPrice.OPTION_FIAT_DATA,
 							 r"(?:-[fF])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
 							 r"(?:-[pP])([sS]?)([\w\.]*)": CommandPrice.OPTION_PRICE_DATA, # \w instead of \d enables the generation
-																						   # of an error msg if a fiat symbol is appended
+															                               # of an error msg if a fiat symbol is appended
 																						   # to the price amount !
 							 r"(?:-[pP])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE,
 							 r"(?:-[rR])([sS]?)([\w\.:-]*)": CommandPrice.OPTION_RESULT_DATA,
 							 r"(?:-[rR])([sS]?)([\w\.:-]*)" + OPTION_MODIFIER: CommandPrice.OPTION_RESULT_SAVE,
-							 r"(-[^vVfFpPrR]{1})([sS]?)([\w\.]*)": CommandPrice.UNSUPPORTED_OPTION_DATA, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-							 r"(-[^vVfFpPrR]{1})([sS]?)([\w\.]*)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-							 r"(-[^vVfFpPrR]{1})([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,}
+							 r"(?:-[lL])([sS]?)([\w\.]*)": CommandPrice.OPTION_LIMIT_DATA,
+							 r"(?:-[lL])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_LIMIT_SAVE,
+							 r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)": CommandPrice.UNSUPPORTED_OPTION_DATA, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+							 r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
+							 r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,}
 		
 		orderFreeParmList = list(orderFreeParmList)
 		orderFreeParsedParmDataDic = {}
@@ -957,6 +961,14 @@ class Requester:
 							return self._handleInvalidOptionFormat(optionData, optionType, requestType)
 						else:
 							self.commandPrice.parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT] = optionAmount
+			elif optionType == 'LIMIT':
+				if groupNumber == 5:
+					optionSaveFlag = match.group(1)
+					optionAmount = match.group(2)
+					optionSymbol = match.group(3)
+					optionExchange = match.group(4)
+					optionErase = match.group(5)
+					self.commandPrice.parsedParmData[CommandPrice.OPTION_LIMIT_EXCHANGE] = optionExchange
 
 			if optionErase == None:
 				if optionSymbol and optionSymbol.isdigit():
