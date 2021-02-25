@@ -7408,7 +7408,125 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
 		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 	
+	def test_parseAndFillPartialCommandPriceOptionResultSaveNoAmount(self):
+		commandPrice = self.requester.commandPrice
+		
+		parsedParmData = commandPrice.parsedParmData
+		
+		# prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+		parsedParmData[CommandPrice.CRYPTO] = 'btc'
+		parsedParmData[CommandPrice.UNIT] = 'usd'
+		parsedParmData[CommandPrice.DAY] = '10'
+		parsedParmData[CommandPrice.MONTH] = '9'
+		parsedParmData[CommandPrice.YEAR] = None
+		parsedParmData[CommandPrice.HOUR] = '12'
+		parsedParmData[CommandPrice.MINUTE] = '45'
+		parsedParmData[CommandPrice.EXCHANGE] = 'Kraken'
+		parsedParmData[CommandPrice.HOUR_MINUTE] = None
+		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+		parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT] = '-2-4'
+		
+		inputStr = "-ceth -ugbp -d0 -rs"
+		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'gbp')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '0')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '0')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '0')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '0')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '0')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE])
+		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
+		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_DATA])
+		self.assertEqual('', parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_SYMBOL])
+		self.assertEqual(True, parsedParmData[CommandPrice.OPTION_RESULT_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_DATA])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_SYMBOL])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_EXCHANGE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
+		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
+	
 	def test_parseAndFillPartialCommandPriceOptionResultNoAmount(self):
+		commandPrice = self.requester.commandPrice
+		
+		parsedParmData = commandPrice.parsedParmData
+		
+		# prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
+		parsedParmData[CommandPrice.CRYPTO] = 'btc'
+		parsedParmData[CommandPrice.UNIT] = 'usd'
+		parsedParmData[CommandPrice.DAY] = '10'
+		parsedParmData[CommandPrice.MONTH] = '9'
+		parsedParmData[CommandPrice.YEAR] = None
+		parsedParmData[CommandPrice.HOUR] = '12'
+		parsedParmData[CommandPrice.MINUTE] = '45'
+		parsedParmData[CommandPrice.EXCHANGE] = 'Kraken'
+		parsedParmData[CommandPrice.HOUR_MINUTE] = None
+		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
+		parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT] = '-2-4'
+		parsedParmData[CommandPrice.OPTION_RESULT_SAVE] = True
+
+		inputStr = "-ceth -ugbp -d0 -r"
+		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
+		self.assertEqual(commandPrice, self.commandPrice)
+		parsedParmData = commandPrice.parsedParmData
+		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
+		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'gbp')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '0')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '0')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '0')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '0')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '0')
+		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
+		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
+		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE])
+		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
+		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_DATA])
+		self.assertEqual('', parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_SYMBOL])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_DATA])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_SYMBOL])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_EXCHANGE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
+		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
+		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
+	
+	def test_parseAndFillPartialCommandPriceNoInitYearThenOptionResultSaveAndUnsupportedOptionWithSaveOptionModifier(
+			self):
 		commandPrice = self.requester.commandPrice
 		
 		parsedParmData = commandPrice.parsedParmData
@@ -7424,10 +7542,8 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
 		parsedParmData[CommandPrice.HOUR_MINUTE] = None
 		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-		parsedParmData[CommandPrice.OPTION_LIMIT_AMOUNT] = '500'
-		parsedParmData[CommandPrice.OPTION_LIMIT_SYMBOL] = 'gbp'
 		
-		inputStr = "-ceth -ugbp -d11/8 -t22:46 -eKraken -rs"
+		inputStr = "-ceth -ugbp -d11/8 -t22:46 -eKraken -zsunsupported -rs-1:-2"
 		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
 		self.assertEqual(commandPrice, self.commandPrice)
 		parsedParmData = commandPrice.parsedParmData
@@ -7463,102 +7579,6 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_SYMBOL])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_EXCHANGE])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
-	
-	def test_parseAndFillPartialCommandPriceNoInitYearThenOptionResultSave(self):
-		commandPrice = self.requester.commandPrice
-		
-		parsedParmData = commandPrice.parsedParmData
-		
-		# prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
-		parsedParmData[CommandPrice.CRYPTO] = 'btc'
-		parsedParmData[CommandPrice.UNIT] = 'usd'
-		parsedParmData[CommandPrice.DAY] = '10'
-		parsedParmData[CommandPrice.MONTH] = '9'
-		parsedParmData[CommandPrice.YEAR] = None
-		parsedParmData[CommandPrice.HOUR] = '12'
-		parsedParmData[CommandPrice.MINUTE] = '45'
-		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
-		parsedParmData[CommandPrice.HOUR_MINUTE] = None
-		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-		
-		inputStr = "-ceth -ugbp -d11/8 -t22:46 -eKraken -ls2500usd.kraken"
-		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-		self.assertEqual(commandPrice, self.commandPrice)
-		parsedParmData = commandPrice.parsedParmData
-		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
-		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'gbp')
-		self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
-		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
-		self.assertEqual(parsedParmData[CommandPrice.YEAR], None)
-		self.assertEqual(parsedParmData[CommandPrice.HOUR], '22')
-		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
-		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
-		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
-		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_DATA])
-		self.assertEqual('2500', parsedParmData[CommandPrice.OPTION_LIMIT_AMOUNT])
-		self.assertEqual('usd', parsedParmData[CommandPrice.OPTION_LIMIT_SYMBOL])
-		self.assertEqual('kraken', parsedParmData[CommandPrice.OPTION_LIMIT_EXCHANGE])
-		self.assertEqual(True, parsedParmData[CommandPrice.OPTION_LIMIT_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
-	
-	def test_parseAndFillPartialCommandPriceNoInitYearThenOptionResultSaveAndUnsupportedOptionWithSaveOptionModifier(
-			self):
-		commandPrice = self.requester.commandPrice
-		
-		parsedParmData = commandPrice.parsedParmData
-		
-		# prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
-		parsedParmData[CommandPrice.CRYPTO] = 'btc'
-		parsedParmData[CommandPrice.UNIT] = 'usd'
-		parsedParmData[CommandPrice.DAY] = '10'
-		parsedParmData[CommandPrice.MONTH] = '9'
-		parsedParmData[CommandPrice.YEAR] = None
-		parsedParmData[CommandPrice.HOUR] = '12'
-		parsedParmData[CommandPrice.MINUTE] = '45'
-		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
-		parsedParmData[CommandPrice.HOUR_MINUTE] = None
-		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-		
-		inputStr = "-ceth -ugbp -d11/8 -t22:46 -eKraken -ls2500usd.kraken -zsunsupported"
-		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-		self.assertEqual(commandPrice, self.commandPrice)
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_DATA])
-		self.assertEqual('2500', parsedParmData[CommandPrice.OPTION_LIMIT_AMOUNT])
-		self.assertEqual('usd', parsedParmData[CommandPrice.OPTION_LIMIT_SYMBOL])
-		self.assertEqual('kraken', parsedParmData[CommandPrice.OPTION_LIMIT_EXCHANGE])
-		self.assertEqual(True, parsedParmData[CommandPrice.OPTION_LIMIT_SAVE])
 		self.assertEqual('-z', parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
 		self.assertEqual('unsupported', parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
 		self.assertEqual('s', parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
@@ -7576,24 +7596,23 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 		parsedParmData[CommandPrice.YEAR] = None
 		parsedParmData[CommandPrice.HOUR] = '12'
 		parsedParmData[CommandPrice.MINUTE] = '45'
-		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
+		parsedParmData[CommandPrice.EXCHANGE] = 'Kraken'
 		parsedParmData[CommandPrice.HOUR_MINUTE] = None
 		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-		parsedParmData[CommandPrice.OPTION_LIMIT_AMOUNT] = '500'
-		parsedParmData[CommandPrice.OPTION_LIMIT_SYMBOL] = 'gbp'
-		parsedParmData[CommandPrice.OPTION_LIMIT_SAVE] = True
+		parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT] = '-2-4'
+		parsedParmData[CommandPrice.OPTION_RESULT_SAVE] = True
 		
-		inputStr = "-ceth -l0 -ugbp -d11/8/15 -t22:46 -eKraken"
+		inputStr = "-ceth -ugbp -d0 -r0"
 		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
 		self.assertEqual(commandPrice, self.commandPrice)
 		parsedParmData = commandPrice.parsedParmData
 		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
 		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'gbp')
-		self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
-		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
-		self.assertEqual(parsedParmData[CommandPrice.YEAR], '15')
-		self.assertEqual(parsedParmData[CommandPrice.HOUR], '22')
-		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
+		self.assertEqual(parsedParmData[CommandPrice.DAY], '0')
+		self.assertEqual(parsedParmData[CommandPrice.MONTH], '0')
+		self.assertEqual(parsedParmData[CommandPrice.YEAR], '0')
+		self.assertEqual(parsedParmData[CommandPrice.HOUR], '0')
+		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '0')
 		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
 		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
 		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
@@ -7610,6 +7629,10 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
 		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_DATA])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_AMOUNT])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_SYMBOL])
+		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_RESULT_SAVE])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_DATA])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_AMOUNT])
 		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_SYMBOL])
@@ -7618,142 +7641,6 @@ btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -r
 		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
 		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
 		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
-	
-	def test_parseAndFillPartialCommandPriceInvalidOptionResultSaveSpecNoFiatWithAmount(self):
-		commandPrice = self.requester.commandPrice
-		
-		parsedParmData = commandPrice.parsedParmData
-		
-		# prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
-		parsedParmData[CommandPrice.CRYPTO] = 'btc'
-		parsedParmData[CommandPrice.UNIT] = 'usd'
-		parsedParmData[CommandPrice.DAY] = '10'
-		parsedParmData[CommandPrice.MONTH] = '9'
-		parsedParmData[CommandPrice.YEAR] = None
-		parsedParmData[CommandPrice.HOUR] = '12'
-		parsedParmData[CommandPrice.MINUTE] = '45'
-		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
-		parsedParmData[CommandPrice.HOUR_MINUTE] = None
-		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-		
-		inputStr = "-ceth -ls0.01 -ugbp -d11/8/15 -t22:46 -eKraken"
-		commandError = self.requester._parseAndFillCommandPrice(inputStr)
-		self.assertEqual(commandError, self.commandError)
-		resultData = self.commandError.execute()
-		
-		# formatting of request input string has been moved to end of Requester.getCommand !
-		self.assertEqual(
-			"ERROR - invalid partial request : -ls0.01 option violates the -ls option format. See help for more information.",
-			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
-	
-	def test_parseAndFillPartialCommandPriceInvalidOptionResultNoFiatWithAmount(self):
-		commandPrice = self.requester.commandPrice
-		
-		parsedParmData = commandPrice.parsedParmData
-		
-		# prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
-		parsedParmData[CommandPrice.CRYPTO] = 'btc'
-		parsedParmData[CommandPrice.UNIT] = 'usd'
-		parsedParmData[CommandPrice.DAY] = '10'
-		parsedParmData[CommandPrice.MONTH] = '9'
-		parsedParmData[CommandPrice.YEAR] = None
-		parsedParmData[CommandPrice.HOUR] = '12'
-		parsedParmData[CommandPrice.MINUTE] = '45'
-		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
-		parsedParmData[CommandPrice.HOUR_MINUTE] = None
-		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-		
-		inputStr = "-ceth -l0.01 -ugbp -d11/8/15 -t22:46 -eKraken"
-		commandError = self.requester._parseAndFillCommandPrice(inputStr)
-		self.assertEqual(commandError, self.commandError)
-		resultData = self.commandError.execute()
-		
-		# formatting of request input string has been moved to end of Requester.getCommand !
-		self.assertEqual(
-			"ERROR - invalid partial request : -l0.01 option violates the -l option format. See help for more information.",
-			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
-	
-	def test_parseAndFillPartialCommandPriceEraseOptionResult(self):
-		commandPrice = self.requester.commandPrice
-		
-		parsedParmData = commandPrice.parsedParmData
-		
-		# prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
-		parsedParmData[CommandPrice.CRYPTO] = 'btc'
-		parsedParmData[CommandPrice.UNIT] = 'usd'
-		parsedParmData[CommandPrice.DAY] = '10'
-		parsedParmData[CommandPrice.MONTH] = '9'
-		parsedParmData[CommandPrice.YEAR] = None
-		parsedParmData[CommandPrice.HOUR] = '12'
-		parsedParmData[CommandPrice.MINUTE] = '45'
-		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
-		parsedParmData[CommandPrice.HOUR_MINUTE] = None
-		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-		parsedParmData[CommandPrice.OPTION_LIMIT_AMOUNT] = '500'
-		parsedParmData[CommandPrice.OPTION_LIMIT_SYMBOL] = 'gbp'
-		
-		inputStr = "-ceth -l0 -ugbp -d11/8/15 -t22:46 -eKraken"
-		commandPrice = self.requester._parseAndFillCommandPrice(inputStr)
-		self.assertEqual(commandPrice, self.commandPrice)
-		parsedParmData = commandPrice.parsedParmData
-		self.assertEqual(parsedParmData[CommandPrice.CRYPTO], 'eth')
-		self.assertEqual(parsedParmData[CommandPrice.UNIT], 'gbp')
-		self.assertEqual(parsedParmData[CommandPrice.DAY], '11')
-		self.assertEqual(parsedParmData[CommandPrice.MONTH], '8')
-		self.assertEqual(parsedParmData[CommandPrice.YEAR], '15')
-		self.assertEqual(parsedParmData[CommandPrice.HOUR], '22')
-		self.assertEqual(parsedParmData[CommandPrice.MINUTE], '46')
-		self.assertEqual(parsedParmData[CommandPrice.EXCHANGE], 'Kraken')
-		self.assertEqual(parsedParmData[CommandPrice.HOUR_MINUTE], None)
-		self.assertEqual(parsedParmData[CommandPrice.DAY_MONTH_YEAR], None)
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_VALUE_SYMBOL])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_VALUE_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SYMBOL])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_EXCHANGE])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_FIAT_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_FIAT_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_PRICE_SYMBOL])
-		self.assertIsNone(None, parsedParmData[CommandPrice.OPTION_PRICE_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_DATA])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_AMOUNT])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_SYMBOL])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_EXCHANGE])
-		self.assertEqual(None, parsedParmData[CommandPrice.OPTION_LIMIT_SAVE])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_MODIFIER])
-		self.assertEqual(None, parsedParmData[CommandPrice.UNSUPPORTED_OPTION_DATA])
-	
-	def test_parseAndFillPartialCommandPriceEmptyOptionResultSaveSpec(self):
-		commandPrice = self.requester.commandPrice
-		
-		parsedParmData = commandPrice.parsedParmData
-		
-		# prefil commandPrice parsedParmData dictionary to simulate first entry of full command price entry
-		parsedParmData[CommandPrice.CRYPTO] = 'btc'
-		parsedParmData[CommandPrice.UNIT] = 'usd'
-		parsedParmData[CommandPrice.DAY] = '10'
-		parsedParmData[CommandPrice.MONTH] = '9'
-		parsedParmData[CommandPrice.YEAR] = None
-		parsedParmData[CommandPrice.HOUR] = '12'
-		parsedParmData[CommandPrice.MINUTE] = '45'
-		parsedParmData[CommandPrice.EXCHANGE] = 'CCEX'
-		parsedParmData[CommandPrice.HOUR_MINUTE] = None
-		parsedParmData[CommandPrice.DAY_MONTH_YEAR] = None
-		
-		inputStr = "-ceth -ls -ugbp -d11/8/15 -t22:46 -eKraken"
-		commandError = self.requester._parseAndFillCommandPrice(inputStr)
-		self.assertEqual(commandError, self.commandError)
-		resultData = self.commandError.execute()
-		
-		# formatting of request input string has been moved to end of Requester.getCommand !
-		self.assertEqual(
-			"ERROR - invalid partial request : -ls with no value is not valid. Partial request ignored.",
-			resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG))
 	
 	# limit partial
 		

@@ -600,7 +600,8 @@ class Requester:
 						value = value
 						commandUpper = command.upper()
 						if commandUpper in keys:
-							if value == '' or value.upper() == 'S':
+							if commandUpper != '-R' and (value == '' or value.upper() == 'S'):
+								# partial request option -r or -rs with no value is valid !
 								invalidPartialCommand, invalidValue = self._wholeParmAndInvalidValue(command, inputStr)
 								self.commandError.parsedParmData[
 									self.commandError.COMMAND_ERROR_TYPE_KEY] = self.commandError.COMMAND_ERROR_TYPE_PARTIAL_REQUEST
