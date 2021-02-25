@@ -139,15 +139,7 @@ class CommandPrice(AbstractCommand):
 		:seqdiag_return ResultData or False
 		:return:
 		'''
-		resultPriceOrBoolean = self._validateMandatoryData()
-
-		if resultPriceOrBoolean != True:
-			return resultPriceOrBoolean
-
-		localTimezone = self.configManager.localTimeZone
-		localNow = DateTimeUtil.localNow(localTimezone)
-
-		resultPriceOrBoolean = self._validateDateTimeData(localNow)
+		resultPriceOrBoolean = self._validateCryptoUnitParms()
 
 		if resultPriceOrBoolean != True:
 			return resultPriceOrBoolean
@@ -155,46 +147,6 @@ class CommandPrice(AbstractCommand):
 		cryptoUpper = self.parsedParmData[self.CRYPTO].upper()
 		unitUpper = self.parsedParmData[self.UNIT].upper()
 		exchange = self.parsedParmData[self.EXCHANGE]
-
-		dayStr = self.parsedParmData[self.DAY]
-
-		if dayStr != None:
-			day = int(dayStr)
-		else:
-			day = 0
-
-		monthStr = self.parsedParmData[self.MONTH]
-
-		if monthStr != None:
-			month = int(monthStr)
-		else:
-			month = localNow.month
- 
-		yearStr = self.parsedParmData[self.YEAR]
-
-		if yearStr != None:
-			if len(yearStr) == 2:
-				year = 2000 + int(yearStr)
-			elif len(yearStr) == 4:
-				year = int(yearStr)
-			elif yearStr == '0':    # user entered -d0 !
-				year = 0
-		else:
-			year = localNow.year
-
-		hourStr = self.parsedParmData[self.HOUR]
-
-		if hourStr != None:
-			hour = int(hourStr)
-		else:
-			hour = 0
-
-		minuteStr = self.parsedParmData[self.MINUTE]
-
-		if minuteStr != None:
-			minute = int(minuteStr)
-		else:
-			minute = 0
 
 		# storing the parsed parm data dictionary before it
 		# may be modified in case the user requested a RT
@@ -206,30 +158,25 @@ class CommandPrice(AbstractCommand):
 		# of requests in order to be able to replay them !
 		initialParsedParmDataDic = self.parsedParmData.copy()
 
-		wasDateInFutureSetToLastYear = False
-		localRequestDateTime = None
+		localTimezone = self.configManager.localTimeZone
+		localNow = DateTimeUtil.localNow(localTimezone)
 
-		if day + month + year == 0:
-			# asking for RT price here. Current date is stored in parsed parm data for possible
-			# use in next request
-			self._storeDateTimeDataForNextPartialRequest(localNow)
-		else:
-			try:
-				localRequestDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute, 0, localTimezone)
-			except ValueError as e:
-				# is the when the user specify only the day if he enters 31 and the current month
-				# has no 31st or if he enters 30 or 29 and we are on February
-				result = ResultData()
-				result.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-									 "ERROR - {}: day {}, month {}.".format(str(e), day, month))
-				return result
+		resultPriceOrBoolean = self._validateDateTimeData(localNow)
 
-			if DateTimeUtil.isAfter(localRequestDateTime, localNow):
-				# request date is in the future ---> invalid. This happens for example in case
-				# btc usd 31/12 bittrex entered sometime before 31/12. Then the request year is
-				# forced to last year and a warning will be displayed.
-				year = localNow.year - 1
-				wasDateInFutureSetToLastYear = True
+		if resultPriceOrBoolean != True:
+			return resultPriceOrBoolean
+		
+		day, \
+		month, \
+		year, \
+		hour, \
+		minute, \
+		localRequestDateTime, \
+		wasDateInFutureSetToLastYear, \
+		resultPriceOrBoolean = self._computeDateTimeRequestParms(localNow, localTimezone)
+
+		if resultPriceOrBoolean != True:
+			return resultPriceOrBoolean
 
 		optionValueSymbol = self.parsedParmData[self.OPTION_VALUE_SYMBOL]
 		optionValueAmount = self.parsedParmData[self.OPTION_VALUE_AMOUNT]
@@ -292,8 +239,78 @@ class CommandPrice(AbstractCommand):
 							  "Warning - unsupported option {}{} in request {} - option ignored.".format(unsupportedOption, self.parsedParmData[self.UNSUPPORTED_OPTION_DATA], self.requestInputString))
 
 		return result
+	
+	def _computeDateTimeRequestParms(self, localNow, localTimezone):
+		resultPriceOrBoolean = True
+		
+		dayStr = self.parsedParmData[self.DAY]
+		
+		if dayStr != None:
+			day = int(dayStr)
+		else:
+			day = 0
+		
+		monthStr = self.parsedParmData[self.MONTH]
+		
+		if monthStr != None:
+			month = int(monthStr)
+		else:
+			month = localNow.month
+		
+		yearStr = self.parsedParmData[self.YEAR]
+		
+		if yearStr != None:
+			if len(yearStr) == 2:
+				year = 2000 + int(yearStr)
+			elif len(yearStr) == 4:
+				year = int(yearStr)
+			elif yearStr == '0':  # user entered -d0 !
+				year = 0
+		else:
+			year = localNow.year
+		
+		hourStr = self.parsedParmData[self.HOUR]
+		
+		if hourStr != None:
+			hour = int(hourStr)
+		else:
+			hour = 0
+		
+		minuteStr = self.parsedParmData[self.MINUTE]
+		
+		if minuteStr != None:
+			minute = int(minuteStr)
+		else:
+			minute = 0
+		
+		wasDateInFutureSetToLastYear = False
+		localRequestDateTime = None
+		
+		if day + month + year == 0:
+			# asking for RT price here. Current date is stored in parsed parm data for possible
+			# use in next request
+			self._storeDateTimeDataForNextPartialRequest(localNow)
+		else:
+			try:
+				localRequestDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute,
+				                                                                       0, localTimezone)
+			except ValueError as e:
+				# is the case when the user specify only the day if he enters 31 and the current month
+				# has no 31st or if he enters 30 or 29 and we are on February
+				resultPriceOrBoolean = ResultData()
+				resultPriceOrBoolean.setValue(ResultData.RESULT_KEY_ERROR_MSG,
+				                              "ERROR - {}: day {}, month {}.".format(str(e), day, month))
+		
+			if resultPriceOrBoolean == True:
+				if DateTimeUtil.isAfter(localRequestDateTime, localNow):
+					# request date is in the future ---> invalid. This happens for example in case
+					# btc usd 31/12 bittrex entered sometime before 31/12. Then the request year is
+					# forced to last year and a warning will be displayed.
+					year = localNow.year - 1
+					wasDateInFutureSetToLastYear = True
 
-
+		return day, month, year, hour, minute, localRequestDateTime, wasDateInFutureSetToLastYear, resultPriceOrBoolean
+	
 	def isValid(self):
 		'''
 		Return True if the command contains valid data and can be executed
@@ -301,18 +318,33 @@ class CommandPrice(AbstractCommand):
 		return self.parsedParmData[self.PRICE_TYPE] != None
 
 
-	def _validateMandatoryData(self):
+	def _validateCryptoUnitParms(self):
 		"""
-		Return True if the defined unit symbol exists and is valid, a ResultData
-		containing an error msd otherwise.
+		Return True if the defined cryoto and unit symbols exists and are
+		valid Otherwise, returns a ResultData containing an error msg.
+		
+		In case only one crypto or unit symbol is entered, the Requester
+		accepts the symbol as crypto. For this reason, the crypto can
+		not be None !
 		"""
 		resultData = True
+		
+		crypto = self.parsedParmData[self.CRYPTO]
+
+		if any(char.isdigit() for char in crypto):
+			# In case only one crypto or unit symbol is entered, the Requester
+			# accepts the symbol as crypto. For this reason, the crypto can
+			# not be None !
+			resultData = ResultData()
+			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid crypto.")
+			return resultData
 
 		unit = self.parsedParmData[self.UNIT]
 
 		if unit == None or any(char.isdigit() for char in unit):
 			resultData = ResultData()
 			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - unit missing or invalid.")
+			return resultData
 
 		return resultData
 

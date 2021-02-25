@@ -1590,7 +1590,6 @@ class TestControllerGui(unittest.TestCase):
 		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
 			now)
 
-		oneMonthBeforeArrowDate = now.shift(months=-1)
 		day = 31
 		inputStr = 'btc usd {} {}:{} bitfinex'.format(day, nowHourStr, nowMinuteStr)
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
@@ -1600,7 +1599,7 @@ class TestControllerGui(unittest.TestCase):
 			_ = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, now.month, now.year, now.hour, now.minute, 0,
 																				   LOCAL_TIME_ZONE)
 		except ValueError:
-			# only if the request is for a month which does not have a 31st is the test performed !
+			# only if the request is for a month which does not have a 31st is the test valid !
 			self.assertEqual(
 				'ERROR - day is out of range for month: day 31, month {}.'.format(now.month), printResult)
 			self.assertEqual('', fullCommandStrNoOptions)
@@ -3957,7 +3956,6 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fchsb.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHSB = 0.70311027 KRL/CHSB)', fullCommandStrForStatusBar)
 
 	def testOptionValueOptionFiatFullRequestHistoDayPrice(self):
-		# first request where both value and fiat options are saved
 		inputStr = 'krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3968,8 +3966,59 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken\n(0.00000746 KRL/BTC * 23480.7 BTC/USD = 0.17516602 KRL/USD)', fullCommandStrForStatusBar)
 
+	def testOptionValueOptionFiatFullRequestHistoDayPriceRequiredParmsOrderChanged(self):
+		'''
+		A full request is composed of two mandatory order required elements, i.e. crypto
+		and	unit plus three order free required elements, i.e. date, time and exchange.
+		This test verifies that the three required full request order free elements can
+		be set in any order. This is purely for validating the app. In fact, the required
+		elements are always set in this order: <crypto> <unit> <date|time> <exchange> !
+		'''
+		# first changed order
+		inputStr = 'krl btc hitbtc 00:00 20/12/20 -v2169.75krl -fusd.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'2169.75 KRL/0.01618633 BTC/380.06647623 USD.Kraken on HitBTC: 20/12/20 00:00C 0.00000746 0.17516602', printResult)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken\n(0.00000746 KRL/BTC * 23480.7 BTC/USD = 0.17516602 KRL/USD)', fullCommandStrForStatusBar)
+
+		# second changed order
+		inputStr = 'krl btc 00:00 hitbtc 20/12/20 -v2169.75krl -fusd.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'2169.75 KRL/0.01618633 BTC/380.06647623 USD.Kraken on HitBTC: 20/12/20 00:00C 0.00000746 0.17516602', printResult)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken\n(0.00000746 KRL/BTC * 23480.7 BTC/USD = 0.17516602 KRL/USD)', fullCommandStrForStatusBar)
+
+		# third changed order
+		inputStr = 'krl btc 00:00 20/12/20 hitbtc -v2169.75krl -fusd.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'2169.75 KRL/0.01618633 BTC/380.06647623 USD.Kraken on HitBTC: 20/12/20 00:00C 0.00000746 0.17516602', printResult)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken\n(0.00000746 KRL/BTC * 23480.7 BTC/USD = 0.17516602 KRL/USD)', fullCommandStrForStatusBar)
+
+	def testOptionValueOptionFiatFullRequestHistoDayPriceMandatoryParmsAndOptionOrderChanged(self):
+		inputStr = 'krl btc 00:00 20/12/20 -fusd.kraken -v2169.75krl hitbtc'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'ERROR - full request krl btc 00:00 20/12/20 -fusd.kraken -v2169.75krl hitbtc violates format <crypto> <unit> <date|time> <exchange> <options>.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
 	def testOptionValueOptionFiatFullRequestHistoDayPriceFiatEqualsUnit(self):
-		# first request where both value and fiat options are saved
 		inputStr = 'eth usd 19/02/18 kraken -v0.3821277eth -fusd'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3981,7 +4030,6 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('eth usd 19/02/18 00:00 kraken -v0.3821277eth -fusd\n(940.64 ETH/USD * 1 USD/USD = 940.64 ETH/USD)', fullCommandStrForStatusBar)
 
 	def testOptionValueOptionFiatFullRequestHistoDayPriceFiatEqualsCrypto(self):
-		# first request where both value and fiat options are saved
 		inputStr = 'eth usd 19/02/18 kraken -v0.3821277eth -feth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -4005,7 +4053,6 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth -fsusd\n(940.64 ETH/USD * 1 USD/USD = 940.64 ETH/USD)', fullCommandStrForStatusBar)
 
 	def testOptionValueSaveOptionFiatSaveFullRequestHistoDayPriceFiatEqualsCrypto(self):
-		# first request where both value and fiat options are saved
 		inputStr = 'eth usd 19/02/18 kraken -vs0.3821277eth -fseth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -4573,4 +4620,7 @@ if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
-	tst.testGetPrintableResultForUnsupportedPartialRequestOptionSaveAfterValidRealTimeRequest()
+	tst.testOptionValueOptionFiatFullRequestHistoDayPrice()
+	tst.testOptionValueOptionFiatFullRequestHistoDayPriceRequiredParmsOrderChanged()
+	tst.testOptionValueOptionFiatFullRequestHistoDayPriceMandatoryParmsAndOptionOrderChanged()
+	tst.testGetPrintableResultForDayOnlyAndTimeFullRequestOn31st()

@@ -35,16 +35,16 @@ class Requester:
 	if provided, must be in second position), date (optional), time (optional) and exchange (optional). The three
 	last parms can be provided in any order after the 2 first parms !
 	
-	Additionally, 2 request commands can be added to the regular full command. For example -vs12btc.
+	Additionally, request options can be added to the regular full command. For example -vs12btc, -fusd.kraken.
 
 	Ex; btc usd 0 Kraken
-		btc usd 10/9/17 12:45 Kraken
-		btc usd 10/9/17 Kraken
-		btc usd 10/9 Kraken
+		btc usd 10/9/17 12:45 kraken
+		btc usd 10/9/17 kraken
+		btc usd 10/9 kraken
 		btc usd 0 Kraken -v0.01btc
-		btc usd 10/9/17 12:45 Kraken -v0.01btc
-		btc usd 10/9/17 Kraken -v0.01btc
-		btc usd 10/9 Kraken -v0.01btc
+		btc usd 10/9/17 12:45 binance -v0.01btc -fusd.kraken
+		btc usd 10/9/17 kraken -v0.01btc
+		btc usd 10/9 kraken -v0.01btc
 
 	Additional rules for the date and time parms. Those rules are enforced by the
 	_buildFullCommandPriceOptionalParmsDic() method.
@@ -114,6 +114,10 @@ class Requester:
 	# Ex of biggest full request:
 	#
 	# btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -ps52012 -r-1-2
+	#
+	# The TestControllerGui.testOptionValueOptionFiatFullRequestHistoDayPriceRequiredParmsOrderChanged()
+	# unit test verifies that the date, time and exchange required parameters can in fact be specified
+	# in any order.
 	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?"
 
 	'''

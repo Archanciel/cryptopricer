@@ -463,6 +463,21 @@ class TestCommandPrice(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - month must be in 1..12.")
 
+    def testExecuteRealTimePriceInvalidDayMonthValue(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '31'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = ''
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '21'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = None
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = '5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - month must be in 1..12.")
+
 
     def testExecuteRealTimePriceInvalidHourValue(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -694,6 +709,21 @@ class TestCommandPrice(unittest.TestCase):
                          "ERROR - invalid value: o5 violates format for minute (HH:mm).")
 
 
+    def testExecuteRealTimePriceMissingUnit(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = None
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = 'o5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - unit missing or invalid.")
+
     def testExecuteRealTimePriceInvalidUnit(self):
         self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
         self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd6'
@@ -708,6 +738,21 @@ class TestCommandPrice(unittest.TestCase):
 
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
                          "ERROR - unit missing or invalid.")
+
+    def testExecuteRealTimePriceInvalidCrypto(self):
+        self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc5'
+        self.commandPrice.parsedParmData[self.commandPrice.UNIT] = 'usd'
+        self.commandPrice.parsedParmData[self.commandPrice.EXCHANGE] = 'bittrex'
+        self.commandPrice.parsedParmData[self.commandPrice.DAY] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MONTH] = '1'
+        self.commandPrice.parsedParmData[self.commandPrice.YEAR] = '17'
+        self.commandPrice.parsedParmData[self.commandPrice.HOUR] = '10'
+        self.commandPrice.parsedParmData[self.commandPrice.MINUTE] = 'o5'
+
+        resultData = self.commandPrice.execute()
+
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG),
+                         "ERROR - invalid crypto.")
 
     def testExecuteHistoricalPriceOptionValue(self):
         # btc usd 12/9/17 10:05 bittrex -v0.001btc
@@ -1139,4 +1184,10 @@ class TestCommandPrice(unittest.TestCase):
                          errorMsg)
 
 if __name__ == '__main__':
-    unittest.main()
+#    unittest.main()
+    t = TestCommandPrice()
+    t.setUp()
+    t.testExecuteHistoricalPriceOptionValueOptionFiatExchange()
+    t.testExecuteRealTimePriceInvalidYearOneDigit()
+    t.testExecuteHistoDayPriceInvalidYearIsZero()
+    t.testExecuteRealTimePriceInvalidDayMonthValue()
