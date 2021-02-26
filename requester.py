@@ -77,9 +77,7 @@ class Requester:
 						   r"(?:-[lL])([sS]?)([\w\.]*)": CommandPrice.OPTION_LIMIT_DATA,
 						   r"(?:-[lL])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_LIMIT_SAVE,
 						   r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)": CommandPrice.UNSUPPORTED_OPTION_DATA,
-						   # see scn capture https://pythex.org/ in Evernote for test of this regexp !
 						   r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)" + OPTION_UNSUPPORTED: CommandPrice.UNSUPPORTED_OPTION,
-						   # see scn capture https://pythex.org/ in Evernote for test of this regexp !
 						   r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER, }
 	
 	'''
@@ -251,7 +249,6 @@ class Requester:
 		-p0.004325usd is splitted into '', '0.00432usd'     this invalid -p option will generate an error msg
 		-p0 is splitted into '', '0' and will mean 'erase previous -p parm specification
 	'''
-#	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+))"
 	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\w\.]*))" # \w instead of \d enables the generation
 															 # of an error msg if a fiat symbol is appended
 															 # to the price amount !
@@ -271,8 +268,6 @@ class Requester:
 		-r-1:-3 is splitted into '', '-1:-3', None
 		-r0 is splitted into '', '0', None and will mean 'erase previous -r parm specification
 	'''
-#	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(0)"
-#	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(s)"
 	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]*)|(s)"
 
 	'''

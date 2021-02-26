@@ -45,13 +45,13 @@ class CommandPrice(AbstractCommand):
 
 	OPTION_PRICE_DATA = 'OPTION_PRICE_DATA'         # temporary store the data specified with -p. Ex: 230usd (see help for more info !)
 	OPTION_PRICE_AMOUNT = 'OPTION_PRICE_AMOUNT'     # store the price target specified with -p. Ex: 230
-	OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL'     # store the price symbol specified with -p. Ex: usd
-	OPTION_PRICE_EXCHANGE = 'OPTION_PRICE_EXCHANGE' # store the exchange specified with -p. Ex: kraken if pusd.kraken
+	OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL'     # not used for price option, but must exist due to generic code needs
+	OPTION_PRICE_EXCHANGE = 'OPTION_PRICE_EXCHANGE' # not used for price option, but must exist due to generic code needs
 	OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'         # store s or S or None to indicate if the value option is to be stored in history (-ps) or not (-p) --> None
 	OPTION_PRICE_MANDATORY_COMPONENTS = [OPTION_PRICE_AMOUNT] # used by the generic Requester._validateOptionMandatoryComponents() method
 
-	OPTION_RESULT_DATA = 'OPTION_RESULT_DATA'     # temporary store the data specified with -r. Ex: 40.25, -1-2, -1:-3
-	OPTION_RESULT_AMOUNT = 'OPTION_RESULT_AMOUNT' # not used for result option, but must exist due to generic code needs
+	OPTION_RESULT_DATA = 'OPTION_RESULT_DATA'     # temporary store the data specified with -r. Ex: -1-2, -1:-3
+	OPTION_RESULT_AMOUNT = 'OPTION_RESULT_AMOUNT' # does not store a float value, but a string. Ex: -1-2, -1:-3
 	OPTION_RESULT_SYMBOL = 'OPTION_RESULT_SYMBOL' # not used for result option, but must exist due to generic code needs
 	OPTION_RESULT_EXCHANGE = 'OPTION_RESULT_EXCHANGE' # not used for result option, but must exist due to generic code needs
 	OPTION_RESULT_SAVE = 'OPTION_RESULT_SAVE'     # store s or S or None to indicate if the result option is to be stored in history (-rs) or not (-r) --> None
@@ -164,9 +164,10 @@ class CommandPrice(AbstractCommand):
 		hour, \
 		minute, \
 		localRequestDateTime, \
-		resultPriceOrBoolean = self._computeDateTimeRequestParmValues()
+		resultPriceOrBoolean = self._handleDateTimeRequestParms()
 
 		if resultPriceOrBoolean != True:
+			# an error in the date/time request data was detected ...
 			return resultPriceOrBoolean
 
 		# option value
@@ -191,6 +192,34 @@ class CommandPrice(AbstractCommand):
 
 		optionFiatExchange = self.parsedParmData[self.OPTION_FIAT_EXCHANGE]
 		optionFiatSaveFlag = self.parsedParmData[self.OPTION_FIAT_SAVE]
+		
+		# option price
+		
+		optionPriceAmount = self.parsedParmData[self.OPTION_PRICE_AMOUNT]
+
+		if optionPriceAmount:
+			optionPriceAmount = float(optionPriceAmount)
+
+		optionPriceSaveFlag = self.parsedParmData[self.OPTION_PRICE_SAVE]
+		
+		# option result
+		
+		optionResultAmount = self.parsedParmData[self.OPTION_RESULT_AMOUNT]
+		optionResultSaveFlag = self.parsedParmData[self.OPTION_RESULT_SAVE]
+
+		# option limit
+
+		optionLimitSymbol = self.parsedParmData[self.OPTION_LIMIT_SYMBOL]
+		optionLimitAmount = self.parsedParmData[self.OPTION_LIMIT_AMOUNT]
+
+		if optionLimitSymbol:
+			optionLimitSymbol = optionLimitSymbol.upper()
+
+		if optionLimitAmount:
+			optionLimitAmount = float(optionLimitAmount)
+
+		optionLimitExchange = self.parsedParmData[self.OPTION_LIMIT_EXCHANGE]
+		optionLimitSaveFlag = self.parsedParmData[self.OPTION_LIMIT_SAVE]
 
 		result = self.receiver.getCryptoPrice(cryptoUpper,
 											  unitUpper,
@@ -203,12 +232,17 @@ class CommandPrice(AbstractCommand):
 											  optionValueSymbol,
 											  optionValueAmount,
 											  optionValueSaveFlag,
-											  self.requestInputString,
-											  optionFiatSymbol=optionFiatSymbol,
-											  optionFiatExchange=optionFiatExchange,
-											  optionPriceSymbol=None,
-											  optionPriceAmount=None,
-											  optionPriceSaveFlag=None)
+											  optionFiatSymbol,
+											  optionFiatExchange,
+											  optionPriceAmount,
+											  optionPriceSaveFlag,
+											  optionResultAmount,
+											  optionResultSaveFlag,
+											  optionLimitSymbol,
+											  optionLimitAmount,
+											  optionLimitExchange,
+											  optionLimitSaveFlag,
+											  self.requestInputString)
 
 		# the command components denoting the user request will be used to recreate
 		# a full command request which will be stored in the command history list.
@@ -233,7 +267,7 @@ class CommandPrice(AbstractCommand):
 
 		return result
 	
-	def _computeDateTimeRequestParmValues(self):
+	def _handleDateTimeRequestParms(self):
 		'''
 		Complete missing request date elements with current date values and validate
 		request date and time elements format. Then converts or computes date and time
@@ -244,7 +278,7 @@ class CommandPrice(AbstractCommand):
 		
 		:return: day, month, year, hour, minute
 				 localRequestDateTime None, except if the (effective or completed)
-				                      request date is in the future
+									  request date is in the future
 				 resultPriceOrBoolean
 		'''
 		day = None
@@ -306,13 +340,13 @@ class CommandPrice(AbstractCommand):
 			else:
 				try:
 					localRequestDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute,
-					                                                                       0, localTimezone)
+																						   0, localTimezone)
 				except ValueError as e:
 					# is the case when the user specify only the day if he enters 31 and the current month
 					# has no 31st or if he enters 30 or 29 and we are on February
 					resultPriceOrBoolean = ResultData()
 					resultPriceOrBoolean.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-					                              "ERROR - {}: day {}, month {}.".format(str(e), day, month))
+												  "ERROR - {}: day {}, month {}.".format(str(e), day, month))
 			
 				if resultPriceOrBoolean == True:
 					if DateTimeUtil.isAfter(localRequestDateTime, localNow):

@@ -30,16 +30,26 @@ class Processor:
 					   optionValueSymbol=None,
 					   optionValueAmount=None,
 					   optionValueSaveFlag=None,
-					   requestInputString='',
 					   optionFiatSymbol=None,
 					   optionFiatExchange=None,
-					   optionPriceSymbol=None,
 					   optionPriceAmount=None,
-					   optionPriceSaveFlag=None):
+					   optionPriceSaveFlag=None,
+					   optionResultAmount=None,
+					   optionResultSaveFlag=None,
+					   optionLimitSymbol=None,
+					   optionLimitAmount=None,
+					   optionLimitExchange=None,
+					   optionLimitSaveFlag=None,
+					   requestInputString=''):
 		"""
 		Ask the PriceRequester either a RT price or a historical price. Then,
 		in case a fiat (-f) or/and a value option (-v) was specified, computes
 		them and add the results to the returned ResultData.
+
+
+
+
+
 		
 		:param crypto:
 		:param unit:
@@ -77,19 +87,36 @@ class Processor:
 
 		:param optionValueAmount:   float specified value option amount
 		:param optionValueSaveFlag: used to refine warning if value option not applicable
+		:param optionFiatSymbol:    stores the fiat symbol, i.e. the fiat into which the returned
+									unit amount is converted
+		:param optionFiatExchange:
+		:param optionPriceAmount:
+		:param optionPriceSaveFlag:
+		:param optionResultAmount:
+		:param optionResultSaveFlag:
+		:param optionLimitSymbol:
+		:param optionLimitAmount:
+		:param optionLimitExchange:
+		:param optionLimitSaveFlag:
+		:param requestInputString): used for to complete the error msg with the request
+									causing problem!
+		:return:
+		"""
+		
+		"""
 		:param requestInputString): used for better error msg !
 		:param optionFiatSymbol:    stores the fiat symbol, i.e. the fiat into which the returned
 									unit amount is converted
-									
+
 		NEXT THREE PARMS NOT USED YET !
-		
-		:param optionPriceSymbol:   upper case currency price symbol
+
 		:param optionPriceAmount:   float specified price option amount
 		:param optionPriceSaveFlag: used to refine warning if price option not applicable
 
 		:seqdiag_return ResultData
 		:return: a ResultData filled with result values
 		"""
+		
 		# validating exchange and fiat exchange
 
 		if exchange == None:
