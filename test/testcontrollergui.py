@@ -67,8 +67,17 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('mco btc 0{}/0{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
+	def testGetPrintableResultFullRequestNoDateNoTime(self):
+		inputStr = 'mco btc all'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
 
-
+		self.assertEqual(
+			'ERROR - date not valid.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testGetPrintableResultForReplayRealTime(self):
 		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
@@ -4624,3 +4633,4 @@ if __name__ == '__main__':
 	tst.testOptionValueOptionFiatFullRequestHistoDayPriceRequiredParmsOrderChanged()
 	tst.testOptionValueOptionFiatFullRequestHistoDayPriceMandatoryParmsAndOptionOrderChanged()
 	tst.testGetPrintableResultForDayOnlyAndTimeFullRequestOn31st()
+	tst.testGetPrintableResultFullRequestNoDateNoTime()

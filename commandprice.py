@@ -158,14 +158,6 @@ class CommandPrice(AbstractCommand):
 		# of requests in order to be able to replay them !
 		initialParsedParmDataDic = self.parsedParmData.copy()
 
-		localTimezone = self.configManager.localTimeZone
-		localNow = DateTimeUtil.localNow(localTimezone)
-
-		resultPriceOrBoolean = self._validateDateTimeData(localNow)
-
-		if resultPriceOrBoolean != True:
-			return resultPriceOrBoolean
-		
 		day, \
 		month, \
 		year, \
@@ -173,7 +165,7 @@ class CommandPrice(AbstractCommand):
 		minute, \
 		localRequestDateTime, \
 		wasDateInFutureSetToLastYear, \
-		resultPriceOrBoolean = self._computeDateTimeRequestParms(localNow, localTimezone)
+		resultPriceOrBoolean = self._computeDateTimeRequestParmValues()
 
 		if resultPriceOrBoolean != True:
 			return resultPriceOrBoolean
@@ -240,74 +232,85 @@ class CommandPrice(AbstractCommand):
 
 		return result
 	
-	def _computeDateTimeRequestParms(self, localNow, localTimezone):
-		resultPriceOrBoolean = True
-		
-		dayStr = self.parsedParmData[self.DAY]
-		
-		if dayStr != None:
-			day = int(dayStr)
-		else:
-			day = 0
-		
-		monthStr = self.parsedParmData[self.MONTH]
-		
-		if monthStr != None:
-			month = int(monthStr)
-		else:
-			month = localNow.month
-		
-		yearStr = self.parsedParmData[self.YEAR]
-		
-		if yearStr != None:
-			if len(yearStr) == 2:
-				year = 2000 + int(yearStr)
-			elif len(yearStr) == 4:
-				year = int(yearStr)
-			elif yearStr == '0':  # user entered -d0 !
-				year = 0
-		else:
-			year = localNow.year
-		
-		hourStr = self.parsedParmData[self.HOUR]
-		
-		if hourStr != None:
-			hour = int(hourStr)
-		else:
-			hour = 0
-		
-		minuteStr = self.parsedParmData[self.MINUTE]
-		
-		if minuteStr != None:
-			minute = int(minuteStr)
-		else:
-			minute = 0
-		
-		wasDateInFutureSetToLastYear = False
+	def _computeDateTimeRequestParmValues(self):
+		'''
+		:return:
+		'''
+		day = None
+		month = None
+		year = None
+		hour = None
+		minute = None
 		localRequestDateTime = None
+		wasDateInFutureSetToLastYear = False
 		
-		if day + month + year == 0:
-			# asking for RT price here. Current date is stored in parsed parm data for possible
-			# use in next request
-			self._storeDateTimeDataForNextPartialRequest(localNow)
-		else:
-			try:
-				localRequestDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute,
-				                                                                       0, localTimezone)
-			except ValueError as e:
-				# is the case when the user specify only the day if he enters 31 and the current month
-				# has no 31st or if he enters 30 or 29 and we are on February
-				resultPriceOrBoolean = ResultData()
-				resultPriceOrBoolean.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-				                              "ERROR - {}: day {}, month {}.".format(str(e), day, month))
+		localTimezone = self.configManager.localTimeZone
+		localNow = DateTimeUtil.localNow(localTimezone)
 		
-			if resultPriceOrBoolean == True:
-				if DateTimeUtil.isAfter(localRequestDateTime, localNow):
-					# request date is in the future ---> invalid. This happens for example in case
-					# btc usd 31/12 bittrex entered sometime before 31/12. Then the request year is
-					# forced to last year and a warning will be displayed.
-					year = localNow.year - 1
-					wasDateInFutureSetToLastYear = True
+		resultPriceOrBoolean = self._validateDateTimeData(localNow)
+		
+		if resultPriceOrBoolean == True:
+			dayStr = self.parsedParmData[self.DAY]
+			day = int(dayStr)
+			
+			monthStr = self.parsedParmData[self.MONTH]
+			
+			if monthStr != None:
+				month = int(monthStr)
+			else:
+				month = localNow.month
+			
+			yearStr = self.parsedParmData[self.YEAR]
+			
+			if yearStr != None:
+				if len(yearStr) == 2:
+					year = 2000 + int(yearStr)
+				elif len(yearStr) == 4:
+					year = int(yearStr)
+				elif yearStr == '0':  # user entered -d0 !
+					year = 0
+			else:
+				year = localNow.year
+			
+			hourStr = self.parsedParmData[self.HOUR]
+			
+			if hourStr != None:
+				hour = int(hourStr)
+			else:
+				hour = 0
+			
+			minuteStr = self.parsedParmData[self.MINUTE]
+			
+			if minuteStr != None:
+				minute = int(minuteStr)
+			else:
+				minute = 0
+			
+			wasDateInFutureSetToLastYear = False
+			localRequestDateTime = None
+			
+			if day + month + year == 0:
+				# asking for RT price here. Current date is stored in parsed parm data for possible
+				# use in next request
+				self._storeDateTimeDataForNextPartialRequest(localNow)
+			else:
+				try:
+					localRequestDateTime = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, month, year, hour, minute,
+					                                                                       0, localTimezone)
+				except ValueError as e:
+					# is the case when the user specify only the day if he enters 31 and the current month
+					# has no 31st or if he enters 30 or 29 and we are on February
+					resultPriceOrBoolean = ResultData()
+					resultPriceOrBoolean.setValue(ResultData.RESULT_KEY_ERROR_MSG,
+					                              "ERROR - {}: day {}, month {}.".format(str(e), day, month))
+			
+				if resultPriceOrBoolean == True:
+					if DateTimeUtil.isAfter(localRequestDateTime, localNow):
+						# request date is in the future ---> invalid. This happens for example in case
+						# btc usd 31/12 bittrex entered sometime before 31/12. Then the request year is
+						# forced to last year and a warning will be displayed.
+						year = localNow.year - 1
+						wasDateInFutureSetToLastYear = True
 
 		return day, month, year, hour, minute, localRequestDateTime, wasDateInFutureSetToLastYear, resultPriceOrBoolean
 	
@@ -390,7 +393,7 @@ class CommandPrice(AbstractCommand):
 				hourStr != None and
 				minuteStr != None):
 				# Here, only time was specified in the full request, which is now possible.
-				# Current day, month and year are fornatted into the parsed parm data
+				# Current day, month and year are formatted into the parsed parm data
 				# and True is returned
 				self.parsedParmData[self.DAY] = localNow.format('DD')
 				self.parsedParmData[self.MONTH] = localNow.format('MM')

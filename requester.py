@@ -29,7 +29,22 @@ class Requester:
 	va variation percents
 	'''
 	USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
-
+	
+	'''
+	Stores correspondence between user input command parms and
+	CommmandPrice.parsedParmData dictionary keys
+	'''
+	INPUT_PARMS_PARM_DATA_DIC_KEY_DIC = {'-C': CommandPrice.CRYPTO,
+										 '-U': CommandPrice.UNIT,
+										 '-D': CommandPrice.DAY_MONTH_YEAR,
+										 '-T': CommandPrice.HOUR_MINUTE,
+										 '-E': CommandPrice.EXCHANGE,
+										 '-V': CommandPrice.OPTION_VALUE_DATA,
+										 '-F': CommandPrice.OPTION_FIAT_DATA,
+										 '-P': CommandPrice.OPTION_PRICE_DATA,
+										 '-R': CommandPrice.OPTION_RESULT_DATA,
+										 '-L': CommandPrice.OPTION_LIMIT_DATA}
+	
 	'''
 	Full price command parms pattern. Crypto symbol (mandatory, first position mandatory), unit symbol (optional,
 	if provided, must be in second position), date (optional), time (optional) and exchange (optional). The three
@@ -245,21 +260,6 @@ class Requester:
 		self.commandCrypto = None
 		self.commandTrade = None
 
-		'''
-		Sets correspondance between user input command parms and
-		CommmandPrice.parsedParmData dictionary keys
-		'''
-		self.inputParmParmDataDicKeyDic = {'-C': CommandPrice.CRYPTO,
-										   '-U': CommandPrice.UNIT,
-										   '-D': CommandPrice.DAY_MONTH_YEAR,
-										   '-T': CommandPrice.HOUR_MINUTE,
-										   '-E': CommandPrice.EXCHANGE,
-										   '-V': CommandPrice.OPTION_VALUE_DATA,
-										   '-F': CommandPrice.OPTION_FIAT_DATA,
-										   '-P': CommandPrice.OPTION_PRICE_DATA,
-										   '-R': CommandPrice.OPTION_RESULT_DATA,
-										   '-L': CommandPrice.OPTION_LIMIT_DATA}
-
 
 	def getCommandFromCommandLine(self):
 		"""
@@ -449,7 +449,7 @@ class Requester:
 							 r"(?:-[fF])([sS]?)([\w\.]*)": CommandPrice.OPTION_FIAT_DATA,
 							 r"(?:-[fF])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
 							 r"(?:-[pP])([sS]?)([\w\.]*)": CommandPrice.OPTION_PRICE_DATA, # \w instead of \d enables the generation
-															                               # of an error msg if a fiat symbol is appended
+																						   # of an error msg if a fiat symbol is appended
 																						   # to the price amount !
 							 r"(?:-[pP])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE,
 							 r"(?:-[rR])([sS]?)([\w\.:-]*)": CommandPrice.OPTION_RESULT_DATA,
@@ -595,7 +595,7 @@ class Requester:
 				# a warning to disturb the partial request execution.
 				self.commandPrice.resetUnsupportedOptionData()
 
-				keys = self.inputParmParmDataDicKeyDic.keys()
+				keys = INPUT_PARMS_PARM_DATA_DIC_KEY_DIC.keys()
 				it = iter(groupList)
 
 				for command in it:
@@ -615,11 +615,11 @@ class Requester:
 								
 								# remove invalid '' value from parsedParData to avoid polluting next partial
 								# request !
-								self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = None
+								self.commandPrice.parsedParmData[INPUT_PARMS_PARM_DATA_DIC_KEY_DIC[commandUpper]] = None
 
 								return self.commandError
 							else:
-								self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = value
+								self.commandPrice.parsedParmData[INPUT_PARMS_PARM_DATA_DIC_KEY_DIC[commandUpper]] = value
 						else:
 							# unknown partial command symbol
 							self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION] = command
