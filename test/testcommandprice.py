@@ -1139,7 +1139,4 @@ class TestCommandPrice(unittest.TestCase):
                          errorMsg)
 
 if __name__ == '__main__':
-    #	unittest.main()
-    t = TestCommandPrice()
-    t.setUp()
-    t.testExecuteRealTimePriceInvalidDayMonthValue()
+    unittest.main()
