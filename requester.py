@@ -595,7 +595,7 @@ class Requester:
 				# a warning to disturb the partial request execution.
 				self.commandPrice.resetUnsupportedOptionData()
 
-				keys = INPUT_PARMS_PARM_DATA_DIC_KEY_DIC.keys()
+				keys = self.INPUT_PARMS_PARM_DATA_DIC_KEY_DIC.keys()
 				it = iter(groupList)
 
 				for command in it:
@@ -615,11 +615,11 @@ class Requester:
 								
 								# remove invalid '' value from parsedParData to avoid polluting next partial
 								# request !
-								self.commandPrice.parsedParmData[INPUT_PARMS_PARM_DATA_DIC_KEY_DIC[commandUpper]] = None
+								self.commandPrice.parsedParmData[self.INPUT_PARMS_PARM_DATA_DIC_KEY_DIC[commandUpper]] = None
 
 								return self.commandError
 							else:
-								self.commandPrice.parsedParmData[INPUT_PARMS_PARM_DATA_DIC_KEY_DIC[commandUpper]] = value
+								self.commandPrice.parsedParmData[self.INPUT_PARMS_PARM_DATA_DIC_KEY_DIC[commandUpper]] = value
 						else:
 							# unknown partial command symbol
 							self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION] = command

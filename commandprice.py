@@ -164,16 +164,15 @@ class CommandPrice(AbstractCommand):
 		hour, \
 		minute, \
 		localRequestDateTime, \
-		wasDateInFutureSetToLastYear, \
 		resultPriceOrBoolean = self._computeDateTimeRequestParmValues()
 
 		if resultPriceOrBoolean != True:
 			return resultPriceOrBoolean
 
+		# option value
+
 		optionValueSymbol = self.parsedParmData[self.OPTION_VALUE_SYMBOL]
 		optionValueAmount = self.parsedParmData[self.OPTION_VALUE_AMOUNT]
-
-		# option value
 
 		if optionValueSymbol:
 			optionValueSymbol = optionValueSymbol.upper()
@@ -211,15 +210,17 @@ class CommandPrice(AbstractCommand):
 											  optionPriceAmount=None,
 											  optionPriceSaveFlag=None)
 
-		# the command components	denoting the user request will be used to recreate
+		# the command components denoting the user request will be used to recreate
 		# a full command request which will be stored in the command history list.
-		# The historry list can be replayed, stored on disk, edited ...
+		# The history list can be replayed, stored on disk, edited ...
 		result.setValue(ResultData.RESULT_KEY_INITIAL_COMMAND_PARMS, initialParsedParmDataDic)
 
 		result.setValue(ResultData.RESULT_KEY_OPTION_VALUE_SAVE, optionValueSaveFlag)
 		result.setValue(ResultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSaveFlag)
 
-		if wasDateInFutureSetToLastYear:
+		if localRequestDateTime is not None:
+			# here, the request date was in the future. Its year has been set to
+			# previous year, which generates a warning ...
 			result.setWarning(ResultData.WARNING_TYPE_FUTURE_DATE,
 							  "Warning - request date {} can not be in the future and was shifted back to last year.".format(
 								  localRequestDateTime.format(self.configManager.dateTimeFormat)))
@@ -234,7 +235,17 @@ class CommandPrice(AbstractCommand):
 	
 	def _computeDateTimeRequestParmValues(self):
 		'''
-		:return:
+		Complete missing request date elements with current date values and validate
+		request date and time elements format. Then converts or computes date and time
+		elements to int.
+		
+		In case the resulting date is in the future, its year is reduced by one and
+		the returned localRequestDateTime is not None !
+		
+		:return: day, month, year, hour, minute
+				 localRequestDateTime None, except if the (effective or completed)
+				                      request date is in the future
+				 resultPriceOrBoolean
 		'''
 		day = None
 		month = None
@@ -242,12 +253,11 @@ class CommandPrice(AbstractCommand):
 		hour = None
 		minute = None
 		localRequestDateTime = None
-		wasDateInFutureSetToLastYear = False
 		
 		localTimezone = self.configManager.localTimeZone
 		localNow = DateTimeUtil.localNow(localTimezone)
 		
-		resultPriceOrBoolean = self._validateDateTimeData(localNow)
+		resultPriceOrBoolean = self._completeAndValidateDateTimeData(localNow)
 		
 		if resultPriceOrBoolean == True:
 			dayStr = self.parsedParmData[self.DAY]
@@ -310,9 +320,10 @@ class CommandPrice(AbstractCommand):
 						# btc usd 31/12 bittrex entered sometime before 31/12. Then the request year is
 						# forced to last year and a warning will be displayed.
 						year = localNow.year - 1
-						wasDateInFutureSetToLastYear = True
+					else:
+						localRequestDateTime = None
 
-		return day, month, year, hour, minute, localRequestDateTime, wasDateInFutureSetToLastYear, resultPriceOrBoolean
+		return day, month, year, hour, minute, localRequestDateTime, resultPriceOrBoolean
 	
 	def isValid(self):
 		'''
@@ -352,15 +363,14 @@ class CommandPrice(AbstractCommand):
 		return resultData
 
 
-	def _validateDateTimeData(self, localNow):
+	def _completeAndValidateDateTimeData(self, localNow):
 		'''
-		Ensures that date/time info contained in the parsedParmData dic are valid and in
-		a right format. If everything is ok, returns True.
+		Sets missing request date components to their current date value. Also ensures that
+		date/time info contained in the parsedParmData dic are valid and in	a right format.
+		If everything is ok, returns True.
 
-		['1', '10', '0', '2', '58'] #btc usd 1/10/0 2:58
-		[None, None, None, '2', '57'] # btc usd 1 2:57
-		['11', '10', None, None, None] # neo btc 11/10
 		:param localNow:
+		
 		:return: True if date/time values stored in the parsedParmData dic are valid. If an
 				 error was detected, a new ResultData with a meaningfull error msg is
 				 returned.
@@ -405,7 +415,7 @@ class CommandPrice(AbstractCommand):
 				  hourStr != None and
 				  minuteStr != None):
 				# Here, only day and time were specified in the full request, which is now possible.
-				# Current month and year are fornatted into the parsed parm data
+				# Current month and year are formatted into the parsed parm data
 				# and True is returned
 				self.parsedParmData[self.MONTH] = localNow.format('MM')
 				self.parsedParmData[self.YEAR] = localNow.format('YYYY')
@@ -418,7 +428,7 @@ class CommandPrice(AbstractCommand):
 				dayStr == None):
 				# only when user enters -d0 for RT price,
 				# is yearStr equal to '0' since 0 is put
-				# by Requesèer into day, month and year !
+				# by Requester into day, month and year !
 				if dayStr is not None and monthStr is None and yearStr is None:
 					# here, only the day was specified in the full request.
 					# Example: chsb btc 19 hitbtc.
@@ -450,7 +460,7 @@ class CommandPrice(AbstractCommand):
 					self.parsedParmData[self.YEAR] = None
 					return resultData
 
-			# validating full date. Catch inval day or inval month,
+			# validating full date. Catch invalid day or invalid month,
 			# like day == 123 or day == 32 or month == 31
 			if yearStr == None:
 				yearStr = str(localNow.year)
