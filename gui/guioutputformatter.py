@@ -109,7 +109,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		valueOptionStr = ''
 		
 		if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE):
-			if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
+			if not resultData.containsWarning(resultData.WARNING_TYPE_OPTION_VALUE):
 				# in case the value command generated a warning, if the value option refers a crypto or unit
 				# different from the crypto or unit of the request, the fullCommandStr remains
 				# None and will not be stored in the request history list of the GUI !
@@ -130,7 +130,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		if fiatOptionSymbol:
 			if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
 				# save mode is isLoadAtStartChkboxActive
-				if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
+				if not resultData.containsWarning(resultData.WARNING_TYPE_OPTION_VALUE):
 					# in case the value command generated a warning, if the value command data contains a crypto or unit
 					# different from the crypto or unit of the request, the fullCommandStr remains
 					# None and will not be stored in the request history list of the GUI !

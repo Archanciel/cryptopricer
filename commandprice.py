@@ -265,7 +265,7 @@ class CommandPrice(AbstractCommand):
 		unsupportedOption = self.parsedParmData[self.UNSUPPORTED_OPTION]
 
 		if unsupportedOption:
-			result.setWarning(ResultData.WARNING_TYPE_UNSUPPORTED_OPTION,
+			result.setWarning(ResultData.WARNING_TYPE_OPTION_UNSUPPORTED,
 							  "Warning - unsupported option {}{} in request {} - option ignored.".format(unsupportedOption, self.parsedParmData[self.UNSUPPORTED_OPTION_DATA], self.requestInputString))
 
 		return result
@@ -348,8 +348,7 @@ class CommandPrice(AbstractCommand):
 					# is the case when the user specify only the day if he enters 31 and the current month
 					# has no 31st or if he enters 30 or 29 and we are on February
 					resultPriceOrBoolean = ResultData()
-					resultPriceOrBoolean.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-												  "ERROR - {}: day {}, month {}.".format(str(e), day, month))
+					resultPriceOrBoolean.setError("ERROR - {}: day {}, month {}.".format(str(e), day, month))
 			
 				if resultPriceOrBoolean == True:
 					if DateTimeUtil.isAfter(localRequestDateTime, localNow):
@@ -387,14 +386,14 @@ class CommandPrice(AbstractCommand):
 			# accepts the symbol as crypto. For this reason, the crypto can
 			# not be None !
 			resultData = ResultData()
-			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid crypto.")
+			resultData.setError("ERROR - invalid crypto.")
 			return resultData
 
 		unit = self.parsedParmData[self.UNIT]
 
 		if unit == None or any(char.isdigit() for char in unit):
 			resultData = ResultData()
-			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - unit missing or invalid.")
+			resultData.setError("ERROR - unit missing or invalid.")
 			return resultData
 
 		return resultData
@@ -478,20 +477,17 @@ class CommandPrice(AbstractCommand):
 					return True
 				else:
 					resultData = ResultData()
-					resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - date not valid.")
+					resultData.setError("ERROR - date not valid.")
 					return resultData
 			elif len(monthStr) > 2:
 				resultData = ResultData()
-				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-									 "ERROR - {} not conform to accepted month format (MM or M).".format(monthStr))
+				resultData.setError("ERROR - {} not conform to accepted month format (MM or M).".format(monthStr))
 				return resultData
 			elif yearStr != None:
 				yearStrLen = len(yearStr)
 				if yearStrLen != 2 and yearStrLen != 4:
 					resultData = ResultData()
-					resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-										 "ERROR - {} not conform to accepted year format (YYYY, YY or '').".format(
-											 yearStr))
+					resultData.setError("ERROR - {} not conform to accepted year format (YYYY, YY or '').".format(yearStr))
 
 					# avoiding that invalid year will pollute next price requests
 					self.parsedParmData[self.YEAR] = None
@@ -515,7 +511,7 @@ class CommandPrice(AbstractCommand):
 					int(value)
 			except ValueError as e:
 				resultData = ResultData()
-				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - invalid value: {} violates format for {} ({}).".format(value, name, format))
+				resultData.setError("ERROR - invalid value: {} violates format for {} ({}).".format(value, name, format))
 				return resultData
 
 			try:
@@ -524,7 +520,7 @@ class CommandPrice(AbstractCommand):
 																self.configManager.localTimeZone)
 			except ValueError as e:
 				resultData = ResultData()
-				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - " + str(e) + '.')
+				resultData.setError("ERROR - " + str(e) + '.')
 
 		return resultData
 

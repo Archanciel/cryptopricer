@@ -40,9 +40,10 @@ class ResultData:
 	RESULT_KEY_OPTION_LIMIT_EXCHANGE = 'OPTION_LIMIT_EXCHANGE'  # store the limit exchange of the -l option. Ex: kraken if -l300usd.kraken
 	RESULT_KEY_OPTION_LIMIT_SAVE = 'OPTION_LIMIT_SAVE'          # store True or False to indicate if the limit option is to be stored in history (-ls) or not (-l)
 
-	WARNING_TYPE_FUTURE_DATE = 'FUTURE_DATE'
-	WARNING_TYPE_COMMAND_VALUE = 'VALUE_COMMAND'
-	WARNING_TYPE_UNSUPPORTED_OPTION = 'UNSUPPORTED_OPTION'
+	WARNING_TYPE_FUTURE_DATE = 'FUTURE_DATE'    # signals that request date is in the future
+	WARNING_TYPE_OPTION_VALUE = 'OPTION_VALUE'  # signals that value option currency not possible
+	WARNING_TYPE_OPTION_PRICE = 'OPTION_PRICE'  # signals that option price not compatible with RT request
+	WARNING_TYPE_OPTION_UNSUPPORTED = 'OPTION_UNSUPPORTED'
 
 	PRICE_TYPE_HISTO_DAY = 'HISTO_DAY'
 	PRICE_TYPE_HISTO_MINUTE = 'HISTO_MINUTE'
@@ -96,8 +97,23 @@ class ResultData:
 		return self._resultDataDic[key]
 
 
-	def isEmpty(self, key):
-		return self._resultDataDic[key] == None
+	def setError(self, errorMessage):
+		'''
+		Set the error msg entry in the ResultData
+		:param errorMessage:
+		'''
+		self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = errorMessage
+
+
+	def getErrorMessage(self):
+		'''
+		Returns the error msg entry in the ResultData
+		'''
+		return self._resultDataDic[self.RESULT_KEY_ERROR_MSG]
+
+
+	def noError(self):
+		return self._resultDataDic[self.RESULT_KEY_ERROR_MSG] == None
 
 
 	def isError(self):

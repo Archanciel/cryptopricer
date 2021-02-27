@@ -558,8 +558,8 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE),
 						 "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year.".format(
 							 nowDayStr, nowMonthStr, (now.year + 1 - 2000), nowHourStr, nowMinuteStr))
-		self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_UNSUPPORTED_OPTION))
-		self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_UNSUPPORTED_OPTION),
+		self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_OPTION_UNSUPPORTED))
+		self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_OPTION_UNSUPPORTED),
 						 "Warning - unsupported option -zooo in request btc usd {}/{}/{} {}:{} bittrex - option ignored.".format(
 							 nowDayStr, nowMonthStr, (now.year + 1 - 2000), nowHourStr, nowMinuteStr))
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_CRYPTO), 'BTC')
@@ -1225,3 +1225,5 @@ if __name__ == '__main__':
 	t.testExecuteRealTimePriceInvalidYearOneDigit()
 	t.setUp()
 	t.testExecuteHistoDayPriceInvalidYearIsZero()
+	t.setUp()
+	t.testExecuteHistoricalPriceOptionValueOptionFiatRateNotFoundExchangeSpecified()

@@ -106,14 +106,14 @@ class Processor:
 		
 		if exchange == None:
 			resultData = ResultData()
-			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your request ({}).".format(requestInputString))
+			resultData.setError("ERROR - exchange could not be parsed due to an error in your request ({}).".format(requestInputString))
 			return resultData
 		else:
 			try:
 				validCryptoUnitExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
 			except(KeyError):
 				resultData = ResultData()
-				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, MARKET_NOT_SUPPORTED_ERROR.format(exchange))
+				resultData.setError(MARKET_NOT_SUPPORTED_ERROR.format(exchange))
 				return resultData
 
 		validFiatExchangeSymbol = None
@@ -123,8 +123,7 @@ class Processor:
 				validFiatExchangeSymbol = self.crypCompExchanges.getExchange(optionFiatExchange)
 			except(KeyError):
 				resultData = ResultData()
-				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-									MARKET_NOT_SUPPORTED_ERROR.format(optionFiatExchange))
+				resultData.setError(MARKET_NOT_SUPPORTED_ERROR.format(optionFiatExchange))
 				return resultData
 
 		validLimitExchangeSymbol = None
@@ -134,8 +133,7 @@ class Processor:
 				validLimitExchangeSymbol = self.crypCompExchanges.getExchange(optionLimitExchange)
 			except(KeyError):
 				resultData = ResultData()
-				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-									MARKET_NOT_SUPPORTED_ERROR.format(optionLimitExchange))
+				resultData.setError(MARKET_NOT_SUPPORTED_ERROR.format(optionLimitExchange))
 				return resultData
 
 		localTz = self.configManager.localTimeZone
@@ -151,12 +149,13 @@ class Processor:
 									minute,
 									dateTimeFormat,
 									localTz,
-		                            optionPriceAmount)
+		                            optionPriceAmount,
+		                            optionPriceSaveFlag)
 
 
 		if resultData.isError():
 			# since crypto/unit is not supported by the exchange, we try to request the unit/crypto inverted rate
-			errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
+			errorMsg = resultData.getErrorMessage()
 			resultData = self._getPrice(unit,
 										crypto,
 										validCryptoUnitExchangeSymbol,
@@ -175,9 +174,9 @@ class Processor:
 
 			if price:
 				resultData.setValue(resultData.RESULT_KEY_PRICE, 1 / price)
-				resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+				resultData.setError(None)
 			else:
-				resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, errorMsg)
+				resultData.setError(errorMsg)
 				
 		if optionPriceAmount is not None and not resultData.isError():
 			resultData.setValue(resultData.RESULT_KEY_PRICE, optionPriceAmount)
@@ -220,7 +219,8 @@ class Processor:
 				  minute,
 				  dateTimeFormat,
 				  localTz,
-	              optionPriceAmount=None):
+	              optionPriceAmount=None,
+	              optionPriceSaveFlag=None):
 		'''
 		Returns the price of 1 unit of currency in targetCurrency. Ex: currency == btc,
 		targetCurrency == usd --> returned price: 1 btc == 10000 usd.
@@ -236,6 +236,8 @@ class Processor:
 		:param dateTimeFormat:
 		:param localTz:
 		:param optionPriceAmount:
+		:param optionPriceSaveFlag: used to improve option price warning in case set in 
+									conjunction with RT request.
 
 		:seqdiag_return ResultData
 
@@ -246,12 +248,25 @@ class Processor:
 			# date components are set to zero !
 			resultData = self.priceRequester.getCurrentPrice(currency, targetCurrency, exchange)
 
-			if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
+			if resultData.noError():
 				# adding date time info if no error returned
 				timeStamp = resultData.getValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP)
 				requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, localTz)
 				requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 				resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
+
+				if optionPriceAmount:
+					# option price not compatible with RT request !
+					if optionPriceSaveFlag:
+						optionStrForWarning = '-ps'
+					else:
+						optionStrForWarning = '-p'
+
+					resultData.setWarning(ResultData.WARNING_TYPE_OPTION_PRICE,
+											  "WARNING - option {}{} is not compatible with real time request. {} option ignored.".format(
+												  optionStrForWarning, optionPriceAmount, optionStrForWarning))
+
+
 		else:
 			# getting historical price, either histo day or histo minute
 			timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
@@ -263,7 +278,7 @@ class Processor:
 																			  timeStampUtcNoHHMM,
 																			  exchange)
 
-			if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
+			if resultData.noError():
 				# adding date time info if no error returned
 				if resultData.getValue(ResultData.RESULT_KEY_PRICE_TYPE) == ResultData.PRICE_TYPE_HISTO_MINUTE:
 					# histominute price returned
@@ -292,8 +307,7 @@ class Processor:
 																				 localTz,
 																				 dateTimeFormat)
 
-			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-								'PROVIDER ERROR - Requesting {}/{} price for date {} {} on exchange {} returned invalid value 0'.format(currency, targetCurrency, dateDMY, dateHM, exchange))
+			resultData.setError('PROVIDER ERROR - Requesting {}/{} price for date {} {} on exchange {} returned invalid value 0'.format(currency, targetCurrency, dateDMY, dateHM, exchange))
 
 		return resultData
 
@@ -361,18 +375,18 @@ class Processor:
 			resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, optionValueAmount)
 		else:
 			if optionValueSaveFlag:
-				valueCommand = '-vs'
+				optionStrForWarning = '-vs'
 			else:
-				valueCommand = '-v'
+				optionStrForWarning = '-v'
 
 			if optionFiatSymbol:
-				resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+				resultData.setWarning(ResultData.WARNING_TYPE_OPTION_VALUE,
 									  "WARNING - currency value option symbol {} currently in effect differs from crypto ({}), unit ({}) and fiat ({}) of request. {} option ignored.".format(
-										  optionValueSymbol, crypto, unit, optionFiatSymbol, valueCommand))
+										  optionValueSymbol, crypto, unit, optionFiatSymbol, optionStrForWarning))
 			else:
-				resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+				resultData.setWarning(ResultData.WARNING_TYPE_OPTION_VALUE,
 									  "WARNING - currency value option symbol {} currently in effect differs from both crypto ({}) and unit ({}) of request. {} option ignored.".format(
-										  optionValueSymbol, crypto, unit, valueCommand))
+										  optionValueSymbol, crypto, unit, optionStrForWarning))
 
 		return resultData
 
@@ -479,7 +493,7 @@ class Processor:
 
 				return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
 			else:
-				errorMsg = fiatResultData.getValue(fiatResultData.RESULT_KEY_ERROR_MSG)
+				errorMsg = fiatResultData.getErrorMessage()
 				dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day,
 																					 month,
 																					 year,
@@ -495,7 +509,7 @@ class Processor:
 					errorMsg = errorMsg.replace('Requesting', 'Requesting fiat option coin pair {}/{} or'.format(unit, fiat))
 					errorMsg += ' on date {} {}'.format(dateDMY, dateHM)
 
-				fiatResultData.setValue(fiatResultData.RESULT_KEY_ERROR_MSG, errorMsg)
+				fiatResultData.setError(errorMsg)
 
 				return fiatResultData
 

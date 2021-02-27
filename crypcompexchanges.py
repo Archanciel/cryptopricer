@@ -155,10 +155,10 @@ if __name__ == '__main__':
   
         resultData = pp.getHistoricalPriceAtUTCTimeStamp(crypto, unit, ts, ts, exch)
 
-        if resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG) == None:
+        if resultData.noErrot():
             print("{} {} {} {}".format(exch, crypto, unit, resultData.getValue(ResultData.RESULT_KEY_PRICE)))
         else:
-            print("{} {}".format(exch, resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG)))
+            print("{} {}".format(exch, resultData.getErrorMessage()))
 
     print('\n\n--- CURRENT PRICES ---\n')
 
@@ -170,8 +170,8 @@ if __name__ == '__main__':
  
         resultData = pp.getCurrentPrice(crypto, unit, exch)
 
-        if resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG) == None:
+        if resultData.noError():
             print("{} {} {} {}".format(exch, crypto, unit, resultData.getValue(ResultData.RESULT_KEY_PRICE)))
         else:
-            print("{} {}".format(exch, resultData.getValue(ResultData.RESULT_KEY_ERROR_MSG)))
+            print("{} {}".format(exch, resultData.getErrorMessage()))
 

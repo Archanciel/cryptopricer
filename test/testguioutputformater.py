@@ -142,7 +142,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		resultData.setValue(resultData.RESULT_KEY_PRICE_TIME_STAMP, 1505174400)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO, None)
 		resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT, None)
-		resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+		resultData.setWarning(ResultData.WARNING_TYPE_OPTION_VALUE,
 							  "WARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD) -z option ignored")
 
 		stdout = sys.stdout
@@ -643,7 +643,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_RT)
 		dateTimeString = '{}/{}/{} {}:{}'.format(nowDayStr, now.month, now.year - 2000, nowHourStr, nowMinuteStr)
 		resultData.setValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING, dateTimeString)
-		resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+		resultData.setWarning(ResultData.WARNING_TYPE_OPTION_VALUE,
 							  "WARNING - currency value symbol ETH differs from both crypto (BTC) and unit (USD). -v option ignored !")
 
 		stdout = sys.stdout

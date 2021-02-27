@@ -124,7 +124,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol ETH currently in effect differs from both crypto (BTC) and unit (USD) of request. -v option ignored.")
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_OPTION_VALUE), "WARNING - currency value option symbol ETH currently in effect differs from both crypto (BTC) and unit (USD) of request. -v option ignored.")
 
 
     def testGetCryptoPriceHistoricalOptionValueUnitToCrypto(self):
@@ -207,7 +207,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol EUR currently in effect differs from both crypto (BTC) and unit (USD) of request. -v option ignored.")
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_OPTION_VALUE), "WARNING - currency value option symbol EUR currently in effect differs from both crypto (BTC) and unit (USD) of request. -v option ignored.")
 
     def testGetCryptoPriceHistoricalOptionValueSaveFromBadUnitToCrypto(self):
         crypto = 'BTC'
@@ -235,7 +235,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
@@ -244,7 +244,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), "WARNING - currency value option symbol EUR currently in effect differs from both crypto (BTC) and unit (USD) of request. -vs option ignored.")
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_OPTION_VALUE), "WARNING - currency value option symbol EUR currently in effect differs from both crypto (BTC) and unit (USD) of request. -vs option ignored.")
 
 
     def testGetCryptoPriceHistoricalRecent(self):    
@@ -658,7 +658,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(0.8346, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
@@ -750,7 +750,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
@@ -793,7 +793,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
@@ -836,7 +836,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
@@ -862,7 +862,7 @@ class TestProcessor(unittest.TestCase):
                                                    optionValueSymbol, optionValueAmount,
                                                    optionFiatSymbol=optionFiatSymbol, requestInputString='')
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), 'WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of request. -v option ignored.')
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_OPTION_VALUE), 'WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of request. -v option ignored.')
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -879,7 +879,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
@@ -905,7 +905,7 @@ class TestProcessor(unittest.TestCase):
                                                    optionValueSymbol, optionValueAmount, optionValueSaveFlag='S',
                                                    optionFiatSymbol=optionFiatSymbol, requestInputString='')
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_COMMAND_VALUE), 'WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of request. -vs option ignored.')
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_OPTION_VALUE), 'WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of request. -vs option ignored.')
         self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
         self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
@@ -922,7 +922,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
@@ -942,7 +942,6 @@ class TestProcessor(unittest.TestCase):
         hour = 10
         minute = 5
         optionPriceAmount = 4100
-
 
         resultData = self.processor.getCryptoPrice(crypto, unit, exchange, day, month, year, hour, minute,
                                                    optionPriceAmount=optionPriceAmount)
@@ -969,7 +968,6 @@ class TestProcessor(unittest.TestCase):
 
     def testGetCryptoPriceHistoricalOptionPriceOptionFiat(self):
         # full request: eth usd 12/09/18 all -p160 -fchf
-        # exp result: WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of request. -v option ignored.'
         crypto = 'ETH'
         unit = 'USD'
         exchange = 'all'
@@ -1000,7 +998,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
@@ -1009,7 +1007,6 @@ class TestProcessor(unittest.TestCase):
 
     def testGetCryptoPriceHistoricalOptionPriceOptionValueCryptoOptionFiat(self):
         # full request: eth usd 12/09/18 all -v10eth -fchf -p160
-        # exp result: WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of request. -v option ignored.'
         crypto = 'ETH'
         unit = 'USD'
         exchange = 'all'
@@ -1043,7 +1040,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
@@ -1052,7 +1049,6 @@ class TestProcessor(unittest.TestCase):
 
     def testGetCryptoPriceHistoricalOptionPriceOptionValueUnitOptionFiat(self):
         # full request: eth usd 12/09/18 all -v1000usd -fchf -p160
-        # exp result: WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of request. -v option ignored.'
         crypto = 'ETH'
         unit = 'USD'
         exchange = 'all'
@@ -1086,7 +1082,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
@@ -1095,7 +1091,6 @@ class TestProcessor(unittest.TestCase):
 
     def testGetCryptoPriceHistoricalOptionPriceOptionValueFiatOptionFiat(self):
         # full request: eth usd 12/09/18 all -v1000usd -fchf -p160
-        # exp result: WARNING - currency value option symbol BTC currently in effect differs from crypto (ETH), unit (USD) and fiat (CHF) of request. -v option ignored.'
         crypto = 'ETH'
         unit = 'USD'
         exchange = 'all'
@@ -1129,20 +1124,64 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
         self.assertEqual(0.9728, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE))
 
-        # The save flag in the ResultData are set in CommandPrice.execute(), not in Processor
+        # The save flags in the ResultData are set in CommandPrice.execute(), not in Processor
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
+    def testGetCryptoPriceHistoricalOptionPriceRealTime(self):
+        # full request: eth usd 0 all -p160
+        crypto = 'ETH'
+        unit = 'USD'
+        exchange = 'all'
+        day = 0
+        month = 0
+        year = 0
+        hour = 0
+        minute = 0
+        optionValueSymbol = 'CHF'
+        optionValueAmount = 1000
+        optionFiatSymbol = 'CHF'
+        optionPriceAmount = 160
+
+        resultData = self.processor.getCryptoPrice(crypto, unit, exchange, day, month, year, hour, minute,
+                                                   optionValueSymbol=optionValueSymbol, optionValueAmount=optionValueAmount,
+                                                   optionFiatSymbol=optionFiatSymbol, optionPriceAmount=optionPriceAmount)
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_OPTION_PRICE), 'WARNING - option -p160 is not compatible with real time request. {-p} option ignored.')
+
+
+    def testGetCryptoPriceHistoricalOptionPriceSaveRealTime(self):
+        # full request: eth usd 0 all -ps160
+        crypto = 'ETH'
+        unit = 'USD'
+        exchange = 'all'
+        day = 0
+        month = 0
+        year = 0
+        hour = 0
+        minute = 0
+        optionValueSymbol = 'CHF'
+        optionValueAmount = 1000
+        optionFiatSymbol = 'CHF'
+        optionPriceAmount = 160
+        optionPriceSave = True
+
+        resultData = self.processor.getCryptoPrice(crypto, unit, exchange, day, month, year, hour, minute,
+                                                   optionValueSymbol=optionValueSymbol, optionValueAmount=optionValueAmount,
+                                                   optionFiatSymbol=optionFiatSymbol, optionPriceAmount=optionPriceAmount, optionPriceSaveFlag=optionPriceSave)
+        self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_OPTION_PRICE), 'WARNING - option -p160 is not compatible with real time request. {-p} option ignored.')
+
 if __name__ == '__main__':
     #	unittest.main()
     t = TestProcessor()
-    # t.setUp()
-    # t.testGetCryptoPriceHistoDayValidExchangeHandlingInvertedCryptoUnit()
-    # t.setUp()
-    # t.testGetCryptoPriceHistoricalOptionFiat()
+    t.setUp()
+    t.testGetCryptoPriceHistoDayValidExchangeHandlingInvertedCryptoUnit()
+    t.setUp()
+    t.testGetCryptoPriceHistoricalOptionFiat()
     t.setUp()
     t.testGetCryptoPriceHistoricalOptionPrice()
     t.setUp()
@@ -1153,3 +1192,7 @@ if __name__ == '__main__':
     t.testGetCryptoPriceHistoricalOptionPriceOptionValueUnitOptionFiat()
     t.setUp()
     t.testGetCryptoPriceHistoricalOptionPriceOptionValueFiatOptionFiat()
+    t.setUp()
+    t.testGetCryptoPriceHistoricalOptionPriceRealTime()
+    t.setUp()
+    t.testGetCryptoPriceHistoricalOptionPriceSaveRealTime()

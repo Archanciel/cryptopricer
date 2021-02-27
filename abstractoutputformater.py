@@ -22,7 +22,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 		pass
 
 	def getPrintableData(self, resultData):
-		errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
+		errorMsg = resultData.getErrorMessage()
 
 		if errorMsg == None:
 			price = resultData.getValue(resultData.RESULT_KEY_PRICE)
