@@ -34,7 +34,7 @@ class Processor:
 					   optionFiatExchange=None,
 					   optionPriceAmount=None,
 					   optionPriceSaveFlag=None,
-					   optionResultAmount=None,
+					   optionResultStrAmount=None,
 					   optionResultSaveFlag=None,
 					   optionLimitSymbol=None,
 					   optionLimitAmount=None,
@@ -45,11 +45,6 @@ class Processor:
 		Ask the PriceRequester either a RT price or a historical price. Then,
 		in case a fiat (-f) or/and a value option (-v) was specified, computes
 		them and add the results to the returned ResultData.
-
-
-
-
-
 		
 		:param crypto:
 		:param unit:
@@ -60,14 +55,14 @@ class Processor:
 		:param hour:
 		:param minute:
 		:param optionValueSymbol: upper case currency value symbol. If == crypto, this means that optionValueAmount provided
-								 is in crypto and must be converted into unit (counter party) at the rate returned by
-								 the PriceRequester.
+								  is in crypto and must be converted into unit (counter party) at the rate returned by
+								  the PriceRequester.
 
-								 If the currency value symbol == unit, this means that optionValueAmount provided
-								 is in the counter party (unit or an other crypto) and must be converted into crypto at
-								 the rate returned by the PriceRequester.
+								  If the currency value symbol == unit, this means that optionValueAmount provided
+								  is in the counter party (unit or an other crypto) and must be converted into crypto at
+								  the rate returned by the PriceRequester.
 
-								 Ex 1:  -v0.001btc
+								  Ex 1:  -v0.001btc
 										crypto == BTC
 										unit == USD
 										optionValueSymbol == BTC
@@ -76,7 +71,7 @@ class Processor:
 										if returned rate (stored in ResultData.RESULT_KEY_PRICE entry) is 20000,
 										converted value will be 20000 USD * 0.001 BTC => 200 USD
 
-								 Ex 2:  -v500usd
+								  Ex 2:  -v500usd
 										crypto == BTC
 										unit == USD
 										optionValueSymbol == USD
@@ -91,41 +86,31 @@ class Processor:
 									unit amount is converted
 		:param optionFiatExchange:
 		:param optionPriceAmount:
-		:param optionPriceSaveFlag:
-		:param optionResultAmount:
-		:param optionResultSaveFlag:
+		:param optionPriceSaveFlag: not sure if useful. May be used to refine warning if price option
+									not applicable
+		:param optionResultStrAmount: ex: '' means -1 or -2 or -1-3 or -2:-4
+		:param optionResultSaveFlag:  not sure if useful. May be used to refine warning if result option
+									  not applicable
 		:param optionLimitSymbol:
 		:param optionLimitAmount:
 		:param optionLimitExchange:
-		:param optionLimitSaveFlag:
+		:param optionLimitSaveFlag: not sure if useful. May be used to refine warning if limit option
+									not applicable
 		:param requestInputString): used for to complete the error msg with the request
 									causing problem!
-		:return:
-		"""
-		
-		"""
-		:param requestInputString): used for better error msg !
-		:param optionFiatSymbol:    stores the fiat symbol, i.e. the fiat into which the returned
-									unit amount is converted
-
-		NEXT THREE PARMS NOT USED YET !
-
-		:param optionPriceAmount:   float specified price option amount
-		:param optionPriceSaveFlag: used to refine warning if price option not applicable
-
 		:seqdiag_return ResultData
 		:return: a ResultData filled with result values
 		"""
 		
-		# validating exchange and fiat exchange
-
+		# validating exchange, fiat exchange and limit exchange
+		
 		if exchange == None:
 			resultData = ResultData()
 			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your request ({}).".format(requestInputString))
 			return resultData
 		else:
 			try:
-				validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
+				validCryptoUnitExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
 			except(KeyError):
 				resultData = ResultData()
 				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, MARKET_NOT_SUPPORTED_ERROR.format(exchange))
@@ -142,12 +127,23 @@ class Processor:
 									MARKET_NOT_SUPPORTED_ERROR.format(optionFiatExchange))
 				return resultData
 
+		validLimitExchangeSymbol = None
+
+		if optionLimitExchange:
+			try:
+				validLimitExchangeSymbol = self.crypCompExchanges.getExchange(optionLimitExchange)
+			except(KeyError):
+				resultData = ResultData()
+				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
+									MARKET_NOT_SUPPORTED_ERROR.format(optionLimitExchange))
+				return resultData
+
 		localTz = self.configManager.localTimeZone
 		dateTimeFormat = self.configManager.dateTimeFormat
 
 		resultData = self._getPrice(crypto,
 									unit,
-									validExchangeSymbol,
+									validCryptoUnitExchangeSymbol,
 									year,
 									month,
 									day,
@@ -162,7 +158,7 @@ class Processor:
 			errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
 			resultData = self._getPrice(unit,
 										crypto,
-										validExchangeSymbol,
+										validCryptoUnitExchangeSymbol,
 										year,
 										month,
 										day,
@@ -180,14 +176,18 @@ class Processor:
 				resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
 			else:
 				resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, errorMsg)
-
+				
+		if optionPriceAmount is not None and not resultData.isError():
+			resultData.setValue(resultData.RESULT_KEY_PRICE, optionPriceAmount)
+			resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_EFFECTIVE)
+		
 		if optionFiatSymbol is not None and not resultData.isError():
 			resultData = self._computeOptionFiatAmount(resultData,
 													   optionFiatSymbol,
 													   validFiatExchangeSymbol,
 													   crypto,
 													   unit,
-													   validExchangeSymbol,
+													   validCryptoUnitExchangeSymbol,
 													   year,
 													   month,
 													   day,
@@ -232,6 +232,7 @@ class Processor:
 		:param minute:
 		:param dateTimeFormat:
 		:param localTz:
+		:param optionPriceAmount:
 
 		:seqdiag_return ResultData
 

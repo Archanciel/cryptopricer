@@ -94,7 +94,7 @@ class CrypCompExchanges:
     def getExchange(self, exchangeName):
         '''
         Avoid price request failure due to incorrect exchange name case. For example,
-        returns 'BitTrex' for 'bitrex' or ' Bittrex' !
+        returns 'BitTrex' for 'bittrex' or ' Bittrex' !
 
         :param exchangeName: exchange name without paying attention to case
         :return: exchange name with right case

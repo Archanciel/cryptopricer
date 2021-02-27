@@ -58,10 +58,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 
 	def testExecuteHistoricalPriceTwoDigitYear(self):
@@ -91,10 +91,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 
 	def testExecuteHistoricalPriceNoYear(self):
@@ -133,10 +133,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 		if DateTimeUtil.isDateOlderThan(testDateTime, 7):
 			self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
@@ -201,10 +201,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 
 	def removePriceFromResult(self, resultStr):
@@ -243,10 +243,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def getFormattedNowDateTimeComponents(self):
 		now = DateTimeUtil.localNow('Europe/Zurich')
@@ -307,10 +307,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 
 	def testExecuteRealTimePriceInvalidYearOneDigit(self):
@@ -526,10 +526,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 	
 	def testExecuteHistoricalPriceDateOneYearAfterNowInvalidOption(self):
 		'''
@@ -553,7 +553,7 @@ class TestCommandPrice(unittest.TestCase):
 	
 		resultData = self.commandPrice.execute()
 		
-		#        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), None)
 		self.assertTrue(resultData.containsWarning(resultData.WARNING_TYPE_FUTURE_DATE))
 		self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_FUTURE_DATE),
 						 "Warning - request date {}/{}/{} {}:{} can not be in the future and was shifted back to last year.".format(
@@ -575,10 +575,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 	
 	def testExecuteHistoricalPriceDateTwoYearsFromNowNoTime(self):
 		self.commandPrice.parsedParmData[self.commandPrice.CRYPTO] = 'btc'
@@ -610,10 +610,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 
 	def testExecuteHistoricalPriceDateOneMinuteFromNow(self):
@@ -656,10 +656,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 
 	def testExecuteRealTimePriceInvalidYearNonDigit(self):
@@ -819,10 +819,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def testExecuteHistoricalPriceOptionValueSave(self):
 		# btc usd 12/9/17 10:05 bittrex -vs0.001btc
@@ -857,10 +857,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def testExecuteHistoricalPriceOptionValueOptionFiat(self):
 		# btc usd 12/9/17 10:05 bittrex -feur -v0.001btc
@@ -898,10 +898,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual('EUR', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def testExecuteHistoricalPriceOptionValueOptionFiatExchange(self):
 		# mco eth 12/9/17 10:05 binance -fbtc.kraken -v0.1eth
@@ -938,10 +938,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual('BTC', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
 		self.assertEqual('Kraken', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def testExecuteHistoricalPriceOptionValueOptionFiatNoExchange(self):
 		# mco eth 12/9/17 10:05 binance -fbtc -v0.1eth
@@ -978,10 +978,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual('BTC', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
 		self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def testExecuteHistoricalPriceOptionValueOptionFiatExchangeInvertingFiatUnit(self):
 		# mco btc 12/9/17 10:05 binance -feth.kraken -v1eth
@@ -1018,10 +1018,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual('ETH', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE), 'Kraken')
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def testExecuteHistoricalPriceOptionValueOptionFiatSaveExchangeInvertingFiatUnit(self):
 		# mco btc 12/9/17 10:05 binance -fseth.kraken -v1eth
@@ -1059,10 +1059,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual('ETH', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertTrue(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE), 'Kraken')
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def testExecuteHistoricalPriceOptionValueSaveOptionFiatSaveExchangeInvertingFiatUnit(self):
 		# mco btc 12/9/17 10:05 binance -fseth.kraken -vs1eth
@@ -1101,10 +1101,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertEqual('ETH', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertTrue(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_EXCHANGE), 'Kraken')
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def testExecuteHistoricalPriceOptionValueOptionFiatSave(self):
 		# btc usd 12/9/17 10:05 bittrex -fseur -v0.001btc
@@ -1142,10 +1142,10 @@ class TestCommandPrice(unittest.TestCase):
 		self.assertTrue(value >= 3440.2212 and value <= 3463.7166)
 		self.assertEqual('EUR', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		self.assertTrue(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+		self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def testExecuteHistoricalPriceOptionValueOptionFiatRateNotFoundNoExchangeSpecified(self):
 		# btc usd 12/9/17 10:05 bittrex -fchf -v0.001btc
@@ -1187,10 +1187,10 @@ class TestCommandPrice(unittest.TestCase):
 			self.assertEqual(4126.121999999999, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT))
 			self.assertEqual('CHF', resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 			self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE))
-			self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT))
-			self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT))
-			self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SYMBOL))
-			self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE))
+			self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_AMOUNT))
+			self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT))
+			self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SYMBOL))
+			self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_LIMIT_SAVE))
 
 	def testExecuteHistoricalPriceOptionValueOptionFiatRateNotFoundExchangeSpecified(self):
 		# btc usd 12/9/17 10:05 bittrex -fchf.kraken -v0.001btc
@@ -1225,7 +1225,3 @@ if __name__ == '__main__':
 	t.testExecuteRealTimePriceInvalidYearOneDigit()
 	t.setUp()
 	t.testExecuteHistoDayPriceInvalidYearIsZero()
-	t.setUp()
-	t.testExecuteHistoricalPriceDateOneYearAfterNow()
-	t.setUp()
-	t.testExecuteHistoricalPriceDateOneYearAfterNowInvalidOption()

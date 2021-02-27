@@ -204,7 +204,7 @@ class CommandPrice(AbstractCommand):
 		
 		# option result
 		
-		optionResultAmount = self.parsedParmData[self.OPTION_RESULT_AMOUNT]
+		optionResultStrAmount = self.parsedParmData[self.OPTION_RESULT_AMOUNT]
 		optionResultSaveFlag = self.parsedParmData[self.OPTION_RESULT_SAVE]
 
 		# option limit
@@ -236,7 +236,7 @@ class CommandPrice(AbstractCommand):
 											  optionFiatExchange,
 											  optionPriceAmount,
 											  optionPriceSaveFlag,
-											  optionResultAmount,
+											  optionResultStrAmount,
 											  optionResultSaveFlag,
 											  optionLimitSymbol,
 											  optionLimitAmount,
@@ -251,6 +251,9 @@ class CommandPrice(AbstractCommand):
 
 		result.setValue(ResultData.RESULT_KEY_OPTION_VALUE_SAVE, optionValueSaveFlag)
 		result.setValue(ResultData.RESULT_KEY_OPTION_FIAT_SAVE, optionFiatSaveFlag)
+		result.setValue(ResultData.RESULT_KEY_OPTION_PRICE_SAVE, optionPriceSaveFlag)
+		result.setValue(ResultData.RESULT_KEY_OPTION_RESULT_SAVE, optionResultSaveFlag)
+		result.setValue(ResultData.RESULT_KEY_OPTION_LIMIT_SAVE, optionLimitSaveFlag)
 
 		if localRequestDateTime is not None:
 			# here, the request date was in the future. Its year has been set to
