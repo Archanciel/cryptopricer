@@ -150,7 +150,8 @@ class Processor:
 									hour,
 									minute,
 									dateTimeFormat,
-									localTz)
+									localTz,
+		                            optionPriceAmount)
 
 
 		if resultData.isError():
@@ -165,7 +166,8 @@ class Processor:
 										hour,
 										minute,
 										dateTimeFormat,
-										localTz)
+										localTz,
+			                            optionPriceAmount)
 
 			resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
 			resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
@@ -217,7 +219,8 @@ class Processor:
 				  hour,
 				  minute,
 				  dateTimeFormat,
-				  localTz):
+				  localTz,
+	              optionPriceAmount=None):
 		'''
 		Returns the price of 1 unit of currency in targetCurrency. Ex: currency == btc,
 		targetCurrency == usd --> returned price: 1 btc == 10000 usd.
@@ -262,15 +265,20 @@ class Processor:
 
 			if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
 				# adding date time info if no error returned
-				if resultData.getValue(ResultData.RESULT_KEY_PRICE_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
-					# histoday price returned
-					requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
-					requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(dateTimeFormat)
-				else:
+				if resultData.getValue(ResultData.RESULT_KEY_PRICE_TYPE) == ResultData.PRICE_TYPE_HISTO_MINUTE:
 					# histominute price returned
 					requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
 					requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
-
+				elif optionPriceAmount:
+					# here, the -p price option is active and the transaction date with minute
+					# precision must be set in the returned ResultData
+					requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
+					requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
+				else:
+					# histoday price returned
+					requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
+					requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(dateTimeFormat)
+					
 				resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
 
 		price = resultData.getValue(ResultData.RESULT_KEY_PRICE)

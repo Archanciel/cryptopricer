@@ -952,7 +952,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_EXCHANGE), 'BitTrex')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_EFFECTIVE)
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE), 4100)
-        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 00:00')
+        self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING), '12/09/17 10:05')
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
@@ -976,7 +976,7 @@ class TestProcessor(unittest.TestCase):
         day = 12
         month = 9
         year = 2018
-        hour = 0
+        hour = 21
         minute = 0
         optionFiatSymbol = 'CHF'
         optionPriceAmount = 160
@@ -989,7 +989,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
         self.assertEqual(resultData.PRICE_TYPE_EFFECTIVE, resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE))
         self.assertEqual(160, resultData.getValue(resultData.RESULT_KEY_PRICE))
-        self.assertEqual('12/09/18 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual('12/09/18 21:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
         self.assertEqual(1536710400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
@@ -1016,8 +1016,8 @@ class TestProcessor(unittest.TestCase):
         day = 12
         month = 9
         year = 2018
-        hour = 0
-        minute = 0
+        hour = 12
+        minute = 45
         optionValueSymbol = 'ETH'
         optionValueAmount = 10
         optionFiatSymbol = 'CHF'
@@ -1032,7 +1032,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
         self.assertEqual(resultData.PRICE_TYPE_EFFECTIVE, resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE))
         self.assertEqual(160, resultData.getValue(resultData.RESULT_KEY_PRICE))
-        self.assertEqual('12/09/18 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual('12/09/18 12:45', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
         self.assertEqual(1536710400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
         self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
         self.assertEqual(1600, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
@@ -1059,8 +1059,8 @@ class TestProcessor(unittest.TestCase):
         day = 12
         month = 9
         year = 2018
-        hour = 0
-        minute = 0
+        hour = 12
+        minute = 45
         optionValueSymbol = 'USD'
         optionValueAmount = 1000
         optionFiatSymbol = 'CHF'
@@ -1075,7 +1075,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
         self.assertEqual(resultData.PRICE_TYPE_EFFECTIVE, resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE))
         self.assertEqual(160, resultData.getValue(resultData.RESULT_KEY_PRICE))
-        self.assertEqual('12/09/18 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual('12/09/18 12:45', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
         self.assertEqual(1536710400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
         self.assertEqual(6.25, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
         self.assertEqual(optionValueAmount, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
@@ -1102,8 +1102,8 @@ class TestProcessor(unittest.TestCase):
         day = 12
         month = 9
         year = 2018
-        hour = 0
-        minute = 0
+        hour = 23
+        minute = 1
         optionValueSymbol = 'CHF'
         optionValueAmount = 1000
         optionFiatSymbol = 'CHF'
@@ -1118,7 +1118,7 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual('CCCAGG', resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
         self.assertEqual(resultData.PRICE_TYPE_EFFECTIVE, resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE))
         self.assertEqual(160, resultData.getValue(resultData.RESULT_KEY_PRICE))
-        self.assertEqual('12/09/18 00:00', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
+        self.assertEqual('12/09/18 23:01', resultData.getValue(resultData.RESULT_KEY_PRICE_DATE_TIME_STRING))
         self.assertEqual(1536710400, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
         self.assertEqual(6.424753289473684, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO))
         self.assertEqual(1027.9605263157894, resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_UNIT))
@@ -1139,10 +1139,10 @@ class TestProcessor(unittest.TestCase):
 if __name__ == '__main__':
     #	unittest.main()
     t = TestProcessor()
-    t.setUp()
-    t.testGetCryptoPriceHistoDayValidExchangeHandlingInvertedCryptoUnit()
-    t.setUp()
-    t.testGetCryptoPriceHistoricalOptionFiat()
+    # t.setUp()
+    # t.testGetCryptoPriceHistoDayValidExchangeHandlingInvertedCryptoUnit()
+    # t.setUp()
+    # t.testGetCryptoPriceHistoricalOptionFiat()
     t.setUp()
     t.testGetCryptoPriceHistoricalOptionPrice()
     t.setUp()
