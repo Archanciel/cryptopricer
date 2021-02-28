@@ -78,7 +78,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 					 2/ None (no value command in effect)
 					 3/ None (no value command with save option in effect)
 		'''
-		if resultData.isError():
+		if not resultData.noError():
 			return '', None, None, None
 
 		commandDic = resultData.getValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS)

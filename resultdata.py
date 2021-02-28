@@ -116,13 +116,6 @@ class ResultData:
 		return self._resultDataDic[self.RESULT_KEY_ERROR_MSG] == None
 
 
-	def isError(self):
-		'''
-		Return True if the ResultData contains an error msg
-		'''
-		return self._resultDataDic[self.RESULT_KEY_ERROR_MSG] != None
-
-
 	def containsWarning(self, warningType):
 		'''
 		Return True if the ResultData contains a warning msg

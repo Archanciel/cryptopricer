@@ -153,7 +153,7 @@ class Processor:
 		                            optionPriceSaveFlag)
 
 
-		if resultData.isError():
+		if not resultData.noError():
 			# since crypto/unit is not supported by the exchange, we try to request the unit/crypto inverted rate
 			errorMsg = resultData.getErrorMessage()
 			resultData = self._getPrice(unit,
@@ -178,11 +178,11 @@ class Processor:
 			else:
 				resultData.setError(errorMsg)
 				
-		if optionPriceAmount is not None and not resultData.isError():
+		if optionPriceAmount is not None and resultData.noError():
 			resultData.setValue(resultData.RESULT_KEY_PRICE, optionPriceAmount)
 			resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_EFFECTIVE)
 		
-		if optionFiatSymbol is not None and not resultData.isError():
+		if optionFiatSymbol is not None and resultData.noError():
 			resultData = self._computeOptionFiatAmount(resultData,
 													   optionFiatSymbol,
 													   validFiatExchangeSymbol,
@@ -197,7 +197,7 @@ class Processor:
 													   dateTimeFormat,
 													   localTz)
 
-		if optionValueSymbol is not None and not resultData.isError():
+		if optionValueSymbol is not None and resultData.noError():
 			resultData = self._computeOptionValueAmount(resultData,
 														crypto,
 														unit,
@@ -443,7 +443,7 @@ class Processor:
 											dateTimeFormat,
 											localTz)
 			
-			if not fiatResultData.isError():
+			if fiatResultData.noError():
 				# indicates that unit/fiat pair is supported by the fiatExchange which equals
 				# the cryptoUnitExchange
 				fiatConversionRate = cryptoUnitPrice
@@ -472,7 +472,7 @@ class Processor:
 										dateTimeFormat,
 										localTz)
 
-		if not fiatResultData.isError():
+		if fiatResultData.noError():
 			fiatConversionRate = fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
 
 			return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
@@ -488,7 +488,7 @@ class Processor:
 											minute,
 											dateTimeFormat,
 											localTz)
-			if not fiatResultData.isError():
+			if fiatResultData.noError():
 				fiatConversionRate = 1 / fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
 
 				return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
