@@ -21,7 +21,7 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 		'''
 		pass
 
-	def getPrintableData(self, resultData):
+	def getCommandOutputResult(self, resultData):
 		errorMsg = resultData.getErrorMessage()
 
 		if errorMsg == None:
@@ -34,6 +34,8 @@ class AbstractOutputFormater(metaclass=ABCMeta):
 				dateTimeStr += 'C'  # adding close symbol
 			elif priceType == resultData.PRICE_TYPE_HISTO_MINUTE:
 				dateTimeStr += 'M'  # adding histo MINUTE symbol
+			elif priceType == resultData.PRICE_TYPE_EFFECTIVE:
+				dateTimeStr += 'P'  # adding effective price symbol
 			else:
 				dateTimeStr += 'R'  # adding RT symbol
 

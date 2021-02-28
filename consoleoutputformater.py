@@ -9,7 +9,7 @@ class ConsoleOutputFormater(AbstractOutputFormater):
 		print the result to the console and
 		paste it to the clipboard
 		'''
-		outputStr = super(ConsoleOutputFormater, self).getPrintableData(resultData)
+		outputStr = super(ConsoleOutputFormater, self).getCommandOutputResult(resultData)
 
 		print(outputStr)
 
