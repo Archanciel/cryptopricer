@@ -1956,11 +1956,11 @@ class TestGuiOutputFormater(unittest.TestCase):
 		optionValueInCrypto = 2169.75
 		optionValueInUnit = 0.016186335
 		optionValueInFiat = 1525.5735155513667
-		optionValueSave = None
+		optionValueSave = True
 		optionFiatExchange = 'HitBTC'
 		optionFiatUnitInFiatRate = 94250.7068803016
 		optionFiatCryptoInFiatRate = 0.7031102733270499
-		optionFiatSave = None
+		optionFiatSave = True
 
 		resultData = ResultData()
 		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'krl',
@@ -1977,12 +1977,12 @@ class TestGuiOutputFormater(unittest.TestCase):
 																		  'OPTION_VALUE_DATA': None,
 																		  'OPTION_VALUE_AMOUNT': '2169.75',
 																		  'OPTION_VALUE_SYMBOL': 'usd',
-																		  'OPTION_VALUE_SAVE': None,
+																		  'OPTION_VALUE_SAVE': 's',
 																		  'OPTION_FIAT_DATA': None,
 																		  'OPTION_FIAT_SYMBOL': 'chsb',
 																		  'OPTION_FIAT_EXCHANGE': 'hitbtc',
 																		  'OPTION_FIAT_AMOUNT': None,
-																		  'OPTION_FIAT_SAVE': None,
+																		  'OPTION_FIAT_SAVE': 's',
 																		  'OPTION_PRICE_DATA': None,
 																		  'OPTION_PRICE_AMOUNT': None,
 																		  'OPTION_PRICE_SYMBOL': None,
@@ -2015,7 +2015,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
 
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
-		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75usd -fchsb.hitbtc', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75usd -fchsb.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHSB = 0.70311027 KRL/CHSB)', fullCommandStrForStatusBar)
 

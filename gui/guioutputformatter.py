@@ -107,18 +107,14 @@ class GuiOutputFormatter(AbstractOutputFormater):
 
 		# handling value option
 
-		valueOptionStr = ''
-		
 		if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO):
 			fullCommandStrWithNoSaveOptions, \
 			fullCommandStrWithSaveOptionsForHistoryList, \
-			fullCommandStrForStatusBar, \
-			valueOptionStr = self._addOptionValueInfo(resultData,
-													  commandDic,
-													  fullCommandStrWithNoSaveOptions,
-													  fullCommandStrWithSaveOptionsForHistoryList,
-													  fullCommandStrForStatusBar,
-													  valueOptionStr)
+			fullCommandStrForStatusBar = self._addOptionValueInfo(resultData,
+																  commandDic,
+																  fullCommandStrWithNoSaveOptions,
+																  fullCommandStrWithSaveOptionsForHistoryList,
+																  fullCommandStrForStatusBar)
 		
 		# handling fiat option
 
@@ -157,8 +153,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 							commandDic,
 							fullCommandStrWithNoSaveOptions,
 							fullCommandStrWithSaveOptionsForHistoryList,
-							fullCommandStrForStatusBar,
-							valueOptionStr):
+							fullCommandStrForStatusBar):
 		"""
 		Adds the value option information to
 			1/ the request full command string with no save	option (result ex:
@@ -171,16 +166,13 @@ class GuiOutputFormatter(AbstractOutputFormater):
 
 		:param resultData: stores the on-line request results
 		:param commandDic: stores the currently active command parms
-		:param fullCommandStrNoOptions: contains the current request full command without any option
 		:param fullCommandStrWithNoSaveOptions: empty str output result
 		:param fullCommandStrWithSaveOptionsForHistoryList: empty str output result
 		:param fullCommandStrForStatusBar: empty str output result
-		:param valueOptionStr: empty str output result
 		
 		:return: fullCommandStrWithNoSaveOptions,
 				 fullCommandStrWithSaveOptionsForHistoryList,
 				 fullCommandStrForStatusBar,
-				 valueOptionStr
 		"""
 		valueOptionAmountStr = commandDic[CommandPrice.OPTION_VALUE_AMOUNT]
 		valueOptionSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
@@ -193,9 +185,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 				# will be set to None and so not be stored in the request history list of the GUI !
 				valueOptionStr = ' -vs{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
 				fullCommandStrWithSaveOptionsForHistoryList += valueOptionStr
-				fullCommandStrForStatusBar = fullCommandStrWithSaveOptionsForHistoryList
-			else:
-				pass
+			fullCommandStrForStatusBar = fullCommandStrWithSaveOptionsForHistoryList
 		else:
 			if valueOptionAmountStr and valueOptionSymbolStr:
 				# even in case the value command generated a warning, it will be displayed in the
@@ -204,7 +194,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 				fullCommandStrWithNoSaveOptions += valueOptionStr
 				fullCommandStrForStatusBar = fullCommandStrWithNoSaveOptions
 
-		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar, valueOptionStr
+		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	
 	def _addOptionFiatInfo(self,
 						   resultData,
@@ -221,14 +211,10 @@ class GuiOutputFormatter(AbstractOutputFormater):
 			   history list (result ex: btc usd 12/09/17 00:00 bittrex -fseur)
 			3/ the request full command string  for status bar (result ex:
 			   btc usd 12/09/17 00:00 bittrex -feur (4122 BTC/USD " 0.8346 USD/EUR = 3440.2212 BTC/EUR)
-			
-		If the valueOptionStr is not empty, it is added before the fiat option info.
 		
 		:param resultData: stores the on-line request results
 		:param commandDic: stores the currently active command parms
-		:param valueOptionStr: empty if no value option or contains the value option information
 		:param fiatOptionSymbol:
-		:param fullCommandStrNoOptions: contains the current request full command string without any option
 		:param fullCommandStrWithNoSaveOptions: empty if no no save value option or contains the full command string
 												with the no save value option information
 		:param fullCommandStrWithSaveOptionsForHistoryList: empty if no save value option or contains the full command
@@ -241,20 +227,18 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		"""
 		if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
 			# save mode is active
+			fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
+													   fiatOptionSymbol,
+													   isOptionFiatSave=True)
 			if not resultData.containsWarning(resultData.WARNING_TYPE_OPTION_VALUE):
 				# in case the value command generated a warning, if the value option refers a
 				# currency different from the crypto, unit or fiat of the request, the fullCommandStr
 				# remains unmodified, i.e. eual to the fullCommandStrNoOptions, which results that it
 				# will be set to None and so not be stored in the request history list of the GUI !
-				fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
-														   fiatOptionSymbol,
-														   isOptionFiatSave=True)
 				fullCommandStrWithSaveOptionsForHistoryList += fiatOptionInfo
 				
-				fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo + \
-											 self._buildUnitFiatComputationString(resultData)
-			else:
-				pass
+			fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo + \
+										 self._buildUnitFiatComputationString(resultData)
 		else:
 			# save mode is not active
 			fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
@@ -273,7 +257,6 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		"""
 
 		:param commandDic:
-		:param fiatOptionInfo: full command string with or without value option
 		:param fiatOptionSymbol
 		:param isOptionFiatSave
 
