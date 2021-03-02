@@ -47,7 +47,7 @@ STATUS_BAR_ERROR_SUFFIX = ' --> ERROR ...'
 FILE_LOADED = 0
 FILE_SAVED = 1
 CRYPTOPRICER_VERSION = 'CryptoPricer 2.1'
-NO_INTERNET = True
+NO_INTERNET = False
 
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,

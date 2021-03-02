@@ -1947,7 +1947,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		# krl btc 20/12/20 hitbtc -v2169.75usd -fchsb.hitbtc
 		crypto = 'KRL'
 		unit = 'BTC'
-		fiat = 'CHSB'
+		fiat = 'CHF'
 		cryptoUnitExchange = 'HitBTC'
 		requestDateStr = '20/12/20 00:00'
 		requestTimeStamp = 1608422400
@@ -1956,11 +1956,11 @@ class TestGuiOutputFormater(unittest.TestCase):
 		optionValueInCrypto = 2169.75
 		optionValueInUnit = 0.016186335
 		optionValueInFiat = 1525.5735155513667
-		optionValueSave = True
+		optionValueSave = None
 		optionFiatExchange = 'HitBTC'
 		optionFiatUnitInFiatRate = 94250.7068803016
 		optionFiatCryptoInFiatRate = 0.7031102733270499
-		optionFiatSave = True
+		optionFiatSave = None
 
 		resultData = ResultData()
 		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS, {'CRYPTO': 'krl',
@@ -1979,7 +1979,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 																		  'OPTION_VALUE_SYMBOL': 'usd',
 																		  'OPTION_VALUE_SAVE': 's',
 																		  'OPTION_FIAT_DATA': None,
-																		  'OPTION_FIAT_SYMBOL': 'chsb',
+																		  'OPTION_FIAT_SYMBOL': 'chf',
 																		  'OPTION_FIAT_EXCHANGE': 'hitbtc',
 																		  'OPTION_FIAT_AMOUNT': None,
 																		  'OPTION_FIAT_SAVE': 's',
@@ -1992,7 +1992,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 																		  'UNSUPPORTED_OPTION_MODIFIER': None,
 																		  'UNSUPPORTED_OPTION_DATA': None})
 		resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
-		resultData.setValue(resultData.setWarning(resultData.WARNING_TYPE_OPTION_VALUE, "WARNING - currency value symbol USD differs from both crypto (KRL) and unit (BTC) -v option ignored"), None)
+		resultData.setValue(resultData.setWarning(resultData.WARNING_TYPE_OPTION_VALUE, "WARNING - currency value symbol USD differs from crypto (KRL), unit (BTC) and fiat (CHSB) -v option ignored"), None)
 		resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
 		resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
 		resultData.setValue(resultData.RESULT_KEY_EXCHANGE, cryptoUnitExchange)
@@ -2015,9 +2015,9 @@ class TestGuiOutputFormater(unittest.TestCase):
 		fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
 
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
-		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75usd -fchf.hitbtc', fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptions)
-		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75usd -fchsb.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHSB = 0.70311027 KRL/CHSB)', fullCommandStrForStatusBar)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75usd -fchf.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHF = 0.70311027 KRL/CHF)', fullCommandStrForStatusBar)
 
 # historical value, fiat and price option test
 
