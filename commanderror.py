@@ -54,7 +54,7 @@ class CommandError(AbstractCommand):
         if errorDetails != '':
             errorDetails = ': ' + errorDetails
             
-        resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - {} {}{}{}".format(errorTypeLabelStr, self.requestInputString, errorDetails, errorMsgTail))
+        resultData.setError("ERROR - {} {}{}{}".format(errorTypeLabelStr, self.requestInputString, errorDetails, errorMsgTail))
         
         return resultData
 

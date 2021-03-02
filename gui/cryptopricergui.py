@@ -47,7 +47,7 @@ STATUS_BAR_ERROR_SUFFIX = ' --> ERROR ...'
 FILE_LOADED = 0
 FILE_SAVED = 1
 CRYPTOPRICER_VERSION = 'CryptoPricer 2.1'
-fromAppBuilt = False
+NO_INTERNET = False
 
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
@@ -295,11 +295,6 @@ class CryptoPricerGUI(BoxLayout):
 	recycleViewCurrentSelIndex = -1
 
 	def __init__(self, **kwargs):
-		global fromAppBuilt
-
-		if not fromAppBuilt:
-			return
-
 		super(CryptoPricerGUI, self).__init__(**kwargs)
 		self.dropDownMenu = CustomDropDown(owner=self)
 
@@ -318,7 +313,13 @@ class CryptoPricerGUI(BoxLayout):
 			self.boxLayoutContainingStatusBar.height = "63dp"
 
 		self.configMgr = ConfigurationManager(configPath)
-		self.controller = Controller(GuiOutputFormatter(self.configMgr), self.configMgr, PriceRequester())
+		
+		if NO_INTERNET:
+			from pricerequesterteststub import PriceRequesterTestStub
+			self.controller = Controller(GuiOutputFormatter(self.configMgr), self.configMgr, PriceRequesterTestStub())
+		else:
+			self.controller = Controller(GuiOutputFormatter(self.configMgr), self.configMgr, PriceRequester())
+
 		self.dataPath = self.configMgr.dataPath
 
 		self.setRVListSizeParms(int(self.configMgr.histoListItemHeight),
@@ -949,12 +950,9 @@ class CryptoPricerGUI(BoxLayout):
 class CryptoPricerGUIApp(App):
 	settings_cls = SettingsWithTabbedPanel
 	cryptoPricerGUI = None
-
+	
 	def build(self): # implicitely looks for a kv file of name cryptopricergui.kv which is
 					 # class name without App, in lowercases
-		global fromAppBuilt
-		fromAppBuilt = True
-
 		if os.name != 'posix':
 			# running app om Windows
 			Config.set('graphics', 'width', '600')

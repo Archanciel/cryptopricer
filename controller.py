@@ -51,7 +51,7 @@ class Controller:
 			result = command.execute()
 
 			if result != '':
-				strToPrint = self.printer.getPrintableData(result)
+				strToPrint = self.printer.getCommandOutputResult(result)
 				print(strToPrint)
 
 
@@ -91,14 +91,17 @@ class Controller:
 					 4/ None (no command save option in effect)
 		'''
 		command = self.requester.getCommand(inputStr)
-		result = command.execute()
+		resultData = command.execute()
 
-		if result != '':
-			printResult = self.printer.getPrintableData(result)
-			fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.printer.getFullCommandString(
-				result)
+		if resultData != '':
+			commandOutputResult = self.printer.getCommandOutputResult(resultData)
 			
-			return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
+			fullCommandStrNoOptions, \
+			fullCommandStrWithNoSaveOptions, \
+			fullCommandStrWithSaveOptionsForHistoryList, \
+			fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+			
+			return commandOutputResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 
 
 if __name__ == '__main__':

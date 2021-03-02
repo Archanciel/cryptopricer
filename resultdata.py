@@ -8,7 +8,7 @@ class ResultData:
 	RESULT_KEY_PRICE_TYPE = 'PRICE_TYPE'
 	RESULT_KEY_ERROR_MSG = 'ERROR_MSG'
 	RESULT_KEY_WARNINGS_DIC = 'WARNING_MSG'
-	RESULT_KEY_INITIAL_COMMAND_PARMS = 'INIT_COMMAND_PARMS'                 # command parm dic denoting the user requesr
+	RESULT_KEY_INITIAL_COMMAND_PARMS = 'INIT_COMMAND_PARMS' # command parm dic denoting the user requesr
 
 	RESULT_KEY_OPTION_VALUE_CRYPTO = 'OPTION_VALUE_CRYPTO'  # store the crypto price returned for -v option
 	RESULT_KEY_OPTION_VALUE_UNIT = 'OPTION_VALUE_UNIT'      # store the unit price returned for -v option
@@ -22,31 +22,34 @@ class ResultData:
 	RESULT_KEY_OPTION_FIAT_EXCHANGE = 'OPTION_FIAT_EXCHANGE'              # store the fiat exchange of the -f option
 	RESULT_KEY_OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'                      # store True or False to indicate if the fiat option is to be stored in history (-fs) or not (-f)
 
-	# In a further version, the price -p option will be added. This option will enable the
-	# user to specify a price value in fiat and obtain the corresponding unit rate.
-	#
-	# For example, if you want to purchase CHSB tokens at price 0.3 USDC. The request
-	# chsb btc 0 hitbtc -p0.3USD -fusd.kraken will display
-	# 1 CHSB/0.0000085 BTC/0.3 USD.Kraken on HitBTC 20/01/21 20:45R 0.00000865 0.30587441
-	# which means that currently the CHSB is quoted at 0.00000865 BTC on HitBTC (which
-	# corresponds to a value of 0.30587441 USD on Kraken, but that to buy it at 0.3 USD,
-	# the buy order must set the price in BTC to 0.0000085 !
-	RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT = 'OPTION_PRICE_SPECIFIED_AMOUNT'          # store the crypto or unit user entered value for -v option. Ex: 0.1 if -v0.1btc
-	RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT = 'OPTION_PRICE_COMPUTED_UNIT_AMOUNT'  # store the price in unit corresponding to the amount specified in the option synbol specified
-																						# for the -p option. Ex: if crypto is eth and unit is btc and option is -p300usd,
-																						# store the price in btc if 1 eth is 300 usd (see help for more info !)
-	RESULT_KEY_OPTION_PRICE_SYMBOL = 'OPTION_PRICE_SYMBOL'      # store the currency symbol of the -p option, usd if otion is -p300usd
-	RESULT_KEY_OPTION_PRICE_EXCHANGE = 'OPTION_PRICE_EXCHANGE'  # store the price exchange of the -p option
-	RESULT_KEY_OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'          # store True or False to indicate if the price option is to be stored in history (-ps) or not (-p)
+	RESULT_KEY_OPTION_PRICE_AMOUNT = 'OPTION_PRICE_AMOUNT'                # store the crypto/unit value the user entered for -p option. Ex: 0.1 if -p0.1btc
+	RESULT_KEY_OPTION_PRICE_SAVE = 'RESULT_KEY_OPTION_PRICE_SAVE'         # store True or False to indicate if the price option is to be stored in history (-ps) or not (-p)
 
-	WARNING_TYPE_FUTURE_DATE = 'FUTURE_DATE'
-	WARNING_TYPE_COMMAND_VALUE = 'VALUE_COMMAND'
-	WARNING_TYPE_UNSUPPORTED_OPTION = 'UNSUPPORTED_OPTION'
+	RESULT_KEY_OPTION_RESULT_COMPUTED_AMOUNT_UNIT = 'OPTION_RESULT_COMPUTED_AMOUNT_UNIT'    # store result computed amount in unit
+	RESULT_KEY_OPTION_RESULT_COMPUTED_PERCENT_UNIT = 'OPTION_RESULT_COMPUTED_AMOUNT_UNIT'   # store result computed percent for unit
+	RESULT_KEY_OPTION_RESULT_COMPUTED_AMOUNT_FIAT = 'OPTION_RESULT_COMPUTED_AMOUNT_FIAT'    # store result computed amount in fiat
+	RESULT_KEY_OPTION_RESULT_COMPUTED_PERCENT_FIAT = 'OPTION_RESULT_COMPUTED_AMOUNT_FIAT'   # store result computed percent for fiat
+	RESULT_KEY_OPTION_RESULT_SAVE = 'OPTION_RESULT_SAVE'                                    # store True or False to indicate if the result option is to be stored in history (-rs) or not (-r)
+
+	
+	RESULT_KEY_OPTION_LIMIT_AMOUNT = 'OPTION_LIMIT_AMOUNT'                              # store the value the user entered for -l option. Ex: 300 if -l300usd.kraken
+	RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT = 'OPTION_LIMIT_COMPUTED_UNIT_AMOUNT'  # store the limit in unit corresponding to the amount specified in the option synbol specified
+																						# for the -l option. Ex: if crypto is eth and unit is btc and option is -l300usd,
+																						# store the price in btc if 1 eth is 300 usd (see help for more info !)
+	RESULT_KEY_OPTION_LIMIT_SYMBOL = 'OPTION_LIMIT_SYMBOL'      # store the currency symbol of the -l option. Ex: usd if -l300usd.kraken
+	RESULT_KEY_OPTION_LIMIT_EXCHANGE = 'OPTION_LIMIT_EXCHANGE'  # store the limit exchange of the -l option. Ex: kraken if -l300usd.kraken
+	RESULT_KEY_OPTION_LIMIT_SAVE = 'OPTION_LIMIT_SAVE'          # store True or False to indicate if the limit option is to be stored in history (-ls) or not (-l)
+
+	WARNING_TYPE_FUTURE_DATE = 'FUTURE_DATE'    # signals that request date is in the future
+	WARNING_TYPE_OPTION_VALUE = 'OPTION_VALUE'  # signals that value option currency not possible
+	WARNING_TYPE_OPTION_PRICE = 'OPTION_PRICE'  # signals that option price not compatible with RT request
+	WARNING_TYPE_OPTION_UNSUPPORTED = 'OPTION_UNSUPPORTED'
 
 	PRICE_TYPE_HISTO_DAY = 'HISTO_DAY'
 	PRICE_TYPE_HISTO_MINUTE = 'HISTO_MINUTE'
 	PRICE_TYPE_RT = 'REAL_TIME'
-	
+	PRICE_TYPE_EFFECTIVE = 'EFFECTIVE' # buy or sell transaction price set by the -p price option
+
 	def __init__(self, resultDataDic=None):
 		if not resultDataDic:
 			self._resultDataDic = {}
@@ -60,7 +63,6 @@ class ResultData:
 			self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None
 			self._resultDataDic[self.RESULT_KEY_WARNINGS_DIC] = {}
 			self._resultDataDic[self.RESULT_KEY_INITIAL_COMMAND_PARMS] = None
-			self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = None
 			self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_CRYPTO] = None
 			self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_UNIT] = None
 			self._resultDataDic[self.RESULT_KEY_OPTION_VALUE_FIAT] = None
@@ -68,13 +70,20 @@ class ResultData:
 			self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_RATE] = None
 			self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT] = None
 			self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SYMBOL] = None
-			self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SAVE] = None
 			self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_EXCHANGE] = None
-			self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SPECIFIED_AMOUNT] = None
-			self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_COMPUTED_UNIT_AMOUNT] = None
-			self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SYMBOL] = None
-			self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_EXCHANGE] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_FIAT_SAVE] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_AMOUNT] = None
 			self._resultDataDic[self.RESULT_KEY_OPTION_PRICE_SAVE] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_RESULT_COMPUTED_AMOUNT_UNIT] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_RESULT_COMPUTED_PERCENT_UNIT] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_RESULT_COMPUTED_AMOUNT_FIAT] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_RESULT_COMPUTED_PERCENT_FIAT] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_RESULT_SAVE] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_LIMIT_AMOUNT] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_LIMIT_COMPUTED_UNIT_AMOUNT] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_LIMIT_SYMBOL] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_LIMIT_EXCHANGE] = None
+			self._resultDataDic[self.RESULT_KEY_OPTION_LIMIT_SAVE] = None
 		else:
 			self._resultDataDic = resultDataDic
 
@@ -88,15 +97,23 @@ class ResultData:
 		return self._resultDataDic[key]
 
 
-	def isEmpty(self, key):
-		return self._resultDataDic[key] == None
+	def setError(self, errorMessage):
+		'''
+		Set the error msg entry in the ResultData
+		:param errorMessage:
+		'''
+		self._resultDataDic[self.RESULT_KEY_ERROR_MSG] = errorMessage
 
 
-	def isError(self):
+	def getErrorMessage(self):
 		'''
-		Return True if the ResultData contains an error msg
+		Returns the error msg entry in the ResultData
 		'''
-		return self._resultDataDic[self.RESULT_KEY_ERROR_MSG] != None
+		return self._resultDataDic[self.RESULT_KEY_ERROR_MSG]
+
+
+	def noError(self):
+		return self._resultDataDic[self.RESULT_KEY_ERROR_MSG] == None
 
 
 	def containsWarning(self, warningType):

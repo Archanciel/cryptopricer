@@ -29,22 +29,72 @@ class Requester:
 	va variation percents
 	'''
 	USER_COMMAND_GRP_PATTERN = r"(OO|XO|LO|HO|RO|VA) "
-
+	
+	'''
+	Stores correspondence between user input command parms and
+	CommmandPrice.parsedParmData dictionary keys
+	'''
+	INPUT_PARMS_PARM_DATA_DIC_KEY_DIC = {'-C': CommandPrice.CRYPTO,
+										 '-U': CommandPrice.UNIT,
+										 '-D': CommandPrice.DAY_MONTH_YEAR,
+										 '-T': CommandPrice.HOUR_MINUTE,
+										 '-E': CommandPrice.EXCHANGE,
+										 '-V': CommandPrice.OPTION_VALUE_DATA,
+										 '-F': CommandPrice.OPTION_FIAT_DATA,
+										 '-P': CommandPrice.OPTION_PRICE_DATA,
+										 '-R': CommandPrice.OPTION_RESULT_DATA,
+										 '-L': CommandPrice.OPTION_LIMIT_DATA}
+	
+	OPTION_MODIFIER = 'optionModifier'
+	OPTION_UNSUPPORTED = 'optionUnsupported'
+	
+	# changed r"\d+/\d+(?:/\d+)*|^0$" into r"\d+/\d+(?:/\d+)*|^\d+$" was required so
+	# that a full request like btc usd 1 12:45 bitfinex does generate an ERROR - date not valid
+	# in CommandPrice. With the old version of the pattern, CommandPrice.DAY_MONTH_YEAR was none,
+	# which was considered like a valid full request with only the time provided, a feature which
+	# was not supported before !
+	#
+	# So, allowing the user to provide only the time in the full request implied that we are
+	# more permissive at the level of the Requester in order for CommandPrice to be able
+	# to correctly identify the invalid date/time full request component in the form of
+	# D HH:MM or DD HH:MM
+	# pattern modified to enable handling erroneous option specification with no option
+	# data like in full request eth btc 0 binance -v or -vs or -f or -fs
+	PATTERN_COMMAND_DIC = {r"\d+/\d+(?:/\d+)*|^\d+$": CommandPrice.DAY_MONTH_YEAR,
+						   r"\d+:\d\d": CommandPrice.HOUR_MINUTE,
+						   r"[A-Za-z]+": CommandPrice.EXCHANGE,
+						   r"(?:-[vV])([sS]?)([\w\.]*)": CommandPrice.OPTION_VALUE_DATA,
+						   r"(?:-[vV])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
+						   r"(?:-[fF])([sS]?)([\w\.]*)": CommandPrice.OPTION_FIAT_DATA,
+						   r"(?:-[fF])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
+						   r"(?:-[pP])([sS]?)([\w\.]*)": CommandPrice.OPTION_PRICE_DATA,
+						   # \w instead of \d enables the generation
+						   # of an error msg if a fiat symbol is appended
+						   # to the price amount !
+						   r"(?:-[pP])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE,
+						   r"(?:-[rR])([sS]?)([\w\.:-]*)": CommandPrice.OPTION_RESULT_DATA,
+						   r"(?:-[rR])([sS]?)([\w\.:-]*)" + OPTION_MODIFIER: CommandPrice.OPTION_RESULT_SAVE,
+						   r"(?:-[lL])([sS]?)([\w\.]*)": CommandPrice.OPTION_LIMIT_DATA,
+						   r"(?:-[lL])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_LIMIT_SAVE,
+						   r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)": CommandPrice.UNSUPPORTED_OPTION_DATA,
+						   r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)" + OPTION_UNSUPPORTED: CommandPrice.UNSUPPORTED_OPTION,
+						   r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER, }
+	
 	'''
 	Full price command parms pattern. Crypto symbol (mandatory, first position mandatory), unit symbol (optional,
 	if provided, must be in second position), date (optional), time (optional) and exchange (optional). The three
 	last parms can be provided in any order after the 2 first parms !
 	
-	Additionally, 2 request commands can be added to the regular full command. For example -vs12btc.
+	Additionally, request options can be added to the regular full command. For example -vs12btc, -fusd.kraken.
 
 	Ex; btc usd 0 Kraken
-		btc usd 10/9/17 12:45 Kraken
-		btc usd 10/9/17 Kraken
-		btc usd 10/9 Kraken
+		btc usd 10/9/17 12:45 kraken
+		btc usd 10/9/17 kraken
+		btc usd 10/9 kraken
 		btc usd 0 Kraken -v0.01btc
-		btc usd 10/9/17 12:45 Kraken -v0.01btc
-		btc usd 10/9/17 Kraken -v0.01btc
-		btc usd 10/9 Kraken -v0.01btc
+		btc usd 10/9/17 12:45 binance -v0.01btc -fusd.kraken
+		btc usd 10/9/17 kraken -v0.01btc
+		btc usd 10/9 kraken -v0.01btc
 
 	Additional rules for the date and time parms. Those rules are enforced by the
 	_buildFullCommandPriceOptionalParmsDic() method.
@@ -114,6 +164,10 @@ class Requester:
 	# Ex of biggest full request:
 	#
 	# btc usd 12/2/21 13:55 hitbtc -vs21.23btc -fschf.kraken -ps52012 -r-1-2
+	#
+	# The TestControllerGui.testOptionValueOptionFiatFullRequestHistoDayPriceRequiredParmsOrderChanged()
+	# unit test verifies that the date, time and exchange required parameters can in fact be specified
+	# in any order.
 	PATTERN_FULL_PRICE_REQUEST_WITH_OPTIONAL_COMMAND_DATA = r"(\w+)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: ([\w/:]+)|)(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?(?: (-[a-zA-Z][a-zA-Z]?[\w/:\.-]*))?"
 
 	'''
@@ -195,7 +249,6 @@ class Requester:
 		-p0.004325usd is splitted into '', '0.00432usd'     this invalid -p option will generate an error msg
 		-p0 is splitted into '', '0' and will mean 'erase previous -p parm specification
 	'''
-#	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\d\.]+))"
 	OPTION_PRICE_PARM_DATA_PATTERN = r"(?:([sS]?)([\w\.]*))" # \w instead of \d enables the generation
 															 # of an error msg if a fiat symbol is appended
 															 # to the price amount !
@@ -215,8 +268,6 @@ class Requester:
 		-r-1:-3 is splitted into '', '-1:-3', None
 		-r0 is splitted into '', '0', None and will mean 'erase previous -r parm specification
 	'''
-#	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(0)"
-#	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]+)|(s)"
 	OPTION_RESULT_PARM_DATA_PATTERN = r"([sS]?)([\d\.:-]*)|(s)"
 
 	'''
@@ -240,21 +291,6 @@ class Requester:
 		self.commandPrice = None
 		self.commandCrypto = None
 		self.commandTrade = None
-
-		'''
-		Sets correspondance between user input command parms and
-		CommmandPrice.parsedParmData dictionary keys
-		'''
-		self.inputParmParmDataDicKeyDic = {'-C': CommandPrice.CRYPTO,
-										   '-U': CommandPrice.UNIT,
-										   '-D': CommandPrice.DAY_MONTH_YEAR,
-										   '-T': CommandPrice.HOUR_MINUTE,
-										   '-E': CommandPrice.EXCHANGE,
-										   '-V': CommandPrice.OPTION_VALUE_DATA,
-										   '-F': CommandPrice.OPTION_FIAT_DATA,
-										   '-P': CommandPrice.OPTION_PRICE_DATA,
-										   '-R': CommandPrice.OPTION_RESULT_DATA,
-										   '-L': CommandPrice.OPTION_LIMIT_DATA}
 
 
 	def getCommandFromCommandLine(self):
@@ -421,52 +457,18 @@ class Requester:
 		Hour minute can be 0, rejected. 1, rejected. 10, rejected. 01, rejected. 01:1, rejected. 01:01, accepted.
 						   01:10, accepted. 1:10, accepted. 00:00, accepted. 0:00, accepted. 0:0, rejected.
 		'''
-
-		OPTION_MODIFIER = 'optionModifier'
-		UNSUPPORTED_OPTION = 'unsupportedOption'
-
-		# changed r"\d+/\d+(?:/\d+)*|^0$" into r"\d+/\d+(?:/\d+)*|^\d+$" was required so
-		# that a full request like btc usd 1 12:45 bitfinex does generate an ERROR - date not valid
-		# in CommandPrice. With the old version of the pattern, CommandPrice.DAY_MONTH_YEAR was none,
-		# which was considered like a valid full request with only the time provided, a feature which
-		# was not supported before !
-		#
-		# So, allowing the user to provide only the time in the full request implied that we are
-		# more permissive at the level of the Requester in order for CommandPrice to be able
-		# to correctly identify the invalid date/time full request component in the form of
-		# D HH:MM or DD HH:MM
-		# pattern modified to enable handling erroneous option specification with no option
-		# data like in full request eth btc 0 binance -v or -vs or -f or -fs
-		patternCommandDic = {r"\d+/\d+(?:/\d+)*|^\d+$" : CommandPrice.DAY_MONTH_YEAR,
-							 r"\d+:\d\d" : CommandPrice.HOUR_MINUTE,
-							 r"[A-Za-z]+": CommandPrice.EXCHANGE,
-							 r"(?:-[vV])([sS]?)([\w\.]*)": CommandPrice.OPTION_VALUE_DATA,
-							 r"(?:-[vV])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_VALUE_SAVE,
-							 r"(?:-[fF])([sS]?)([\w\.]*)": CommandPrice.OPTION_FIAT_DATA,
-							 r"(?:-[fF])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_FIAT_SAVE,
-							 r"(?:-[pP])([sS]?)([\w\.]*)": CommandPrice.OPTION_PRICE_DATA, # \w instead of \d enables the generation
-															                               # of an error msg if a fiat symbol is appended
-																						   # to the price amount !
-							 r"(?:-[pP])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_PRICE_SAVE,
-							 r"(?:-[rR])([sS]?)([\w\.:-]*)": CommandPrice.OPTION_RESULT_DATA,
-							 r"(?:-[rR])([sS]?)([\w\.:-]*)" + OPTION_MODIFIER: CommandPrice.OPTION_RESULT_SAVE,
-							 r"(?:-[lL])([sS]?)([\w\.]*)": CommandPrice.OPTION_LIMIT_DATA,
-							 r"(?:-[lL])([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.OPTION_LIMIT_SAVE,
-							 r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)": CommandPrice.UNSUPPORTED_OPTION_DATA, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-							 r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)" + UNSUPPORTED_OPTION: CommandPrice.UNSUPPORTED_OPTION, # see scn capture https://pythex.org/ in Evernote for test of this regexp !
-							 r"(-[^vVfFpPrRlL]{1})([sS]?)([\w\.]*)" + OPTION_MODIFIER: CommandPrice.UNSUPPORTED_OPTION_MODIFIER,}
 		
 		orderFreeParmList = list(orderFreeParmList)
 		orderFreeParsedParmDataDic = {}
 		
 		# it does not make sense to parse the order free full request parms with a pattern combined with
 		# OPTION_MODIFIER string !
-		patternCommandDicKeysWithoutModifier = [x for x in patternCommandDic.keys() if OPTION_MODIFIER not in x]
+		patternCommandDicKeysWithoutModifier = [x for x in self.PATTERN_COMMAND_DIC.keys() if self.OPTION_MODIFIER not in x]
 
 		for pattern in patternCommandDicKeysWithoutModifier:
 			for orderFreeParm in orderFreeParmList:
 				if orderFreeParm and re.search(pattern, orderFreeParm):
-					parsedParmDataDicKey = patternCommandDic[pattern]
+					parsedParmDataDicKey = self.PATTERN_COMMAND_DIC[pattern]
 					if parsedParmDataDicKey not in orderFreeParsedParmDataDic:
 						# if for example DMY already found in optional full command parms,
 						# it will not be overwritten ! Ex: 12/09/17 0: both token match DMY
@@ -474,9 +476,9 @@ class Requester:
 						data, option, optionModifier = self._extractData(pattern, orderFreeParm)
 						if data != None:
 							orderFreeParsedParmDataDic[parsedParmDataDicKey] = data
-							patternOptionModifierKey = pattern + OPTION_MODIFIER
+							patternOptionModifierKey = pattern + self.OPTION_MODIFIER
 							if optionModifier != None and optionModifier != '':
-								optionModifierParsedParmDataDicKey = patternCommandDic[patternOptionModifierKey]
+								optionModifierParsedParmDataDicKey = self.PATTERN_COMMAND_DIC[patternOptionModifierKey]
 								orderFreeParsedParmDataDic[optionModifierParsedParmDataDicKey] = optionModifier
 							# elif patternOptionModifierKey in orderFreeParsedParmDataDic.keys():
 							# This situation never happens when handling full request ! In fact,
@@ -488,8 +490,8 @@ class Requester:
 								# here, handling an unsupported option. If handling a supported option, option
 								# is None. For valid options, the correct option symbol will be set later in the
 								# command price in _fillOptionValueInfo() like methods !
-								patternUnsupportedOptionKey = pattern + UNSUPPORTED_OPTION
-								orderFreeParsedParmDataDic[patternCommandDic[patternUnsupportedOptionKey]] = option
+								patternUnsupportedOptionKey = pattern + self.OPTION_UNSUPPORTED
+								orderFreeParsedParmDataDic[self.PATTERN_COMMAND_DIC[patternUnsupportedOptionKey]] = option
 						else:
 							#full command syntax error !
 							return None
@@ -591,7 +593,7 @@ class Requester:
 				# a warning to disturb the partial request execution.
 				self.commandPrice.resetUnsupportedOptionData()
 
-				keys = self.inputParmParmDataDicKeyDic.keys()
+				keys = self.INPUT_PARMS_PARM_DATA_DIC_KEY_DIC.keys()
 				it = iter(groupList)
 
 				for command in it:
@@ -611,11 +613,11 @@ class Requester:
 								
 								# remove invalid '' value from parsedParData to avoid polluting next partial
 								# request !
-								self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = None
+								self.commandPrice.parsedParmData[self.INPUT_PARMS_PARM_DATA_DIC_KEY_DIC[commandUpper]] = None
 
 								return self.commandError
 							else:
-								self.commandPrice.parsedParmData[self.inputParmParmDataDicKeyDic[commandUpper]] = value
+								self.commandPrice.parsedParmData[self.INPUT_PARMS_PARM_DATA_DIC_KEY_DIC[commandUpper]] = value
 						else:
 							# unknown partial command symbol
 							self.commandPrice.parsedParmData[self.commandPrice.UNSUPPORTED_OPTION] = command
