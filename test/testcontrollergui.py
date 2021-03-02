@@ -4573,4 +4573,6 @@ if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
+	tst.testGetPrintableResultForDayOnlyAndTimeFullRequestOn31st()
+	tst.setUp()
 	tst.testGetPrintableResultForUnsupportedPartialRequestOptionSaveAfterValidRealTimeRequest()
