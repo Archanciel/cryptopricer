@@ -4430,12 +4430,12 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 12:45M'
-		expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr)
+		expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
 
 		if not 'ERROR' in printResult:
 			self.assertEqual(expectedPrintResult,
 				UtilityForTest.removeOneEndPriceFromResult(printResult))
-			self.assertEqual('btc usd {}/{}/{} 12:45 bitfinex'.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+			self.assertEqual('btc usd {}/{}/{} 12:45 bitfinex'.format(twoDaysBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr, nowHourStr,
 																   nowMinuteStr), fullCommandStrNoOptions)
 		else:
 			# if test is run on March 1st for example
@@ -4460,12 +4460,12 @@ class TestControllerGui(unittest.TestCase):
 			expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, nowMonthStr, nowLastYearStr, twoDaysBeforeDayStr, nowMonthStr, nowYearStr)
 		else:
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 11:34M'
-			expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr)
+			expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
 
 		if not 'ERROR' in printResult:
 			self.assertEqual(expectedPrintResult,
 				UtilityForTest.removeOneEndPriceFromResult(printResult))
-			self.assertEqual('btc usd {}/{}/{} 11:34 bitfinex'.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+			self.assertEqual('btc usd {}/{}/{} 11:34 bitfinex'.format(twoDaysBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr, nowHourStr,
 																   nowMinuteStr), fullCommandStrNoOptions)
 		else:
 			# if test is run on February 1st for example
@@ -4492,13 +4492,13 @@ class TestControllerGui(unittest.TestCase):
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 16:34 can not be in the future and was shifted back to last year.'
 			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowLastYearStr, oneDayBeforeDayStr, nowMonthStr, nowYearStr)
 		else:
-			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 16:34M'
-			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr)
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
 
 		if not 'ERROR' in printResult:
 			self.assertEqual(expectedPrintResult,
 				UtilityForTest.removeOneEndPriceFromResult(printResult))
-			self.assertEqual('btc usd {}/{}/{} 16:34 bitfinex'.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+			self.assertEqual('btc usd {}/{}/{} 16:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr, nowHourStr,
 																   nowMinuteStr), fullCommandStrNoOptions)
 		else:
 			# if test is run on February 1st for example
@@ -4522,13 +4522,13 @@ class TestControllerGui(unittest.TestCase):
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 18:34 can not be in the future and was shifted back to last year.'
 			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowLastYearStr, oneDayBeforeDayStr, nowMonthStr, nowYearStr)
 		else:
-			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 18:34M'
-			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr)
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
 
 		if not 'ERROR' in printResult:
 			self.assertEqual(expectedPrintResult,
 				UtilityForTest.removeOneEndPriceFromResult(printResult))
-			self.assertEqual('btc usd {}/{}/{} 18:34 bitfinex'.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+			self.assertEqual('btc usd {}/{}/{} 18:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr, nowHourStr,
 																   nowMinuteStr), fullCommandStrNoOptions)
 		else:
 			# if test is run on February 1st for example
