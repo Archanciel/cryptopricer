@@ -164,7 +164,8 @@ class CommandPrice(AbstractCommand):
 		hour, \
 		minute, \
 		localRequestDateTime, \
-		resultPriceOrBoolean = self._handleDateTimeRequestParms()
+		resultPriceOrBoolean,\
+		initialParsedParmDataDic = self._handleDateTimeRequestParms()
 
 		if resultPriceOrBoolean != True:
 			# an error in the date/time request data was detected ...
@@ -296,6 +297,16 @@ class CommandPrice(AbstractCommand):
 		
 		resultPriceOrBoolean = self._completeAndValidateDateTimeData(localNow)
 		
+		# storing the parsed parm data dictionary before it
+		# may be modified in case the user requested a RT
+		# price. The initial dictionary wiLl be added to the
+		# returned resultData so the client can have access
+		# to the full command request, even if only a partial
+		# request like -d or -c was entered. This is necessary
+		# because if the client is a GUI, it stores the list
+		# of requests in order to be able to replay them !
+		initialParsedParmDataDic = self.parsedParmData.copy()
+		
 		if resultPriceOrBoolean == True:
 			dayStr = self.parsedParmData[self.DAY]
 			day = int(dayStr)
@@ -332,8 +343,7 @@ class CommandPrice(AbstractCommand):
 				minute = int(minuteStr)
 			else:
 				minute = 0
-			
-			wasDateInFutureSetToLastYear = False
+
 			localRequestDateTime = None
 			
 			if day + month + year == 0:
@@ -359,7 +369,7 @@ class CommandPrice(AbstractCommand):
 					else:
 						localRequestDateTime = None
 
-		return day, month, year, hour, minute, localRequestDateTime, resultPriceOrBoolean
+		return day, month, year, hour, minute, localRequestDateTime, resultPriceOrBoolean, initialParsedParmDataDic
 	
 	def isValid(self):
 		'''

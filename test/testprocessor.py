@@ -1173,7 +1173,7 @@ class TestProcessor(unittest.TestCase):
                                                    optionValueSymbol=optionValueSymbol, optionValueAmount=optionValueAmount,
                                                    optionFiatSymbol=optionFiatSymbol, optionPriceAmount=optionPriceAmount, optionPriceSaveFlag=optionPriceSave)
         self.assertEqual(None, resultData.getValue(resultData.RESULT_KEY_ERROR_MSG))
-        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_OPTION_PRICE), 'WARNING - option -p160 is not compatible with real time request. -p option ignored.')
+        self.assertEqual(resultData.getWarningMessage(resultData.WARNING_TYPE_OPTION_PRICE), 'WARNING - option -ps160 is not compatible with real time request. -ps option ignored.')
 
 if __name__ == '__main__':
     #	unittest.main()

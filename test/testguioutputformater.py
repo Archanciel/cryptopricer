@@ -2103,6 +2103,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 # price save
 	
+	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionPriceSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fschsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2186,6 +2187,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 			'krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc -ps0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 	
+	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueNoSaveOptionFiatSaveOptionPriceSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fschsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2269,6 +2271,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 			'krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fschsb.hitbtc -ps0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 	
+	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueSaveOptionFiatNoSaveOptionPriceSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fchsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2352,6 +2355,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 			'krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fchsb.hitbtc -ps0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 	
+	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionPriceSave(self):
 		# krl btc 20/12/20 hitbtc -v2169.75krl -fchsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2437,6 +2441,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 # price no save
 	
+	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionPriceNoSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fschsb.hitbtc -p0.0000075
 		crypto = 'KRL'
@@ -2521,6 +2526,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 			'krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc -p0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 	
+	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueNoSaveOptionFiatSaveOptionPriceNoSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fschsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2604,6 +2610,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 			'krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fschsb.hitbtc -p0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 	
+	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueSaveOptionFiatNoSaveOptionPriceNoSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fchsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2686,7 +2693,8 @@ class TestGuiOutputFormater(unittest.TestCase):
 		self.assertEqual(
 			'krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fchsb.hitbtc -p0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
-	
+
+	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionPriceNoSave(self):
 		# krl btc 20/12/20 hitbtc -v2169.75krl -fchsb.hitbtc -ps0.0000075
 		crypto = 'KRL'

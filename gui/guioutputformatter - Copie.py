@@ -9,15 +9,6 @@ class GuiOutputFormatterNew(AbstractOutputFormater):
 	"""
 
 	def __init__(self, configurationMgr):
-		"""
-		Ctor. The parm activateClipboard with default value set to False was added to prevent SeqDiagBuilder
-		unit tests in TestSeqDiagBuilder where the CryptoPricer Condtroller class were implied to crash the Pycharm
-		unit test environment. This crash was due to an obscure problem in the Pycharm unit test framework. This
-		failure only happened if the kivy clipboard class was imported.
-		
-		:param configurationMgr:
-		"""
-		
 		super().__init__()
 		self.configurationMgr = configurationMgr
 

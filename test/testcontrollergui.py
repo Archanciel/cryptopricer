@@ -3512,7 +3512,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(
 			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of request. -v option ignored.', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
-		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -v1000eth -fchf', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -fchf', fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
 	def testControllerBugSpecifyOptionValueSaveThenFiatSaveAfterAskHistoDay(self):
