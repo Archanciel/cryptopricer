@@ -98,9 +98,12 @@ class GuiOutputFormatter(AbstractOutputFormater):
 												 requestDateHM + ' ' + \
 												 commandDic[CommandPrice.EXCHANGE]
 
-		fullCommandStrWithSaveOptionsForHistoryList = None
-		fullCommandStrWithNoSaveOptions = None
-		fullCommandStrForStatusBar = None
+		# the three next full command string, unless they are set to None, all start with
+		# the content of fullCommandStrNoOptions
+		
+		fullCommandStrWithSaveOptionsForHistoryList = fullCommandStrNoOptions
+		fullCommandStrWithNoSaveOptions = fullCommandStrNoOptions
+		fullCommandStrForStatusBar = fullCommandStrNoOptions
 
 		# handling value option
 
@@ -112,7 +115,6 @@ class GuiOutputFormatter(AbstractOutputFormater):
 			fullCommandStrForStatusBar, \
 			valueOptionStr = self._addOptionValueInfo(resultData,
 													  commandDic,
-													  fullCommandStrNoOptions,
 													  fullCommandStrWithNoSaveOptions,
 													  fullCommandStrWithSaveOptionsForHistoryList,
 													  fullCommandStrForStatusBar,
@@ -127,9 +129,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 			fullCommandStrWithSaveOptionsForHistoryList, \
 			fullCommandStrForStatusBar = self._addOptionFiatInfo(resultData,
 																 commandDic,
-																 valueOptionStr,
 																 fiatOptionSymbol,
-																 fullCommandStrNoOptions,
 																 fullCommandStrWithNoSaveOptions,
 																 fullCommandStrWithSaveOptionsForHistoryList,
 																 fullCommandStrForStatusBar)
@@ -144,12 +144,17 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		# logging.info('fullCommandStrWithSaveOptionsForHistoryList: {}'.format(fullCommandStrWithSaveOptionsForHistoryList))
 		# logging.info('fullCommandStrForStatusBar: {}'.format(fullCommandStrForStatusBar))
 
+		if fullCommandStrWithSaveOptionsForHistoryList == fullCommandStrNoOptions:
+			fullCommandStrWithSaveOptionsForHistoryList = None
+			
+		if fullCommandStrWithNoSaveOptions == fullCommandStrNoOptions:
+			fullCommandStrWithNoSaveOptions = None
+
 		return fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	
 	def _addOptionValueInfo(self,
 							resultData,
 							commandDic,
-							fullCommandStrNoOptions,
 							fullCommandStrWithNoSaveOptions,
 							fullCommandStrWithSaveOptionsForHistoryList,
 							fullCommandStrForStatusBar,
@@ -184,17 +189,19 @@ class GuiOutputFormatter(AbstractOutputFormater):
 			if not resultData.containsWarning(resultData.WARNING_TYPE_OPTION_VALUE):
 				# in case the value command generated a warning, if the value option refers a
 				# currency different from the crypto, unit or fiat of the request, the fullCommandStr
-				# remains None which results that it will not be stored in the request history list
-				# of the GUI !
+				# remains unmodified, i.e. eual to the fullCommandStrNoOptions, which results that it
+				# will be set to None and so not be stored in the request history list of the GUI !
 				valueOptionStr = ' -vs{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
-				fullCommandStrWithSaveOptionsForHistoryList = fullCommandStrNoOptions + valueOptionStr
+				fullCommandStrWithSaveOptionsForHistoryList += valueOptionStr
 				fullCommandStrForStatusBar = fullCommandStrWithSaveOptionsForHistoryList
+			else:
+				pass
 		else:
 			if valueOptionAmountStr and valueOptionSymbolStr:
 				# even in case the value command generated a warning, it will be displayed in the
 				# status bar !
 				valueOptionStr = ' -v{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
-				fullCommandStrWithNoSaveOptions = fullCommandStrNoOptions + valueOptionStr
+				fullCommandStrWithNoSaveOptions += valueOptionStr
 				fullCommandStrForStatusBar = fullCommandStrWithNoSaveOptions
 
 		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar, valueOptionStr
@@ -202,9 +209,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 	def _addOptionFiatInfo(self,
 						   resultData,
 						   commandDic,
-						   valueOptionStr,
 						   fiatOptionSymbol,
-						   fullCommandStrNoOptions,
 						   fullCommandStrWithNoSaveOptions,
 						   fullCommandStrWithSaveOptionsForHistoryList,
 						   fullCommandStrForStatusBar):
@@ -239,35 +244,24 @@ class GuiOutputFormatter(AbstractOutputFormater):
 			if not resultData.containsWarning(resultData.WARNING_TYPE_OPTION_VALUE):
 				# in case the value command generated a warning, if the value option refers a
 				# currency different from the crypto, unit or fiat of the request, the fullCommandStr
-				# remains None which results that it will not be stored in the request history list
-				# of the GUI !
+				# remains unmodified, i.e. eual to the fullCommandStrNoOptions, which results that it
+				# will be set to None and so not be stored in the request history list of the GUI !
 				fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
 														   fiatOptionSymbol,
 														   isOptionFiatSave=True)
-				if fullCommandStrWithSaveOptionsForHistoryList:
-					# case when option value exist and is in save mode
-					fullCommandStrWithSaveOptionsForHistoryList += fiatOptionInfo
-				else:
-					# case when no option value exist in save mode
-					fullCommandStrWithSaveOptionsForHistoryList = fullCommandStrNoOptions + fiatOptionInfo
+				fullCommandStrWithSaveOptionsForHistoryList += fiatOptionInfo
 				
-				fullCommandStrForStatusBar = fullCommandStrNoOptions + valueOptionStr + fiatOptionInfo + \
+				fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo + \
 											 self._buildUnitFiatComputationString(resultData)
+			else:
+				pass
 		else:
 			# save mode is not active
 			fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
 													   fiatOptionSymbol,
 													   isOptionFiatSave=False)
-			if fullCommandStrWithNoSaveOptions:
-				# case when option value exist and is not in save mode
-				if fiatOptionSymbol:
-					fullCommandStrWithNoSaveOptions += fiatOptionInfo
-			else:
-				# case when no option value exist
-				if fiatOptionSymbol:
-					fullCommandStrWithNoSaveOptions = fullCommandStrNoOptions + fiatOptionInfo
-			
-			fullCommandStrForStatusBar = fullCommandStrNoOptions + valueOptionStr + fiatOptionInfo + \
+			fullCommandStrWithNoSaveOptions += fiatOptionInfo
+			fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo + \
 										 self._buildUnitFiatComputationString(resultData)
 
 		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
