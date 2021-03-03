@@ -24,9 +24,9 @@ class TestControllerGui(unittest.TestCase):
 	all the tests in Pydroid on Android.
 
 	Test the Controller using a GuiOuputFormater in place of a ConsoleOutputFormaater
-	since GuiOuputFormater runs on Android in Pydroid, but fails in QPython !
+	since GuiOuputFormatter runs on Android in Pydroid, but fails in QPython !
 
-	All the test cases are defineed in the TestController parent to avoid code duplication
+	All the test cases are defined in the TestController parent to avoid code duplication
 	'''
 	def setUp(self):
 		if os.name == 'posix':
@@ -1395,7 +1395,7 @@ class TestControllerGui(unittest.TestCase):
 		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
 		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on Binance: R'
 		
-		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, 
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
 																	nowDayStr,
 																	nowHourStr,
 																	nowMinuteStr,
@@ -4492,17 +4492,34 @@ class TestControllerGui(unittest.TestCase):
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 16:34 can not be in the future and was shifted back to last year.'
 			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowLastYearStr, oneDayBeforeDayStr, nowMonthStr, nowYearStr)
 		else:
-			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'
-			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
+			if oneDayBeforeDayStr == '2' and twoDaysBeforeMonthStr == '3':
+				# tst run on Marth 2nd
+				expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'
+				expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
+			
+				if not 'ERROR' in printResult:
+					self.assertEqual(expectedPrintResult,
+					                 UtilityForTest.removeOneEndPriceFromResult(printResult))
+					self.assertEqual(
+						'btc usd {}/{}/{} 16:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr),
+						fullCommandStrNoOptions)
+				else:
+					# if test is run on February 1st for example
+					self.assertEqual(
+						'ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')),
+						printResult)
+			else:
+				expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 16:34M'
+				expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
 
-		if not 'ERROR' in printResult:
-			self.assertEqual(expectedPrintResult,
-				UtilityForTest.removeOneEndPriceFromResult(printResult))
-			self.assertEqual('btc usd {}/{}/{} 16:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr, nowHourStr,
-																   nowMinuteStr), fullCommandStrNoOptions)
-		else:
-			# if test is run on February 1st for example
-			self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
+				if 'ERROR' not in printResult:
+					self.assertEqual(expectedPrintResult,
+						UtilityForTest.removeOneEndPriceFromResult(printResult))
+					self.assertEqual('btc usd {}/{}/{} 16:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr), fullCommandStrNoOptions)
+				else:
+					# if test is run on February 1st for example
+					self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
+
 
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual(None, fullCommandStrForStatusBar)
@@ -4524,16 +4541,39 @@ class TestControllerGui(unittest.TestCase):
 		else:
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'
 			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
-
-		if not 'ERROR' in printResult:
-			self.assertEqual(expectedPrintResult,
-				UtilityForTest.removeOneEndPriceFromResult(printResult))
-			self.assertEqual('btc usd {}/{}/{} 18:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr, nowHourStr,
-																   nowMinuteStr), fullCommandStrNoOptions)
+		
+		if oneDayBeforeDayStr == '2' and twoDaysBeforeMonthStr == '3':
+			# tst run on Marth 2nd
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
+			
+			if not 'ERROR' in printResult:
+				self.assertEqual(expectedPrintResult,
+				                 UtilityForTest.removeOneEndPriceFromResult(printResult))
+				self.assertEqual(
+					'btc usd {}/{}/{} 18:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr),
+					fullCommandStrNoOptions)
+			else:
+				# if test is run on February 1st for example
+				self.assertEqual(
+					'ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')),
+					printResult)
 		else:
-			# if test is run on February 1st for example
-			self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
-
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 18:34M'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
+			
+			if 'ERROR' not in printResult:
+				self.assertEqual(expectedPrintResult,
+				                 UtilityForTest.removeOneEndPriceFromResult(printResult))
+				self.assertEqual(
+					'btc usd {}/{}/{} 18:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr),
+					fullCommandStrNoOptions)
+			else:
+				# if test is run on February 1st for example
+				self.assertEqual(
+					'ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')),
+					printResult)
+		
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual(None, fullCommandStrForStatusBar)
 
@@ -4654,3 +4694,5 @@ if __name__ == '__main__':
 	tst.testGetPrintableResultFullRequestNoDateNoTime()
 	tst.setUp()
 	tst.testOptionValueOptionFiatOptionPriceFullRequestHistoDayPrice()
+	tst.setUp()
+	tst.testGetPrintableResultForInputScenarioPartialRequestDateTime()
