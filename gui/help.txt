@@ -20,7 +20,8 @@ Full requests do specify all the request parameter values.
     [b][cy]<exchange>[/c][/b] exchange name like binance or all for average price on all exchanges
 
     [b][cy]<options>[/c][/b] options are specified using [b][cy]-[/c][/b],
-    like [b][cy]-v[/c][/b] or [b][cy]-f[/c][/b]. More details below
+    like [b][cy]-v[/c][/b] or [b][cy]-f[/c][/b] or [b][cy]-p[/c][/b].
+    [n]More details below
 
 [b][cg]TIP[/c][/b]: typing return replays the last request.
 
@@ -51,6 +52,7 @@ the last price of the date at UTC 23.59 is returned as 'close' price and the dis
     [n][b][cy]R[/c][/b] = RT
     [n][b][cy]M[/c][/b] = Minute price (precision at the minute)
     [n][b][cy]C[/c][/b] = Close price
+    [n][b][cy]P[/c][/b] = Effective buy or sell price defined by the [b][cy]-p[/c][/b] price option
 
 Examples: assume we are on 16/12/17 at 22:10
 
@@ -90,8 +92,10 @@ and preceded by [b][cy]-[/c][/b]. They are documented later in the help.
 [b][cg]Partial requests[/c][/b]
 
 Once a full request has been entered, it is handy to just change one or more parameters of
-the initial command. The app keeps and reuses the parameters which are not redefined.
-After entering a partial request, its value remains in effect until it is redefined.
+this request. The app keeps and reuses the request parameters which are not redefined 
+by a partial request. After entering a partial request, its value remains in effect until it is 
+redefined by a new partial request or until a new full request which erases any in 
+effect partial request is entered.
 
 The partial request parameters are specified using the following parms:
 
