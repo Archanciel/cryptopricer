@@ -69,7 +69,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 					 2/ None (no value command in effect)
 					 3/ None (no value command with save option in effect)
 		'''
-		if not resultData.noError():
+		if resultData.isError():
 			return '', None, None, None
 
 		commandDic = resultData.getValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS)
@@ -169,7 +169,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		valueOptionSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
 
 		if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE):
-			if not resultData.containsWarning(resultData.WARNING_TYPE_OPTION_VALUE):
+			if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
 				# in case the value command generated a warning, if the value option refers a
 				# currency different from the crypto, unit or fiat of the request, the fullCommandStr
 				# remains unmodified, i.e. eual to the fullCommandStrNoOptions, which results that it
@@ -221,7 +221,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 			fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
 													   fiatOptionSymbol,
 													   isOptionFiatSave=True)
-			if not resultData.containsWarning(resultData.WARNING_TYPE_OPTION_VALUE):
+			if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
 				# in case the value command generated a warning, if the value option refers a
 				# currency different from the crypto, unit or fiat of the request, the fullCommandStr
 				# remains unmodified, i.e. eual to the fullCommandStrNoOptions, which results that it
