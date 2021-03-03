@@ -3,12 +3,21 @@ from abstractoutputformater import AbstractOutputFormater
 from datetimeutil import DateTimeUtil
 
 
-class GuiOutputFormatter(AbstractOutputFormater):
+class GuiOutputFormatterGood(AbstractOutputFormater):
 	"""
 	:seqdiag_note Formats the result data printed to the output zone of the application and to the status bar.
 	"""
 
 	def __init__(self, configurationMgr):
+		"""
+		Ctor. The parm activateClipboard with default value set to False was added to prevent SeqDiagBuilder
+		unit tests in TestSeqDiagBuilder where the CryptoPricer Condtroller class were implied to crash the Pycharm
+		unit test environment. This crash was due to an obscure problem in the Pycharm unit test framework. This
+		failure only happened if the kivy clipboard class was imported.
+		
+		:param configurationMgr:
+		"""
+		
 		super().__init__()
 		self.configurationMgr = configurationMgr
 
@@ -69,7 +78,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 					 2/ None (no value command in effect)
 					 3/ None (no value command with save option in effect)
 		'''
-		if not resultData.noError():
+		if resultData.isError():
 			return '', None, None, None
 
 		commandDic = resultData.getValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS)
@@ -89,39 +98,66 @@ class GuiOutputFormatter(AbstractOutputFormater):
 												 requestDateHM + ' ' + \
 												 commandDic[CommandPrice.EXCHANGE]
 
-		# the three next full command string, unless they are set to None, all start with
-		# the content of fullCommandStrNoOptions
-		
-		fullCommandStrWithSaveOptionsForHistoryList = fullCommandStrNoOptions
-		fullCommandStrWithNoSaveOptions = fullCommandStrNoOptions
-		fullCommandStrForStatusBar = fullCommandStrNoOptions
+		fullCommandStrWithSaveOptionsForHistoryList = None
+		fullCommandStrWithNoSaveOptions = None
+		fullCommandStrForStatusBar = None
 
 		# handling value option
-
-		if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO):
-			fullCommandStrWithNoSaveOptions, \
-			fullCommandStrWithSaveOptionsForHistoryList, \
-			fullCommandStrForStatusBar = self._addOptionValueInfo(resultData,
-																  commandDic,
-																  fullCommandStrWithNoSaveOptions,
-																  fullCommandStrWithSaveOptionsForHistoryList,
-																  fullCommandStrForStatusBar)
 		
+		valueOptionAmountStr = commandDic[CommandPrice.OPTION_VALUE_AMOUNT]
+		valueOptionSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
+		valueOptionStr = ''
+		
+		if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE):
+			if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
+				# in case the value command generated a warning, if the value option refers a crypto or unit
+				# different from the crypto or unit of the request, the fullCommandStr remains
+				# None and will not be stored in the request history list of the GUI !
+				valueOptionStr = ' -vs{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
+				fullCommandStrWithSaveOptionsForHistoryList = fullCommandStrNoOptions + valueOptionStr
+				fullCommandStrForStatusBar = fullCommandStrWithSaveOptionsForHistoryList
+		else:
+			if valueOptionAmountStr and valueOptionSymbolStr:
+				# even in case the value command generated a warning, it will be displayed in the status bar !
+				valueOptionStr = ' -v{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
+				fullCommandStrWithNoSaveOptions = fullCommandStrNoOptions + valueOptionStr
+				fullCommandStrForStatusBar = fullCommandStrWithNoSaveOptions
+
 		# handling fiat option
 
 		fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
 
 		if fiatOptionSymbol:
-			fullCommandStrWithNoSaveOptions, \
-			fullCommandStrWithSaveOptionsForHistoryList, \
-			fullCommandStrForStatusBar = self._addOptionFiatInfo(resultData,
-																 commandDic,
-																 fiatOptionSymbol,
-																 fullCommandStrWithNoSaveOptions,
-																 fullCommandStrWithSaveOptionsForHistoryList,
-																 fullCommandStrForStatusBar)
-
-		# handling price option
+			if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
+				# save mode is isLoadAtStartChkboxActive
+				if not resultData.containsWarning(resultData.WARNING_TYPE_COMMAND_VALUE):
+					# in case the value command generated a warning, if the value command data contains a crypto or unit
+					# different from the crypto or unit of the request, the fullCommandStr remains
+					# None and will not be stored in the request history list of the GUI !
+					fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
+															   fiatOptionSymbol,
+															   isOptionFiatSave=True)
+					if fullCommandStrWithSaveOptionsForHistoryList:
+						# case when option value exist and is in save mode
+						fullCommandStrWithSaveOptionsForHistoryList += fiatOptionInfo
+					else:
+						# case when no option value exist in save mode
+						fullCommandStrWithSaveOptionsForHistoryList = fullCommandStrNoOptions + fiatOptionInfo
+	
+					fullCommandStrForStatusBar = fullCommandStrNoOptions + valueOptionStr + fiatOptionInfo + self._buildUnitFiatComputationString(resultData)
+			else:
+				# save mode is not isLoadAtStartChkboxActive
+				fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
+														   fiatOptionSymbol,
+														   isOptionFiatSave=False)
+				if not fullCommandStrWithNoSaveOptions:
+					if fiatOptionSymbol:
+						fullCommandStrWithNoSaveOptions = fullCommandStrNoOptions + fiatOptionInfo
+				else:
+					if fiatOptionSymbol:
+						fullCommandStrWithNoSaveOptions += fiatOptionInfo
+	
+				fullCommandStrForStatusBar = fullCommandStrNoOptions + valueOptionStr + fiatOptionInfo + self._buildUnitFiatComputationString(resultData)
 
 		from seqdiagbuilder import SeqDiagBuilder
 
@@ -131,123 +167,16 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		# logging.info('fullCommandStrWithSaveOptionsForHistoryList: {}'.format(fullCommandStrWithSaveOptionsForHistoryList))
 		# logging.info('fullCommandStrForStatusBar: {}'.format(fullCommandStrForStatusBar))
 
-		if fullCommandStrWithSaveOptionsForHistoryList == fullCommandStrNoOptions:
-			fullCommandStrWithSaveOptionsForHistoryList = None
-			
-		if fullCommandStrWithNoSaveOptions == fullCommandStrNoOptions:
-			fullCommandStrWithNoSaveOptions = None
-
 		return fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	
-	def _addOptionValueInfo(self,
-							resultData,
-							commandDic,
-							fullCommandStrWithNoSaveOptions,
-							fullCommandStrWithSaveOptionsForHistoryList,
-							fullCommandStrForStatusBar):
-		"""
-		Adds the value option information to
-			1/ the request full command string with no save	option (result ex:
-			   btc usd 20/12/20 00:00 binance -v1500usd)
-			2/ the request full command string with save option used to fill the GUI request
-			   history list (result ex: btc usd 20/12/20 00:00 binance -vs1500usd)
-			3/ the request full command string for status bar (result ex:
-			   btc usd 20/12/20 00:00 binance -v1500usd or
-			   btc usd 20/12/20 00:00 binance -vs1500usd)
-
-		:param resultData: stores the on-line request results
-		:param commandDic: stores the currently active command parms
-		:param fullCommandStrWithNoSaveOptions: empty str output result
-		:param fullCommandStrWithSaveOptionsForHistoryList: empty str output result
-		:param fullCommandStrForStatusBar: empty str output result
-		
-		:return: fullCommandStrWithNoSaveOptions,
-				 fullCommandStrWithSaveOptionsForHistoryList,
-				 fullCommandStrForStatusBar,
-		"""
-		valueOptionAmountStr = commandDic[CommandPrice.OPTION_VALUE_AMOUNT]
-		valueOptionSymbolStr = commandDic[CommandPrice.OPTION_VALUE_SYMBOL]
-
-		if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_SAVE):
-			if not resultData.containsWarning(resultData.WARNING_TYPE_OPTION_VALUE):
-				# in case the value command generated a warning, if the value option refers a
-				# currency different from the crypto, unit or fiat of the request, the fullCommandStr
-				# remains unmodified, i.e. eual to the fullCommandStrNoOptions, which results that it
-				# will be set to None and so not be stored in the request history list of the GUI !
-				valueOptionStr = ' -vs{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
-				fullCommandStrWithSaveOptionsForHistoryList += valueOptionStr
-			fullCommandStrForStatusBar = fullCommandStrWithSaveOptionsForHistoryList
-		else:
-			if valueOptionAmountStr and valueOptionSymbolStr:
-				# even in case the value command generated a warning, it will be displayed in the
-				# status bar !
-				valueOptionStr = ' -v{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
-				fullCommandStrWithNoSaveOptions += valueOptionStr
-				fullCommandStrForStatusBar = fullCommandStrWithNoSaveOptions
-
-		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
-	
-	def _addOptionFiatInfo(self,
-						   resultData,
-						   commandDic,
-						   fiatOptionSymbol,
-						   fullCommandStrWithNoSaveOptions,
-						   fullCommandStrWithSaveOptionsForHistoryList,
-						   fullCommandStrForStatusBar):
-		"""
-		Adds the fiat option information to
-			1/ the request full command string with no save	option (result ex:
-			   btc usd 12/09/17 00:00 bittrex -feur)
-			2/ the request full command string with save option used to fill the GUI request
-			   history list (result ex: btc usd 12/09/17 00:00 bittrex -fseur)
-			3/ the request full command string  for status bar (result ex:
-			   btc usd 12/09/17 00:00 bittrex -feur (4122 BTC/USD " 0.8346 USD/EUR = 3440.2212 BTC/EUR)
-		
-		:param resultData: stores the on-line request results
-		:param commandDic: stores the currently active command parms
-		:param fiatOptionSymbol:
-		:param fullCommandStrWithNoSaveOptions: empty if no no save value option or contains the full command string
-												with the no save value option information
-		:param fullCommandStrWithSaveOptionsForHistoryList: empty if no save value option or contains the full command
-															string with the save value option information
-		:param fullCommandStrForStatusBar: empty if no value option (no save or save) or contains the request full
-										   command string plus the value option for status bar.
-										   Ex: btc usd 20/12/20 00:00 binance -v1500usd
-										   
-		:return: fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
-		"""
-		if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
-			# save mode is active
-			fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
-													   fiatOptionSymbol,
-													   isOptionFiatSave=True)
-			if not resultData.containsWarning(resultData.WARNING_TYPE_OPTION_VALUE):
-				# in case the value command generated a warning, if the value option refers a
-				# currency different from the crypto, unit or fiat of the request, the fullCommandStr
-				# remains unmodified, i.e. eual to the fullCommandStrNoOptions, which results that it
-				# will be set to None and so not be stored in the request history list of the GUI !
-				fullCommandStrWithSaveOptionsForHistoryList += fiatOptionInfo
-				
-			fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo + \
-										 self._buildUnitFiatComputationString(resultData)
-		else:
-			# save mode is not active
-			fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
-													   fiatOptionSymbol,
-													   isOptionFiatSave=False)
-			fullCommandStrWithNoSaveOptions += fiatOptionInfo
-			fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo + \
-										 self._buildUnitFiatComputationString(resultData)
-
-		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
-	
 	def _buildFiatOptionInfo(self,
-							 commandDic,
-							 fiatOptionSymbol,
-							 isOptionFiatSave):
+										   commandDic,
+										   fiatOptionSymbol,
+										   isOptionFiatSave):
 		"""
 
 		:param commandDic:
+		:param fiatOptionInfo: full command string with or without value option
 		:param fiatOptionSymbol
 		:param isOptionFiatSave
 
