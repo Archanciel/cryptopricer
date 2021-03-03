@@ -2094,10 +2094,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptions)
-		
-# commented line ok with guioutputformatter copie (your refactoring of 2 march morning !
-#		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -fschf.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHF = 0.70311027 KRL/CHF)', fullCommandStrForStatusBar)
-		self.assertEqual(None, fullCommandStrForStatusBar)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -fschf.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHF = 0.70311027 KRL/CHF)', fullCommandStrForStatusBar)
 
 # historical value, fiat and price option test
 
