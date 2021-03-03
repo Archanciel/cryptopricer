@@ -13,6 +13,7 @@ from testabstractoutputformater import TestAbstractOutputFormater
 from testcommandquit import TestCommandQuit
 from testcommanderror import TestCommandError
 from testcontrollergui import TestControllerGui
+from testcontrollerguiNew import TestControllerGuiNew
 from testconfigurationmanager import TestConfigurationManager
 from testpricerequester import TestPriceRequester
 from testdatetimeutil import TestDateTimeUtil
@@ -36,6 +37,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestCommandQuit),
                        loader.loadTestsFromTestCase(TestCommandError),
                        loader.loadTestsFromTestCase(TestControllerGui),
+                       loader.loadTestsFromTestCase(TestControllerGuiNew),
                        loader.loadTestsFromTestCase(TestConfigurationManager),
                        loader.loadTestsFromTestCase(TestDateTimeUtil),
                        loader.loadTestsFromTestCase(TestPriceRequester),
