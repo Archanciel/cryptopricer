@@ -14,7 +14,7 @@ from datetimeutil import DateTimeUtil
 from configurationmanager import ConfigurationManager
 from utilityfortest import UtilityForTest
 
-class TestGuiOutputFormater(unittest.TestCase):
+class TestGuiOutputFormatter(unittest.TestCase):
 	def setUp(self):
 		if os.name == 'posix':
 			FILE_PATH = '/sdcard/cryptopricer.ini'
@@ -2100,7 +2100,6 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 # price save
 	
-	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionPriceSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fschsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2778,7 +2777,7 @@ class TestGuiOutputFormater(unittest.TestCase):
 
 if __name__ == '__main__':
 	#	unittest.main()
-	tst = TestGuiOutputFormater()
+	tst = TestGuiOutputFormatter()
 	tst.setUp()
 	tst.testGetFullCommandStringOptionValueSaveOptionFiatSave()
 	tst.setUp()

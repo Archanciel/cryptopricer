@@ -77,17 +77,17 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		
 		if priceType == resultData.PRICE_TYPE_RT:
 			fullCommandStrNoOptions = commandDic[CommandPrice.CRYPTO] + ' ' + \
-			                          commandDic[CommandPrice.UNIT] + ' 0 ' + \
-			                          commandDic[CommandPrice.EXCHANGE]
+									  commandDic[CommandPrice.UNIT] + ' 0 ' + \
+									  commandDic[CommandPrice.EXCHANGE]
 		else:
 			requestDateDMY, requestDateHM = self._buildFullDateAndTimeStrings(commandDic,
-			                                                                  self.configurationMgr.localTimeZone)
+																			  self.configurationMgr.localTimeZone)
 			
 			fullCommandStrNoOptions = commandDic[CommandPrice.CRYPTO] + ' ' + \
-			                          commandDic[CommandPrice.UNIT] + ' ' + \
-			                          requestDateDMY + ' ' + \
-			                          requestDateHM + ' ' + \
-			                          commandDic[CommandPrice.EXCHANGE]
+									  commandDic[CommandPrice.UNIT] + ' ' + \
+									  requestDateDMY + ' ' + \
+									  requestDateHM + ' ' + \
+									  commandDic[CommandPrice.EXCHANGE]
 		
 		# the three next full command string, unless they are set to None, all start with
 		# the content of fullCommandStrNoOptions
@@ -102,10 +102,10 @@ class GuiOutputFormatter(AbstractOutputFormater):
 			fullCommandStrWithNoSaveOptions, \
 			fullCommandStrWithSaveOptionsForHistoryList, \
 			fullCommandStrForStatusBar = self._addOptionValueInfo(resultData,
-			                                                      commandDic,
-			                                                      fullCommandStrWithNoSaveOptions,
-			                                                      fullCommandStrWithSaveOptionsForHistoryList,
-			                                                      fullCommandStrForStatusBar)
+																  commandDic,
+																  fullCommandStrWithNoSaveOptions,
+																  fullCommandStrWithSaveOptionsForHistoryList,
+																  fullCommandStrForStatusBar)
 		
 		# handling fiat option
 		
@@ -115,11 +115,11 @@ class GuiOutputFormatter(AbstractOutputFormater):
 			fullCommandStrWithNoSaveOptions, \
 			fullCommandStrWithSaveOptionsForHistoryList, \
 			fullCommandStrForStatusBar = self._addOptionFiatInfo(resultData,
-			                                                     commandDic,
-			                                                     fiatOptionSymbol,
-			                                                     fullCommandStrWithNoSaveOptions,
-			                                                     fullCommandStrWithSaveOptionsForHistoryList,
-			                                                     fullCommandStrForStatusBar)
+																 commandDic,
+																 fiatOptionSymbol,
+																 fullCommandStrWithNoSaveOptions,
+																 fullCommandStrWithSaveOptionsForHistoryList,
+																 fullCommandStrForStatusBar)
 		
 		# handling price option
 		
@@ -143,11 +143,11 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		return fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	
 	def _addOptionValueInfo(self,
-	                        resultData,
-	                        commandDic,
-	                        fullCommandStrWithNoSaveOptions,
-	                        fullCommandStrWithSaveOptionsForHistoryList,
-	                        fullCommandStrForStatusBar):
+							resultData,
+							commandDic,
+							fullCommandStrWithNoSaveOptions,
+							fullCommandStrWithSaveOptionsForHistoryList,
+							fullCommandStrForStatusBar):
 		"""
 		Adds the value option information to
 			1/ the request full command string with no save	option (result ex:
@@ -191,12 +191,12 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	
 	def _addOptionFiatInfo(self,
-	                       resultData,
-	                       commandDic,
-	                       fiatOptionSymbol,
-	                       fullCommandStrWithNoSaveOptions,
-	                       fullCommandStrWithSaveOptionsForHistoryList,
-	                       fullCommandStrForStatusBar):
+						   resultData,
+						   commandDic,
+						   fiatOptionSymbol,
+						   fullCommandStrWithNoSaveOptions,
+						   fullCommandStrWithSaveOptionsForHistoryList,
+						   fullCommandStrForStatusBar):
 		"""
 		Adds the fiat option information to
 			1/ the request full command string with no save	option (result ex:
@@ -222,8 +222,8 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		if resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SAVE):
 			# save mode is active
 			fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
-			                                           fiatOptionSymbol,
-			                                           isOptionFiatSave=True)
+													   fiatOptionSymbol,
+													   isOptionFiatSave=True)
 			if not resultData.containsWarning(resultData.WARNING_TYPE_OPTION_VALUE):
 				# in case the value command generated a warning, if the value option refers a
 				# currency different from the crypto, unit or fiat of the request, the fullCommandStr
@@ -232,22 +232,22 @@ class GuiOutputFormatter(AbstractOutputFormater):
 				fullCommandStrWithSaveOptionsForHistoryList += fiatOptionInfo
 			
 			fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo + \
-			                             self._buildUnitFiatComputationString(resultData)
+										 self._buildUnitFiatComputationString(resultData)
 		else:
 			# save mode is not active
 			fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
-			                                           fiatOptionSymbol,
-			                                           isOptionFiatSave=False)
+													   fiatOptionSymbol,
+													   isOptionFiatSave=False)
 			fullCommandStrWithNoSaveOptions += fiatOptionInfo
 			fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo + \
-			                             self._buildUnitFiatComputationString(resultData)
+										 self._buildUnitFiatComputationString(resultData)
 		
 		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	
 	def _buildFiatOptionInfo(self,
-	                         commandDic,
-	                         fiatOptionSymbol,
-	                         isOptionFiatSave):
+							 commandDic,
+							 fiatOptionSymbol,
+							 isOptionFiatSave):
 		"""
 
 		:param commandDic:
@@ -272,24 +272,24 @@ class GuiOutputFormatter(AbstractOutputFormater):
 	
 	def _buildUnitFiatComputationString(self, resultData):
 		priceStr = self._formatPriceFloatToStr(resultData.getValue(resultData.RESULT_KEY_PRICE),
-		                                       self.PRICE_FLOAT_FORMAT)
+											   self.PRICE_FLOAT_FORMAT)
 		fiatComputedAmountStr = self._formatPriceFloatToStr(
 			resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT), self.PRICE_FLOAT_FORMAT)
 		fiatRateStr = self._formatPriceFloatToStr(resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_RATE),
-		                                          self.PRICE_FLOAT_FORMAT)
+												  self.PRICE_FLOAT_FORMAT)
 		cryptoUnitPair = '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
-		                                resultData.getValue(resultData.RESULT_KEY_UNIT))
+										resultData.getValue(resultData.RESULT_KEY_UNIT))
 		unitFiatPair = '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_UNIT),
-		                              resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+									  resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		cryptoFiatPair = '{}/{}'.format(resultData.getValue(resultData.RESULT_KEY_CRYPTO),
-		                                resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
+										resultData.getValue(resultData.RESULT_KEY_OPTION_FIAT_SYMBOL))
 		
 		return '\n({} {} * {} {} = {} {})'.format(priceStr,
-		                                          cryptoUnitPair,
-		                                          fiatRateStr,
-		                                          unitFiatPair,
-		                                          fiatComputedAmountStr,
-		                                          cryptoFiatPair)
+												  cryptoUnitPair,
+												  fiatRateStr,
+												  unitFiatPair,
+												  fiatComputedAmountStr,
+												  cryptoFiatPair)
 	
 	def _buildFullDateAndTimeStrings(self, commandDic, timezoneStr):
 		'''
@@ -316,8 +316,8 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		minute = commandDic[CommandPrice.MINUTE]
 		
 		requestDateDMY, requestDateHM = DateTimeUtil.formatPrintDateTimeFromStringComponents(day, month, year, hour,
-		                                                                                     minute, timezoneStr,
-		                                                                                     self.configurationMgr.dateTimeFormat)
+																							 minute, timezoneStr,
+																							 self.configurationMgr.dateTimeFormat)
 		
 		from seqdiagbuilder import SeqDiagBuilder
 		SeqDiagBuilder.recordFlow()
