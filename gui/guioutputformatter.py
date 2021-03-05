@@ -137,15 +137,11 @@ class GuiOutputFormatter(AbstractOutputFormater):
 																  priceOptionAmountStr,
 																  fullCommandStrWithNoSaveOptions,
 																  fullCommandStrWithSaveOptionsForHistoryList,
-			                                                      fullCommandStrForStatusBar)
+																  fullCommandStrForStatusBar)
 		
 		from seqdiagbuilder import SeqDiagBuilder
 		
 		SeqDiagBuilder.recordFlow()
-		# import logging
-		# logging.info('fullCommandStrWithNoSaveOptions: {}'.format(fullCommandStrWithNoSaveOptions))
-		# logging.info('fullCommandStrWithSaveOptionsForHistoryList: {}'.format(fullCommandStrWithSaveOptionsForHistoryList))
-		# logging.info('fullCommandStrForStatusBar: {}'.format(fullCommandStrForStatusBar))
 		
 		if fullCommandStrWithSaveOptionsForHistoryList == fullCommandStrNoOptions:
 			fullCommandStrWithSaveOptionsForHistoryList = None
@@ -258,16 +254,16 @@ class GuiOutputFormatter(AbstractOutputFormater):
 			fullCommandStrForStatusBarFiatComplement = self._buildUnitFiatComputationString(resultData)
 		
 		return fullCommandStrWithNoSaveOptions, \
-		       fullCommandStrWithSaveOptionsForHistoryList, \
-		       fullCommandStrForStatusBar, \
-		       fullCommandStrForStatusBarFiatComplement
+			   fullCommandStrWithSaveOptionsForHistoryList, \
+			   fullCommandStrForStatusBar, \
+			   fullCommandStrForStatusBarFiatComplement
 	
 	def _addOptionPriceInfo(self,
-	                        resultData,
-	                        priceOptionAmountStr,
-	                        fullCommandStrWithNoSaveOptions,
-	                        fullCommandStrWithSaveOptionsForHistoryList,
-	                        fullCommandStrForStatusBar):
+							resultData,
+							priceOptionAmountStr,
+							fullCommandStrWithNoSaveOptions,
+							fullCommandStrWithSaveOptionsForHistoryList,
+							fullCommandStrForStatusBar):
 		"""
 		Adds the value option information to
 			1/ the request full command string with no save	option (result ex:
