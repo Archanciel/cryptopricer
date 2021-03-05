@@ -2307,12 +2307,12 @@ class TestGuiOutputFormatter(unittest.TestCase):
 																		  'OPTION_FIAT_SYMBOL': 'chsb',
 																		  'OPTION_FIAT_EXCHANGE': 'hitbtc',
 																		  'OPTION_FIAT_AMOUNT': None,
-																		  'OPTION_FIAT_SAVE': 's',
+																		  'OPTION_FIAT_SAVE': None,
 																		  'OPTION_PRICE_DATA': None,
-																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_AMOUNT': '0.0000075',
 																		  'OPTION_PRICE_SYMBOL': None,
 																		  'OPTION_PRICE_EXCHANGE': None,
-																		  'OPTION_PRICE_SAVE': None,
+																		  'OPTION_PRICE_SAVE': 's',
 																		  'UNSUPPORTED_OPTION': None,
 																		  'UNSUPPORTED_OPTION_MODIFIER': None,
 																		  'UNSUPPORTED_OPTION_DATA': None})
@@ -2392,10 +2392,10 @@ class TestGuiOutputFormatter(unittest.TestCase):
 																		  'OPTION_FIAT_AMOUNT': None,
 																		  'OPTION_FIAT_SAVE': 's',
 																		  'OPTION_PRICE_DATA': None,
-																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_AMOUNT': '0.0000075',
 																		  'OPTION_PRICE_SYMBOL': None,
 																		  'OPTION_PRICE_EXCHANGE': None,
-																		  'OPTION_PRICE_SAVE': None,
+																		  'OPTION_PRICE_SAVE': 's',
 																		  'UNSUPPORTED_OPTION': None,
 																		  'UNSUPPORTED_OPTION_MODIFIER': None,
 																		  'UNSUPPORTED_OPTION_DATA': None})
@@ -2477,7 +2477,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 																		  'OPTION_FIAT_AMOUNT': None,
 																		  'OPTION_FIAT_SAVE': 's',
 																		  'OPTION_PRICE_DATA': None,
-																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_AMOUNT': '0.0000075',
 																		  'OPTION_PRICE_SYMBOL': None,
 																		  'OPTION_PRICE_EXCHANGE': None,
 																		  'OPTION_PRICE_SAVE': None,
@@ -2561,7 +2561,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 																		  'OPTION_FIAT_AMOUNT': None,
 																		  'OPTION_FIAT_SAVE': 's',
 																		  'OPTION_PRICE_DATA': None,
-																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_AMOUNT': '0.0000075',
 																		  'OPTION_PRICE_SYMBOL': None,
 																		  'OPTION_PRICE_EXCHANGE': None,
 																		  'OPTION_PRICE_SAVE': None,
@@ -2644,7 +2644,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 																		  'OPTION_FIAT_AMOUNT': None,
 																		  'OPTION_FIAT_SAVE': 's',
 																		  'OPTION_PRICE_DATA': None,
-																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_AMOUNT': '0.0000075',
 																		  'OPTION_PRICE_SYMBOL': None,
 																		  'OPTION_PRICE_EXCHANGE': None,
 																		  'OPTION_PRICE_SAVE': None,
@@ -2727,7 +2727,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 																		  'OPTION_FIAT_AMOUNT': None,
 																		  'OPTION_FIAT_SAVE': 's',
 																		  'OPTION_PRICE_DATA': None,
-																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_AMOUNT': '0.0000075',
 																		  'OPTION_PRICE_SYMBOL': None,
 																		  'OPTION_PRICE_EXCHANGE': None,
 																		  'OPTION_PRICE_SAVE': None,
@@ -2771,20 +2771,20 @@ class TestGuiOutputFormatter(unittest.TestCase):
 if __name__ == '__main__':
 	#	unittest.main()
 	tst = TestGuiOutputFormatter()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueSaveOptionFiatSave()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueNoSaveOptionFiatSave()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueSaveOptionFiatNoSave()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSave()
-	# tst.setUp()
-	# tst.testPrintCryptoPriceHistoricalOptionValueGeneratedWarning()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionValueWarning()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionValueWarning()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueSaveOptionFiatSave()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueNoSaveOptionFiatSave()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueSaveOptionFiatNoSave()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSave()
+	tst.setUp()
+	tst.testPrintCryptoPriceHistoricalOptionValueGeneratedWarning()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionValueWarning()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionValueWarning()
 
 	tst.setUp()
 	tst.testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionPriceSave()

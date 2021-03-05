@@ -136,7 +136,8 @@ class GuiOutputFormatter(AbstractOutputFormater):
 			fullCommandStrForStatusBar = self._addOptionPriceInfo(resultData,
 																  priceOptionAmountStr,
 																  fullCommandStrWithNoSaveOptions,
-																  fullCommandStrWithSaveOptionsForHistoryList)
+																  fullCommandStrWithSaveOptionsForHistoryList,
+			                                                      fullCommandStrForStatusBar)
 		
 		from seqdiagbuilder import SeqDiagBuilder
 		
@@ -198,12 +199,9 @@ class GuiOutputFormatter(AbstractOutputFormater):
 				fullCommandStrWithSaveOptionsForHistoryList += valueOptionStr
 			fullCommandStrForStatusBar = fullCommandStrWithSaveOptionsForHistoryList
 		else:
-			if valueOptionAmountStr and valueOptionSymbolStr:
-				# even in case the value command generated a warning, it will be displayed in the
-				# status bar !
-				valueOptionStr = ' -v{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
-				fullCommandStrWithNoSaveOptions += valueOptionStr
-				fullCommandStrForStatusBar = fullCommandStrWithNoSaveOptions
+			valueOptionStr = ' -v{}{}'.format(valueOptionAmountStr, valueOptionSymbolStr)
+			fullCommandStrWithNoSaveOptions += valueOptionStr
+			fullCommandStrForStatusBar = fullCommandStrWithNoSaveOptions
 		
 		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	
@@ -268,7 +266,8 @@ class GuiOutputFormatter(AbstractOutputFormater):
 	                        resultData,
 	                        priceOptionAmountStr,
 	                        fullCommandStrWithNoSaveOptions,
-	                        fullCommandStrWithSaveOptionsForHistoryList):
+	                        fullCommandStrWithSaveOptionsForHistoryList,
+	                        fullCommandStrForStatusBar):
 		"""
 		Adds the value option information to
 			1/ the request full command string with no save	option (result ex:
@@ -283,6 +282,7 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		:param priceOptionAmountStr
 		:param fullCommandStrWithNoSaveOptions: empty str output result
 		:param fullCommandStrWithSaveOptionsForHistoryList: empty str output result
+		:param fullCommandStrForStatusBar
 
 		:return: fullCommandStrWithNoSaveOptions,
 				 fullCommandStrWithSaveOptionsForHistoryList,
@@ -291,12 +291,12 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		if resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE):
 			priceOptionStr = ' -ps{}'.format(priceOptionAmountStr)
 			fullCommandStrWithSaveOptionsForHistoryList += priceOptionStr
-			fullCommandStrForStatusBar = fullCommandStrWithSaveOptionsForHistoryList
 		else:
 			priceOptionStr = ' -p{}'.format(priceOptionAmountStr)
 			fullCommandStrWithNoSaveOptions += priceOptionStr
-			fullCommandStrForStatusBar = fullCommandStrWithNoSaveOptions
-		
+
+		fullCommandStrForStatusBar = fullCommandStrForStatusBar + priceOptionStr
+
 		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	
 	def _buildFiatOptionInfo(self,
