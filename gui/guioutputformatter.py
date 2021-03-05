@@ -99,6 +99,9 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		# handling value option
 		
 		if resultData.getValue(resultData.RESULT_KEY_OPTION_VALUE_CRYPTO):
+			# if the ResultData contains the computed value option crypto amount,
+			# this means that the specified value option is valid and so has to be added
+			# to the returned GuiOutputFormatter fields !
 			fullCommandStrWithNoSaveOptions, \
 			fullCommandStrWithSaveOptionsForHistoryList, \
 			fullCommandStrForStatusBar = self._addOptionValueInfo(resultData,
@@ -110,18 +113,30 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		# handling fiat option
 		
 		fiatOptionSymbol = commandDic[CommandPrice.OPTION_FIAT_SYMBOL]
+		fullCommandStrForStatusBarFiatComplement = ''
 		
 		if fiatOptionSymbol:
 			fullCommandStrWithNoSaveOptions, \
 			fullCommandStrWithSaveOptionsForHistoryList, \
-			fullCommandStrForStatusBar = self._addOptionFiatInfo(resultData,
-																 commandDic,
-																 fiatOptionSymbol,
-																 fullCommandStrWithNoSaveOptions,
-																 fullCommandStrWithSaveOptionsForHistoryList,
-																 fullCommandStrForStatusBar)
+			fullCommandStrForStatusBar, \
+			fullCommandStrForStatusBarFiatComplement = self._addOptionFiatInfo(resultData,
+																			   commandDic,
+																			   fiatOptionSymbol,
+																			   fullCommandStrWithNoSaveOptions,
+																			   fullCommandStrWithSaveOptionsForHistoryList,
+																			   fullCommandStrForStatusBar)
 		
 		# handling price option
+		
+		priceOptionAmountStr = commandDic[CommandPrice.OPTION_PRICE_AMOUNT]
+		
+		if priceOptionAmountStr:
+			fullCommandStrWithNoSaveOptions, \
+			fullCommandStrWithSaveOptionsForHistoryList, \
+			fullCommandStrForStatusBar = self._addOptionPriceInfo(resultData,
+																  priceOptionAmountStr,
+																  fullCommandStrWithNoSaveOptions,
+																  fullCommandStrWithSaveOptionsForHistoryList)
 		
 		from seqdiagbuilder import SeqDiagBuilder
 		
@@ -137,6 +152,8 @@ class GuiOutputFormatter(AbstractOutputFormater):
 		if fullCommandStrWithNoSaveOptions == fullCommandStrNoOptions:
 			fullCommandStrWithNoSaveOptions = None
 		
+		fullCommandStrForStatusBar += fullCommandStrForStatusBarFiatComplement
+
 		if fullCommandStrForStatusBar == fullCommandStrNoOptions:
 			fullCommandStrForStatusBar = None
 		
@@ -231,16 +248,54 @@ class GuiOutputFormatter(AbstractOutputFormater):
 				# will be set to None and so not be stored in the request history list of the GUI !
 				fullCommandStrWithSaveOptionsForHistoryList += fiatOptionInfo
 			
-			fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo + \
-										 self._buildUnitFiatComputationString(resultData)
+			fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo
+			fullCommandStrForStatusBarFiatComplement = self._buildUnitFiatComputationString(resultData)
 		else:
 			# save mode is not active
 			fiatOptionInfo = self._buildFiatOptionInfo(commandDic,
 													   fiatOptionSymbol,
 													   isOptionFiatSave=False)
 			fullCommandStrWithNoSaveOptions += fiatOptionInfo
-			fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo + \
-										 self._buildUnitFiatComputationString(resultData)
+			fullCommandStrForStatusBar = fullCommandStrForStatusBar + fiatOptionInfo
+			fullCommandStrForStatusBarFiatComplement = self._buildUnitFiatComputationString(resultData)
+		
+		return fullCommandStrWithNoSaveOptions, \
+		       fullCommandStrWithSaveOptionsForHistoryList, \
+		       fullCommandStrForStatusBar, \
+		       fullCommandStrForStatusBarFiatComplement
+	
+	def _addOptionPriceInfo(self,
+	                        resultData,
+	                        priceOptionAmountStr,
+	                        fullCommandStrWithNoSaveOptions,
+	                        fullCommandStrWithSaveOptionsForHistoryList):
+		"""
+		Adds the value option information to
+			1/ the request full command string with no save	option (result ex:
+			   btc usd 20/12/20 00:00 binance -v1500usd)
+			2/ the request full command string with save option used to fill the GUI request
+			   history list (result ex: btc usd 20/12/20 00:00 binance -vs1500usd)
+			3/ the request full command string for status bar (result ex:
+			   btc usd 20/12/20 00:00 binance -v1500usd or
+			   btc usd 20/12/20 00:00 binance -vs1500usd)
+
+		:param resultData: stores the on-line request results
+		:param priceOptionAmountStr
+		:param fullCommandStrWithNoSaveOptions: empty str output result
+		:param fullCommandStrWithSaveOptionsForHistoryList: empty str output result
+
+		:return: fullCommandStrWithNoSaveOptions,
+				 fullCommandStrWithSaveOptionsForHistoryList,
+				 fullCommandStrForStatusBar,
+		"""
+		if resultData.getValue(resultData.RESULT_KEY_OPTION_PRICE_SAVE):
+			priceOptionStr = ' -ps{}'.format(priceOptionAmountStr)
+			fullCommandStrWithSaveOptionsForHistoryList += priceOptionStr
+			fullCommandStrForStatusBar = fullCommandStrWithSaveOptionsForHistoryList
+		else:
+			priceOptionStr = ' -p{}'.format(priceOptionAmountStr)
+			fullCommandStrWithNoSaveOptions += priceOptionStr
+			fullCommandStrForStatusBar = fullCommandStrWithNoSaveOptions
 		
 		return fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 	

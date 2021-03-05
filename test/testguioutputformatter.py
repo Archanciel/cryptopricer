@@ -92,7 +92,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
 							{'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
 							 'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'OPTION_VALUE_AMOUNT': None, 'OPTION_VALUE_SYMBOL': None,
-							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None})
+							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None, 'OPTION_PRICE_AMOUNT': None})
 
 		fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
 			resultData)
@@ -420,7 +420,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
 							{'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
 							 'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'OPTION_VALUE_AMOUNT': None, 'OPTION_VALUE_SYMBOL': None,
-							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None})
+							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None, 'OPTION_PRICE_AMOUNT': None})
 
 		fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
 			resultData)
@@ -445,7 +445,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 		resultData.setValue(resultData.RESULT_KEY_INITIAL_COMMAND_PARMS,
 							{'CRYPTO': 'eth', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '5', 'MONTH': '12', 'YEAR': '17',
 							 'HOUR': '9', 'MINUTE': '30', 'DMY': None, 'HM': None, 'OPTION_VALUE_AMOUNT': None, 'OPTION_VALUE_SYMBOL': None,
-							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None})
+							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None, 'OPTION_PRICE_AMOUNT': None})
 
 		fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
 			resultData)
@@ -508,7 +508,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': '0.01', 'OPTION_VALUE_SYMBOL': 'btc', 'OPTION_VALUE_SAVE': False,
-							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None})
+							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None, 'OPTION_PRICE_AMOUNT': None})
 
 		stdout = sys.stdout
 		capturedStdout = StringIO()
@@ -580,7 +580,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': '0.01', 'OPTION_VALUE_SYMBOL': 'btc', 'OPTION_VALUE_SAVE': True,
-							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None})
+							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None, 'OPTION_PRICE_AMOUNT': None})
 
 		stdout = sys.stdout
 		capturedStdout = StringIO()
@@ -896,7 +896,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': '0.01', 'OPTION_VALUE_SYMBOL': 'btc', 'OPTION_VALUE_SAVE': None,
-							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None})
+							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None, 'OPTION_PRICE_AMOUNT': None})
 		stdout = sys.stdout
 		capturedStdout = StringIO()
 		sys.stdout = capturedStdout
@@ -965,7 +965,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': '0.01', 'OPTION_VALUE_SYMBOL': 'btc', 'OPTION_VALUE_SAVE': True,
-							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None})
+							 'OPTION_FIAT_SYMBOL': None, 'OPTION_FIAT_EXCHANGE': None, 'OPTION_PRICE_AMOUNT': None})
 		stdout = sys.stdout
 		capturedStdout = StringIO()
 		sys.stdout = capturedStdout
@@ -1040,7 +1040,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': None, 'OPTION_VALUE_SYMBOL': None, 'OPTION_VALUE_SAVE': None,'OPTION_FIAT_DATA': None,
-							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': None})
+							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': None, 'OPTION_PRICE_AMOUNT': None})
 		stdout = sys.stdout
 		capturedStdout = StringIO()
 		sys.stdout = capturedStdout
@@ -1114,7 +1114,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': None, 'OPTION_VALUE_SYMBOL': None, 'OPTION_VALUE_SAVE': None,'OPTION_FIAT_DATA': None,
-							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': True})
+							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': True, 'OPTION_PRICE_AMOUNT': None})
 		stdout = sys.stdout
 		capturedStdout = StringIO()
 		sys.stdout = capturedStdout
@@ -1199,7 +1199,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': optionValueAmount, 'OPTION_VALUE_SYMBOL': optionValueSymbol, 'OPTION_VALUE_SAVE': None,'OPTION_FIAT_DATA': None,
-							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': None})
+							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': None, 'OPTION_PRICE_AMOUNT': None})
 		stdout = sys.stdout
 		capturedStdout = StringIO()
 		sys.stdout = capturedStdout
@@ -1218,7 +1218,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': optionValueAmount, 'OPTION_VALUE_SYMBOL': optionValueSymbol, 'OPTION_VALUE_SAVE': None,'OPTION_FIAT_DATA': None,
-							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': None, 'OPTION_FIAT_SAVE': None})
+							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': None, 'OPTION_FIAT_SAVE': None, 'OPTION_PRICE_AMOUNT': None})
 		fullCommandStringNoOptions, fullCommandStrWithOptions, fullCommandStrWithSaveModeOptions, fullCommandStrForStatusBar = self.printer.getFullCommandString(
 			resultData)
 		self.assertEqual(None, fullCommandStrWithSaveModeOptions)
@@ -1295,7 +1295,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': optionValueAmount, 'OPTION_VALUE_SYMBOL': optionValueSymbol, 'OPTION_VALUE_SAVE': 's','OPTION_FIAT_DATA': None,
-							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': None})
+							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': None, 'OPTION_PRICE_AMOUNT': None})
 		stdout = sys.stdout
 		capturedStdout = StringIO()
 		sys.stdout = capturedStdout
@@ -1378,7 +1378,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': optionValueAmount, 'OPTION_VALUE_SYMBOL': optionValueSymbol, 'OPTION_VALUE_SAVE': 's','OPTION_FIAT_DATA': None,
-							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': None, 'OPTION_FIAT_SAVE': None})
+							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': None, 'OPTION_FIAT_SAVE': None, 'OPTION_PRICE_AMOUNT': None})
 		stdout = sys.stdout
 		capturedStdout = StringIO()
 		sys.stdout = capturedStdout
@@ -1461,7 +1461,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': optionValueAmount, 'OPTION_VALUE_SYMBOL': optionValueSymbol, 'OPTION_VALUE_SAVE': None,'OPTION_FIAT_DATA': None,
-							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': 's'})
+							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': 's', 'OPTION_PRICE_AMOUNT': None})
 		stdout = sys.stdout
 		capturedStdout = StringIO()
 		sys.stdout = capturedStdout
@@ -1544,7 +1544,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': optionValueAmount, 'OPTION_VALUE_SYMBOL': optionValueSymbol, 'OPTION_VALUE_SAVE': 's','OPTION_FIAT_DATA': None,
-							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': 's'})
+							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': 'kraken', 'OPTION_FIAT_SAVE': 's', 'OPTION_PRICE_AMOUNT': None})
 		stdout = sys.stdout
 		capturedStdout = StringIO()
 		sys.stdout = capturedStdout
@@ -1627,7 +1627,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 							{'CRYPTO': 'btc', 'UNIT': 'usd', 'EXCHANGE': 'bittrex', 'DAY': '0', 'MONTH': '0', 'YEAR': '0', 'HOUR': None,
 							 'MINUTE': None, 'DMY': None, 'HM': None, 'PRICE_TYPE': 'REAL_TIME', 'OPTION_VALUE_DATA': None,
 							 'OPTION_VALUE_AMOUNT': optionValueAmount, 'OPTION_VALUE_SYMBOL': optionValueSymbol, 'OPTION_VALUE_SAVE': 's','OPTION_FIAT_DATA': None,
-							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': None, 'OPTION_FIAT_SAVE': 's'})
+							 'OPTION_FIAT_SYMBOL': 'chf', 'OPTION_FIAT_EXCHANGE': None, 'OPTION_FIAT_SAVE': 's', 'OPTION_PRICE_AMOUNT': None})
 		stdout = sys.stdout
 		capturedStdout = StringIO()
 		sys.stdout = capturedStdout
@@ -2109,7 +2109,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 		requestDateStr = '20/12/20 00:00'
 		requestTimeStamp = 1608422400
 		cryptoPriceInUnit = 0.0000075
-		priceType = ResultData.PRICE_TYPE_HISTO_DAY
+		priceType = ResultData.PRICE_TYPE_EFFECTIVE
 		optionValueInCrypto = 2169.75
 		optionValueInUnit = 0.01627312
 		optionValueInFiat = 382.10436619
@@ -2132,7 +2132,7 @@ class TestGuiOutputFormatter(unittest.TestCase):
 																		  'MINUTE': '00',
 																		  'DMY': None,
 																		  'HM': None,
-																		  'PRICE_TYPE': 'HISTO',
+																		  'PRICE_TYPE': 'EFFECTIVE',
 																		  'OPTION_VALUE_DATA': None,
 																		  'OPTION_VALUE_AMOUNT': '2169.75',
 																		  'OPTION_VALUE_SYMBOL': 'krl',
@@ -2143,10 +2143,10 @@ class TestGuiOutputFormatter(unittest.TestCase):
 																		  'OPTION_FIAT_AMOUNT': None,
 																		  'OPTION_FIAT_SAVE': 's',
 																		  'OPTION_PRICE_DATA': None,
-																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_AMOUNT': '0.0000075',
 																		  'OPTION_PRICE_SYMBOL': None,
 																		  'OPTION_PRICE_EXCHANGE': None,
-																		  'OPTION_PRICE_SAVE': None,
+																		  'OPTION_PRICE_SAVE': 's',
 																		  'UNSUPPORTED_OPTION': None,
 																		  'UNSUPPORTED_OPTION_MODIFIER': None,
 																		  'UNSUPPORTED_OPTION_DATA': None})
@@ -2183,9 +2183,8 @@ class TestGuiOutputFormatter(unittest.TestCase):
 			'krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc -ps0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 	
-	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueNoSaveOptionFiatSaveOptionPriceSave(self):
-		# krl btc 20/12/20 hitbtc -vs2169.75krl -fschsb.hitbtc -ps0.0000075
+		# krl btc 20/12/20 hitbtc -v2169.75krl -fschsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
 		unit = 'BTC'
 		fiat = 'CHSB'
@@ -2220,17 +2219,17 @@ class TestGuiOutputFormatter(unittest.TestCase):
 																		  'OPTION_VALUE_DATA': None,
 																		  'OPTION_VALUE_AMOUNT': '2169.75',
 																		  'OPTION_VALUE_SYMBOL': 'krl',
-																		  'OPTION_VALUE_SAVE': 's',
+																		  'OPTION_VALUE_SAVE': None,
 																		  'OPTION_FIAT_DATA': None,
 																		  'OPTION_FIAT_SYMBOL': 'chsb',
 																		  'OPTION_FIAT_EXCHANGE': 'hitbtc',
 																		  'OPTION_FIAT_AMOUNT': None,
 																		  'OPTION_FIAT_SAVE': 's',
 																		  'OPTION_PRICE_DATA': None,
-																		  'OPTION_PRICE_AMOUNT': None,
+																		  'OPTION_PRICE_AMOUNT': '0.0000075',
 																		  'OPTION_PRICE_SYMBOL': None,
 																		  'OPTION_PRICE_EXCHANGE': None,
-																		  'OPTION_PRICE_SAVE': None,
+																		  'OPTION_PRICE_SAVE': 's',
 																		  'UNSUPPORTED_OPTION': None,
 																		  'UNSUPPORTED_OPTION_MODIFIER': None,
 																		  'UNSUPPORTED_OPTION_DATA': None})
@@ -2262,12 +2261,11 @@ class TestGuiOutputFormatter(unittest.TestCase):
 		
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl', fullCommandStrWithNoSaveOptions)
-		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -fschsb.hitbtc -p0.0000075', fullCommandStrWithSaveOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -fschsb.hitbtc -ps0.0000075', fullCommandStrWithSaveOptions)
 		self.assertEqual(
 			'krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fschsb.hitbtc -ps0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 	
-	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueSaveOptionFiatNoSaveOptionPriceSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fchsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2351,7 +2349,6 @@ class TestGuiOutputFormatter(unittest.TestCase):
 			'krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fchsb.hitbtc -ps0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 	
-	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionPriceSave(self):
 		# krl btc 20/12/20 hitbtc -v2169.75krl -fchsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2437,7 +2434,6 @@ class TestGuiOutputFormatter(unittest.TestCase):
 
 # price no save
 	
-	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionPriceNoSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fschsb.hitbtc -p0.0000075
 		crypto = 'KRL'
@@ -2522,7 +2518,6 @@ class TestGuiOutputFormatter(unittest.TestCase):
 			'krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fschsb.hitbtc -p0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 	
-	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueNoSaveOptionFiatSaveOptionPriceNoSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fschsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2606,7 +2601,6 @@ class TestGuiOutputFormatter(unittest.TestCase):
 			'krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fschsb.hitbtc -p0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 	
-	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueSaveOptionFiatNoSaveOptionPriceNoSave(self):
 		# krl btc 20/12/20 hitbtc -vs2169.75krl -fchsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2690,7 +2684,6 @@ class TestGuiOutputFormatter(unittest.TestCase):
 			'krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fchsb.hitbtc -p0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/CHSB = 0.17610525 KRL/CHSB)',
 			fullCommandStrForStatusBar)
 
-	@unittest.skip # skipping while handling price option in GuiOutputFormatter not yet implemented
 	def testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionPriceNoSave(self):
 		# krl btc 20/12/20 hitbtc -v2169.75krl -fchsb.hitbtc -ps0.0000075
 		crypto = 'KRL'
@@ -2778,35 +2771,35 @@ class TestGuiOutputFormatter(unittest.TestCase):
 if __name__ == '__main__':
 	#	unittest.main()
 	tst = TestGuiOutputFormatter()
-	tst.setUp()
-	tst.testGetFullCommandStringOptionValueSaveOptionFiatSave()
-	tst.setUp()
-	tst.testGetFullCommandStringOptionValueNoSaveOptionFiatSave()
-	tst.setUp()
-	tst.testGetFullCommandStringOptionValueSaveOptionFiatNoSave()
-	tst.setUp()
-	tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSave()
-	tst.setUp()
-	tst.testPrintCryptoPriceHistoricalOptionValueGeneratedWarning()
-	tst.setUp()
-	tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionValueWarning()
-	tst.setUp()
-	tst.testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionValueWarning()
+	# tst.setUp()
+	# tst.testGetFullCommandStringOptionValueSaveOptionFiatSave()
+	# tst.setUp()
+	# tst.testGetFullCommandStringOptionValueNoSaveOptionFiatSave()
+	# tst.setUp()
+	# tst.testGetFullCommandStringOptionValueSaveOptionFiatNoSave()
+	# tst.setUp()
+	# tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSave()
+	# tst.setUp()
+	# tst.testPrintCryptoPriceHistoricalOptionValueGeneratedWarning()
+	# tst.setUp()
+	# tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionValueWarning()
+	# tst.setUp()
+	# tst.testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionValueWarning()
 
-# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionPriceSave()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueNoSaveOptionFiatSaveOptionPriceSave()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueSaveOptionFiatNoSaveOptionPriceSave()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionPriceSave()
-	#
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionPriceNoSave()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueNoSaveOptionFiatSaveOptionPriceNoSave()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueSaveOptionFiatNoSaveOptionPriceNoSave()
-	# tst.setUp()
-	# tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionPriceNoSave()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionPriceSave()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueNoSaveOptionFiatSaveOptionPriceSave()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueSaveOptionFiatNoSaveOptionPriceSave()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionPriceSave()
+
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueSaveOptionFiatSaveOptionPriceNoSave()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueNoSaveOptionFiatSaveOptionPriceNoSave()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueSaveOptionFiatNoSaveOptionPriceNoSave()
+	tst.setUp()
+	tst.testGetFullCommandStringOptionValueNoSaveOptionFiatNoSaveOptionPriceNoSave()

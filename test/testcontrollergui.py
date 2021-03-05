@@ -4666,15 +4666,15 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testOptionValueOptionFiatOptionPriceFullRequestHistoDayPrice(self):
-		inputStr = 'krl btc 20/12/20 20:35 hitbtc -v2169.75krl -fusd.kraken -ps0.0000075'
+		inputStr = 'krl btc 20/12/20 20:35 hitbtc -v2169.75krl -fusd.kraken -p0.0000075'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
 		self.assertEqual(
 			'2169.75 KRL/0.01627312 BTC/382.10436619 USD.Kraken on HitBTC: 20/12/20 20:35P 0.0000075 0.17610525', printResult)
 		self.assertEqual('krl btc 20/12/20 20:35 hitbtc', fullCommandStrNoOptions)
-		self.assertEqual('krl btc 20/12/20 20:35 hitbtc -v2169.75krl -fusd.kraken', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('krl btc 20/12/20 20:35 hitbtc -v2169.75krl -fusd.kraken -p0.0000075', fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
-		self.assertEqual('krl btc 20/12/20 20:35 hitbtc -v2169.75krl -fusd.kraken\n(0.0000075 KRL/BTC * 23480.7 BTC/USD = 0.17610525 KRL/USD)', fullCommandStrForStatusBar)
+		self.assertEqual('krl btc 20/12/20 20:35 hitbtc -v2169.75krl -fusd.kraken -p0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/USD = 0.17610525 KRL/USD)', fullCommandStrForStatusBar)
 
 if __name__ == '__main__':
 #	unittest.main()

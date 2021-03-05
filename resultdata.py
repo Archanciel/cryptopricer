@@ -16,14 +16,14 @@ class ResultData:
 															# provided the -f fiat option is specified
 	RESULT_KEY_OPTION_VALUE_SAVE = 'OPTION_VALUE_SAVE'      # store True or False to indicate if the value option is to be stored in history (-vs) or not (-v)
 
-	RESULT_KEY_OPTION_FIAT_RATE = 'RESULT_KEY_OPTION_FIAT_RATE'           # store the unit to fiat exchange rate (ex: eth btc 0 all -fusd ==> btc/usd rate)
+	RESULT_KEY_OPTION_FIAT_RATE = 'OPTION_FIAT_RATE'                      # store the unit to fiat exchange rate (ex: eth btc 0 all -fusd ==> btc/usd rate)
 	RESULT_KEY_OPTION_FIAT_COMPUTED_AMOUNT = 'OPTION_FIAT_COMPUTED_AMOUNT'# store the crypto price in unit converted to fiat returned for the -f option
 	RESULT_KEY_OPTION_FIAT_SYMBOL = 'OPTION_FIAT_SYMBOL'                  # store the fiat symbol of the -f option
 	RESULT_KEY_OPTION_FIAT_EXCHANGE = 'OPTION_FIAT_EXCHANGE'              # store the fiat exchange of the -f option
 	RESULT_KEY_OPTION_FIAT_SAVE = 'OPTION_FIAT_SAVE'                      # store True or False to indicate if the fiat option is to be stored in history (-fs) or not (-f)
 
-	RESULT_KEY_OPTION_PRICE_AMOUNT = 'OPTION_PRICE_AMOUNT'                # store the crypto/unit value the user entered for -p option. Ex: 0.1 if -p0.1btc
-	RESULT_KEY_OPTION_PRICE_SAVE = 'RESULT_KEY_OPTION_PRICE_SAVE'         # store True or False to indicate if the price option is to be stored in history (-ps) or not (-p)
+	RESULT_KEY_OPTION_PRICE_AMOUNT = 'OPTION_PRICE_AMOUNT'   # store the crypto/unit value the user entered for -p option. Ex: 0.1 if -p0.1btc
+	RESULT_KEY_OPTION_PRICE_SAVE = 'OPTION_PRICE_SAVE'       # store True or False to indicate if the price option is to be stored in history (-ps) or not (-p)
 
 	RESULT_KEY_OPTION_RESULT_COMPUTED_AMOUNT_UNIT = 'OPTION_RESULT_COMPUTED_AMOUNT_UNIT'    # store result computed amount in unit
 	RESULT_KEY_OPTION_RESULT_COMPUTED_PERCENT_UNIT = 'OPTION_RESULT_COMPUTED_AMOUNT_UNIT'   # store result computed percent for unit
