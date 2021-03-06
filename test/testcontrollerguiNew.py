@@ -566,53 +566,115 @@ class TestControllerGuiNew(unittest.TestCase):
 		expectedPrintResultNoDateTimeNoEndPrice = 'CHSB/BTC/USD.Kraken on HitBTC: R'
 		
 		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
-		                                                            nowHourStr,
-		                                                            nowMinuteStr,
-		                                                            nowMonthStr,
-		                                                            nowYearStr,
-		                                                            requestResultNoEndPrice,
-		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	requestResultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
 		self.assertEqual('chsb btc 0 hitbtc', fullCommandStrNoOptions)
-		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual('chsb btc 0 hitbtc -v1000usd', fullCommandStrWithNoSaveOptions)
 		self.assertEqual('chsb btc 0 hitbtc -fsusd.kraken', fullCommandStrWithSaveOptionsForHistoryList)
-
-		self.assertEqual('chsb btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
-		self.assertEqual('chsb btc 20/12/20 00:00 hitbtc -v1000usd', fullCommandStrWithNoSaveOptions)
-		self.assertEqual('chsb btc 20/12/20 00:00 hitbtc -fsusd.kraken', fullCommandStrWithSaveOptionsForHistoryList)
-		self.assertEqual(
-			'chsb btc 20/12/20 00:00 hitbtc -v1000usd -fsusd.kraken\n(0.00001061 CHSB/BTC * 23480.7 BTC/USD = 0.24913023 CHSB/USD)',
-			fullCommandStrForStatusBar)
 		
 		# next  entry: partial request unit change
 		inputStr = '-ueth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'3978.44219035 CHSB/1.56671053 ETH/1000 USD.Kraken on HitBTC: 20/12/20 00:00C 0.0003938 0.25135466',
-			printResult)
-		self.assertEqual('chsb eth 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
-		self.assertEqual('chsb eth 20/12/20 00:00 hitbtc -v1000usd', fullCommandStrWithNoSaveOptions)
-		self.assertEqual('chsb eth 20/12/20 00:00 hitbtc -fsusd.kraken', fullCommandStrWithSaveOptionsForHistoryList)
-		self.assertEqual(
-			'chsb eth 20/12/20 00:00 hitbtc -v1000usd -fsusd.kraken\n(0.0003938 CHSB/ETH * 638.28 ETH/USD = 0.25135466 CHSB/USD)',
-			fullCommandStrForStatusBar)
+		
+		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'CHSB/ETH/USD.Kraken on HitBTC: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	requestResultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('chsb eth 0 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('chsb eth 0 hitbtc -v1000usd', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('chsb eth 0 hitbtc -fsusd.kraken', fullCommandStrWithSaveOptionsForHistoryList)
 		
 		# next entry: partial request to remove option value no save
 		inputStr = '-v0'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
-		self.assertEqual(
-			'CHSB/ETH/USD.Kraken on HitBTC: 20/12/20 00:00C 0.0003938 0.25135466', printResult)
-		self.assertEqual('chsb eth 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
+		
+		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'CHSB/ETH/USD.Kraken on HitBTC: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	requestResultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('chsb eth 0 hitbtc', fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
-		self.assertEqual('chsb eth 20/12/20 00:00 hitbtc -fsusd.kraken', fullCommandStrWithSaveOptionsForHistoryList)
-		self.assertEqual(
-			'chsb eth 20/12/20 00:00 hitbtc -fsusd.kraken\n(0.0003938 CHSB/ETH * 638.28 ETH/USD = 0.25135466 CHSB/USD)',
-			fullCommandStrForStatusBar)
+		self.assertEqual('chsb eth 0 hitbtc -fsusd.kraken', fullCommandStrWithSaveOptionsForHistoryList)
+	
+	def testScenarioRTFullRequestOptionFiatSaveWithWarning(self):
+		'''
+		This test verifies that the partial request fiat save option remains active until
+		new full request or option cancelling.
+		'''
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		
+		# first entry: full request
+		inputStr = 'chsb btc 0 hitbtc -fsusd.kraken -zooo'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'CHSB/BTC/USD.Kraken on HitBTC: R\nWarning - unsupported option -zooo in request chsb btc 0 hitbtc -fsusd.kraken -zooo - option ignored.'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	requestResultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('chsb btc 0 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual('chsb btc 0 hitbtc -fsusd.kraken', fullCommandStrWithSaveOptionsForHistoryList)
+	
+	def testScenarioRTFullRequestOptionValueNoSaveOptionFiatSaveWithWarning(self):
+		'''
+		This test verifies that the partial request fiat save option remains active until
+		new full request or option cancelling.
+		'''
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		
+		# first entry: full request
+		inputStr = 'chsb btc 0 hitbtc -v1000usd -fsusd.kraken -zooo'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		requestResultNoEndPrice = UtilityForTest.removeAllPricesFromCommandValueResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'CHSB/BTC/USD.Kraken on HitBTC: R\nWarning - unsupported option -zooo in request chsb btc 0 hitbtc -v1000usd -fsusd.kraken -zooo - option ignored.'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+																	nowHourStr,
+																	nowMinuteStr,
+																	nowMonthStr,
+																	nowYearStr,
+																	requestResultNoEndPrice,
+																	expectedPrintResultNoDateTimeNoEndPrice)
+		self.assertEqual('chsb btc 0 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('chsb btc 0 hitbtc -v1000usd', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('chsb btc 0 hitbtc -fsusd.kraken', fullCommandStrWithSaveOptionsForHistoryList)
 
 
 if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGuiNew()
 	tst.setUp()
-	tst.testScenarioRTFullThenPartialRequestsOptionValueOptionFiatSave()
+	tst.testScenarioRTFullRequestOptionFiatSaveWithWarning()
