@@ -484,31 +484,39 @@ class CryptoPricerGUI(BoxLayout):
 		'''
 		# Get the request from the TextInput
 		requestStr = self.requestInput.text
-
-		# purpose of the data obtained from the business layer:
-		#   outputResultStr - for the output text zone
-		#   fullRequestStrNoOptions - for the request history list
-		#   fullRequestStrWithNoSaveModeOptions - for the status bar
-		#   fullCommandStrWithSaveModeOptionsForHistoryList - for the request history list
-		outputResultStr, fullRequestStrNoOptions, fullRequestStrWithNoSaveModeOptions, fullCommandStrWithSaveModeOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
-			requestStr)
-
+		
+		fullRequestStrNoOptions = ''
+		fullRequestStrWithNoSaveModeOptions = None
+		fullRequestStrWithSaveModeOptionsForHistoryList = None
+		fullCommandStrForStatusBar = None
+		
+		try:
+			# purpose of the data obtained from the business layer:
+			#   outputResultStr - for the output text zone
+			#   fullRequestStrNoOptions - for the request history list
+			#   fullRequestStrWithNoSaveModeOptions - for the status bar
+			#   fullCommandStrWithSaveModeOptionsForHistoryList - for the request history list
+			outputResultStr, fullRequestStrNoOptions, fullRequestStrWithNoSaveModeOptions, fullRequestStrWithSaveModeOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+				requestStr)
+		except Exception as e:
+			outputResultStr = "ERROR - request '{}' could not be executed. Error info: {}.".format(requestStr, e)
+		
 		self.outputResult(outputResultStr)
 		self.clearResultOutputButton.disabled = False
-
+		
 		fullRequestListEntry = {'text': fullRequestStrNoOptions, 'selectable': True}
 
-		if fullCommandStrWithSaveModeOptionsForHistoryList != None:
+		if fullRequestStrWithSaveModeOptionsForHistoryList != None:
 			if fullRequestListEntry in self.requestListRV.data:
 				# if the full request string corresponding to the full request string with options is already
 				# in the history list, it is removed before the full request string with options is added
 				# to the list. Otherwise, this would create a duplicate !
 				self.requestListRV.data.remove(fullRequestListEntry)
 
-			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullCommandStrWithSaveModeOptionsForHistoryList, 'selectable': True}
+			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullRequestStrWithSaveModeOptionsForHistoryList, 'selectable': True}
 			
 			# used to avoid replacing btc usd 20/12/20 all -vs100usd by btc usd 20/12/20 00:00 all -vs100usd !
-			fullRequestStrWithSaveModeOptionsListEntryNoZeroTime = {'text': fullCommandStrWithSaveModeOptionsForHistoryList.replace(' 00:00', ''), 'selectable': True}
+			fullRequestStrWithSaveModeOptionsListEntryNoZeroTime = {'text': fullRequestStrWithSaveModeOptionsForHistoryList.replace(' 00:00', ''), 'selectable': True}
 
 			if not fullRequestStrWithSaveModeOptionsListEntry in self.requestListRV.data and \
 				not fullRequestStrWithSaveModeOptionsListEntryNoZeroTime in self.requestListRV.data:
@@ -539,8 +547,8 @@ class CryptoPricerGUI(BoxLayout):
 		if 'ERROR' in outputResultStr:
 			self.updateStatusBar(requestStr + STATUS_BAR_ERROR_SUFFIX)
 		else:
-			if fullCommandStrWithSaveModeOptionsForHistoryList:
-				if requestStr != fullCommandStrWithSaveModeOptionsForHistoryList:
+			if fullRequestStrWithSaveModeOptionsForHistoryList:
+				if requestStr != fullRequestStrWithSaveModeOptionsForHistoryList:
 					# the case when an option with save mode was added as a partial request !
 					# Also, if an option was cancelled (-v0 for example) and another option
 					# in save mode remains isLoadAtStartChkboxActive (-fschf for example)
@@ -755,8 +763,13 @@ class CryptoPricerGUI(BoxLayout):
 		self.outputLineBold = True
 
 		for listEntry in self.requestListRV.data:
-			outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = \
-				self.controller.getPrintableResultForInput(listEntry['text'])
+			requestStr = listEntry['text']
+
+			try:
+				outputResultStr, _, _, _, _ = self.controller.getPrintableResultForInput(requestStr)
+			except Exception as e:
+				outputResultStr = "ERROR - request '{}' could not be executed. Error info: {}.".format(requestStr, e)
+
 			self.outputResult(outputResultStr)
 
 		self.replayAllButton.disabled = False
