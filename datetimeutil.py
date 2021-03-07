@@ -64,6 +64,7 @@ class DateTimeUtil:
 		:param hourInt:
 		:param minuteInt:
 		:param timeZoneStr: like 'Europe/Zurich' or 'US/Pacific'
+		
 		:return: arrow localized date time object.
 		'''
 		return arrow.get(yearInt, monthInt, dayInt, hourInt, minuteInt, secondInt).replace(tzinfo=timeZoneStr)
@@ -345,22 +346,25 @@ class DateTimeUtil:
 			hourInt = 0
 			minuteInt = 0
 
-		dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(dayInt, monthInt, yearInt, hourInt,
-																			 minuteInt, timezoneStr, dateTimeFormat)
+		dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(dayInt, monthInt, yearInt, hourInt,
+																			minuteInt, timezoneStr, dateTimeFormat)
 
 		return dateDMY, dateHM
 
 	@staticmethod
-	def _formatPrintDateTimeFromIntComponents(dayInt,
-											  monthInt,
-											  yearInt,
-											  hourInt,
-											  minuteInt,
-											  timezoneStr,
-											  dateTimeFormat):
+	def formatPrintDateTimeFromIntComponents(dayInt,
+											 monthInt,
+											 yearInt,
+											 hourInt,
+											 minuteInt,
+											 timezoneStr,
+											 dateTimeFormat):
 		'''
 		Accept integer date/time components and return them as formatted date and time
 		according to the passed dateTimeFormat (comes from the ConfigurationManager).
+
+		In case all passed date components are 0, which is the case in real time request
+		context, returns the local now DMY and HM string values.
 
 		:param dayInt:
 		:param monthInt:
@@ -369,15 +373,22 @@ class DateTimeUtil:
 		:param minuteInt:
 		:param timezoneStr:
 		:param dateTimeFormat:
-		:return:
+		
+		:return: DMY and HM string values
 		'''
-		arrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(dayInt,
+		if yearInt == 0 and monthInt == 0 and dayInt == 0 and hourInt == 0:
+			# the case if formatPrintDateTimeFromIntComponents called in the context of
+			# a real time request
+			arrowDate = DateTimeUtil.localNow(timezoneStr)
+		else:
+			arrowDate = DateTimeUtil.dateTimeComponentsToArrowLocalDate(dayInt,
 																	monthInt,
 																	yearInt,
 																	hourInt,
 																	minuteInt,
 																	0,
 																	timezoneStr)
+			
 		dateTimeComponentSymbolList, separatorsList, dateTimeComponentValueList = DateTimeUtil.getFormattedDateTimeComponents(
 			arrowDate, dateTimeFormat)
 		dateSeparator = separatorsList[0]
@@ -447,5 +458,5 @@ if __name__ == '__main__':
 	print(gmtPlusList)
 
 	print('\nBug\n')
-	print(DateTimeUtil._formatPrintDateTimeFromIntComponents(12,11,20,15,2,'Europe/Zurich','DD/MM/YY HH:mm'))
+	print(DateTimeUtil.formatPrintDateTimeFromIntComponents(12, 11, 20, 15, 2, 'Europe/Zurich', 'DD/MM/YY HH:mm'))
 	print(DateTimeUtil.formatPrintDateTimeFromStringComponents('01','01','20','18','48','Europe/Zurich','DD/MM/YY HH:mm'))

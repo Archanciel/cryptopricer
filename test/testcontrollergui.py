@@ -4161,7 +4161,50 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrForStatusBar)
-
+	
+	def testRealTimeFullRequestOptionOptionFiatWithFiatPairUnsupportedError(self):
+		'''
+		This test verifies that the partial request fiat save option remains active until
+		new full request or option cancelling.
+		'''
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		
+		# first entry: full request
+		inputStr = 'btc usdc 0 all -fchf.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual(
+			'PROVIDER ERROR - fiat option coin pair CHF/USDC or USDC/CHF not supported by exchange Kraken on date {}/{}/{} {}:{}'.format(
+				nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# next  entry: partial request unit change
+		inputStr = '-uusd'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		requestResultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD/CHF.Kraken on AVG: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+		                                                            nowHourStr,
+		                                                            nowMinuteStr,
+		                                                            nowMonthStr,
+		                                                            nowYearStr,
+		                                                            requestResultNoEndPrice,
+		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+		
+		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions)
+		self.assertEqual('btc usd 0 all -fchf.kraken', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+	
 	def testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsUnit(self):
 		'''
 		This test verifies that the fiat computed amount is correct

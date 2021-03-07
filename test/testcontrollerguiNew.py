@@ -65,7 +65,7 @@ class TestControllerGuiNew(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual('chsb btc 20/12/20 00:00 hitbtc -fusd.kraken\n(0.00001061 CHSB/BTC * 23480.7 BTC/USD = 0.24913023 CHSB/USD)', fullCommandStrForStatusBar)
 
-		# next  entry: partial request unit change
+		# next entry: partial request unit change
 		inputStr = '-ueth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -677,4 +677,4 @@ if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGuiNew()
 	tst.setUp()
-	tst.testScenarioRTFullRequestOptionFiatSaveWithWarning()
+	tst.testRTFullRequestOptionOptionFiatWithFiatPairUnsupportedError()

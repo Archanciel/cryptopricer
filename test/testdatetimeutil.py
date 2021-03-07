@@ -441,7 +441,7 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertEqual('17/11/18', dateDMY)
         self.assertEqual('08:07', dateHM)
 
-    def test_formatPrintDateFromIntComponentsTimeDayMonthTwoDigitsYearHourMinute(self):
+    def testFormatPrintDateFromIntComponentsTimeDayMonthTwoDigitsYearHourMinute(self):
         day = 7
         month = 9
         year = 18
@@ -450,12 +450,12 @@ class TestDateTimeUtil(unittest.TestCase):
         timezone = LOCAL_TIME_ZONE
         dateTimeFormat = 'DD/MM/YY HH:mm'
 
-        dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
 
         self.assertEqual('07/09/18', dateDMY)
         self.assertEqual('08:07', dateHM)
 
-    def test_formatPrintDateFromIntComponentsTimeDayMonthFourDigitsYearHourMinute(self):
+    def testFormatPrintDateFromIntComponentsTimeDayMonthFourDigitsYearHourMinute(self):
         day = 17
         month = 11
         year = 2018
@@ -464,10 +464,32 @@ class TestDateTimeUtil(unittest.TestCase):
         timezone = LOCAL_TIME_ZONE
         dateTimeFormat = 'DD/MM/YY HH:mm'
 
-        dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
 
         self.assertEqual('17/11/18', dateDMY)
         self.assertEqual('18:27', dateHM)
 
+    def testFormatPrintDateFromRealTimeIntComponents(self):
+        day = 0
+        month = 0
+        year = 0
+        hour = 0
+        minute = 0
+        timezone = LOCAL_TIME_ZONE
+        dateTimeFormat = 'DD/MM/YY HH:mm'
+
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
+
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            now)
+
+        self.assertEqual('{}/{}/{}'.format(nowDayStr, nowMonthStr, nowYearStr), dateDMY)
+        self.assertEqual('{}:{}'.format(nowHourStr, nowMinuteStr), dateHM)
+
 if __name__ == '__main__':
-    unittest.main()
+    #	unittest.main()
+    tst = TestDateTimeUtil()
+    tst.setUp()
+    tst.testFormatPrintDateFromRealTimeIntComponents()

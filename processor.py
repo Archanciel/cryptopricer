@@ -149,8 +149,8 @@ class Processor:
 									minute,
 									dateTimeFormat,
 									localTz,
-		                            optionPriceAmount,
-		                            optionPriceSaveFlag)
+									optionPriceAmount,
+									optionPriceSaveFlag)
 
 
 		if not resultData.noError():
@@ -166,7 +166,7 @@ class Processor:
 										minute,
 										dateTimeFormat,
 										localTz,
-			                            optionPriceAmount)
+										optionPriceAmount)
 
 			resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
 			resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
@@ -219,8 +219,8 @@ class Processor:
 				  minute,
 				  dateTimeFormat,
 				  localTz,
-	              optionPriceAmount=None,
-	              optionPriceSaveFlag=None):
+				  optionPriceAmount=None,
+				  optionPriceSaveFlag=None):
 		'''
 		Returns the price of 1 unit of currency in targetCurrency. Ex: currency == btc,
 		targetCurrency == usd --> returned price: 1 btc == 10000 usd.
@@ -299,13 +299,13 @@ class Processor:
 		price = resultData.getValue(ResultData.RESULT_KEY_PRICE)
 
 		if price == 0:
-			dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day,
-																				 month,
-																				 year,
-																				 hour,
-																				 minute,
-																				 localTz,
-																				 dateTimeFormat)
+			dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(day,
+																				month,
+																				year,
+																				hour,
+																				minute,
+																				localTz,
+																				dateTimeFormat)
 
 			resultData.setError('PROVIDER ERROR - Requesting {}/{} price for date {} {} on exchange {} returned invalid value 0'.format(currency, targetCurrency, dateDMY, dateHM, exchange))
 
@@ -494,13 +494,13 @@ class Processor:
 				return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
 			else:
 				errorMsg = fiatResultData.getErrorMessage()
-				dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day,
-																					 month,
-																					 year,
-																					 hour,
-																					 minute,
-																					 localTz,
-																					 dateTimeFormat)
+				dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(day,
+																					month,
+																					year,
+																					hour,
+																					minute,
+																					localTz,
+																					dateTimeFormat)
 				
 				if 'market does not exist for this coin pair' in errorMsg:
 					errorMsg = 'PROVIDER ERROR - fiat option coin pair {}/{} or {}/{} not supported by exchange {} on date {} {}'.format(fiat, unit, unit, fiat, fiatExchange, dateDMY, dateHM)
