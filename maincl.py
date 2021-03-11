@@ -1,14 +1,14 @@
 import os
 
 from controller import Controller
-from consoleoutputformater import ConsoleOutputFormater
+from consoleoutputformatter import ConsoleOutputFormatter
 from configurationmanager import ConfigurationManager
 from pricerequester import PriceRequester
 
 def main():
 	'''
 	Maincl means main command line !
-	Command line main which instanciate a Controller which uses a ConsoleOutputFormater
+	Command line main which instanciate a Controller which uses a ConsoleOutputFormatter
 	instead of a GuiOutputFormatter, what maingui does !
 	'''
 	if os.name == 'posix':
@@ -17,7 +17,7 @@ def main():
 		configPath = 'c:\\temp\\cryptopricer.ini'
 
 	configMgr = ConfigurationManager(configPath)
-	controller = Controller(ConsoleOutputFormater(configMgr), configMgr, PriceRequester())
+	controller = Controller(ConsoleOutputFormatter(configMgr), configMgr, PriceRequester())
 
 	controller.commandLineLoop()
 	

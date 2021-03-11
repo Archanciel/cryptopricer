@@ -20,7 +20,7 @@ from testprocessor import TestProcessor
 from testcommandprice import TestCommandPrice
 from testresultdata import TestResultData
 from testcurrencypairtester import TestCurrencyPairTester
-from testconsoleoutputformater import TestConsoleOutputFormater
+from testconsoleoutputformatter import TestConsoleOutputFormatter
 
 
 if __name__ == "__main__":
@@ -42,7 +42,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestCommandPrice),
                        loader.loadTestsFromTestCase(TestResultData),
                        loader.loadTestsFromTestCase(TestCurrencyPairTester),
-                       loader.loadTestsFromTestCase(TestConsoleOutputFormater)
+                       loader.loadTestsFromTestCase(TestConsoleOutputFormatter)
     ))
     runner = TextTestRunner(verbosity = 2)
     runner.run(suite)

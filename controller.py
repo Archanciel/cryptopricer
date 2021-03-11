@@ -17,11 +17,6 @@ class Controller:
 	:seqdiag_note Client in the GOF Command pattern. Entry point of the business layer. Instanciates the business layer classes.
 	"""
 	def __init__(self, printer, configMgr, priceRequester):
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptopricer.ini'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptopricer.ini'
-
 		self.configMgr = configMgr
 		self.priceRequester = priceRequester
 		self.crypCompTranslator = CrypCompExchanges()
@@ -108,7 +103,7 @@ if __name__ == '__main__':
 	import os
 	from io import StringIO
 
-	from consoleoutputformater import ConsoleOutputFormater
+	from consoleoutputformatter import ConsoleOutputFormatter
 
 	stdin = sys.stdin
 	sys.stdin = StringIO('btc usd 24/10/17 22:33 Bittrex' +
@@ -129,7 +124,7 @@ if __name__ == '__main__':
 	#     FILE_PATH = 'c:\\temp\\cryptoout.txt'
 	# sys.stdout = open(FILE_PATH, 'w')
 
-	c = Controller(ConsoleOutputFormater())
+	c = Controller(ConsoleOutputFormatter())
 	c.commandLineLoop()
 
 	sys.stdin = stdin

@@ -151,13 +151,13 @@ class TestProcessor(unittest.TestCase):
         self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP), 1505174400)
 
         try:
-            from consoleoutputformater import ConsoleOutputFormater
-            outputFormater = ConsoleOutputFormater()
+            from consoleoutputformatter import ConsoleOutputFormatter
+            outputFormater = ConsoleOutputFormatter()
         except ImportError:
             #ImportError is raised when running TestProcessor in Pydroid
-            #since ConsoleOutputFormater is not compatible with Pydroid
+            #since ConsoleOutputFormatter is not compatible with Pydroid
             #because of Pydroid not supporting the sl4a lib imported
-            #by ConsoleOutputFormater
+            #by ConsoleOutputFormatter
             from gui.guioutputformatter import GuiOutputFormatter
             outputFormater = GuiOutputFormatter(self.configMgr)
 

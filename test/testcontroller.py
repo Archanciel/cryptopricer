@@ -13,7 +13,7 @@ sys.path.insert(0,currentdir) # this instruction is necessary for successful imp
 
 from controller import Controller
 from datetimeutil import DateTimeUtil
-from consoleoutputformater import ConsoleOutputFormater
+from consoleoutputformatter import ConsoleOutputFormatter
 from gui.guioutputformatter import GuiOutputFormatter
 from configurationmanager import ConfigurationManager
 from pricerequesterteststub import PriceRequesterTestStub
@@ -37,8 +37,8 @@ class TestController(unittest.TestCase):
 
 		configMgr = ConfigurationManager(self.filePath)
 
-		#print('---- Instanciating Controller with ConsoleOutputFormater ----')
-		self.controller = Controller(ConsoleOutputFormater(), configMgr, PriceRequesterTestStub())
+		#print('---- Instanciating Controller with ConsoleOutputFormatter ----')
+		self.controller = Controller(ConsoleOutputFormatter(), configMgr, PriceRequesterTestStub())
 		configMgr = ConfigurationManager(self.filePath)
 		self.controllerGui = Controller(GuiOutputFormatter(configMgr), configMgr, PriceRequesterTestStub())
 

@@ -1,7 +1,7 @@
 from abstractoutputformater import AbstractOutputFormater
 
 
-class ConsoleOutputFormater(AbstractOutputFormater):
+class ConsoleOutputFormatter(AbstractOutputFormater):
 	PRICE_FLOAT_FORMAT = '%.8f'
 
 	def printDataToConsole(self, resultData):
@@ -9,13 +9,13 @@ class ConsoleOutputFormater(AbstractOutputFormater):
 		print the result to the console and
 		paste it to the clipboard
 		'''
-		outputStr = super(ConsoleOutputFormater, self).getCommandOutputResult(resultData)
+		outputStr = super(ConsoleOutputFormatter, self).getCommandOutputResult(resultData)
 
 		print(outputStr)
 
 
 if __name__ == '__main__':
-	pr = ConsoleOutputFormater()
+	pr = ConsoleOutputFormatter()
 	y = round(5.59, 1)
 	y = 0.999999999
 	y = 0.9084

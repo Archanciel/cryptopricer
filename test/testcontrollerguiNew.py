@@ -22,7 +22,7 @@ class TestControllerGuiNew(unittest.TestCase):
 	New version of TestControllerGui since the original version already contains a lot of
 	tests.
 
-	Test the Controller using a GuiOuputFormater in place of a ConsoleOutputFormaater
+	Test the Controller using a GuiOuputFormatter in place of a ConsoleOutputFormaater
 	since GuiOuputFormatter runs on Android in Pydroid, but fails in QPython !
 
 	All the test cases are defined in the TestController parent to avoid code duplication
