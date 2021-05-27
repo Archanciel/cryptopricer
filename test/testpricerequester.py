@@ -162,6 +162,30 @@ class TestPriceRequester(unittest.TestCase):
 		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
 
 
+	def testGetHistoricalPriceAtUTCTimeStampLessThanSevenDay_USD_CHF(self):
+		crypto = 'USD'
+		unit = 'CHF'
+		exchange = 'CCCAGG'
+		now = DateTimeUtil.localNow('Europe/Zurich')
+		oneDaysBeforeArrowDate = now.shift(days=-1).date()
+
+		utcArrowDateTimeObj = DateTimeUtil.localNow('UTC')
+		utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-1)
+		utcArrowDateTimeStamp = DateTimeUtil.shiftTimeStampToEndOfDay(utcArrowDateTimeObj.timestamp)
+
+		# for histominute price,
+		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
+																		  unit,
+																		  timeStampLocalForHistoMinute=utcArrowDateTimeStamp,
+																		  localTz=None,
+																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeStamp,
+																		  exchange=exchange)
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
+		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
+		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+
+
 	def testGetCurrentPrice(self):
 		crypto = 'BTC'
 		unit = 'USD'
@@ -345,4 +369,7 @@ class TestPriceRequester(unittest.TestCase):
 
 
 if __name__ == '__main__':
-	unittest.main()
+	# unittest.main()
+	tst = TestPriceRequester()
+	tst.setUp()
+	tst.testGetHistoricalPriceAtUTCTimeStampLessThanSevenDay_USD_CHF()
