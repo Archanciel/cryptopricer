@@ -465,7 +465,7 @@ class TestController(unittest.TestCase):
 																	   now.year - 2001, oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
 						 UtilityForTest.removeOneEndPriceFromResult(printResult))
 
-		self.assertEqual('btc usd {}/{}/{} {}:{} all'.format(oneDayAfterNowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
+		self.assertEqual('btc usd {}/{}/{} {}:{} all'.format(oneDayAfterNowDayStr, oneDayAfterNowMonthStr, nowYearStr, nowHourStr, nowMinuteStr),
 						 fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
