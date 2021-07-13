@@ -11,6 +11,7 @@
 	pos_hint: {'x' : 0, 'y' : .38}
 	requestInput: request_TextInput
 	requestListRV: request_RecycleView_list
+	outputScrollView: scrlv_out
 	resultOutput: ro_output_Label
 	toggleHistoButton: toggle_history_list_Button
 	deleteButton: delete_Button
@@ -163,20 +164,21 @@
 				size: self.size
 		effect_cls: "ScrollEffect" #prevents overscrolling
 		#scroll_y: 0 # forces scrolling to bottom after adding text. Works only on TextInput, not on Label !!!
-        do_scroll_x: False # limiting to vertical scrolling
+		do_scroll_x: False # limiting to vertical scrolling
+		do_scroll_y: True
 
-        Label:
-            id: ro_output_Label
-            size_hint_y: None
-            height: self.texture_size[1]
+		Label:
+			id: ro_output_Label
+			size_hint_y: None
+			height: self.texture_size[1]
 #			size_hint: (1, None)
 #			height: max(self.minimum_height, scrlv_out.height) #required to enable scrolling when output starts to grow
-            text_size: (self.width-20), None
-            line_height: 0.9
-            background_color: 0,0,0,0
-            foreground_color: 1,1,1,1
-            valign: "top"
-            markup: True
+			text_size: (self.width-20), None
+			line_height: 0.9
+			background_color: 0,0,0,0
+			foreground_color: 1,1,1,1
+			valign: "top"
+			markup: True
 
 	BoxLayout:
 		id: boxlayout_statusbar

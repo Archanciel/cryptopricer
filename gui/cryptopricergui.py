@@ -620,9 +620,10 @@ class CryptoPricerGUI(BoxLayout):
 			self.resultOutput.text = resultStr
 		else:
 			self.resultOutput.text = self.resultOutput.text + '\n' + markupBoldStart + resultStr + markupBoldEnd
-			# self.outputResultScrollView.scroll_to(100000)
-			# self.resultOutput.cursor = (10000,0)
 
+		# scrolling to end of output text
+		self.outputScrollView.scroll_y = 0
+		
 	def refocusOnRequestInput(self):
 		# defining a delay of 0.5 sec ensure the
 		# refocus works in all situations, moving
