@@ -104,7 +104,7 @@ Comment:
 ## Installation
 ### Required libraries
 * kivy (version 2.0)
-* arrow
+* arrow (version 0.17.0, try updating to 1.1.1 !!)
 * configobj
 * bs4 (beautifulsoup4)__
 * pillow
