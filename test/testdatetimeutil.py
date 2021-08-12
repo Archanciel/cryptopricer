@@ -95,11 +95,11 @@ class TestDateTimeUtil(unittest.TestCase):
 
         dateStr = '2017/09/30 21:31:55'
         arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Asia/Calcutta', US_DATE_TIME_FORMAT_ARROW)
-        self.assertEqual(expTimeStamp, arrowDateObj.timestamp)
+        self.assertEqual(expTimeStamp, arrowDateObj.timestamp())
 
         dateStr = '2017/09/30 18:01:55'
         arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Europe/Zurich', US_DATE_TIME_FORMAT_ARROW)
-        self.assertEqual(expTimeStamp, arrowDateObj.timestamp)
+        self.assertEqual(expTimeStamp, arrowDateObj.timestamp())
 
 
     def testWinterDateTimeStringToArrowLocalDate(self):
@@ -107,11 +107,11 @@ class TestDateTimeUtil(unittest.TestCase):
 
         dateStr = '2017/11/30 22:31:55'
         arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Asia/Calcutta', US_DATE_TIME_FORMAT_ARROW)
-        self.assertEqual(expTimeStamp, arrowDateObj.timestamp)
+        self.assertEqual(expTimeStamp, arrowDateObj.timestamp())
 
         dateStr = '2017/11/30 18:01:55'
         arrowDateObj = DateTimeUtil.dateTimeStringToArrowLocalDate(dateStr, 'Europe/Zurich', US_DATE_TIME_FORMAT_ARROW)
-        self.assertEqual(expTimeStamp, arrowDateObj.timestamp)
+        self.assertEqual(expTimeStamp, arrowDateObj.timestamp())
 
 
     def testConvertToTimeZoneSummer(self):
@@ -162,7 +162,7 @@ class TestDateTimeUtil(unittest.TestCase):
         DAYS_BEFORE = -7
         localTimeZone = 'Europe/Zurich'
         dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE).to(localTimeZone)
-        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, localTimeZone, abs(DAYS_BEFORE)))
+        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp(), localTimeZone, abs(DAYS_BEFORE)))
 
 
     def testIsTimeStampOlderThanSevenDaysPlusOneSecond(self):
@@ -170,7 +170,7 @@ class TestDateTimeUtil(unittest.TestCase):
         SECOND_BEFORE = -1
         localTimeZone = 'Europe/Zurich'
         dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE, seconds = SECOND_BEFORE).to('Europe/Zurich')
-        self.assertTrue(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, localTimeZone, abs(DAYS_BEFORE)))
+        self.assertTrue(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp(), localTimeZone, abs(DAYS_BEFORE)))
 
 
     def testIsTimeStampOlderThanSevenDaysPlusOneSecondAgainsUTCTimwe(self):
@@ -178,7 +178,7 @@ class TestDateTimeUtil(unittest.TestCase):
         SECOND_BEFORE = -1
         localTimeZone = None
         dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE, seconds = SECOND_BEFORE).to('Europe/Zurich')
-        self.assertTrue(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, localTimeZone, abs(DAYS_BEFORE)))
+        self.assertTrue(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp(), localTimeZone, abs(DAYS_BEFORE)))
 
 
     def testIsTimeStampOlderThanSevenDaysMinusOneSecond(self):
@@ -186,7 +186,7 @@ class TestDateTimeUtil(unittest.TestCase):
         SECOND_AFTER = 1
         localTimeZone = 'Europe/Zurich'
         dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE, seconds = SECOND_AFTER).to('Europe/Zurich')
-        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, localTimeZone, abs(DAYS_BEFORE)))
+        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp(), localTimeZone, abs(DAYS_BEFORE)))
 
 
     def testIsTimeStampOlderThanSevenDaysMinusOneSecondAgainsUTCTimwe(self):
@@ -194,7 +194,7 @@ class TestDateTimeUtil(unittest.TestCase):
         SECOND_AFTER = 1
         localTimeZone = None
         dateBefore = arrow.utcnow().shift(days = DAYS_BEFORE, seconds = SECOND_AFTER).to('Europe/Zurich')
-        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp, localTimeZone, abs(DAYS_BEFORE)))
+        self.assertFalse(DateTimeUtil.isTimeStampOlderThan(dateBefore.timestamp(), localTimeZone, abs(DAYS_BEFORE)))
 
 
     def testLocalNow(self):
@@ -204,7 +204,7 @@ class TestDateTimeUtil(unittest.TestCase):
 
 
     def testUtcNowTimeStamp(self):
-        nowZHts = arrow.utcnow().to('Europe/Zurich').timestamp
+        nowZHts = int(arrow.utcnow().to('Europe/Zurich').timestamp())
         utcTimeStamp = DateTimeUtil.utcNowTimeStamp()
         self.assertEqual(nowZHts, utcTimeStamp)
 
@@ -222,10 +222,10 @@ class TestDateTimeUtil(unittest.TestCase):
     def testShiftTimeStampToEndOfDay_alt(self):
         utcArrowDateTimeObj_begOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 00:00:00", 'UTC',
                                                                                    "YYYY/MM/DD HH:mm:ss")
-        timeStampBegDay = utcArrowDateTimeObj_begOfDay.timestamp
+        timeStampBegDay = utcArrowDateTimeObj_begOfDay.timestamp()
         utcArrowDateTimeObj_endOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 23:59:59", 'UTC',
                                                                                    "YYYY/MM/DD HH:mm:ss")
-        timeStampEndDay = utcArrowDateTimeObj_endOfDay.timestamp
+        timeStampEndDay = utcArrowDateTimeObj_endOfDay.timestamp()
         timeStampShifted = DateTimeUtil.shiftTimeStampToEndOfDay(timeStampBegDay)
 
         self.assertEqual(timeStampShifted, timeStampEndDay)
@@ -234,7 +234,7 @@ class TestDateTimeUtil(unittest.TestCase):
     def testDateTimeStringToArrowLocalDate(self):
         zhArrowDateTimeObj_begOfDay = DateTimeUtil.dateTimeStringToArrowLocalDate("2017/09/30 02:00:00", 'Europe/Zurich',
                                                                                   "YYYY/MM/DD HH:mm:ss")
-        self.assertEqual(1506729600, zhArrowDateTimeObj_begOfDay.timestamp)
+        self.assertEqual(1506729600, zhArrowDateTimeObj_begOfDay.timestamp())
         self.assertEqual("2017/09/30 02:00:00 +02:00", zhArrowDateTimeObj_begOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
 
 
@@ -244,9 +244,17 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertEqual(1506729600, absoluteTimeStamp)
 
 
+    def testDateStringToTimeStamp(self):
+        absoluteTimeStamp = DateTimeUtil.dateTimeStringToTimeStamp("2017-09-30", 'Europe/Zurich',
+                                                                   "YYYY-MM-DD")
+        absoluteTimeStamp_0_HMS = DateTimeUtil.dateTimeStringToTimeStamp("2017/09/30 00:00:00", 'Europe/Zurich',
+                                                                   "YYYY/MM/DD HH:mm:ss")
+        self.assertEqual(absoluteTimeStamp_0_HMS, absoluteTimeStamp)
+
+
     def testDateTimeComponentsToArrowLocalDate(self):
         zhArrowDateTimeObj_begOfDay = DateTimeUtil.dateTimeComponentsToArrowLocalDate(30, 9, 2017, 2, 0, 0, 'Europe/Zurich')
-        self.assertEqual(1506729600, zhArrowDateTimeObj_begOfDay.timestamp)
+        self.assertEqual(1506729600, zhArrowDateTimeObj_begOfDay.timestamp())
         self.assertEqual("2017/09/30 02:00:00 +02:00", zhArrowDateTimeObj_begOfDay.format(US_DATE_TIME_FORMAT_TZ_ARROW))
 
 
@@ -441,7 +449,7 @@ class TestDateTimeUtil(unittest.TestCase):
         self.assertEqual('17/11/18', dateDMY)
         self.assertEqual('08:07', dateHM)
 
-    def test_formatPrintDateFromIntComponentsTimeDayMonthTwoDigitsYearHourMinute(self):
+    def testFormatPrintDateFromIntComponentsTimeDayMonthTwoDigitsYearHourMinute(self):
         day = 7
         month = 9
         year = 18
@@ -450,12 +458,12 @@ class TestDateTimeUtil(unittest.TestCase):
         timezone = LOCAL_TIME_ZONE
         dateTimeFormat = 'DD/MM/YY HH:mm'
 
-        dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
 
         self.assertEqual('07/09/18', dateDMY)
         self.assertEqual('08:07', dateHM)
 
-    def test_formatPrintDateFromIntComponentsTimeDayMonthFourDigitsYearHourMinute(self):
+    def testFormatPrintDateFromIntComponentsTimeDayMonthFourDigitsYearHourMinute(self):
         day = 17
         month = 11
         year = 2018
@@ -464,10 +472,32 @@ class TestDateTimeUtil(unittest.TestCase):
         timezone = LOCAL_TIME_ZONE
         dateTimeFormat = 'DD/MM/YY HH:mm'
 
-        dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
 
         self.assertEqual('17/11/18', dateDMY)
         self.assertEqual('18:27', dateHM)
 
+    def testFormatPrintDateFromRealTimeIntComponents(self):
+        day = 0
+        month = 0
+        year = 0
+        hour = 0
+        minute = 0
+        timezone = LOCAL_TIME_ZONE
+        dateTimeFormat = 'DD/MM/YY HH:mm'
+
+        dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(day, month, year, hour, minute, timezone, dateTimeFormat)
+
+        now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+
+        nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+            now)
+
+        self.assertEqual('{}/{}/{}'.format(nowDayStr, nowMonthStr, nowYearStr), dateDMY)
+        self.assertEqual('{}:{}'.format(nowHourStr, nowMinuteStr), dateHM)
+
 if __name__ == '__main__':
-    unittest.main()
+    #	unittest.main()
+    tst = TestDateTimeUtil()
+    tst.setUp()
+    tst.testDateTimeComponentsToArrowLocalDate()

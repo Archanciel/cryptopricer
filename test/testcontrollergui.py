@@ -24,9 +24,9 @@ class TestControllerGui(unittest.TestCase):
 	all the tests in Pydroid on Android.
 
 	Test the Controller using a GuiOuputFormater in place of a ConsoleOutputFormaater
-	since GuiOuputFormater runs on Android in Pydroid, but fails in QPython !
+	since GuiOuputFormatter runs on Android in Pydroid, but fails in QPython !
 
-	All the test cases are defineed in the TestController parent to avoid code duplication
+	All the test cases are defined in the TestController parent to avoid code duplication
 	'''
 	def setUp(self):
 		if os.name == 'posix':
@@ -67,8 +67,17 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('mco btc 0{}/0{}/{} {}:{} all'.format(requestDayStr, requestMonthStr, requestYearStr, hourStr, minuteStr), fullCommandStrNoOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
+	def testGetPrintableResultFullRequestNoDateNoTime(self):
+		inputStr = 'mco btc all'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
 
-
+		self.assertEqual(
+			'ERROR - date not valid.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
 
 	def testGetPrintableResultForReplayRealTime(self):
 		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
@@ -1386,7 +1395,7 @@ class TestControllerGui(unittest.TestCase):
 		requestResultNoEndPrice = UtilityForTest.removeOneEndPriceFromResult(printResult)
 		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/ETH on Binance: R'
 		
-		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, 
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self,
 																	nowDayStr,
 																	nowHourStr,
 																	nowMinuteStr,
@@ -1590,7 +1599,6 @@ class TestControllerGui(unittest.TestCase):
 		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
 			now)
 
-		oneMonthBeforeArrowDate = now.shift(months=-1)
 		day = 31
 		inputStr = 'btc usd {} {}:{} bitfinex'.format(day, nowHourStr, nowMinuteStr)
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
@@ -1600,7 +1608,7 @@ class TestControllerGui(unittest.TestCase):
 			_ = DateTimeUtil.dateTimeComponentsToArrowLocalDate(day, now.month, now.year, now.hour, now.minute, 0,
 																				   LOCAL_TIME_ZONE)
 		except ValueError:
-			# only if the request is for a month which does not have a 31st is the test performed !
+			# only if the request is for a month which does not have a 31st is the test valid !
 			self.assertEqual(
 				'ERROR - day is out of range for month: day 31, month {}.'.format(now.month), printResult)
 			self.assertEqual('', fullCommandStrNoOptions)
@@ -3504,7 +3512,7 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(
 			'BTC/USD/CHF.AVG on Bitfinex: 12/09/17 00:00C 4149.4 4153.5494\nWARNING - currency value option symbol ETH currently in effect differs from crypto (BTC), unit (USD) and fiat (CHF) of request. -v option ignored.', printResult)
 		self.assertEqual('btc usd 12/09/17 00:00 bitfinex', fullCommandStrNoOptions)
-		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -v1000eth -fchf', fullCommandStrWithNoSaveOptions)
+		self.assertEqual('btc usd 12/09/17 00:00 bitfinex -fchf', fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 
 	def testControllerBugSpecifyOptionValueSaveThenFiatSaveAfterAskHistoDay(self):
@@ -3957,7 +3965,6 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -vs2169.75krl -fchsb.hitbtc\n(0.00000746 KRL/BTC * 94250.7068803 BTC/CHSB = 0.70311027 KRL/CHSB)', fullCommandStrForStatusBar)
 
 	def testOptionValueOptionFiatFullRequestHistoDayPrice(self):
-		# first request where both value and fiat options are saved
 		inputStr = 'krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3968,8 +3975,59 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken\n(0.00000746 KRL/BTC * 23480.7 BTC/USD = 0.17516602 KRL/USD)', fullCommandStrForStatusBar)
 
+	def testOptionValueOptionFiatFullRequestHistoDayPriceRequiredParmsOrderChanged(self):
+		'''
+		A full request is composed of two mandatory order required elements, i.e. crypto
+		and	unit plus three order free required elements, i.e. date, time and exchange.
+		This test verifies that the three required full request order free elements can
+		be set in any order. This is purely for validating the app. In fact, the required
+		elements are always set in this order: <crypto> <unit> <date|time> <exchange> !
+		'''
+		# first changed order
+		inputStr = 'krl btc hitbtc 00:00 20/12/20 -v2169.75krl -fusd.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'2169.75 KRL/0.01618633 BTC/380.06647623 USD.Kraken on HitBTC: 20/12/20 00:00C 0.00000746 0.17516602', printResult)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken\n(0.00000746 KRL/BTC * 23480.7 BTC/USD = 0.17516602 KRL/USD)', fullCommandStrForStatusBar)
+
+		# second changed order
+		inputStr = 'krl btc 00:00 hitbtc 20/12/20 -v2169.75krl -fusd.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'2169.75 KRL/0.01618633 BTC/380.06647623 USD.Kraken on HitBTC: 20/12/20 00:00C 0.00000746 0.17516602', printResult)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken\n(0.00000746 KRL/BTC * 23480.7 BTC/USD = 0.17516602 KRL/USD)', fullCommandStrForStatusBar)
+
+		# third changed order
+		inputStr = 'krl btc 00:00 20/12/20 hitbtc -v2169.75krl -fusd.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'2169.75 KRL/0.01618633 BTC/380.06647623 USD.Kraken on HitBTC: 20/12/20 00:00C 0.00000746 0.17516602', printResult)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('krl btc 20/12/20 00:00 hitbtc -v2169.75krl -fusd.kraken\n(0.00000746 KRL/BTC * 23480.7 BTC/USD = 0.17516602 KRL/USD)', fullCommandStrForStatusBar)
+
+	def testOptionValueOptionFiatFullRequestHistoDayPriceMandatoryParmsAndOptionOrderChanged(self):
+		inputStr = 'krl btc 00:00 20/12/20 -fusd.kraken -v2169.75krl hitbtc'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'ERROR - full request krl btc 00:00 20/12/20 -fusd.kraken -v2169.75krl hitbtc violates format <crypto> <unit> <date|time> <exchange> <options>.', printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+
 	def testOptionValueOptionFiatFullRequestHistoDayPriceFiatEqualsUnit(self):
-		# first request where both value and fiat options are saved
 		inputStr = 'eth usd 19/02/18 kraken -v0.3821277eth -fusd'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -3981,7 +4039,6 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('eth usd 19/02/18 00:00 kraken -v0.3821277eth -fusd\n(940.64 ETH/USD * 1 USD/USD = 940.64 ETH/USD)', fullCommandStrForStatusBar)
 
 	def testOptionValueOptionFiatFullRequestHistoDayPriceFiatEqualsCrypto(self):
-		# first request where both value and fiat options are saved
 		inputStr = 'eth usd 19/02/18 kraken -v0.3821277eth -feth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -4005,7 +4062,6 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual('eth usd 19/02/18 00:00 kraken -vs0.3821277eth -fsusd\n(940.64 ETH/USD * 1 USD/USD = 940.64 ETH/USD)', fullCommandStrForStatusBar)
 
 	def testOptionValueSaveOptionFiatSaveFullRequestHistoDayPriceFiatEqualsCrypto(self):
-		# first request where both value and fiat options are saved
 		inputStr = 'eth usd 19/02/18 kraken -vs0.3821277eth -fseth'
 		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
 			inputStr)
@@ -4105,7 +4161,50 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
 		self.assertEqual(None, fullCommandStrForStatusBar)
-
+	
+	def testRealTimeFullRequestOptionOptionFiatWithFiatPairUnsupportedError(self):
+		'''
+		This test verifies that the partial request fiat save option remains active until
+		new full request or option cancelling.
+		'''
+		now = DateTimeUtil.localNow(LOCAL_TIME_ZONE)
+		
+		nowYearStr, nowMonthStr, nowDayStr, nowHourStr, nowMinuteStr = UtilityForTest.getFormattedDateTimeComponentsForArrowDateTimeObj(
+			now)
+		
+		# first entry: full request
+		inputStr = 'btc usdc 0 all -fchf.kraken'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		self.assertEqual(
+			'PROVIDER ERROR - fiat option coin pair CHF/USDC or USDC/CHF not supported by exchange Kraken on date {}/{}/{} {}:{}'.format(
+				nowDayStr, nowMonthStr, nowYearStr, nowHourStr, nowMinuteStr), printResult)
+		self.assertEqual('', fullCommandStrNoOptions)
+		self.assertEqual(None, fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual(None, fullCommandStrForStatusBar)
+		
+		# next  entry: partial request unit change
+		inputStr = '-uusd'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		
+		requestResultNoEndPrice = UtilityForTest.removeTwoEndPricesFromResult(printResult)
+		expectedPrintResultNoDateTimeNoEndPrice = 'BTC/USD/CHF.Kraken on AVG: R'
+		
+		UtilityForTest.doAssertAcceptingOneMinuteDateTimeDifference(self, nowDayStr,
+		                                                            nowHourStr,
+		                                                            nowMinuteStr,
+		                                                            nowMonthStr,
+		                                                            nowYearStr,
+		                                                            requestResultNoEndPrice,
+		                                                            expectedPrintResultNoDateTimeNoEndPrice)
+		
+		self.assertEqual('btc usd 0 all', fullCommandStrNoOptions)
+		self.assertEqual('btc usd 0 all -fchf.kraken', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+	
 	def testFiatAndValueOptionComputationFullRequestCurrentPriceFiatEqualsUnit(self):
 		'''
 		This test verifies that the fiat computed amount is correct
@@ -4374,12 +4473,12 @@ class TestControllerGui(unittest.TestCase):
 			inputStr)
 
 		expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 12:45M'
-		expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr)
+		expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
 
 		if not 'ERROR' in printResult:
 			self.assertEqual(expectedPrintResult,
 				UtilityForTest.removeOneEndPriceFromResult(printResult))
-			self.assertEqual('btc usd {}/{}/{} 12:45 bitfinex'.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+			self.assertEqual('btc usd {}/{}/{} 12:45 bitfinex'.format(twoDaysBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr, nowHourStr,
 																   nowMinuteStr), fullCommandStrNoOptions)
 		else:
 			# if test is run on March 1st for example
@@ -4404,12 +4503,12 @@ class TestControllerGui(unittest.TestCase):
 			expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, nowMonthStr, nowLastYearStr, twoDaysBeforeDayStr, nowMonthStr, nowYearStr)
 		else:
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 11:34M'
-			expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr)
+			expectedPrintResult = expectedPrintResult.format(twoDaysBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
 
 		if not 'ERROR' in printResult:
 			self.assertEqual(expectedPrintResult,
 				UtilityForTest.removeOneEndPriceFromResult(printResult))
-			self.assertEqual('btc usd {}/{}/{} 11:34 bitfinex'.format(twoDaysBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
+			self.assertEqual('btc usd {}/{}/{} 11:34 bitfinex'.format(twoDaysBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr, nowHourStr,
 																   nowMinuteStr), fullCommandStrNoOptions)
 		else:
 			# if test is run on February 1st for example
@@ -4436,17 +4535,34 @@ class TestControllerGui(unittest.TestCase):
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 16:34 can not be in the future and was shifted back to last year.'
 			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowLastYearStr, oneDayBeforeDayStr, nowMonthStr, nowYearStr)
 		else:
-			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 16:34M'
-			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr)
+			if oneDayBeforeDayStr == '2' and twoDaysBeforeMonthStr == '3':
+				# tst run on Marth 2nd
+				expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'
+				expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
+			
+				if not 'ERROR' in printResult:
+					self.assertEqual(expectedPrintResult,
+					                 UtilityForTest.removeOneEndPriceFromResult(printResult))
+					self.assertEqual(
+						'btc usd {}/{}/{} 16:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr),
+						fullCommandStrNoOptions)
+				else:
+					# if test is run on February 1st for example
+					self.assertEqual(
+						'ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')),
+						printResult)
+			else:
+				expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 16:34M'
+				expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
 
-		if not 'ERROR' in printResult:
-			self.assertEqual(expectedPrintResult,
-				UtilityForTest.removeOneEndPriceFromResult(printResult))
-			self.assertEqual('btc usd {}/{}/{} 16:34 bitfinex'.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
-																   nowMinuteStr), fullCommandStrNoOptions)
-		else:
-			# if test is run on February 1st for example
-			self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
+				if 'ERROR' not in printResult:
+					self.assertEqual(expectedPrintResult,
+						UtilityForTest.removeOneEndPriceFromResult(printResult))
+					self.assertEqual('btc usd {}/{}/{} 16:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr), fullCommandStrNoOptions)
+				else:
+					# if test is run on February 1st for example
+					self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
+
 
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual(None, fullCommandStrForStatusBar)
@@ -4466,18 +4582,41 @@ class TestControllerGui(unittest.TestCase):
 			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C\nWarning - request date {}/{}/{} 18:34 can not be in the future and was shifted back to last year.'
 			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowLastYearStr, oneDayBeforeDayStr, nowMonthStr, nowYearStr)
 		else:
-			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 18:34M'
-			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr)
-
-		if not 'ERROR' in printResult:
-			self.assertEqual(expectedPrintResult,
-				UtilityForTest.removeOneEndPriceFromResult(printResult))
-			self.assertEqual('btc usd {}/{}/{} 18:34 bitfinex'.format(oneDayBeforeDayStr, nowMonthStr, nowYearStr, nowHourStr,
-																   nowMinuteStr), fullCommandStrNoOptions)
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
+		
+		if oneDayBeforeDayStr == '2' and twoDaysBeforeMonthStr == '3':
+			# tst run on Marth 2nd
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 00:00C'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
+			
+			if not 'ERROR' in printResult:
+				self.assertEqual(expectedPrintResult,
+				                 UtilityForTest.removeOneEndPriceFromResult(printResult))
+				self.assertEqual(
+					'btc usd {}/{}/{} 18:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr),
+					fullCommandStrNoOptions)
+			else:
+				# if test is run on February 1st for example
+				self.assertEqual(
+					'ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')),
+					printResult)
 		else:
-			# if test is run on February 1st for example
-			self.assertEqual('ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')), printResult)
-
+			expectedPrintResult = 'BTC/USD on Bitfinex: ' + '{}/{}/{} 18:34M'
+			expectedPrintResult = expectedPrintResult.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr)
+			
+			if 'ERROR' not in printResult:
+				self.assertEqual(expectedPrintResult,
+				                 UtilityForTest.removeOneEndPriceFromResult(printResult))
+				self.assertEqual(
+					'btc usd {}/{}/{} 18:34 bitfinex'.format(oneDayBeforeDayStr, twoDaysBeforeMonthStr, nowYearStr),
+					fullCommandStrNoOptions)
+			else:
+				# if test is run on February 1st for example
+				self.assertEqual(
+					'ERROR - day is out of range for month: day 31, month {}.'.format(nowMonthStr.replace('0', '')),
+					printResult)
+		
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual(None, fullCommandStrForStatusBar)
 
@@ -4569,8 +4708,34 @@ class TestControllerGui(unittest.TestCase):
 		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
 		self.assertEqual(None, fullCommandStrForStatusBar)
 
+	def testOptionValueOptionFiatOptionPriceFullRequestHistoDayPrice(self):
+		inputStr = 'krl btc 20/12/20 20:35 hitbtc -v2169.75krl -fusd.kraken -p0.0000075'
+		printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+			inputStr)
+		self.assertEqual(
+			'2169.75 KRL/0.01627312 BTC/382.10436619 USD.Kraken on HitBTC: 20/12/20 20:35P 0.0000075 0.17610525', printResult)
+		self.assertEqual('krl btc 20/12/20 20:35 hitbtc', fullCommandStrNoOptions)
+		self.assertEqual('krl btc 20/12/20 20:35 hitbtc -v2169.75krl -fusd.kraken -p0.0000075', fullCommandStrWithNoSaveOptions)
+		self.assertEqual(None, fullCommandStrWithSaveOptionsForHistoryList)
+		self.assertEqual('krl btc 20/12/20 20:35 hitbtc -v2169.75krl -fusd.kraken -p0.0000075\n(0.0000075 KRL/BTC * 23480.7 BTC/USD = 0.17610525 KRL/USD)', fullCommandStrForStatusBar)
+
 if __name__ == '__main__':
 #	unittest.main()
 	tst = TestControllerGui()
 	tst.setUp()
+	tst.testGetPrintableResultForDayOnlyAndTimeFullRequestOn31st()
+	tst.setUp()
 	tst.testGetPrintableResultForUnsupportedPartialRequestOptionSaveAfterValidRealTimeRequest()
+	tst.setUp()
+	tst.testOptionValueOptionFiatFullRequestHistoDayPrice()
+	tst.setUp()
+	tst.testOptionValueOptionFiatFullRequestHistoDayPriceRequiredParmsOrderChanged()
+	tst.testOptionValueOptionFiatFullRequestHistoDayPriceMandatoryParmsAndOptionOrderChanged()
+	tst.setUp()
+	tst.testGetPrintableResultForDayOnlyAndTimeFullRequestOn31st()
+	tst.setUp()
+	tst.testGetPrintableResultFullRequestNoDateNoTime()
+	tst.setUp()
+	tst.testOptionValueOptionFiatOptionPriceFullRequestHistoDayPrice()
+	tst.setUp()
+	tst.testGetPrintableResultForInputScenarioPartialRequestDateTime()

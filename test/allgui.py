@@ -1,8 +1,8 @@
 '''
-This test suite runs on Pydroid 3, but not on QPython 3 since it has a dependency on
-Kivy ressources which are not supported by QPython 3. It has no dependency on the sl4a
-library, supported by QPython 3, but not by Pydroid 3. It can be executed in Pycharm on
-pc !
+This test suite is usefull on Android. It runs on Pydroid 3, but not on QPython 3
+since it has a dependency on Kivy resources which are not supported by QPython 3.
+It has no dependency on the sl4a library, supported by QPython 3, but not by Pydroid 3.
+It can be executed as well in Pycharm on Windows !
 '''
 
 from unittest import TestLoader, TextTestRunner, TestSuite
@@ -13,6 +13,7 @@ from testabstractoutputformater import TestAbstractOutputFormater
 from testcommandquit import TestCommandQuit
 from testcommanderror import TestCommandError
 from testcontrollergui import TestControllerGui
+from testcontrollerguiNew import TestControllerGuiNew
 from testconfigurationmanager import TestConfigurationManager
 from testpricerequester import TestPriceRequester
 from testdatetimeutil import TestDateTimeUtil
@@ -22,7 +23,7 @@ from testcommandprice import TestCommandPrice
 from testresultdata import TestResultData
 from testcurrencypairtester import TestCurrencyPairTester
 from testhelputil import TestHelpUtil
-from testguioutputformater import TestGuiOutputFormater
+from testguioutputformatter import TestGuiOutputFormatter
 
 
 if __name__ == "__main__":
@@ -36,6 +37,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestCommandQuit),
                        loader.loadTestsFromTestCase(TestCommandError),
                        loader.loadTestsFromTestCase(TestControllerGui),
+                       loader.loadTestsFromTestCase(TestControllerGuiNew),
                        loader.loadTestsFromTestCase(TestConfigurationManager),
                        loader.loadTestsFromTestCase(TestDateTimeUtil),
                        loader.loadTestsFromTestCase(TestPriceRequester),
@@ -45,7 +47,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestResultData),
                        loader.loadTestsFromTestCase(TestCurrencyPairTester),
                        loader.loadTestsFromTestCase(TestHelpUtil),
-                       loader.loadTestsFromTestCase(TestGuiOutputFormater)
+                       loader.loadTestsFromTestCase(TestGuiOutputFormatter)
     ))
     runner = TextTestRunner(verbosity = 2)
     runner.run(suite)

@@ -15,7 +15,6 @@ from kivy.properties import BooleanProperty
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
@@ -47,7 +46,7 @@ STATUS_BAR_ERROR_SUFFIX = ' --> ERROR ...'
 FILE_LOADED = 0
 FILE_SAVED = 1
 CRYPTOPRICER_VERSION = 'CryptoPricer 2.1'
-fromAppBuilt = False
+NO_INTERNET = False
 
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
@@ -168,6 +167,7 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 	def refresh_view_attrs(self, rv, index, data):
 		''' Catch and handle the view changes '''
 		self.rv = rv
+		self.cryptoPricerGUI = rv.rootGUI
 		self.index = index
 		
 		return super(SelectableLabel, self).refresh_view_attrs(
@@ -176,17 +176,15 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 	def on_touch_down(self, touch):
 		''' Add selection on touch down '''
 		
-		cryptoPricerGUI = self.rv.parent.parent
-		
-		if len(cryptoPricerGUI.requestListRVSelBoxLayout.selected_nodes) == 1:
+		if len(self.cryptoPricerGUI.requestListRVSelBoxLayout.selected_nodes) == 1:
 			# here, the user manually deselects the selected item. When
 			# on_touch_down is called, if the item is selected, the
 			# requestListRVSelBoxLayout.selected_nodes list has one element !
-			cryptoPricerGUI.requestInput.text = ''
+			self.cryptoPricerGUI.requestInput.text = ''
 
 			# cryptoPricerGUI.recycleViewCurrentSelIndex is used by the
 			# deleteRequest() and updateRequest() cryptoPricerGUI methods
-			cryptoPricerGUI.recycleViewCurrentSelIndex = -1
+			self.cryptoPricerGUI.recycleViewCurrentSelIndex = -1
 
 		if super(SelectableLabel, self).on_touch_down(touch):
 			return True
@@ -198,23 +196,21 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 		# color !
 		self.selected = is_selected
 		
-		cryptoPricerGUI = rv.parent.parent
-		
 		if is_selected:
 			selItemValue = rv.data[index]['text']
 
 			# cryptoPricerGUI.recycleViewCurrentSelIndex is used by the
 			# deleteRequest() and updateRequest() cryptoPricerGUI methods
-			cryptoPricerGUI.recycleViewCurrentSelIndex = index
-			cryptoPricerGUI.requestInput.text = selItemValue
+			self.cryptoPricerGUI.recycleViewCurrentSelIndex = index
+			self.cryptoPricerGUI.requestInput.text = selItemValue
 		
-		cryptoPricerGUI.refocusOnRequestInput()
-		cryptoPricerGUI.enableStateOfRequestListSingleItemButtons()
+		self.cryptoPricerGUI.refocusOnRequestInput()
+		self.cryptoPricerGUI.enableStateOfRequestListSingleItemButtons()
 
 
 class SettingScrollOptions(SettingOptions):
 	'''
-	This class is used in the Kivy Settings dialog to display in a sccrollable way
+	This class is used in the Kivy Settings dialog to display in a scrollable way
 	the long list of time zones
 
 	Source URL: https://github.com/kivy/kivy/wiki/Scollable-Options-in-Settings-panel
@@ -253,39 +249,6 @@ class SettingScrollOptions(SettingOptions):
 		content.add_widget(btn)
 
 
-class CustomDropDown(DropDown):
-	saveButton = ObjectProperty(None)
-	statusToRequestInputButton = ObjectProperty(None)
-	
-	def __init__(self, owner):
-		super().__init__()
-		self.owner = owner
-
-	def showLoad(self):
-		message = 'Data path ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
-
-		if self.owner.ensureDataPathExist(self.owner.dataPath, message):
-			self.owner.openFileLoadPopup()
-
-	def showSave(self):
-		message = 'Data path ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
-
-		if self.owner.ensureDataPathExist(self.owner.dataPath, message):
-			self.owner.openFileSavePopup()
-
-	def help(self):
-		self.owner.displayHelp()
-	
-	def copyStatusBarStrToRequestEntry(self):
-		statusBarStr = self.owner.statusBarTextInput.text
-		
-		self.owner.requestInput.text = statusBarStr.replace(STATUS_BAR_ERROR_SUFFIX, '')
-		self.owner.statusBarTextInput.text = ''
-		self.statusToRequestInputButton.disabled = True
-		self.owner.refocusOnRequestInput()
-		self.dismiss()
-
-
 class CryptoPricerGUI(BoxLayout):
 	requestInput = ObjectProperty()
 	resultOutput = ObjectProperty()
@@ -295,12 +258,13 @@ class CryptoPricerGUI(BoxLayout):
 	recycleViewCurrentSelIndex = -1
 
 	def __init__(self, **kwargs):
-		global fromAppBuilt
-
-		if not fromAppBuilt:
-			return
-
 		super(CryptoPricerGUI, self).__init__(**kwargs)
+
+		# due to separate customdropdown kv file, import
+		# can not be placed elsewhere with other import
+		# sentences.
+		from gui.customdropdown import CustomDropDown
+		
 		self.dropDownMenu = CustomDropDown(owner=self)
 
 		if os.name == 'posix':
@@ -318,7 +282,13 @@ class CryptoPricerGUI(BoxLayout):
 			self.boxLayoutContainingStatusBar.height = "63dp"
 
 		self.configMgr = ConfigurationManager(configPath)
-		self.controller = Controller(GuiOutputFormatter(self.configMgr), self.configMgr, PriceRequester())
+		
+		if NO_INTERNET:
+			from pricerequesterteststub import PriceRequesterTestStub
+			self.controller = Controller(GuiOutputFormatter(self.configMgr), self.configMgr, PriceRequesterTestStub())
+		else:
+			self.controller = Controller(GuiOutputFormatter(self.configMgr), self.configMgr, PriceRequester())
+
 		self.dataPath = self.configMgr.dataPath
 
 		self.setRVListSizeParms(int(self.configMgr.histoListItemHeight),
@@ -483,31 +453,39 @@ class CryptoPricerGUI(BoxLayout):
 		'''
 		# Get the request from the TextInput
 		requestStr = self.requestInput.text
-
-		# purpose of the data obtained from the business layer:
-		#   outputResultStr - for the output text zone
-		#   fullRequestStrNoOptions - for the request history list
-		#   fullRequestStrWithNoSaveModeOptions - for the status bar
-		#   fullCommandStrWithSaveModeOptionsForHistoryList - for the request history list
-		outputResultStr, fullRequestStrNoOptions, fullRequestStrWithNoSaveModeOptions, fullCommandStrWithSaveModeOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
-			requestStr)
-
+		
+		fullRequestStrNoOptions = ''
+		fullRequestStrWithNoSaveModeOptions = None
+		fullRequestStrWithSaveModeOptionsForHistoryList = None
+		fullCommandStrForStatusBar = None
+		
+		try:
+			# purpose of the data obtained from the business layer:
+			#   outputResultStr - for the output text zone
+			#   fullRequestStrNoOptions - for the request history list
+			#   fullRequestStrWithNoSaveModeOptions - for the status bar
+			#   fullCommandStrWithSaveModeOptionsForHistoryList - for the request history list
+			outputResultStr, fullRequestStrNoOptions, fullRequestStrWithNoSaveModeOptions, fullRequestStrWithSaveModeOptionsForHistoryList, fullCommandStrForStatusBar = self.controller.getPrintableResultForInput(
+				requestStr)
+		except Exception as e:
+			outputResultStr = "ERROR - request '{}' could not be executed. Error info: {}.".format(requestStr, e)
+		
 		self.outputResult(outputResultStr)
 		self.clearResultOutputButton.disabled = False
-
+		
 		fullRequestListEntry = {'text': fullRequestStrNoOptions, 'selectable': True}
 
-		if fullCommandStrWithSaveModeOptionsForHistoryList != None:
+		if fullRequestStrWithSaveModeOptionsForHistoryList != None:
 			if fullRequestListEntry in self.requestListRV.data:
 				# if the full request string corresponding to the full request string with options is already
 				# in the history list, it is removed before the full request string with options is added
 				# to the list. Otherwise, this would create a duplicate !
 				self.requestListRV.data.remove(fullRequestListEntry)
 
-			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullCommandStrWithSaveModeOptionsForHistoryList, 'selectable': True}
+			fullRequestStrWithSaveModeOptionsListEntry = {'text': fullRequestStrWithSaveModeOptionsForHistoryList, 'selectable': True}
 			
 			# used to avoid replacing btc usd 20/12/20 all -vs100usd by btc usd 20/12/20 00:00 all -vs100usd !
-			fullRequestStrWithSaveModeOptionsListEntryNoZeroTime = {'text': fullCommandStrWithSaveModeOptionsForHistoryList.replace(' 00:00', ''), 'selectable': True}
+			fullRequestStrWithSaveModeOptionsListEntryNoZeroTime = {'text': fullRequestStrWithSaveModeOptionsForHistoryList.replace(' 00:00', ''), 'selectable': True}
 
 			if not fullRequestStrWithSaveModeOptionsListEntry in self.requestListRV.data and \
 				not fullRequestStrWithSaveModeOptionsListEntryNoZeroTime in self.requestListRV.data:
@@ -538,8 +516,8 @@ class CryptoPricerGUI(BoxLayout):
 		if 'ERROR' in outputResultStr:
 			self.updateStatusBar(requestStr + STATUS_BAR_ERROR_SUFFIX)
 		else:
-			if fullCommandStrWithSaveModeOptionsForHistoryList:
-				if requestStr != fullCommandStrWithSaveModeOptionsForHistoryList:
+			if fullRequestStrWithSaveModeOptionsForHistoryList:
+				if requestStr != fullRequestStrWithSaveModeOptionsForHistoryList:
 					# the case when an option with save mode was added as a partial request !
 					# Also, if an option was cancelled (-v0 for example) and another option
 					# in save mode remains isLoadAtStartChkboxActive (-fschf for example)
@@ -639,9 +617,10 @@ class CryptoPricerGUI(BoxLayout):
 			self.resultOutput.text = resultStr
 		else:
 			self.resultOutput.text = self.resultOutput.text + '\n' + markupBoldStart + resultStr + markupBoldEnd
-			# self.outputResultScrollView.scroll_to(100000)
-			# self.resultOutput.cursor = (10000,0)
 
+		# scrolling to end of output text
+		self.outputScrollView.scroll_y = 0
+		
 	def refocusOnRequestInput(self):
 		# defining a delay of 0.5 sec ensure the
 		# refocus works in all situations, moving
@@ -754,8 +733,13 @@ class CryptoPricerGUI(BoxLayout):
 		self.outputLineBold = True
 
 		for listEntry in self.requestListRV.data:
-			outputResultStr, fullRequestStr, fullRequestStrWithOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = \
-				self.controller.getPrintableResultForInput(listEntry['text'])
+			requestStr = listEntry['text']
+
+			try:
+				outputResultStr, _, _, _, _ = self.controller.getPrintableResultForInput(requestStr)
+			except Exception as e:
+				outputResultStr = "ERROR - request '{}' could not be executed. Error info: {}.".format(requestStr, e)
+
 			self.outputResult(outputResultStr)
 
 		self.replayAllButton.disabled = False
@@ -949,12 +933,18 @@ class CryptoPricerGUI(BoxLayout):
 class CryptoPricerGUIApp(App):
 	settings_cls = SettingsWithTabbedPanel
 	cryptoPricerGUI = None
-
+	
 	def build(self): # implicitely looks for a kv file of name cryptopricergui.kv which is
 					 # class name without App, in lowercases
-		global fromAppBuilt
-		fromAppBuilt = True
-
+		# Builder is a global Kivy instance used
+		# in widgets that you can use to load other
+		# kv files in addition to the default ones.
+		from kivy.lang import Builder
+		
+		# Loading Multiple .kv files
+		Builder.load_file('filechooser.kv')
+		Builder.load_file('customdropdown.kv')
+	
 		if os.name != 'posix':
 			# running app om Windows
 			Config.set('graphics', 'width', '600')

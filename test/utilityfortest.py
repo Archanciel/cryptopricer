@@ -88,18 +88,54 @@ class UtilityForTest:
 		:param resultStr:
 		:return:
 		'''
-		patternNoWarning = r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (.*) (?:[\d\.]*)"
-		patternOneWarning = r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (.*) (?:[\d\.]*(\n.*))"
-		match = re.match(patternOneWarning, resultStr)
+		
+		# pattern for this kind of output result:
+		# 0.06180355 ETH/100 USD on AVG: 03/03/21 20:03M 1618.03 which correspond to request
+		# eth usd 0 binance -v100usd
+		patternNoWarningValueOption = r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (.*) (?:[\d\.]*)"
+		patternOneWarningValueOption = r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (.*) (?:[\d\.]*(\n.*))"
 
-		if match != None:
-			if len(match.groups()) == 3:
-				return match.group(1) + match.group(2) + match.group(3)
+		# pattern for this kind of output result:
+		# 60851.6949266 CHSB/1.46530881 BTC/1000 USD.Kraken on HitBTC: 06/03/21 20:00R 0.00002408 0.0164334 which correspond to request
+		# chsb btc 0 hitbtc -v1000usd -fusd.kraken
+		patternNoWarningValueAndFiatOption = r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (\w*/)(?:[\d\.]* )(.*) (?:[\d\.]*) (?:[\d\.]*)"
+		patternOneWarningValueAndFiatOption = r"(?:[\d\.]*) (\w*/)(?:[\d\.]*) (\w*/)(?:[\d\.]* )(.*) (?:[\d\.]*) (?:[\d\.]*(\n.*))"
 
-		match = re.match(patternNoWarning, resultStr)
+		# pattern for this kind of output result:
+		# CHSB/BTC/USD.Kraken on HitBTC: 06/03/21 20:00R 0.00002408 0.0164334 which correspond to request
+		# chsb btc 0 hitbtc -fusd.kraken
+		patternNoWarningFiatOption = '(.*) (?:[\d\.]*) (?:[\d\.]*)'
+		patternOneWarningFiatOption = '(.*) (?:[\d\.]*) (?:[\d\.]*(\n.*))'
 
-		if len(match.groups()) == 2:
+		match = re.match(patternOneWarningValueAndFiatOption, resultStr)
+
+		if match != None and len(match.groups()) == 4:
+			return match.group(1) + match.group(2) + match.group(3) + match.group(4)
+
+		match = re.match(patternNoWarningValueAndFiatOption, resultStr)
+
+		if match != None and len(match.groups()) == 3:
+			return match.group(1) + match.group(2) + match.group(3)
+
+		match = re.match(patternOneWarningValueOption, resultStr)
+
+		if match != None and len(match.groups()) == 3:
+			return match.group(1) + match.group(2) + match.group(3)
+
+		match = re.match(patternNoWarningValueOption, resultStr)
+
+		if match != None and len(match.groups()) == 2:
 			return match.group(1) + match.group(2)
+
+		match = re.match(patternOneWarningFiatOption, resultStr)
+
+		if match != None and len(match.groups()) == 2:
+			return match.group(1) + match.group(2)
+
+		match = re.match(patternNoWarningFiatOption, resultStr)
+
+		if match != None and len(match.groups()) == 1:
+			return match.group(1)
 		else:
 			return ()
 

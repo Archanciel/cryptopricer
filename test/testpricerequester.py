@@ -31,7 +31,7 @@ class TestPriceRequester(unittest.TestCase):
 		resultData = ResultData()
 		resultData = self.priceRequester._getHistoDayPriceAtUTCTimeStamp(crypto,
 																		  unit,
-																		  utcArrowDateTimeObj_endOfDay.timestamp,
+																		  utcArrowDateTimeObj_endOfDay.timestamp(),
 																		  exchange,
 																		  resultData)
 		self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
@@ -51,7 +51,7 @@ class TestPriceRequester(unittest.TestCase):
 		resultData = ResultData()
 		resultData = self.priceRequester._getHistoDayPriceAtUTCTimeStamp(crypto,
 																		  unit,
-																		  utcArrowDateTimeObj_midOfDay.timestamp,
+																		  utcArrowDateTimeObj_midOfDay.timestamp(),
 																		  exchange,
 																		  resultData)
 		self.assertEqual(1506729600, resultData.getValue(resultData.RESULT_KEY_PRICE_TIME_STAMP))
@@ -152,9 +152,33 @@ class TestPriceRequester(unittest.TestCase):
 		# for histominute price,
 		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
 																		  unit,
-																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp,
+																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp(),
 																		  localTz=None,
-																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
+																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp(),
+																		  exchange=exchange)
+		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
+		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
+		self.assertEqual(unit, resultData.getValue(resultData.RESULT_KEY_UNIT))
+		self.assertEqual(exchange, resultData.getValue(resultData.RESULT_KEY_EXCHANGE))
+
+
+	def testGetHistoricalPriceAtUTCTimeStampLessThanSevenDay_USD_CHF(self):
+		crypto = 'USD'
+		unit = 'CHF'
+		exchange = 'CCCAGG'
+		now = DateTimeUtil.localNow('Europe/Zurich')
+		oneDaysBeforeArrowDate = now.shift(days=-1).date()
+
+		utcArrowDateTimeObj = DateTimeUtil.localNow('UTC')
+		utcArrowDateTimeObj = utcArrowDateTimeObj.shift(days=-1)
+		utcArrowDateTimeStamp = DateTimeUtil.shiftTimeStampToEndOfDay(utcArrowDateTimeObj.timestamp())
+
+		# for histominute price,
+		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
+																		  unit,
+																		  timeStampLocalForHistoMinute=utcArrowDateTimeStamp,
+																		  localTz=None,
+																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeStamp,
 																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
 		self.assertEqual(crypto, resultData.getValue(resultData.RESULT_KEY_CRYPTO))
@@ -185,9 +209,9 @@ class TestPriceRequester(unittest.TestCase):
 		#here, since histominute price is fetched, time stamp UTC no HHMM for histoDay wil not be used !
 		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
 																		  unit,
-																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp,
+																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp(),
 																		  localTz=None,
-																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
+																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp(),
 																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_MINUTE)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC/USD).")
@@ -207,9 +231,9 @@ class TestPriceRequester(unittest.TestCase):
 		#here, since histominute price is fetched, time stamp UTC no HHMM for histoDay wil not be used !
 		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
 																		  unit,
-																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp,
+																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp(),
 																		  localTz=None,
-																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
+																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp(),
 																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - unknown market does not exist for this coin pair (BTC/USD).")
@@ -229,9 +253,9 @@ class TestPriceRequester(unittest.TestCase):
 		#here, since histominute price is fetched, time stamp UTC no HHMM for histoDay wil not be used !
 		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
 																		  unit,
-																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp,
+																		  timeStampLocalForHistoMinute=utcArrowDateTimeObj.timestamp(),
 																		  localTz=None,
-																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp,
+																		  timeStampUTCNoHHMMForHistoDay=utcArrowDateTimeObj.timestamp(),
 																		  exchange=exchange)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_PRICE_TYPE), resultData.PRICE_TYPE_HISTO_DAY)
 		self.assertEqual(resultData.getValue(resultData.RESULT_KEY_ERROR_MSG), "PROVIDER ERROR - Binance market does not exist for this coin pair (BTC/USD).")
@@ -253,7 +277,7 @@ class TestPriceRequester(unittest.TestCase):
 		localTimeZone = 'Europe/Zurich'
 		#time stamp is always UTC !
 		now = DateTimeUtil.localNow(localTimeZone)
-		timeStampLocalNow = now.timestamp
+		timeStampLocalNow = now.timestamp()
 		timeStampUtcNow = DateTimeUtil.utcNowTimeStamp()
 		resultData = self.priceRequester.getHistoricalPriceAtUTCTimeStamp(crypto,
 																		  unit,
@@ -345,4 +369,7 @@ class TestPriceRequester(unittest.TestCase):
 
 
 if __name__ == '__main__':
-	unittest.main()
+	# unittest.main()
+	tst = TestPriceRequester()
+	tst.setUp()
+	tst.testGetHistoricalPriceAtUTCTimeStampLessThanSevenDay_USD_CHF()

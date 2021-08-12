@@ -30,12 +30,17 @@ class Processor:
 					   optionValueSymbol=None,
 					   optionValueAmount=None,
 					   optionValueSaveFlag=None,
-					   requestInputString='',
 					   optionFiatSymbol=None,
 					   optionFiatExchange=None,
-					   optionPriceSymbol=None,
 					   optionPriceAmount=None,
-					   optionPriceSaveFlag=None):
+					   optionPriceSaveFlag=None,
+					   optionResultStrAmount=None,
+					   optionResultSaveFlag=None,
+					   optionLimitSymbol=None,
+					   optionLimitAmount=None,
+					   optionLimitExchange=None,
+					   optionLimitSaveFlag=None,
+					   requestInputString=''):
 		"""
 		Ask the PriceRequester either a RT price or a historical price. Then,
 		in case a fiat (-f) or/and a value option (-v) was specified, computes
@@ -50,14 +55,14 @@ class Processor:
 		:param hour:
 		:param minute:
 		:param optionValueSymbol: upper case currency value symbol. If == crypto, this means that optionValueAmount provided
-								 is in crypto and must be converted into unit (counter party) at the rate returned by
-								 the PriceRequester.
+								  is in crypto and must be converted into unit (counter party) at the rate returned by
+								  the PriceRequester.
 
-								 If the currency value symbol == unit, this means that optionValueAmount provided
-								 is in the counter party (unit or an other crypto) and must be converted into crypto at
-								 the rate returned by the PriceRequester.
+								  If the currency value symbol == unit, this means that optionValueAmount provided
+								  is in the counter party (unit or an other crypto) and must be converted into crypto at
+								  the rate returned by the PriceRequester.
 
-								 Ex 1:  -v0.001btc
+								  Ex 1:  -v0.001btc
 										crypto == BTC
 										unit == USD
 										optionValueSymbol == BTC
@@ -66,7 +71,7 @@ class Processor:
 										if returned rate (stored in ResultData.RESULT_KEY_PRICE entry) is 20000,
 										converted value will be 20000 USD * 0.001 BTC => 200 USD
 
-								 Ex 2:  -v500usd
+								  Ex 2:  -v500usd
 										crypto == BTC
 										unit == USD
 										optionValueSymbol == USD
@@ -77,31 +82,38 @@ class Processor:
 
 		:param optionValueAmount:   float specified value option amount
 		:param optionValueSaveFlag: used to refine warning if value option not applicable
-		:param requestInputString): used for better error msg !
 		:param optionFiatSymbol:    stores the fiat symbol, i.e. the fiat into which the returned
 									unit amount is converted
-									
-		NEXT THREE PARMS NOT USED YET !
-		
-		:param optionPriceSymbol:   upper case currency price symbol
-		:param optionPriceAmount:   float specified price option amount
-		:param optionPriceSaveFlag: used to refine warning if price option not applicable
-
+		:param optionFiatExchange:
+		:param optionPriceAmount:
+		:param optionPriceSaveFlag: not sure if useful. May be used to refine warning if price option
+									not applicable
+		:param optionResultStrAmount: ex: '' means -1 or -2 or -1-3 or -2:-4
+		:param optionResultSaveFlag:  not sure if useful. May be used to refine warning if result option
+									  not applicable
+		:param optionLimitSymbol:
+		:param optionLimitAmount:
+		:param optionLimitExchange:
+		:param optionLimitSaveFlag: not sure if useful. May be used to refine warning if limit option
+									not applicable
+		:param requestInputString): used for to complete the error msg with the request
+									causing problem!
 		:seqdiag_return ResultData
 		:return: a ResultData filled with result values
 		"""
-		# validating exchange and fiat exchange
-
+		
+		# validating exchange, fiat exchange and limit exchange
+		
 		if exchange == None:
 			resultData = ResultData()
-			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, "ERROR - exchange could not be parsed due to an error in your request ({}).".format(requestInputString))
+			resultData.setError("ERROR - exchange could not be parsed due to an error in your request ({}).".format(requestInputString))
 			return resultData
 		else:
 			try:
-				validExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
+				validCryptoUnitExchangeSymbol = self.crypCompExchanges.getExchange(exchange)
 			except(KeyError):
 				resultData = ResultData()
-				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG, MARKET_NOT_SUPPORTED_ERROR.format(exchange))
+				resultData.setError(MARKET_NOT_SUPPORTED_ERROR.format(exchange))
 				return resultData
 
 		validFiatExchangeSymbol = None
@@ -111,8 +123,17 @@ class Processor:
 				validFiatExchangeSymbol = self.crypCompExchanges.getExchange(optionFiatExchange)
 			except(KeyError):
 				resultData = ResultData()
-				resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-									MARKET_NOT_SUPPORTED_ERROR.format(optionFiatExchange))
+				resultData.setError(MARKET_NOT_SUPPORTED_ERROR.format(optionFiatExchange))
+				return resultData
+
+		validLimitExchangeSymbol = None
+
+		if optionLimitExchange:
+			try:
+				validLimitExchangeSymbol = self.crypCompExchanges.getExchange(optionLimitExchange)
+			except(KeyError):
+				resultData = ResultData()
+				resultData.setError(MARKET_NOT_SUPPORTED_ERROR.format(optionLimitExchange))
 				return resultData
 
 		localTz = self.configManager.localTimeZone
@@ -120,29 +141,32 @@ class Processor:
 
 		resultData = self._getPrice(crypto,
 									unit,
-									validExchangeSymbol,
+									validCryptoUnitExchangeSymbol,
 									year,
 									month,
 									day,
 									hour,
 									minute,
 									dateTimeFormat,
-									localTz)
+									localTz,
+									optionPriceAmount,
+									optionPriceSaveFlag)
 
 
-		if resultData.isError():
+		if not resultData.noError():
 			# since crypto/unit is not supported by the exchange, we try to request the unit/crypto inverted rate
-			errorMsg = resultData.getValue(resultData.RESULT_KEY_ERROR_MSG)
+			errorMsg = resultData.getErrorMessage()
 			resultData = self._getPrice(unit,
 										crypto,
-										validExchangeSymbol,
+										validCryptoUnitExchangeSymbol,
 										year,
 										month,
 										day,
 										hour,
 										minute,
 										dateTimeFormat,
-										localTz)
+										localTz,
+										optionPriceAmount)
 
 			resultData.setValue(resultData.RESULT_KEY_CRYPTO, crypto)
 			resultData.setValue(resultData.RESULT_KEY_UNIT, unit)
@@ -150,17 +174,21 @@ class Processor:
 
 			if price:
 				resultData.setValue(resultData.RESULT_KEY_PRICE, 1 / price)
-				resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, None)
+				resultData.setError(None)
 			else:
-				resultData.setValue(resultData.RESULT_KEY_ERROR_MSG, errorMsg)
-
-		if optionFiatSymbol is not None and not resultData.isError():
+				resultData.setError(errorMsg)
+				
+		if optionPriceAmount is not None and resultData.noError():
+			resultData.setValue(resultData.RESULT_KEY_PRICE, optionPriceAmount)
+			resultData.setValue(resultData.RESULT_KEY_PRICE_TYPE, resultData.PRICE_TYPE_EFFECTIVE)
+		
+		if optionFiatSymbol is not None and resultData.noError():
 			resultData = self._computeOptionFiatAmount(resultData,
 													   optionFiatSymbol,
 													   validFiatExchangeSymbol,
 													   crypto,
 													   unit,
-													   validExchangeSymbol,
+													   validCryptoUnitExchangeSymbol,
 													   year,
 													   month,
 													   day,
@@ -169,7 +197,7 @@ class Processor:
 													   dateTimeFormat,
 													   localTz)
 
-		if optionValueSymbol is not None and not resultData.isError():
+		if optionValueSymbol is not None and resultData.noError():
 			resultData = self._computeOptionValueAmount(resultData,
 														crypto,
 														unit,
@@ -190,7 +218,9 @@ class Processor:
 				  hour,
 				  minute,
 				  dateTimeFormat,
-				  localTz):
+				  localTz,
+				  optionPriceAmount=None,
+				  optionPriceSaveFlag=None):
 		'''
 		Returns the price of 1 unit of currency in targetCurrency. Ex: currency == btc,
 		targetCurrency == usd --> returned price: 1 btc == 10000 usd.
@@ -205,6 +235,9 @@ class Processor:
 		:param minute:
 		:param dateTimeFormat:
 		:param localTz:
+		:param optionPriceAmount:
+		:param optionPriceSaveFlag: used to improve option price warning in case set in 
+									conjunction with RT request.
 
 		:seqdiag_return ResultData
 
@@ -215,12 +248,25 @@ class Processor:
 			# date components are set to zero !
 			resultData = self.priceRequester.getCurrentPrice(currency, targetCurrency, exchange)
 
-			if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
+			if resultData.noError():
 				# adding date time info if no error returned
 				timeStamp = resultData.getValue(ResultData.RESULT_KEY_PRICE_TIME_STAMP)
 				requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStamp, localTz)
 				requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
 				resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
+
+				if optionPriceAmount:
+					# option price not compatible with RT request !
+					if optionPriceSaveFlag:
+						optionStrForWarning = '-ps'
+					else:
+						optionStrForWarning = '-p'
+
+					resultData.setWarning(ResultData.WARNING_TYPE_OPTION_PRICE,
+											  "WARNING - option {}{} is not compatible with real time request. {} option ignored.".format(
+												  optionStrForWarning, optionPriceAmount, optionStrForWarning))
+
+
 		else:
 			# getting historical price, either histo day or histo minute
 			timeStampLocal = DateTimeUtil.dateTimeComponentsToTimeStamp(day, month, year, hour, minute, 0, localTz)
@@ -232,32 +278,36 @@ class Processor:
 																			  timeStampUtcNoHHMM,
 																			  exchange)
 
-			if resultData.isEmpty(ResultData.RESULT_KEY_ERROR_MSG):
+			if resultData.noError():
 				# adding date time info if no error returned
-				if resultData.getValue(ResultData.RESULT_KEY_PRICE_TYPE) == ResultData.PRICE_TYPE_HISTO_DAY:
-					# histoday price returned
-					requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
-					requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(dateTimeFormat)
-				else:
+				if resultData.getValue(ResultData.RESULT_KEY_PRICE_TYPE) == ResultData.PRICE_TYPE_HISTO_MINUTE:
 					# histominute price returned
 					requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
 					requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
-
+				elif optionPriceAmount:
+					# here, the -p price option is active and the transaction date with minute
+					# precision must be set in the returned ResultData
+					requestedPriceArrowLocalDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampLocal, localTz)
+					requestedDateTimeStr = requestedPriceArrowLocalDateTime.format(dateTimeFormat)
+				else:
+					# histoday price returned
+					requestedPriceArrowUtcDateTime = DateTimeUtil.timeStampToArrowLocalDate(timeStampUtcNoHHMM, 'UTC')
+					requestedDateTimeStr = requestedPriceArrowUtcDateTime.format(dateTimeFormat)
+					
 				resultData.setValue(ResultData.RESULT_KEY_PRICE_DATE_TIME_STRING, requestedDateTimeStr)
 
 		price = resultData.getValue(ResultData.RESULT_KEY_PRICE)
 
 		if price == 0:
-			dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day,
-																				 month,
-																				 year,
-																				 hour,
-																				 minute,
-																				 localTz,
-																				 dateTimeFormat)
+			dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(day,
+																				month,
+																				year,
+																				hour,
+																				minute,
+																				localTz,
+																				dateTimeFormat)
 
-			resultData.setValue(ResultData.RESULT_KEY_ERROR_MSG,
-								'PROVIDER ERROR - Requesting {}/{} price for date {} {} on exchange {} returned invalid value 0'.format(currency, targetCurrency, dateDMY, dateHM, exchange))
+			resultData.setError('PROVIDER ERROR - Requesting {}/{} price for date {} {} on exchange {} returned invalid value 0'.format(currency, targetCurrency, dateDMY, dateHM, exchange))
 
 		return resultData
 
@@ -325,18 +375,18 @@ class Processor:
 			resultData.setValue(resultData.RESULT_KEY_OPTION_VALUE_FIAT, optionValueAmount)
 		else:
 			if optionValueSaveFlag:
-				valueCommand = '-vs'
+				optionStrForWarning = '-vs'
 			else:
-				valueCommand = '-v'
+				optionStrForWarning = '-v'
 
 			if optionFiatSymbol:
-				resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+				resultData.setWarning(ResultData.WARNING_TYPE_OPTION_VALUE,
 									  "WARNING - currency value option symbol {} currently in effect differs from crypto ({}), unit ({}) and fiat ({}) of request. {} option ignored.".format(
-										  optionValueSymbol, crypto, unit, optionFiatSymbol, valueCommand))
+										  optionValueSymbol, crypto, unit, optionFiatSymbol, optionStrForWarning))
 			else:
-				resultData.setWarning(ResultData.WARNING_TYPE_COMMAND_VALUE,
+				resultData.setWarning(ResultData.WARNING_TYPE_OPTION_VALUE,
 									  "WARNING - currency value option symbol {} currently in effect differs from both crypto ({}) and unit ({}) of request. {} option ignored.".format(
-										  optionValueSymbol, crypto, unit, valueCommand))
+										  optionValueSymbol, crypto, unit, optionStrForWarning))
 
 		return resultData
 
@@ -393,7 +443,7 @@ class Processor:
 											dateTimeFormat,
 											localTz)
 			
-			if not fiatResultData.isError():
+			if fiatResultData.noError():
 				# indicates that unit/fiat pair is supported by the fiatExchange which equals
 				# the cryptoUnitExchange
 				fiatConversionRate = cryptoUnitPrice
@@ -422,7 +472,7 @@ class Processor:
 										dateTimeFormat,
 										localTz)
 
-		if not fiatResultData.isError():
+		if fiatResultData.noError():
 			fiatConversionRate = fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
 
 			return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
@@ -438,19 +488,19 @@ class Processor:
 											minute,
 											dateTimeFormat,
 											localTz)
-			if not fiatResultData.isError():
+			if fiatResultData.noError():
 				fiatConversionRate = 1 / fiatResultData.getValue(resultData.RESULT_KEY_PRICE)
 
 				return self._calculateAndStoreFiatData(fiat, fiatConversionRate, fiatExchange, resultData)
 			else:
-				errorMsg = fiatResultData.getValue(fiatResultData.RESULT_KEY_ERROR_MSG)
-				dateDMY, dateHM = DateTimeUtil._formatPrintDateTimeFromIntComponents(day,
-																					 month,
-																					 year,
-																					 hour,
-																					 minute,
-																					 localTz,
-																					 dateTimeFormat)
+				errorMsg = fiatResultData.getErrorMessage()
+				dateDMY, dateHM = DateTimeUtil.formatPrintDateTimeFromIntComponents(day,
+																					month,
+																					year,
+																					hour,
+																					minute,
+																					localTz,
+																					dateTimeFormat)
 				
 				if 'market does not exist for this coin pair' in errorMsg:
 					errorMsg = 'PROVIDER ERROR - fiat option coin pair {}/{} or {}/{} not supported by exchange {} on date {} {}'.format(fiat, unit, unit, fiat, fiatExchange, dateDMY, dateHM)
@@ -459,7 +509,7 @@ class Processor:
 					errorMsg = errorMsg.replace('Requesting', 'Requesting fiat option coin pair {}/{} or'.format(unit, fiat))
 					errorMsg += ' on date {} {}'.format(dateDMY, dateHM)
 
-				fiatResultData.setValue(fiatResultData.RESULT_KEY_ERROR_MSG, errorMsg)
+				fiatResultData.setError(errorMsg)
 
 				return fiatResultData
 

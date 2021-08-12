@@ -1527,7 +1527,7 @@ GUI -> Controller: getPrintableResultForInput(inputStr)
 		activate CommandPrice
 		CommandPrice -> Processor: getCryptoPrice(crypto, unit, exchange, day, month, year, hour, minute, optionValueSymbol=None, ...)
 			activate Processor
-			Processor -> Processor: _getPrice(currency, targetCurrency, exchange, year, month, day, hour, minute, dateTimeFormat, localTz)
+			Processor -> Processor: _getPrice(currency, targetCurrency, exchange, year, month, day, hour, minute, dateTimeFormat, localTz, ...)
 				activate Processor
 				Processor -> PriceRequester: getHistoricalPriceAtUTCTimeStamp(crypto, unit, timeStampLocalForHistoMinute, localTz, timeStampUTCNoHHMMForHistoDay, exchange)
 					activate PriceRequester

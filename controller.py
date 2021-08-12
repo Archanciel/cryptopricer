@@ -17,11 +17,6 @@ class Controller:
 	:seqdiag_note Client in the GOF Command pattern. Entry point of the business layer. Instanciates the business layer classes.
 	"""
 	def __init__(self, printer, configMgr, priceRequester):
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/cryptopricer.ini'
-		else:
-			FILE_PATH = 'c:\\temp\\cryptopricer.ini'
-
 		self.configMgr = configMgr
 		self.priceRequester = priceRequester
 		self.crypCompTranslator = CrypCompExchanges()
@@ -51,7 +46,7 @@ class Controller:
 			result = command.execute()
 
 			if result != '':
-				strToPrint = self.printer.getPrintableData(result)
+				strToPrint = self.printer.getCommandOutputResult(result)
 				print(strToPrint)
 
 
@@ -91,21 +86,24 @@ class Controller:
 					 4/ None (no command save option in effect)
 		'''
 		command = self.requester.getCommand(inputStr)
-		result = command.execute()
+		resultData = command.execute()
 
-		if result != '':
-			printResult = self.printer.getPrintableData(result)
-			fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar = self.printer.getFullCommandString(
-				result)
+		if resultData != '':
+			commandOutputResult = self.printer.getCommandOutputResult(resultData)
 			
-			return printResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
+			fullCommandStrNoOptions, \
+			fullCommandStrWithNoSaveOptions, \
+			fullCommandStrWithSaveOptionsForHistoryList, \
+			fullCommandStrForStatusBar = self.printer.getFullCommandString(resultData)
+			
+			return commandOutputResult, fullCommandStrNoOptions, fullCommandStrWithNoSaveOptions, fullCommandStrWithSaveOptionsForHistoryList, fullCommandStrForStatusBar
 
 
 if __name__ == '__main__':
 	import os
 	from io import StringIO
 
-	from consoleoutputformater import ConsoleOutputFormater
+	from consoleoutputformatter import ConsoleOutputFormatter
 
 	stdin = sys.stdin
 	sys.stdin = StringIO('btc usd 24/10/17 22:33 Bittrex' +
@@ -126,7 +124,7 @@ if __name__ == '__main__':
 	#     FILE_PATH = 'c:\\temp\\cryptoout.txt'
 	# sys.stdout = open(FILE_PATH, 'w')
 
-	c = Controller(ConsoleOutputFormater())
+	c = Controller(ConsoleOutputFormatter())
 	c.commandLineLoop()
 
 	sys.stdin = stdin

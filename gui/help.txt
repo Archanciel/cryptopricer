@@ -20,7 +20,8 @@ Full requests do specify all the request parameter values.
     [b][cy]<exchange>[/c][/b] exchange name like binance or all for average price on all exchanges
 
     [b][cy]<options>[/c][/b] options are specified using [b][cy]-[/c][/b],
-    like [b][cy]-v[/c][/b] or [b][cy]-f[/c][/b]. More details below
+    like [b][cy]-v[/c][/b] or [b][cy]-f[/c][/b] or [b][cy]-p[/c][/b].
+    [n]More details below
 
 [b][cg]TIP[/c][/b]: typing return replays the last request.
 
@@ -51,6 +52,7 @@ the last price of the date at UTC 23.59 is returned as 'close' price and the dis
     [n][b][cy]R[/c][/b] = RT
     [n][b][cy]M[/c][/b] = Minute price (precision at the minute)
     [n][b][cy]C[/c][/b] = Close price
+    [n][b][cy]P[/c][/b] = Effective buy or sell price defined by the [b][cy]-p[/c][/b] price option
 
 Examples: assume we are on 16/12/17 at 22:10
 
@@ -90,8 +92,10 @@ and preceded by [b][cy]-[/c][/b]. They are documented later in the help.
 [b][cg]Partial requests[/c][/b]
 
 Once a full request has been entered, it is handy to just change one or more parameters of
-the initial command. The app keeps and reuses the parameters which are not redefined.
-After entering a partial request, its value remains in effect until it is redefined.
+this request. The app keeps and reuses the request parameters which are not redefined 
+by a partial request. After entering a partial request, its value remains in effect until it is 
+redefined by a new partial request or until a new full request which erases any in 
+effect partial request is entered.
 
 The partial request parameters are specified using the following parms:
 
@@ -167,7 +171,8 @@ to purchase your ETH at a rate of 650 USD.
     ETH/BTC on Binance: 16/12/17 22:10R 0.03556 [cr]0.03357976[/c]
     [n][i]Currently the BTC/USD rate on Kraken is 19356.9. So, the ETH at this rate 
 is valued at 0.03556 x 19 356.9 = 688.331364. So, your limit buy order must be placed
-at 0.03556 / 688.331364 x 650 = [cr]0.03357976[/c].[/i]
+at 0.03556 / 688.331364 x 650 = [cr]0.03357976[/c], this, provided you do purchase 
+the BTC used to buy the ETH on Kraken.[/i]
 
 Second example: the first request uses the [cy]-f[/c] fiat option to display the current CHSB rate in USD.
 
@@ -178,7 +183,8 @@ Second example: the first request uses the [cy]-f[/c] fiat option to display the
     CHSB/BTC/USD.Kraken on HitBTC 16/01/21 22:10R 0.0000083 [cr]0.00006942[/c]
     [n][i]This indicates that currently the CHSB is quoted at 0.0000083 BTC on HitBTC (which 
 corresponds to a value of 0.29892118 USD on Kraken, as shown by the first request), but that to buy it at 0.25 USD,
-the limit buy order must set the price to 0.0000083 / 0.29892118 * 0.25 = [cr]0.00006942[/c] BTC ![/i]
+the limit buy order must set the price to 0.0000083 / 0.29892118 * 0.25 = [cr]0.00006942[/c] BTC, this, 
+provided you do purchase the BTC used to buy the ETH on Kraken. ![/i]
 [p]
 [n][b][cg]Value option[/cg][/b]
 

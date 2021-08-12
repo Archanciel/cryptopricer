@@ -103,10 +103,10 @@ Comment:
 
 ## Installation
 ### Required libraries
-* kivy (version 2.0)
-* arrow
-* configobj
-* bs4 (beautifulsoup4)__
+* kivy 2.0
+* arrow 1.1.1
+* configobj 5.0.6
+* bs4 0.0.1 (beautifulsoup4)
 * pillow
   
 ### Required libraries for kivy 1.11
