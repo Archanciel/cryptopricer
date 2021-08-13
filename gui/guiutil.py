@@ -7,3 +7,8 @@ class GuiUtil:
     @staticmethod
     def onSmartPhone():
         return os.path.isdir(GuiUtil.SD_CARD_DIR_SMARTPHONE)
+        
+if __name__ == "__main__":
+	gu = GuiUtil()
+	
+	print(gu.onSmartPhone())
