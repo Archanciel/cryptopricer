@@ -1,6 +1,16 @@
 <CustomDropDown>
 	saveButton: save_Button
 	statusToRequestInputButton: status_to_request_input_Button
+
+    # defining canvas causes disabled drop down menu items to be
+    # low grayed instead of being transparent !
+    canvas.before:
+        Color:
+            rgb: [0.22,0.22,0.22]
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
 	Button:
 		text: 'Load'
 		size_hint_y: None
