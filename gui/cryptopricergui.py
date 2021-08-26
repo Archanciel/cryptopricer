@@ -347,20 +347,20 @@ class CryptoPricerGUI(BoxLayout):
 		
 		if platform == 'android':
 			if GuiUtil.onSmartPhone():
-				popupSize = (980, 350)
-			else:				
-				popupSize = (980, 250)
+				popupSize = (1180, 450)
+			else:
+				popupSize = (1280, 300)
 		elif platform == 'win':
-			popupSize = (330, 150)
+			popupSize = (450, 150)
 		
 		# this code ensures that the popup content text does not exceeds
 		# the popup borders
 		sizingLabel = Label(text=message)
-		sizingLabel.bind(size=lambda s, w: s.setter('text_size')(s, w))
+		# sizingLabel.bind(size=lambda s, w: s.setter('text_size')(s, w))
 		
 		popup = Popup(title='CryptoPricer WARNING', content=sizingLabel,
-		              auto_dismiss=True, size_hint=(None, None),
-		              size=popupSize)
+					  auto_dismiss=True, size_hint=(None, None),
+					  size=popupSize)
 		popup.open()
 	
 	def ensureDataPathFileNameExist(self, dataPathFileName, message):
@@ -868,10 +868,6 @@ class CryptoPricerGUI(BoxLayout):
 			   path file name TextInput save dialog field
 		:param isLoadAtStart: value of the load at start CheckBox
 		"""
-		if not savingPathFileName:
-			# no file selected. Save dialog remains open ...
-			return
-		
 		asciiOnlyPathFileName = savingPathFileName.encode("ascii", "ignore").decode()
 
 		if asciiOnlyPathFileName != savingPathFileName:

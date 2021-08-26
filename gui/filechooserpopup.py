@@ -55,7 +55,7 @@ class SelectableLabelFileChooser(RecycleDataViewBehavior, Label):
 
 
 class SelectableRecycleBoxLayoutFileChooser(FocusBehavior, LayoutSelectionBehavior,
-                                            RecycleBoxLayout):
+											RecycleBoxLayout):
 	''' Adds selection and focus behaviour to the view. '''
 	
 	# required to authorise unselecting a selected item
@@ -110,7 +110,7 @@ class FileChooserPopup(AbstractPopup):
 		
 		if platform == 'android':
 			self.pathList.data.append({'text': 'Data file location setting', 'selectable': True,
-			                           'pathOnly': dataLocationFromSetting})
+									   'pathOnly': dataLocationFromSetting})
 			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'pathOnly': '/storage/emulated/0'})
 			
 			if self.onSmartPhone():
@@ -146,61 +146,88 @@ class SaveFileChooserPopup(FileChooserPopup):
 		super(SaveFileChooserPopup, self).__init__(rootGUI, **kwargs)
 
 		self.loadAtStartFilePathName = ''
-
+	
 	def _sizeFileChooser(self):
 		"""
-		
+
 		:return:
 		"""
 		super()._sizeFileChooser()
-
+		
 		if platform == 'android':
 			if self.onSmartPhone():
-				self.loadAtStartChkBox.size_hint_x = 0.12
+				self.loadAtStartChkBox.size_hint_x = 0.06
+				self.gridLayoutPathField.size_hint_y = 0.16
 			else:
 				self.loadAtStartChkBox.size_hint_x = 0.06
+				self.gridLayoutPathField.size_hint_y = 0.10
 		elif platform == 'win':
 			self.loadAtStartChkBox.size_hint_x = 0.06
+			self.gridLayoutPathField.size_hint_y = 0.30
 	
-	def save(self, pathOnly, pathFileName, isLoadAtStart):
-		"""
+	def handleSelection(self, selection):
+		selectionStr = selection[0]
+		selectionElemLst = selectionStr.split(sep)
 		
+		if os.path.isfile(selectionStr):
+			pathContainedInSelection = sep.join(selectionElemLst[:-1]) + sep
+			fileNameContainedInSelection = selectionElemLst[-1]
+		else:
+			pathContainedInSelection = selectionStr + sep
+			fileNameContainedInSelection = ''
+		
+		self.currentPathField.text = pathContainedInSelection
+		self.currentFileNameField.text = fileNameContainedInSelection
+	
+	def save(self, pathOnly, pathName, fileName, isLoadAtStart):
+		"""
+
 		:param pathOnly:
-		:param pathFileName:
+		:param pathName:
 		:param isLoadAtStart:
 		:return:
 		"""
-		if pathOnly == pathFileName:
+		if fileName == '':
 			# no file selected or file name defined. Load dialog remains open ..
 			return
-
-		self.rootGUI.saveHistoryToFile(pathOnly, pathFileName, isLoadAtStart)
+		
+		self.rootGUI.saveHistoryToFile(pathOnly, pathName + fileName, isLoadAtStart)
 		self.rootGUI.dismissPopup()
-
+	
 	def setCurrentLoadAtStartFile(self, loadAtStartFilePathName):
 		self.loadAtStartFilePathName = loadAtStartFilePathName
 	
 	def updateLoadAtStartCheckBox(self):
 		"""
-		Method called when the currentPath TextInput field content is modified.
+		Method called when the currentPath or the currentFileName TextInput field
+		content is modified.
 		"""
-
+		
+		currentSavePath = self.currentPathField.text
+		
+		# ensure path ends with / or \ according to the OS
+		
+		if currentSavePath[-1] != sep:
+			currentSavePath += sep
+			self.currentPathField.text = currentSavePath
+		
+		currentSaveFileName = self.currentFileNameField.text
+		currentSavePathFileName = currentSavePath + currentSaveFileName
+		
 		# update load at start checkbox
 		
-		currentSaveFilePathName = self.currentPathField.text
-		
-		if currentSaveFilePathName == self.loadAtStartFilePathName:
+		if currentSavePathFileName == self.loadAtStartFilePathName:
 			self.loadAtStartChkBox.active = True
 		else:
 			self.loadAtStartChkBox.active = False
-
+		
 		# update save file chooser popup title
 		
-		self._updateSaveFileChooserPopupTitle(currentSaveFilePathName, self.loadAtStartChkBox.active)
+		self._updateSaveFileChooserPopupTitle(currentSavePath,
+											  currentSaveFileName,
+											  self.loadAtStartChkBox.active)
 	
-	def _updateSaveFileChooserPopupTitle(self, currentSaveFilePathName, isLoadAtStartChkboxActive):
-		currentSaveFileName = currentSaveFilePathName.split(sep)[-1]
-		
+	def _updateSaveFileChooserPopupTitle(self, currentSavePath, currentSaveFileName, isLoadAtStartChkboxActive):
 		if currentSaveFileName == '':
 			# the case when opening the save file dialog after loading a file
 			return
@@ -211,10 +238,12 @@ class SaveFileChooserPopup(FileChooserPopup):
 		else:
 			self.rootGUI.popup.title = '{} {}'.format(FileChooserPopup.SAVE_FILE_POPUP_TITLE, currentSaveFileName)
 	
-	def toggleLoadAtStart(self, active):
+	def toggleLoadAtStart(self, isChkBoxActive):
 		"""
 		Method called when checking/unchecking the load at start checkbox
 
-		:param active:
+		:param isChkBoxActive:
 		"""
-		self._updateSaveFileChooserPopupTitle(self.currentPathField.text, active)
+		self._updateSaveFileChooserPopupTitle(self.currentPathField.text,
+											  self.currentFileNameField.text,
+											  isChkBoxActive)
