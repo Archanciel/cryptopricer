@@ -347,7 +347,7 @@ class CryptoPricerGUI(BoxLayout):
 		
 		if platform == 'android':
 			if GuiUtil.onSmartPhone():
-				popupSize = (1180, 450)
+				popupSize = (1180, 550)
 			else:
 				popupSize = (1280, 300)
 		elif platform == 'win':
