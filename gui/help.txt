@@ -466,7 +466,7 @@ Example:
     [cy]eth usd 5/2/21 bittrex -v2eth -feur.kraken[/c] -->
     2 ETH/3441.3 USD/2858.22 EUR.Kraken on BitTrex: 05/02/21 00:00C 1720.65 1429.11129568
     [n][i]which means that 2 ETH converted in USD equal 3441.3 USD and converted in 
-EUR equal 1429.11129568 EUR[/i].
+EUR equal 2858.22 EUR[/i].
 
     On status bar:
     [n]1720.65 ETH/USD * 0.83056478 USD/EUR = 1429.11129568 ETH/EUR
