@@ -1,5 +1,5 @@
 '''
-This test suite is usefull on Android. It runs on Pydroid 3, but not on QPython 3
+This test suite is useful on Android. It runs on Pydroid 3, but not on QPython 3
 since it has a dependency on Kivy resources which are not supported by QPython 3.
 It has no dependency on the sl4a library, supported by QPython 3, but not by Pydroid 3.
 It can be executed as well in Pycharm on Windows !
@@ -24,6 +24,7 @@ from testresultdata import TestResultData
 from testcurrencypairtester import TestCurrencyPairTester
 from testhelputil import TestHelpUtil
 from testguioutputformatter import TestGuiOutputFormatter
+from testsepthreadexec import TestSepThreadExec
 
 
 if __name__ == "__main__":
@@ -47,6 +48,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestResultData),
                        loader.loadTestsFromTestCase(TestCurrencyPairTester),
                        loader.loadTestsFromTestCase(TestHelpUtil),
+                       loader.loadTestsFromTestCase(TestSepThreadExec),
                        loader.loadTestsFromTestCase(TestGuiOutputFormatter)
     ))
     runner = TextTestRunner(verbosity = 2)

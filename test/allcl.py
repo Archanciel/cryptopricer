@@ -21,6 +21,7 @@ from testcommandprice import TestCommandPrice
 from testresultdata import TestResultData
 from testcurrencypairtester import TestCurrencyPairTester
 from testconsoleoutputformatter import TestConsoleOutputFormatter
+from testsepthreadexec import TestSepThreadExec
 
 
 if __name__ == "__main__":
@@ -42,6 +43,7 @@ if __name__ == "__main__":
                        loader.loadTestsFromTestCase(TestCommandPrice),
                        loader.loadTestsFromTestCase(TestResultData),
                        loader.loadTestsFromTestCase(TestCurrencyPairTester),
+                       loader.loadTestsFromTestCase(TestSepThreadExec),
                        loader.loadTestsFromTestCase(TestConsoleOutputFormatter)
     ))
     runner = TextTestRunner(verbosity = 2)

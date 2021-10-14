@@ -37,6 +37,7 @@ from controller import Controller
 from gui.guioutputformatter import GuiOutputFormatter
 from guiutil import GuiUtil
 from helppopup import HelpPopup
+from septhreadexec import SepThreadExec
 
 # global var in order tco avoid multiple call to CryptpPricerGUI __init__ !
 
@@ -721,10 +722,11 @@ class CryptoPricerGUI(BoxLayout):
 		"""
 		self.replayAllButton.disabled = True
 		self.clearResultOutputButton.disabled = True
-
-		t = threading.Thread(target=asyncOnlineRequestFunction, args=(), kwargs=kwargs)
-		t.daemon = True
-		t.start()
+		
+		sepThreadExec = SepThreadExec(callerGUI=self,
+									  func=asyncOnlineRequestFunction)
+		
+		sepThreadExec.start()
 
 	def replayAllRequestsOnNewThread(self):
 		# output blank line
