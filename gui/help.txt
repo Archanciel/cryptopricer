@@ -470,4 +470,29 @@ EUR equal 2858.22 EUR[/i].
 
     On status bar:
     [n]1720.65 ETH/USD * 0.83056478 USD/EUR = 1429.11129568 ETH/EUR
+[p]
+[b][cg]Using fiat option with value option to obtain a crypto rate expressed in
+another crypto[/cg][/b]
 
+For example, imagine you want to convert your NEO tokens to LUNA tokens, but
+you would like to have an idea of the evolution of the LUNA rate expressed
+in NEO. No exchange rates LUNA in NEO's. CryptoPricer does it. You enter
+
+    [cy]luna btc 5/9/21 binance -vs1neo -fsneo.binance[/c] -->
+    1.90933654LUNA/0.0012725BTC/1 NEO on Binance: 05/09/21 00:00C 
+    [n]0.0006662 0.52374214
+    [n][i]which means that on 5/9/21 1 NEO converted in LUNA equals 1.90933654 LUNA and 1 LUNA converted in 
+NEO equals 0.52374214 NEO[/i].
+
+Then you enter
+
+    [cy]luna btc 5/10/21 binance -vs1neo -fsneo.binance[/c] -->
+    1.045956245LUNA/0.000908BTC/1 NEO on Binance: 05/10/21 00:00C 
+    [n]0.00068681 0.95605727
+    [n][i]which means that on 5/10/21 1 NEO converted in LUNA equals 1.045956245 LUNA and 1 LUNA converted in 
+NEO equals 0.95605727 NEO. This shows that the LUNA cryptocurrency is gaining value compared to the NEO cryptocurrency.[/i]
+
+Since CryptoPricer can replay all the entered requests and offers you the possibility
+to save the entered request into a request history file, you can enter several different
+date requests as well a current date request and then replay those request to update
+your vision of the LUNA versus NEO rate evolution.
