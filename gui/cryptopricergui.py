@@ -1161,6 +1161,18 @@ class CryptoPricerGUIApp(App):
 			if historyFilePathFilename != '':
 				self.cryptoPricerGUI.loadHistoryFromPathFilename(historyFilePathFilename)
 				self.cryptoPricerGUI.displayFileActionOnStatusBar(historyFilePathFilename, FILE_LOADED)
+	
+	def open_settings(self, *largs):
+		"""
+		Inherited method redefined so that the drop down menu is closed
+		before opening the settings. Otherwise, the drop down menu would
+		remain open after the settings screen was closed.
+
+		:param largs:
+		"""
+		self.cryptoPricerGUI.dropDownMenu.dismiss()
+		super().open_settings(*largs)
+
 
 if __name__ == '__main__':
 	dbApp = CryptoPricerGUIApp()
