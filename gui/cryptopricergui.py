@@ -44,6 +44,7 @@ from septhreadexec import SepThreadExec
 RV_LIST_ITEM_SPACING_ANDROID = 2
 RV_LIST_ITEM_SPACING_WINDOWS = 0.5
 STATUS_BAR_ERROR_SUFFIX = ' --> ERROR ...'
+STATUS_BAR_WARNING_SUFFIX = ' --> WARNING ...'
 FILE_LOADED = 0
 FILE_SAVED = 1
 CRYPTOPRICER_VERSION = 'CryptoPricer 2.1'
@@ -515,6 +516,8 @@ class CryptoPricerGUI(BoxLayout):
 
 		if 'ERROR' in outputResultStr:
 			self.updateStatusBar(requestStr + STATUS_BAR_ERROR_SUFFIX)
+		elif 'WARNING' in outputResultStr:
+			self.updateStatusBar(requestStr + STATUS_BAR_WARNING_SUFFIX)
 		else:
 			if fullRequestStrWithSaveModeOptionsForHistoryList:
 				if requestStr != fullRequestStrWithSaveModeOptionsForHistoryList:
@@ -763,7 +766,8 @@ class CryptoPricerGUI(BoxLayout):
 		self.dropDownMenu.open(widget)
 
 	def isRequest(self, statusBarStr):
-		if STATUS_BAR_ERROR_SUFFIX in statusBarStr:
+		if STATUS_BAR_ERROR_SUFFIX in statusBarStr or \
+				STATUS_BAR_WARNING_SUFFIX in statusBarStr:
 			return True
 		
 		return False
