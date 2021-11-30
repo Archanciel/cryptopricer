@@ -64,8 +64,8 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 		
-		# suppress the risk that selecting the last list item  causes
-		# a IndexError: list index out of range
+		# suppress or reduce the risk that selecting the last list item
+		# causes a IndexError: list index out of range exception
 		self.get_nodes()
 	
 	def get_nodes(self):
