@@ -61,13 +61,19 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 	# required to authorise unselecting a selected item
 	touch_deselect_last = BooleanProperty(True)
 
-	def __init__(self, **kwargs):
-		super().__init__(**kwargs)
-		
-		# suppress or reduce the risk that selecting the last list item
-		# causes a IndexError: list index out of range exception
-		self.get_nodes()
-	
+	# DOES NOT WORK SYSTEMATICALLY !!!!!!!!!!
+	# def __init__(self, **kwargs):
+	# 	super().__init__(**kwargs)
+	# 	Clock.schedule_once(self._finish_init)
+	#
+	# def _finish_init(self, dt):
+	# 	# suppress or reduce the risk that selecting the last list item
+	# 	# causes a IndexError: list index out of range exception
+	# 	nodes = self.get_selectable_nodes()
+	# 	self.select_node(nodes[-1])
+	# 	self.clear_selection()
+	# 	self.cryptoPricerGUI.requestInput.text = ''
+
 	def get_nodes(self):
 		nodes = self.get_selectable_nodes()
 		
