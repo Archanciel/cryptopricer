@@ -60,6 +60,13 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 	
 	# required to authorise unselecting a selected item
 	touch_deselect_last = BooleanProperty(True)
+
+	def __init__(self, **kwargs):
+		super().__init__(**kwargs)
+		
+		# suppress the risk that selecting the last list item  causes
+		# a IndexError: list index out of range
+		self.get_nodes()
 	
 	def get_nodes(self):
 		nodes = self.get_selectable_nodes()
