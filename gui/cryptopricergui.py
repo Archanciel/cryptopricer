@@ -316,7 +316,7 @@ class CryptoPricerGUI(BoxLayout):
 		self.applyAppPosAndSize()
 		self.movedRequestNewIndex = -1
 		self.movingRequest = False
-		self.currentLoadedFathFileName = ''
+		self.currentLoadedPathFileName = ''
 		self.outputLineBold = True
 	
 	def rvListSizeSettingsChanged(self):
@@ -830,14 +830,14 @@ class CryptoPricerGUI(BoxLayout):
 		
 		loadAtStartFilePathName = self.configMgr.loadAtStartPathFilename
 		
-		if loadAtStartFilePathName == self.currentLoadedFathFileName:
+		if loadAtStartFilePathName == self.currentLoadedPathFileName:
 			loadAtStartFileName = loadAtStartFilePathName.split(sep)[-1]
 			if loadAtStartFileName != '':
 				popupTitle = "{} ({} loaded at start)".format(popupTitleAction, loadAtStartFileName)
 			else:
 				popupTitle = "{} (no file loaded)".format(popupTitleAction)
 		else:
-			loadFileName = self.currentLoadedFathFileName.split(sep)[-1]
+			loadFileName = self.currentLoadedPathFileName.split(sep)[-1]
 			popupTitle = "{} ({} loaded)".format(popupTitleAction, loadFileName)
 		
 		return popupTitle
@@ -862,7 +862,7 @@ class CryptoPricerGUI(BoxLayout):
 				self.updateStatusBar('History saved to file: {}'.format(pathFileName))
 
 	def loadHistoryFromPathFilename(self, pathFileName):
-		self.currentLoadedFathFileName = pathFileName
+		self.currentLoadedPathFileName = pathFileName
 		dataFileNotFoundMessage = self.buildFileNotFoundMessage(pathFileName)
 		
 		if not self.ensureDataPathFileNameExist(pathFileName, dataFileNotFoundMessage):
@@ -897,7 +897,7 @@ class CryptoPricerGUI(BoxLayout):
 			self.displayPopupWarning(message)
 			return
 		
-		self.currentLoadedFathFileName = savingPathFileName
+		self.currentLoadedPathFileName = savingPathFileName
 		pathElemLst = savingPathFileName.split(sep)
 		pathContainedInFilePathName = sep.join(pathElemLst[:-1])
 		savingPathNotExistMessage = self.buildDataPathContainedInFilePathNameNotExistMessage(pathContainedInFilePathName)
