@@ -1,3 +1,5 @@
+#: import RecycleViewKivyBugFix gui.recycleviewkivybugfix.RecycleViewKivyBugFix
+
 <LoadFileChooserPopup>: # sub-class of FileChooserPopup, which derives from
 						# AbstractPopup, which derives from Popup
 	popupBoxLayout: popup_boxlayout
@@ -14,7 +16,9 @@
 			#size_hint_y: 0.17 # value for Windows 10
 			#size_hint_y: 0.11 # value for Android tablet
 			size_hint_y: 0.16 # value for Android smartphone
-			RecycleView:
+			RecycleViewKivyBugFix:  # sub-class of RecycleView. Fixes a Kivy bug which
+			                        # sometimes causes an app failure when the first
+			                        # selected item in a displayed list is the last item
 				id: path_mem_list
 				effect_cls: "ScrollEffect" # prevents overscrolling
 				viewclass: 'SelectableLabelFileChooser'
@@ -89,7 +93,9 @@
 			#size_hint_y: 0.17 # value for Windows 10
 			#size_hint_y: 0.11 # value for Android tablet
 			size_hint_y: 0.16 # value for Android smartphone
-			RecycleView:
+			RecycleViewKivyBugFix:  # sub-class of RecycleView. Fixes a Kivy bug which
+			                        # sometimes causes an app failure when the first
+			                        # selected item in a displayed list is the last item
 				id: path_mem_list
 				effect_cls: "ScrollEffect" # prevents overscrolling
 				viewclass: 'SelectableLabelFileChooser'

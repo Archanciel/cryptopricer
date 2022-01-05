@@ -3,6 +3,7 @@
 #: import main cryptopricergui
 #: import ScrollEffect kivy.effects.scroll.ScrollEffect
 #: import CheckBox kivy.uix.checkbox.CheckBox
+#: import RecycleViewKivyBugFix gui.recycleviewkivybugfix.RecycleViewKivyBugFix
 
 <CryptoPricerGUI>:
 	orientation: "vertical"
@@ -130,7 +131,9 @@
 		size_hint_y: None
 		height: "0dp"
 
-		RecycleView:
+        RecycleViewKivyBugFix:  # sub-class of RecycleView. Fixes a Kivy bug which
+                                # sometimes causes an app failure when the first
+                                # selected item in a displayed list is the last item
 			id: request_RecycleView_list
 			rootGUI: root
 			scroll_y: 0 # forces scrolling to list bottom after adding an entry
