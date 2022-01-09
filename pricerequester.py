@@ -87,7 +87,7 @@ class PriceRequester:
         except HTTPError as e:
             resultData.setError('ERROR - could not complete request ' + url + '. Check your internet connection. Details: ' + str(e.reason) + '.')
         except URLError as e:
-            resultData.setError('ERROR - No internet. Please connect and retry !')
+            resultData.setError('ERROR - No internet. Fix the problem and retry !')
         except:
             the_type, the_value, the_traceback = sys.exc_info()
             resultData.setError('ERROR - could not complete request ' + url + '. Reason: ' + str(the_type) + '.')
@@ -138,7 +138,7 @@ class PriceRequester:
         except HTTPError as e:
             resultData.setError('ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason) + '.')
         except URLError as e:
-            resultData.setError('ERROR - No internet. Please connect and retry !')
+            resultData.setError('ERROR - No internet. Fix the problem and retry !')
         except: 
             the_type, the_value, the_traceback = sys.exc_info()
             resultData.setError('ERROR - could not complete request ' + url + '. Reason: ' + str(the_type) + '.')
@@ -187,7 +187,7 @@ class PriceRequester:
         except HTTPError as e:
             resultData.setError('ERROR - could not complete request ' + url + '. Reason: ' + str(e.reason) + '.')
         except URLError as e:
-            resultData.setError('ERROR - No internet. Please connect and retry !')
+            resultData.setError('ERROR - No internet. Fix the problem and retry !')
         except: 
             the_type, the_value, the_traceback = sys.exc_info()
             resultData.setError('ERROR - could not complete request ' + url + '. Reason: ' + str(the_type) + '.')
