@@ -258,6 +258,9 @@
 			size_hint_y: None
 			height: '28dp'
 			Button:
+				text: "Close"
+				on_press: root.dismiss()
+			Button:
 				id: prev_page_button
 				text: "Previous page"
 				on_press: scr_popup.previousPage()
@@ -265,6 +268,3 @@
 				id: next_page_button
 				text: "Next page"
 				on_press: scr_popup.nextPage()
-			Button:
-				text: "Close"
-				on_press: root.dismiss()

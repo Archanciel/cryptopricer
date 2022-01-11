@@ -285,19 +285,16 @@ class CryptoPricerGUI(BoxLayout):
 		if os.name == 'posix':
 			configPath = '/sdcard/cryptopricer.ini'
 			requestListRVSpacing = RV_LIST_ITEM_SPACING_ANDROID
-			if GuiUtil.onSmartPhone():
-				self.boxLayoutContainingStatusBar.height = "73dp"
-			else:
-				self.boxLayoutContainingStatusBar.height = "43dp"
-
 		else:
 			configPath = 'c:\\temp\\cryptopricer.ini'
 			requestListRVSpacing = RV_LIST_ITEM_SPACING_WINDOWS
 			self.toggleAppSizeButton.text = 'Half'  # correct on Windows !
-			self.boxLayoutContainingStatusBar.height = "63dp"
 
 		self.configMgr = ConfigurationManager(configPath)
-		
+		self.boxLayoutContainingStatusBar.height = dp(self.configMgr.statusbarHeight)
+		self.clearResultOutputButton.width = dp(self.configMgr.clearButtonWidth)
+		self.toggleAppSizeButton.width = dp(self.configMgr.clearButtonWidth)
+
 		if NO_INTERNET:
 			from pricerequesterteststub import PriceRequesterTestStub
 			self.controller = Controller(GuiOutputFormatter(self.configMgr), self.configMgr, PriceRequesterTestStub())
@@ -1013,6 +1010,8 @@ class CryptoPricerGUIApp(App):
 				ConfigurationManager.CONFIG_KEY_DATA_PATH: ConfigurationManager.DEFAULT_DATA_PATH_ANDROID})
 			config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
 				ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT: ConfigurationManager.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_ANDROID})
+			config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
+				ConfigurationManager.CONFIG_KEY_DROP_DOWN_MENU_WIDTH: ConfigurationManager.DEFAULT_CONFIG_KEY_DROP_DOWN_MENU_WIDTH_ANDROID})
 		elif platform == 'ios':
 			config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT,
 							   {ConfigurationManager.CONFIG_KEY_APP_SIZE: ConfigurationManager.APP_SIZE_HALF})
@@ -1020,6 +1019,8 @@ class CryptoPricerGUIApp(App):
 				ConfigurationManager.CONFIG_KEY_DATA_PATH: ConfigurationManager.DEFAULT_DATA_PATH_IOS})
 			config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
 				ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT: ConfigurationManager.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_ANDROID})
+			config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
+				ConfigurationManager.CONFIG_KEY_DROP_DOWN_MENU_WIDTH: ConfigurationManager.DEFAULT_CONFIG_KEY_DROP_DOWN_MENU_WIDTH_IOS})
 		elif platform == 'win':
 			config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT,
 							   {ConfigurationManager.CONFIG_KEY_APP_SIZE: ConfigurationManager.APP_SIZE_FULL})
@@ -1027,6 +1028,8 @@ class CryptoPricerGUIApp(App):
 				ConfigurationManager.CONFIG_KEY_DATA_PATH: ConfigurationManager.DEFAULT_DATA_PATH_WINDOWS})
 			config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
 				ConfigurationManager.CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT: ConfigurationManager.DEFAULT_CONFIG_KEY_HISTO_LIST_ITEM_HEIGHT_WINDOWS})
+			config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
+				ConfigurationManager.CONFIG_KEY_DROP_DOWN_MENU_WIDTH: ConfigurationManager.DEFAULT_CONFIG_KEY_DROP_DOWN_MENU_WIDTH_WINDOWS})
 
 		config.setdefaults(ConfigurationManager.CONFIG_SECTION_LAYOUT, {
 			ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE: ConfigurationManager.DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE})
@@ -1104,6 +1107,24 @@ class CryptoPricerGUIApp(App):
 					"key": "histolistvisiblesize"
 				},
 				{"type": "numeric",
+					"title": "Drop down menu width",
+					"desc": "Set the width of the drop down menu. Effective on smartphone only !",
+					"section": "Layout",
+					"key": "dropdownmenuwidth"
+				},
+				{"type": "numeric",
+					"title": "Status bar height",
+					"desc": "Set the height of the status bar",
+					"section": "Layout",
+					"key": "statusbarheight"
+				},
+				{"type": "numeric",
+					"title": "Clear and app size buttons width",
+					"desc": "Set the width of the clear and the app size buttons",
+					"section": "Layout",
+					"key": "clearbuttonwidth"
+				},
+				{"type": "numeric",
 					"title": "Half size application proportion",
 					"desc": "Set the proportion of vertical screen size the app occupies so that the smartphone keyboard does not hide part of the application. Must be between 0 and 1",
 					"section": "Layout",
@@ -1128,6 +1149,26 @@ class CryptoPricerGUIApp(App):
 			elif key == ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE:
 				self.root.rvListMaxVisibleItems = int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_HISTO_LIST_VISIBLE_SIZE, ConfigurationManager.DEFAULT_CONFIG_HISTO_LIST_VISIBLE_SIZE))
 				self.root.rvListSizeSettingsChanged()
+			elif key == ConfigurationManager.CONFIG_KEY_DROP_DOWN_MENU_WIDTH:
+				if os.name == 'posix':
+					if GuiUtil.onSmartPhone():
+						self.cryptoPricerGUI.dropDownMenu.auto_width = False
+						self.cryptoPricerGUI.dropDownMenu.width = \
+							dp(int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_DROP_DOWN_MENU_WIDTH, ConfigurationManager.DEFAULT_CONFIG_KEY_DROP_DOWN_MENU_WIDTH_ANDROID)))
+			elif key == ConfigurationManager.CONFIG_KEY_STATUS_BAR_HEIGHT:
+				self.cryptoPricerGUI.boxLayoutContainingStatusBar.height = \
+					dp(int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT,
+					                         ConfigurationManager.CONFIG_KEY_STATUS_BAR_HEIGHT,
+					                         ConfigurationManager.DEFAULT_CONFIG_KEY_STATUS_BAR_HEIGHT_WINDOWS)))
+			elif key == ConfigurationManager.CONFIG_KEY_CLEAR_BUTTON_WIDTH:
+				self.cryptoPricerGUI.clearResultOutputButton.width = \
+					dp(int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT,
+					                         ConfigurationManager.CONFIG_KEY_CLEAR_BUTTON_WIDTH,
+					                         ConfigurationManager.DEFAULT_CONFIG_KEY_CLEAR_BUTTON_WIDTH_WINDOWS)))
+				self.cryptoPricerGUI.toggleAppSizeButton.width = \
+					dp(int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT,
+					                         ConfigurationManager.CONFIG_KEY_CLEAR_BUTTON_WIDTH,
+					                         ConfigurationManager.DEFAULT_CONFIG_KEY_CLEAR_BUTTON_WIDTH_WINDOWS)))
 			elif key == ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION:
 				self.root.appSizeHalfProportion = float(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_APP_SIZE_HALF_PROPORTION, ConfigurationManager.DEFAULT_CONFIG_KEY_APP_SIZE_HALF_PROPORTION))
 				self.root.applyAppPosAndSize()
