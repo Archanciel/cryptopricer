@@ -12,7 +12,11 @@ class GuiUtil:
 			return True
 		else:
 			return False
-		
+	
+	@staticmethod
+	def getAndroidSdCardDir():
+		return '/storage/emulated'
+
 if __name__ == "__main__":
 	gu = GuiUtil()
 	

@@ -1,4 +1,6 @@
 import os,sys,inspect
+import logging
+from configparser import NoOptionError
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -1154,7 +1156,9 @@ class CryptoPricerGUIApp(App):
 					if GuiUtil.onSmartPhone():
 						self.cryptoPricerGUI.dropDownMenu.auto_width = False
 						self.cryptoPricerGUI.dropDownMenu.width = \
-							dp(int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT, ConfigurationManager.CONFIG_KEY_DROP_DOWN_MENU_WIDTH, ConfigurationManager.DEFAULT_CONFIG_KEY_DROP_DOWN_MENU_WIDTH_ANDROID)))
+							dp(int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT,
+							                         ConfigurationManager.CONFIG_KEY_DROP_DOWN_MENU_WIDTH,
+							                         ConfigurationManager.DEFAULT_CONFIG_KEY_DROP_DOWN_MENU_WIDTH_ANDROID)))
 			elif key == ConfigurationManager.CONFIG_KEY_STATUS_BAR_HEIGHT:
 				self.cryptoPricerGUI.boxLayoutContainingStatusBar.height = \
 					dp(int(config.getdefault(ConfigurationManager.CONFIG_SECTION_LAYOUT,
@@ -1188,12 +1192,13 @@ class CryptoPricerGUIApp(App):
 	def get_application_config(self, defaultpath="c:/temp/%(appname)s.ini"):
 		'''
 		Redefining super class method to control the name and location of the application
-		settings ini file
+		settings ini file.
+		
 		:param defaultpath: used under Windows
 		:return:
 		'''
 		if platform == 'android':
-			defaultpath = '/sdcard/%(appname)s.ini'
+			defaultpath = GuiUtil.getAndroidSdCardDir() + sep + '%(appname)s.ini'
 		elif platform == 'ios':
 			defaultpath = '~/Documents/%(appname)s.ini'
 		elif platform == 'win':
@@ -1229,7 +1234,12 @@ class CryptoPricerGUIApp(App):
 		:param largs:
 		"""
 		self.cryptoPricerGUI.dropDownMenu.dismiss()
-		super().open_settings(*largs)
+		
+		try:
+			super().open_settings(*largs)
+		except NoOptionError as e:
+			logging.info(str(e) + '. Default settings values have been set in cryptopricer.ini file')
+			self.stop()
 
 
 if __name__ == '__main__':

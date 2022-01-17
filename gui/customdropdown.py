@@ -1,7 +1,11 @@
+import os
+
+from kivy.metrics import dp
 from kivy.properties import ObjectProperty
 from kivy.uix.dropdown import DropDown
 
 from gui.cryptopricergui import STATUS_BAR_ERROR_SUFFIX, STATUS_BAR_WARNING_SUFFIX
+from gui.guiutil import GuiUtil
 
 
 class CustomDropDown(DropDown):
@@ -11,6 +15,11 @@ class CustomDropDown(DropDown):
 	def __init__(self, owner):
 		super().__init__()
 		self.owner = owner
+
+		if os.name == 'posix':
+			if GuiUtil.onSmartPhone():
+				self.auto_width = False
+				self.width = dp(self.rootGUI.configMgr.dropDownMenuWidth)
 
 	def showLoad(self):
 		message = 'Data path ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
