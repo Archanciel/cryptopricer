@@ -281,8 +281,6 @@ class CryptoPricerGUI(BoxLayout):
 		# can not be placed elsewhere with other import
 		# sentences.
 		from gui.customdropdown import CustomDropDown
-		
-		self.dropDownMenu = CustomDropDown(owner=self)
 
 		if os.name == 'posix':
 			configPath = '/sdcard/cryptopricer.ini'
@@ -292,7 +290,8 @@ class CryptoPricerGUI(BoxLayout):
 			requestListRVSpacing = RV_LIST_ITEM_SPACING_WINDOWS
 			self.toggleAppSizeButton.text = 'Half'  # correct on Windows !
 
-		self.configMgr = ConfigurationManager(configPath)
+		self.configMgr = ConfigurationManager(configPath)		
+		self.dropDownMenu = CustomDropDown(owner=self)		
 		self.boxLayoutContainingStatusBar.height = dp(self.configMgr.statusbarHeight)
 		self.clearResultOutputButton.width = dp(self.configMgr.clearButtonWidth)
 		self.toggleAppSizeButton.width = dp(self.configMgr.clearButtonWidth)

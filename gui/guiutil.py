@@ -15,8 +15,11 @@ class GuiUtil:
 	
 	@staticmethod
 	def getAndroidSdCardDir():
-		return '/storage/emulated'
-
+		"""
+		Returns the Android dir containing the cryptopricer.ini file
+		"""
+		return '/sdcard'
+		
 if __name__ == "__main__":
 	gu = GuiUtil()
 	

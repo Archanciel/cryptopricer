@@ -19,7 +19,7 @@ class CustomDropDown(DropDown):
 		if os.name == 'posix':
 			if GuiUtil.onSmartPhone():
 				self.auto_width = False
-				self.width = dp(self.rootGUI.configMgr.dropDownMenuWidth)
+				self.width = dp(self.owner.configMgr.dropDownMenuWidth)
 
 	def showLoad(self):
 		message = 'Data path ' + self.owner.dataPath + '\nas defined in the settings does not exist !\nEither create the directory or change the\ndata path value using the Settings menu.'
