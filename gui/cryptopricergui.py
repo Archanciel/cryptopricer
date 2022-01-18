@@ -1233,7 +1233,14 @@ class CryptoPricerGUIApp(App):
 		:param largs:
 		"""
 		self.cryptoPricerGUI.dropDownMenu.dismiss()
-		
+
+		# catching NoOptionError avoids displaying the exception stack trace
+		# which happens the first time the application is executed after
+		# a new settings param has been added. In this case, thanks to the
+		# exception catch, the app is closed and when it is started again,
+		# no exception is thrown since the missing parms were added to the
+		# app ini file.
+
 		try:
 			super().open_settings(*largs)
 		except NoOptionError as e:
