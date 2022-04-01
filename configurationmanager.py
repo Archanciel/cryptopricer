@@ -55,7 +55,10 @@ class ConfigurationManager:
     APP_SIZE_FULL = 'Full'
 
     def __init__(self, filename):
-        self.config = ConfigObj(filename)
+        self.config = ConfigObj(infile=filename,
+                                encoding='utf8')    # avoids app crash when saving the
+                                                    # the .ini file if it contains
+                                                    # an invalid char like 'ç' !
         self._updated = False
 
         if len(self.config) == 0:
@@ -368,5 +371,3 @@ if __name__ == '__main__':
     print(cm.dateOnlyFormat)
     print(cm.dataPath)
     print("loadAtStartPathFilename: '" + cm.loadAtStartPathFilename + "'")
-    import pytz
-    print(sorted(pytz.all_timezones_set))
