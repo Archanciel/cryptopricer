@@ -484,7 +484,7 @@ in NEO. No exchange rates LUNA in NEO's. CryptoPricer does it. You enter
     [n][i]which means that on 5/9/21 1 NEO converted in LUNA equals 1.90933654 LUNA and 1 LUNA converted in 
 NEO equals 0.52374214 NEO[/i].
 
-Then you enter
+Then you enter the same request, but 1 month later
 
     [cy]luna btc 5/10/21 binance -vs1neo -fsneo.binance[/c] -->
     1.045956245LUNA/0.000908BTC/1 NEO on Binance: 05/10/21 00:00C 
