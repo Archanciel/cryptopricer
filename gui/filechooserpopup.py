@@ -113,10 +113,18 @@ class FileChooserPopup(AbstractPopup):
 									   'pathOnly': dataLocationFromSetting})
 			self.pathList.data.append({'text': 'Main RAM', 'selectable': True, 'pathOnly': '/storage/emulated/0'})
 			
-			if self.onSmartPhone():
-				self.sdCardDir = GuiUtil.SD_CARD_DIR_SMARTPHONE
+			baseDir = GuiUtil.getSmartPhoneDir()
+			
+			if baseDir != None:
+				# the app is executed on an Android smartphone
+				self.sdCardDir = baseDir
 			else:
-				self.sdCardDir = GuiUtil.SD_CARD_DIR_TABLET
+				baseDir = GuiUtil.getTabletDir()
+				if baseDir != None:
+					# the app is executed on an Android tablet
+					self.sdCardDir = baseDir
+				else:
+					raise OSError('App is running on an Android device whose base directory is not known by the GuiUtil class. Please correct the code, adding a new base dir constant.')
 			
 			self.pathList.data.append({'text': 'SD card', 'selectable': True, 'pathOnly': self.sdCardDir})
 		elif platform == 'win':

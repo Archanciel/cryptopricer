@@ -12,6 +12,34 @@ class GuiUtil:
 			return True
 		else:
 			return False
+		
+	@staticmethod
+	def getSmartPhoneDir():
+		"""
+		Returns an Android smartphone base directory string or None if the
+		application is run on a tablet.
+		
+		:return:  Android smartphone dir string or None if not on smartphone
+		"""
+		if os.path.isdir(GuiUtil.SD_CARD_DIR_SMARTPHONE_S20):
+			return GuiUtil.SD_CARD_DIR_SMARTPHONE_S20
+		elif os.path.isdir(GuiUtil.SD_CARD_DIR_SMARTPHONE_S8):
+			return GuiUtil.SD_CARD_DIR_SMARTPHONE_S8
+		else:
+			return None
+	
+	@staticmethod
+	def getTabletDir():
+		"""
+		Returns an Android tablet base directory string or None if the
+		application is run on a smartphone.
+
+		:return:  Android tablet dir string or None if not on tablet
+		"""
+		if os.path.isdir(GuiUtil.SD_CARD_DIR_TABLET):
+			return GuiUtil.SD_CARD_DIR_TABLET
+		else:
+			return None
 	
 	@staticmethod
 	def getAndroidSdCardDir():
